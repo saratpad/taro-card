@@ -102,6 +102,10 @@ const I18N = {
     btn_download_pdf: "ดาวน์โหลด PDF",
     toast_share_success: "แชร์คำทำนายเรียบร้อยแล้ว!",
     toast_share_copied: "คัดลอกข้อความและลิงก์สำหรับแชร์ไปยังคลิปบอร์ดแล้ว!",
+    toast_share_copied_link: "คัดลอกลิงก์ผลทำนายฉบับเต็มส่งต่อให้เพื่อนได้เลย!",
+    shared_notice_title: "ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม",
+    shared_notice_desc: "ท่านกำลังอ่านคำทำนายฉบับเต็มของเพื่อน สามารถกดปุ่มเพื่อเริ่มดูดวงของคุณเองได้ทุกเมื่อ",
+    btn_start_own_reading: "เปิดไพ่ดูดวงของคุณเอง",
     love_single_title: "คำทำนายคนโสด",
     love_couple_title: "คำทำนายคนมีคู่",
     love_single_badge: "👤 คนโสด",
@@ -201,6 +205,10 @@ const I18N = {
     btn_download_pdf: "Download PDF",
     toast_share_success: "Reading shared successfully!",
     toast_share_copied: "Share summary and link copied to clipboard!",
+    toast_share_copied_link: "Full reading link copied! Share with friends to let them see this reading.",
+    shared_notice_title: "Shared Tarot Reading",
+    shared_notice_desc: "You are viewing a friend's full tarot reading. Click the button to draw your own cards anytime.",
+    btn_start_own_reading: "Draw Your Own Cards",
     love_single_title: "For Singles",
     love_couple_title: "For Couples / In a Relationship",
     love_single_badge: "👤 Singles",
@@ -267,6 +275,7 @@ class TarotApp {
     this.spreadCount = 3;
     this.userQuestion = "";
     this.seekerName = "";
+    this.isSharedView = false;
     
     this.deck = [];
     this.drawnCards = [];
@@ -276,6 +285,7 @@ class TarotApp {
     this.bindEvents();
     this.applyLanguage();
     this.renderGrimoire();
+    this.checkSharedReadingUrl();
   }
 
   // Helper: returns correct position definitions (love-specific for 3-card when category is love)
@@ -333,6 +343,10 @@ class TarotApp {
     this.positionsSectionTitle = document.getElementById("positions-section-title");
     this.positionsSectionSubtitle = document.getElementById("positions-section-subtitle");
     this.interpretationsFeed = document.getElementById("interpretations-feed");
+    this.sharedReadingNotice = document.getElementById("shared-reading-notice");
+    this.sharedNoticeTitle = document.getElementById("shared-notice-title");
+    this.sharedNoticeDesc = document.getElementById("shared-notice-desc");
+    this.btnStartOwnReading = document.getElementById("btn-start-own-reading");
     this.btnAskAgain = document.getElementById("btn-ask-again");
     this.btnSocialShare = document.getElementById("btn-social-share");
     this.btnDownloadPdf = document.getElementById("btn-download-pdf");
@@ -432,12 +446,23 @@ class TarotApp {
     // Results Actions
     this.btnAskAgain.addEventListener("click", () => {
       window.mysticAudio.playClick();
+      if (this.isSharedView) {
+        this.resetToOwnReading();
+        return;
+      }
       if (this.questionInput) this.questionInput.value = "";
       if (this.seekerNameInput) this.seekerNameInput.value = "";
       this.seekerName = "";
       if (this.geminiCustomQuestion) this.geminiCustomQuestion.value = "";
       this.switchScreen("intention");
     });
+
+    if (this.btnStartOwnReading) {
+      this.btnStartOwnReading.addEventListener("click", () => {
+        window.mysticAudio.playClick();
+        this.resetToOwnReading();
+      });
+    }
 
     if (this.btnSocialShare) {
       this.btnSocialShare.addEventListener("click", () => {
@@ -543,6 +568,12 @@ class TarotApp {
       const key = el.getAttribute("data-i18n-placeholder");
       if (dict[key]) el.placeholder = dict[key];
     });
+
+    if (this.isSharedView && this.sharedNoticeTitle) {
+      this.sharedNoticeTitle.textContent = this.seekerName
+        ? (this.lang === "th" ? `🔮 คำทำนายดวงชะตาที่คุณ ${this.seekerName} แชร์มาให้ชม` : `🔮 Tarot Reading Shared by ${this.seekerName}`)
+        : (this.lang === "th" ? `🔮 ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม` : `🔮 Shared Tarot Divination`);
+    }
 
     this.updateAudioButton(window.mysticAudio.isMuted);
   }
@@ -1108,6 +1139,8 @@ class TarotApp {
       ? (this.lang === "th" ? `✦ ผู้รับคำทำนาย: คุณ${this.seekerName}\n` : `✦ Seeker: ${this.seekerName}\n`)
       : "";
 
+    const shareUrl = this.generateShareableUrl();
+
     const textToCopy = `🔮 MYSTIC WITCH TAROT READING 🔮\n\n` +
       seekerLine +
       `✦ หมวดหมู่: ${domainName}\n` +
@@ -1115,6 +1148,7 @@ class TarotApp {
       `✦ บทสรุปภาพรวมดวงชะตาตามตำรา:\n${this.verdictContent ? this.verdictContent.innerText.trim() : ""}\n\n` +
       `✦ ความหมายของไพ่แต่ละตำแหน่ง (เฉพาะด้าน${domainName}):\n\n${cardsDetails}\n\n` +
       `✦ บทสังเคราะห์แม่มด:\n${this.grandSynthesisText ? this.grandSynthesisText.innerText.trim() : ""}\n\n` +
+      `✦ เข้าดูผลคำทำนายฉบับเต็มบนเว็บ:\n${shareUrl}\n\n` +
       `Mystic Witch Tarot Sanctuary`;
 
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -1125,19 +1159,63 @@ class TarotApp {
     });
   }
 
+  generateShareableUrl() {
+    try {
+      const url = new URL(window.location.origin + window.location.pathname);
+      url.searchParams.set("share", "1");
+      if (this.seekerName) {
+        url.searchParams.set("name", this.seekerName.trim());
+      }
+      if (this.category) {
+        url.searchParams.set("cat", this.category);
+      }
+      if (this.spreadCount) {
+        url.searchParams.set("spread", this.spreadCount.toString());
+      }
+      if (this.userQuestion) {
+        url.searchParams.set("q", this.userQuestion.trim());
+      }
+      if (this.drawnCards && this.drawnCards.length > 0) {
+        const cardsParam = this.drawnCards.map(c => `${c.card.id}:${c.isReversed ? 1 : 0}`).join(",");
+        url.searchParams.set("cards", cardsParam);
+      }
+      return url.toString();
+    } catch (e) {
+      console.warn("Could not generate URL with URL API, falling back:", e);
+      const cardsParam = this.drawnCards.map(c => `${c.card.id}:${c.isReversed ? 1 : 0}`).join(",");
+      let qs = `?share=1&cards=${encodeURIComponent(cardsParam)}&cat=${encodeURIComponent(this.category)}&spread=${this.spreadCount}`;
+      if (this.seekerName) qs += `&name=${encodeURIComponent(this.seekerName.trim())}`;
+      if (this.userQuestion) qs += `&q=${encodeURIComponent(this.userQuestion.trim())}`;
+      return window.location.origin + window.location.pathname + qs;
+    }
+  }
+
   shareReading() {
     const dict = I18N[this.lang];
     const seeker = this.seekerName ? (this.lang === "th" ? `ของคุณ${this.seekerName}` : `for ${this.seekerName}`) : "";
     const domain = I18N[this.lang]["cat_" + this.category];
     const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
     const shareTitle = `🔮 ผลทำนายไพ่ทาโรต์ ด้าน${domain} ${seeker} | Mystic Witch Tarot`;
-    const shareUrl = window.location.href.split("#")[0];
-    const cardNames = this.drawnCards.map(c => this.lang === "th" ? c.card.name_th : c.card.name_en).join(", ");
+    const shareUrl = this.generateShareableUrl();
+    const cardNames = this.drawnCards.map(c => {
+      const cardTitle = this.lang === "th" ? c.card.name_th : c.card.name_en;
+      const orientation = c.isReversed ? (this.lang === "th" ? "(กลับหัว)" : "(Reversed)") : "";
+      return `${cardTitle} ${orientation}`.trim();
+    }).join(", ");
+
+    const questionLine = this.userQuestion ? (this.lang === "th" ? `✦ คำถาม: "${this.userQuestion}"\n` : `✦ Question: "${this.userQuestion}"\n`) : "";
     
-    let shareText = `🔮 ผลทำนายดวงชะตาไพ่ทาโรต์ Mystic Witch Tarot ด้าน${domain} ${seeker}:\n` +
-      `✦ รูปแบบไพ่: ${spreadName}\n` +
-      `✦ ไพ่ที่เปิดได้: ${cardNames}\n` +
-      `✦ ทดลองดูดวงแม่มดพยากรณ์ได้ที่: ${shareUrl}`;
+    let shareText = this.lang === "th"
+      ? `🔮 ผลทำนายดวงชะตาไพ่ทาโรต์ Mystic Witch Tarot ด้าน${domain} ${seeker}:\n` +
+        `✦ รูปแบบไพ่: ${spreadName} (${this.spreadCount} ใบ)\n` +
+        `✦ ไพ่ที่เปิดได้: ${cardNames}\n` +
+        questionLine +
+        `✦ เข้าดูผลทำนายฉบับเต็มพร้อมภาพไพ่ 3D:\n${shareUrl}`
+      : `🔮 Mystic Witch Tarot Reading for ${this.category.toUpperCase()} ${seeker}:\n` +
+        `✦ Spread: ${spreadName} (${this.spreadCount} cards)\n` +
+        `✦ Drawn Cards: ${cardNames}\n` +
+        questionLine +
+        `✦ View full interactive 3D reading:\n${shareUrl}`;
 
     if (navigator.share) {
       navigator.share({
@@ -1167,6 +1245,115 @@ class TarotApp {
       });
     } else {
       this.showToast(dict.toast_share_copied);
+    }
+  }
+
+  resetToOwnReading() {
+    this.isSharedView = false;
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    if (this.sharedReadingNotice) {
+      this.sharedReadingNotice.style.display = "none";
+    }
+    this.drawnCards = [];
+    this.seekerName = "";
+    this.userQuestion = "";
+    if (this.seekerNameInput) this.seekerNameInput.value = "";
+    if (this.questionInput) this.questionInput.value = "";
+    if (this.geminiCustomQuestion) this.geminiCustomQuestion.value = "";
+    this.switchScreen("intention");
+  }
+
+  checkSharedReadingUrl() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const cardsParam = params.get("cards");
+      if (!cardsParam) return false;
+
+      const cardEntries = cardsParam.split(",").map(s => s.trim()).filter(Boolean);
+      if (cardEntries.length === 0) return false;
+
+      if (typeof TAROT_CARDS === "undefined" || !Array.isArray(TAROT_CARDS)) {
+        console.warn("TAROT_CARDS data not ready for shared URL parsing");
+        return false;
+      }
+
+      const reconstructedCards = [];
+      for (const entry of cardEntries) {
+        const parts = entry.split(":");
+        const cardId = parts[0].trim();
+        const isReversed = parts[1] === "1" || parts[1] === "true";
+        const card = TAROT_CARDS.find(c => c.id === cardId);
+        if (card) {
+          reconstructedCards.push({
+            card: card,
+            isReversed: isReversed
+          });
+        }
+      }
+
+      if (reconstructedCards.length === 0) return false;
+
+      this.isSharedView = true;
+      this.drawnCards = reconstructedCards;
+      this.spreadCount = reconstructedCards.length;
+
+      const catParam = params.get("cat");
+      if (catParam && ["love", "career", "finance", "health", "general"].includes(catParam)) {
+        this.category = catParam;
+      }
+
+      const nameParam = params.get("name");
+      if (nameParam) {
+        this.seekerName = nameParam.trim();
+        if (this.seekerNameInput) this.seekerNameInput.value = this.seekerName;
+      }
+
+      const qParam = params.get("q");
+      if (qParam) {
+        this.userQuestion = qParam.trim();
+        if (this.questionInput) this.questionInput.value = this.userQuestion;
+      }
+
+      // Update active category chip
+      if (this.catChips) {
+        this.catChips.forEach(chip => {
+          chip.classList.toggle("active", chip.dataset.category === this.category);
+        });
+      }
+
+      // Update active spread card selection
+      if (this.spreadCards) {
+        this.spreadCards.forEach(sc => {
+          sc.classList.toggle("active", parseInt(sc.dataset.count) === this.spreadCount);
+        });
+      }
+
+      // Display Shared Reading Notice Banner
+      if (this.sharedReadingNotice) {
+        this.sharedReadingNotice.style.display = "flex";
+        if (this.sharedNoticeTitle) {
+          this.sharedNoticeTitle.textContent = this.seekerName
+            ? (this.lang === "th" ? `🔮 คำทำนายดวงชะตาที่คุณ ${this.seekerName} แชร์มาให้ชม` : `🔮 Tarot Reading Shared by ${this.seekerName}`)
+            : (this.lang === "th" ? `🔮 ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม` : `🔮 Shared Tarot Divination`);
+        }
+      }
+
+      // Switch to results screen directly and render all cards and verdicts
+      this.switchScreen("results");
+      this.renderResults();
+
+      setTimeout(() => {
+        if (window.mysticAudio && window.mysticAudio.playCrystalBell) {
+          window.mysticAudio.playCrystalBell(659, 1.2);
+        }
+      }, 500);
+
+      return true;
+    } catch (err) {
+      console.error("Error parsing shared reading URL:", err);
+      return false;
     }
   }
 

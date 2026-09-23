@@ -238,6 +238,21 @@
             <div class="print-meta-line" id="print-meta-line"></div>
           </div>
 
+          <!-- Notice when viewing a shared reading from someone else -->
+          <div id="shared-reading-notice" class="shared-reading-notice" style="display: none;">
+            <div class="shared-notice-content">
+              <span class="shared-notice-icon">🔮</span>
+              <div class="shared-notice-text">
+                <strong id="shared-notice-title" data-i18n="shared_notice_title">ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม</strong>
+                <p id="shared-notice-desc" data-i18n="shared_notice_desc">ท่านกำลังอ่านคำทำนายฉบับเต็มของเพื่อน สามารถกดปุ่มเพื่อเริ่มดูดวงของคุณเองได้ทุกเมื่อ</p>
+              </div>
+            </div>
+            <button id="btn-start-own-reading" class="btn-mystic-primary btn-sm">
+              <span>✨</span>
+              <span data-i18n="btn_start_own_reading">เปิดไพ่ดูดวงของคุณเอง</span>
+            </button>
+          </div>
+
           <div class="results-seeker-greeting" id="results-seeker-greeting"></div>
           <h2 data-i18n="results_title">คำทำนายจากม่านมนตรา</h2>
           <div class="user-question-recap" id="results-question-recap">

@@ -202,4 +202,22 @@
     font-size: 0.95rem;
     padding: 0.4rem 0.9rem;
   }
+
+  .shared-reading-notice {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 0.9rem 1rem;
+    gap: 0.8rem;
+  }
+
+  .shared-notice-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .shared-reading-notice button {
+    width: 100%;
+    justify-content: center;
+  }
 }
