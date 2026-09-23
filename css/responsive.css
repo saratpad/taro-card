@@ -1,0 +1,143 @@
+/* Responsive Media Queries for Mobile & Tablets */
+
+@media (max-width: 900px) {
+  .modal-card-detail-layout {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .modal-card-image-col {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .mystic-header {
+    padding: 0.9rem 1.2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .brand-text h1 {
+    font-size: 1.15rem;
+  }
+
+  .brand-text p {
+    display: none;
+  }
+
+  .nav-actions {
+    gap: 0.4rem;
+  }
+
+  .btn-icon {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .main-stage-container {
+    padding: 1.2rem 1rem 3rem;
+  }
+
+  .ritual-card-box {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .category-chips-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .spread-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Card Target Slots on Mobile */
+  .selected-slots-rack {
+    gap: 0.6rem;
+  }
+
+  .card-target-slot {
+    width: 90px;
+    height: 150px;
+    padding: 0.4rem;
+  }
+
+  .slot-position-label {
+    font-size: 0.65rem;
+  }
+
+  .slot-placeholder-icon {
+    font-size: 1.3rem;
+  }
+
+  /* Ribbon on Mobile */
+  .tarot-card-deck-item {
+    flex: 0 0 46px;
+    height: 120px;
+    margin-left: -28px;
+  }
+
+  /* 3D Revealed Cards on Mobile */
+  .revealed-cards-flex {
+    gap: 1.2rem;
+  }
+
+  .revealed-card-cardunit {
+    width: 135px;
+  }
+
+  .card-3d-flipper {
+    width: 135px;
+    height: 235px;
+  }
+
+  .interpretation-card {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .grand-summary-card {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .grimoire-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .modal-content-box {
+    padding: 1.8rem 1.2rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .category-chips-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .spread-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .altar-hero h2 {
+    font-size: 1.75rem;
+  }
+
+  .revealed-card-cardunit {
+    width: 120px;
+  }
+
+  .card-3d-flipper {
+    width: 120px;
+    height: 210px;
+  }
+
+  .results-action-row {
+    flex-direction: column;
+  }
+
+  .results-action-row button {
+    width: 100%;
+  }
+}

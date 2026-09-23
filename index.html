@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic Witch Tarot | ดูดวงไพ่ยิปซี ไพ่ทาโรต์ แม่มดพยากรณ์</title>
+  <meta name="description" content="เว็บแอปดูดวงไพ่ยิปซี ไพ่ทาโรต์ 78 ใบ ธีมหมอดูแม่มดโบราณ พิมพ์ถามคำถามเรื่องความรัก การงาน การเงิน สุขภาพ พร้อมคำทำนายแม่นยำตามหลักศาสตร์ไพ่ทาโรต์">
+  <meta name="keywords" content="ดูดวง, ไพ่ยิปซี, ไพ่ทาโรต์, หมอดูแม่มด, Tarot Reading, ดูดวงความรัก, ดูดวงการงาน, ดูดวงการเงิน">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Mystic Witch Tarot | ดูดวงไพ่ยิปซี ไพ่ทาโรต์ แม่มดพยากรณ์">
+  <meta property="og:description" content="ดูดวงไพ่ยิปซี 78 ใบแบบเจาะลึก พร้อมระบบตั้งจิตอธิษฐานถามคำถาม">
+  <meta property="og:type" content="website">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Stardust & Constellations Dynamic Canvas -->
+  <canvas id="stardust-canvas"></canvas>
+
+  <div class="app-viewport">
+    
+    <!-- Top Navigation Header -->
+    <header class="mystic-header">
+      <a href="#" class="brand-logo" id="nav-brand" title="Home">
+        <div class="brand-sigil">🔮</div>
+        <div class="brand-text">
+          <h1 data-i18n="brand_title">MYSTIC WITCH</h1>
+          <p data-i18n="brand_sub">Tarot Sanctuary</p>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <!-- Grimoire / Encyclopedia -->
+        <button class="btn-icon" id="btn-open-grimoire" title="Tarot Grimoire">
+          <span>📜</span>
+          <span class="btn-label" data-i18n="btn_grimoire">คัมภีร์ 78 ใบ</span>
+        </button>
+
+        <!-- Audio Mute/Unmute Toggle -->
+        <button class="btn-icon" id="btn-toggle-audio" title="Toggle Sound">
+          <span id="audio-icon">🔔</span>
+          <span class="btn-label" id="audio-label" data-i18n="sound_on">เสียง</span>
+        </button>
+
+        <!-- Language Switcher -->
+        <button class="btn-icon" id="btn-toggle-lang" title="Switch Language">
+          <span>🌐</span>
+          <span class="btn-label" id="lang-label">TH / EN</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-stage-container">
+
+      <!-- =================================================================== -->
+      <!-- SCREEN 1: INTENTION & QUESTION (หน้าตั้งจิตอธิษฐานและเลือกรูปแบบ) -->
+      <!-- =================================================================== -->
+      <section id="screen-intention" class="view-screen active">
+        <div class="altar-hero">
+          <div class="altar-seal-wrapper">
+            <div class="mystic-circle">
+              <div class="witch-icon">🧙‍♀️</div>
+            </div>
+          </div>
+          <h2 data-i18n="hero_title">แท่นบูชาแม่มดพยากรณ์</h2>
+          <p class="hero-subtitle" data-i18n="hero_desc">
+            "จงสงบจิตใจ รวบรวมสมาธิ และเอ่ยวาจาถึงเรื่องที่ท่านปรารถนาจะล่วงรู้ผ่านม่านแห่งชะตากรรม..."
+          </p>
+
+          <!-- Ritual Setup Card Box -->
+          <div class="ritual-card-box">
+            
+            <!-- Category Chips -->
+            <div class="form-group">
+              <label class="form-label">
+                <span>✦</span>
+                <span data-i18n="label_category">เลือกเรื่องที่ต้องการพยากรณ์</span>
+              </label>
+              <div class="category-chips-grid">
+                <div class="cat-chip active" data-cat="love">
+                  <span class="chip-icon">💖</span>
+                  <span class="chip-title" data-i18n="cat_love">ความรัก</span>
+                </div>
+                <div class="cat-chip" data-cat="career">
+                  <span class="chip-icon">💼</span>
+                  <span class="chip-title" data-i18n="cat_career">การงาน</span>
+                </div>
+                <div class="cat-chip" data-cat="finance">
+                  <span class="chip-icon">💰</span>
+                  <span class="chip-title" data-i18n="cat_finance">การเงิน</span>
+                </div>
+                <div class="cat-chip" data-cat="health">
+                  <span class="chip-icon">🌿</span>
+                  <span class="chip-title" data-i18n="cat_health">สุขภาพ</span>
+                </div>
+                <div class="cat-chip" data-cat="general">
+                  <span class="chip-icon">🔮</span>
+                  <span class="chip-title" data-i18n="cat_general">ทั่วไป/ตัดสินใจ</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spread Type Selector -->
+            <div class="form-group">
+              <label class="form-label">
+                <span>✦</span>
+                <span data-i18n="label_spread">รูปแบบการวางไพ่ทาโรต์</span>
+              </label>
+              <div class="spread-cards-grid">
+                <!-- 1 Card -->
+                <div class="spread-card" data-spread="1">
+                  <div class="spread-count">1</div>
+                  <div class="spread-name" data-i18n="spread_1_name">ไพ่ 1 ใบ</div>
+                  <div class="spread-desc" data-i18n="spread_1_desc">คำตอบเร่งด่วน หรือไพ่ประจำวัน</div>
+                </div>
+
+                <!-- 3 Cards -->
+                <div class="spread-card active" data-spread="3">
+                  <div class="spread-count">3</div>
+                  <div class="spread-name" data-i18n="spread_3_name">ไพ่ 3 ใบ</div>
+                  <div class="spread-desc" data-i18n="spread_3_desc">อดีต • ปัจจุบัน • อนาคต</div>
+                </div>
+
+                <!-- 4 Cards -->
+                <div class="spread-card" data-spread="4">
+                  <div class="spread-count">4</div>
+                  <div class="spread-name" data-i18n="spread_4_name">ไพ่ 4 ใบ</div>
+                  <div class="spread-desc" data-i18n="spread_4_desc">เจาะลึกแก้ไขปัญหา</div>
+                </div>
+
+                <!-- 5 Cards -->
+                <div class="spread-card" data-spread="5">
+                  <div class="spread-count">5</div>
+                  <div class="spread-name" data-i18n="spread_5_name">ไพ่ 5 ใบ</div>
+                  <div class="spread-desc" data-i18n="spread_5_desc">ภาพรวมทิศทางชีวิต</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Begin Button -->
+            <button id="btn-begin-ritual" class="btn-mystic-primary">
+              <span>✨</span>
+              <span data-i18n="btn_begin">เริ่มพิธีกรรมสับไพ่และเปิดดวงชะตา</span>
+              <span>✨</span>
+            </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SCREEN 2: SHUFFLE & CARD FAN DRAWING (หน้าสับไพ่และเลือกไพ่) -->
+      <!-- =================================================================== -->
+      <section id="screen-drawing" class="view-screen">
+        <div class="altar-table">
+          
+          <div class="altar-table-header">
+            <h3 data-i18n="drawing_title">เลือกไพ่ทาโรต์ของท่าน</h3>
+            <p id="drawing-instructions" data-i18n="drawing_sub">
+              กรุณาเลือกไพ่ทีละใบจากสำรับ หรือใช้ญาณทัศน์ของแม่มดเลือกให้อัตโนมัติ
+            </p>
+          </div>
+
+          <!-- Target Slots Rack -->
+          <div id="target-slots-rack" class="selected-slots-rack">
+            <!-- Dynamically populated slots -->
+          </div>
+
+          <!-- The Deck Ribbon Fan (78 Cards) -->
+          <div class="deck-spread-ribbon" id="deck-ribbon-container">
+            <!-- Dynamically populated 78 card backs -->
+          </div>
+
+          <!-- Actions -->
+          <div class="deck-action-buttons">
+            <button id="btn-witch-intuition" class="btn-secondary-mystic">
+              <span>🔮</span>
+              <span data-i18n="btn_intuition">พลังญาณทัศน์แม่มด (สุ่มเลือกให้)</span>
+            </button>
+
+            <button id="btn-re-shuffle" class="btn-secondary-mystic">
+              <span>🌀</span>
+              <span data-i18n="btn_reshuffle">สับไพ่อีกครั้ง</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SCREEN 3: RESULTS & INTERPRETATION (หน้าเปิดไพ่และคำทำนาย) -->
+      <!-- =================================================================== -->
+      <section id="screen-results" class="view-screen">
+        
+        <div class="results-header-banner">
+          <h2 data-i18n="results_title">คำทำนายจากม่านมนตรา</h2>
+          <div class="user-question-recap" id="results-question-recap">
+            <!-- Question text -->
+          </div>
+        </div>
+
+        <!-- Direct Answer to Question Box -->
+        <div class="direct-verdict-box" id="direct-verdict-box">
+          <div class="verdict-header">
+            <span class="verdict-badge" id="verdict-badge">🌟 แนวโน้มเป็นบวกมาก</span>
+            <h3 class="verdict-title" id="verdict-title" data-i18n="verdict_box_title">บทสรุปภาพรวมดวงชะตาตามตำรา</h3>
+          </div>
+          <p class="verdict-content" id="verdict-content">
+            <!-- Plain, easy-to-understand direct answer -->
+          </p>
+          <div class="verdict-actions-summary" id="verdict-actions-summary">
+            <!-- Actionable Do & Don't -->
+          </div>
+        </div>
+
+        <!-- 3D Revealed Cards Row -->
+        <div class="revealed-cards-flex" id="revealed-cards-container">
+          <!-- Dynamically populated 3D Flipping Cards -->
+        </div>
+
+        <!-- Grand Summary / Synthesis -->
+        <div class="grand-summary-card" id="grand-synthesis-card">
+          <h3 data-i18n="synthesis_title">บทสังเคราะห์พลังงานชะตาจากแม่มด</h3>
+          <p class="grand-summary-text" id="grand-synthesis-text">
+            <!-- Dynamically synthesized reading based on cards and question -->
+          </p>
+        </div>
+
+        <!-- Individual Card Detailed Interpretations Feed (Connected directly to question) -->
+        <div class="interpretations-section" id="interpretations-feed">
+          <!-- Dynamically generated interpretation cards -->
+        </div>
+
+        <!-- Gemini AI Assistant Bridge Card (Placed at the end as requested) -->
+        <div class="gemini-ai-card" id="gemini-ai-card">
+          <div class="gemini-card-header">
+            <div class="gemini-badge">
+              <span class="gemini-sparkle">✨</span>
+              <span>Gemini AI Tarot Oracle</span>
+            </div>
+            <h3 data-i18n="gemini_box_title">คุยต่อกับ Gemini AI เพื่อความเข้าใจที่ลึกซึ้งยิ่งขึ้น</h3>
+            <p data-i18n="gemini_box_desc">
+              ต้องการเจาะลึกเฉพาะจุด หรือขอคำปรึกษาเพิ่มเติม? กรอกคำถามที่ท่านสงสัยด้านล่าง แล้วกดปุ่มเพื่อคัดลอกคำทำนายและเปิด Gemini ทันที จากนั้นเพียงกดวาง (Ctrl+V / Cmd+V) ในหน้าต่าง Gemini เพื่อคุยต่อได้เลย!
+            </p>
+          </div>
+
+          <!-- Specific Question Input for Gemini -->
+          <div class="gemini-question-input-wrapper">
+            <label class="gemini-input-label" for="gemini-custom-question">
+              <span>💬</span>
+              <span data-i18n="gemini_input_label">กรอกคำถามเฉพาะเจาะจงที่ท่านอยากปรึกษา AI เพิ่มเติมจากไพ่ชุดนี้ (ถ้ามี):</span>
+            </label>
+            <textarea 
+              id="gemini-custom-question" 
+              class="gemini-textarea" 
+              rows="2" 
+              placeholder="เช่น คนที่คุยอยู่ตอนนี้เขารู้สึกอย่างไรกับเรา? หรือ ควรตัดสินใจเปลี่ยนงานดีไหม? (หรือเว้นว่างไว้เพื่อให้ AI วิเคราะห์ภาพรวม)"
+              data-i18n-placeholder="gemini_input_placeholder"
+            ></textarea>
+          </div>
+
+          <div class="gemini-btn-row">
+            <button id="btn-copy-and-open-gemini" class="btn-gemini-glow-hero">
+              <span class="btn-hero-icon">🚀</span>
+              <span data-i18n="btn_copy_open_gemini">คัดลอกคำถาม+คำทำนาย & เข้าสู่ Gemini ทันที (แค่กดวาง)</span>
+            </button>
+            <button id="btn-copy-gemini" class="btn-gemini-link">
+              <span>📋</span>
+              <span data-i18n="btn_copy_gemini">คัดลอกข้อความอย่างเดียว</span>
+            </button>
+          </div>
+
+          <div class="gemini-prompt-preview" id="gemini-prompt-preview">
+            <div class="preview-header">
+              <span>📝</span>
+              <span data-i18n="gemini_preview_title">ข้อความคำถามที่จัดเตรียมไว้ให้ Gemini:</span>
+            </div>
+            <pre class="prompt-code-block" id="gemini-prompt-text"></pre>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="results-action-row">
+          <button id="btn-ask-again" class="btn-mystic-primary" style="max-width: 320px;">
+            <span>🔮</span>
+            <span data-i18n="btn_ask_again">ถามคำถามใหม่</span>
+          </button>
+
+          <button id="btn-share-reading" class="btn-secondary-mystic">
+            <span>📋</span>
+            <span data-i18n="btn_copy_reading">คัดลอกคำทำนาย</span>
+          </button>
+
+          <button id="btn-browse-all-cards" class="btn-secondary-mystic">
+            <span>📖</span>
+            <span data-i18n="btn_explore_grimoire">เปิดดูคัมภีร์ไพ่</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SCREEN 4: GRIMOIRE (สารานุกรมไพ่ทาโรต์ 78 ใบ) -->
+      <!-- =================================================================== -->
+      <section id="screen-grimoire" class="view-screen">
+        <div class="grimoire-container">
+          
+          <div class="grimoire-header">
+            <h2 data-i18n="grimoire_heading">คัมภีร์ไพ่ทาโรต์ (Tarot Grimoire)</h2>
+            <p data-i18n="grimoire_sub">ศึกษาความหมาย ลวดลาย และจิตวิญญาณแห่งไพ่ทาโรต์ทั้ง 78 ใบ</p>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="grimoire-search-bar">
+            <input 
+              type="text" 
+              id="grimoire-search-input" 
+              class="grimoire-search-input" 
+              placeholder="ค้นหาชื่อไพ่ หรือคีย์เวิร์ด..."
+              data-i18n-placeholder="placeholder_search"
+            >
+          </div>
+
+          <!-- Category Filters -->
+          <div class="grimoire-filters-tabs">
+            <button class="filter-tab-btn active" data-filter="all" data-i18n="filter_all">ทั้งหมด (78)</button>
+            <button class="filter-tab-btn" data-filter="major" data-i18n="filter_major">Major Arcana (22)</button>
+            <button class="filter-tab-btn" data-filter="pentacles" data-i18n="filter_pentacles">ไพ่เหรียญ (14)</button>
+            <button class="filter-tab-btn" data-filter="cups" data-i18n="filter_cups">ไพ่ถ้วย (14)</button>
+            <button class="filter-tab-btn" data-filter="swords" data-i18n="filter_swords">ไพ่ดาบ (14)</button>
+            <button class="filter-tab-btn" data-filter="wands" data-i18n="filter_wands">ไพ่ไม้ (14)</button>
+          </div>
+
+          <!-- Grid of Cards -->
+          <div class="grimoire-cards-grid" id="grimoire-cards-grid">
+            <!-- 78 Cards rendered dynamically -->
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mystic-footer">
+      <p data-i18n="footer_credits">
+        Mystic Witch Tarot • พัฒนาด้วยความเคารพในศาสตร์แห่งไพ่ทาโรต์และจิตวิทยาเชิงสัญลักษณ์
+      </p>
+      <p style="margin-top: 0.4rem; font-size: 0.78rem;">
+        Based on Rider-Waite Tarot System & <a href="https://www.shitsuren-tarot.com/tarot/" target="_blank" rel="noopener">Shitsuren Tarot</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Single Card Detail Modal -->
+  <div id="card-detail-modal" class="modal-overlay">
+    <div class="modal-content-box">
+      <button class="modal-close-btn" id="btn-close-modal">&times;</button>
+      <div id="modal-card-body">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="mystic-toast" class="mystic-toast"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/tarot-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
