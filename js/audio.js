@@ -213,6 +213,142 @@ class MysticAudio {
     osc.start(now);
     osc.stop(now + 0.06);
   }
+
+  // =========================================================================
+  // SIAMSI (เซียมซี) AUDIO SYNTHESIS
+  // =========================================================================
+
+  /**
+   * Simulates wooden bamboo sticks clattering inside a cylinder
+   */
+  playBambooRattle(intensity = 1.0) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+    const count = Math.floor(3 + Math.random() * 4); // 3-6 tiny clatter clicks
+
+    for (let i = 0; i < count; i++) {
+      const clickTime = now + (i * 0.035) + (Math.random() * 0.015);
+      
+      // Resonant wood block pitch (bamboo frequency range ~ 700 - 1600 Hz)
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      const baseFreq = 750 + Math.random() * 850;
+      osc.type = Math.random() > 0.4 ? "triangle" : "square";
+      osc.frequency.setValueAtTime(baseFreq, clickTime);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, clickTime + 0.035);
+
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(baseFreq, clickTime);
+      filter.Q.setValueAtTime(4.0, clickTime);
+
+      const vol = (0.08 + Math.random() * 0.12) * Math.min(1.5, intensity);
+      gain.gain.setValueAtTime(0.001, clickTime);
+      gain.gain.linearRampToValueAtTime(vol, clickTime + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.035);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(clickTime);
+      osc.stop(clickTime + 0.04);
+    }
+  }
+
+  /**
+   * Sound of a single bamboo stick sliding out and dropping onto the altar mat
+   */
+  playStickDrop() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+
+    // 1. Initial wooden click/tap
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = "triangle";
+    osc1.frequency.setValueAtTime(980, now);
+    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.07);
+
+    gain1.gain.setValueAtTime(0.18, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.08);
+
+    // 2. Secondary rebound bounce
+    const bounceTime = now + 0.09;
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(680, bounceTime);
+    osc2.frequency.exponentialRampToValueAtTime(240, bounceTime + 0.05);
+
+    gain2.gain.setValueAtTime(0.09, bounceTime);
+    gain2.gain.exponentialRampToValueAtTime(0.001, bounceTime + 0.05);
+
+    osc2.connect(gain2);
+    gain2.connect(this.ctx.destination);
+    osc2.start(bounceTime);
+    osc2.stop(bounceTime + 0.06);
+  }
+
+  /**
+   * Resonant temple singing bowl / bronze gong
+   */
+  playGongChime(freq = 280, duration = 3.0) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+
+    // Fundamental gong tone
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.995, now + duration);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + duration);
+
+    // Shimmer overtones
+    [freq * 1.52, freq * 2.15, freq * 3.3].forEach((f, idx) => {
+      const harmOsc = this.ctx.createOscillator();
+      const harmGain = this.ctx.createGain();
+      harmOsc.type = "sine";
+      harmOsc.frequency.setValueAtTime(f, now);
+
+      const harmVol = 0.08 / (idx + 1);
+      harmGain.gain.setValueAtTime(0.001, now);
+      harmGain.gain.linearRampToValueAtTime(harmVol, now + 0.02);
+      harmGain.gain.exponentialRampToValueAtTime(0.0001, now + (duration * 0.7));
+
+      harmOsc.connect(harmGain);
+      harmGain.connect(this.ctx.destination);
+      harmOsc.start(now);
+      harmOsc.stop(now + (duration * 0.7));
+    });
+  }
 }
 
 window.mysticAudio = new MysticAudio();

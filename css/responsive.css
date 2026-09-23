@@ -221,73 +221,45 @@
     justify-content: center;
   }
 
-  /* Palm Mode Responsive */
-  .palm-analysis-layout {
+  /* Siamsi Mode Responsive */
+  .siamsi-chinese-title {
+    font-size: 1.85rem;
+  }
+
+  .siamsi-thai-title {
+    font-size: 1.25rem;
+  }
+
+  .siamsi-plaque-card {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .siamsi-cylinder-arena {
+    min-height: 320px;
+    padding: 2rem 1rem 1rem;
+  }
+
+  .siamsi-cylinder-container {
+    width: 110px;
+    height: 180px;
+  }
+
+  .altar-red-mat {
+    padding: 1.4rem 1rem;
+  }
+
+  .siamsi-fallen-stick {
+    width: 220px;
+    height: 34px;
+    font-size: 1rem;
+  }
+
+  .siamsi-directory-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
 
-  .analysis-canvas-wrapper {
-    max-width: 100%;
-  }
-
-  .canvas-drag-hint-badge {
-    font-size: 0.68rem;
-    padding: 4px 10px;
-    top: 6px;
-  }
-
-  .palm-calibration-card {
-    max-width: 100%;
-    padding: 10px 12px;
-  }
-
-  .calibration-quick-row {
-    gap: 5px;
-  }
-
-  .btn-calib-pill {
-    font-size: 0.74rem;
-    padding: 5px 8px;
-    min-width: 68px;
-  }
-
-  .calibration-sliders-grid {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .analysis-actions-bar {
-    flex-direction: column;
-  }
-
-  .palm-rule-banner {
-    flex-direction: column;
-    text-align: center;
-    padding: 14px 16px;
-  }
-
-  .palm-camera-actions {
-    gap: 12px;
-  }
-
-  .btn-capture-main {
-    padding: 12px 20px !important;
-    font-size: 1rem !important;
-  }
-
-  .palm-gender-chips-row {
-    flex-direction: column;
-  }
-
-  .palm-gender-chip {
+  .siamsi-actions-toolbar button {
     width: 100%;
-    justify-content: center;
-  }
-
-  .palm-hand-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
   }
 }
 

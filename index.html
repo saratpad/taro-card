@@ -33,16 +33,16 @@
         </div>
       </a>
 
-      <!-- Sanctuary Mode Navigation (Tarot vs Palmistry) -->
+      <!-- Sanctuary Mode Navigation (Tarot vs Siamsi) -->
       <div class="sanctuary-mode-nav">
-        <button type="button" class="mode-nav-btn active" id="mode-switch-tarot" title="ดูดวงไพ่ทาโรต์">
+        <button type="button" class="mode-nav-btn active" id="mode-switch-tarot" title="ดูดวงไพ่ทาโรต์ 78 ใบ">
           <span>🔮</span>
-          <span>ไพ่ทาโรต์</span>
+          <span data-i18n="mode_tarot">ไพ่ทาโรต์</span>
         </button>
-        <button type="button" class="mode-nav-btn" id="mode-switch-palm" title="สแกนดูลายมือด้วยกล้อง">
-          <span>✋</span>
-          <span>สแกนดูลายมือ</span>
-          <span class="mode-badge-new">NEW</span>
+        <button type="button" class="mode-nav-btn" id="mode-switch-siamsi" title="เสี่ยงเซียมซี 100 ใบ (เบอร์ 00 - 99)">
+          <span>🎋</span>
+          <span data-i18n="mode_siamsi">เสี่ยงเซียมซี</span>
+          <span class="mode-badge-new">100 ใบ</span>
         </button>
       </div>
 
@@ -455,412 +455,265 @@
       </div> <!-- /#tarot-mode-container -->
 
       <!-- =================================================================== -->
-      <!-- PALMISTRY MODE CONTAINER (โหมดดูดวงจากลายมือด้วยกล้อง The Street Ratchada) -->
+      <!-- SIAMSI MODE CONTAINER (โหมดเสี่ยงเซียมซี 100 ใบ เบอร์ 00 - 99) -->
       <!-- =================================================================== -->
-      <div id="palm-mode-container" style="display: none;">
+      <div id="siamsi-mode-container" style="display: none;">
 
         <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 1: PALM INTRO & SETUP (ตั้งจิต ระบุเพศ และเลือกข้างมือ) -->
+        <!-- SCREEN 1: SHAKING & ALTAR SCREEN (ตั้งจิตอธิษฐาน & เขย่ากระบอกเซียมซี) -->
         <!-- ----------------------------------------------------------------- -->
-        <section id="screen-palm-intro" class="view-screen active">
+        <section id="screen-siamsi-shaking" class="view-screen active">
           <div class="altar-hero">
             <div class="altar-seal-wrapper">
-              <div class="mystic-circle">
-                <div class="witch-icon">✋</div>
+              <div class="mystic-circle siamsi-circle">
+                <div class="witch-icon">🎋</div>
               </div>
             </div>
-            <h2>แท่นพยากรณ์หัตถศาสตร์</h2>
+            <h2>แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน</h2>
             <p class="hero-subtitle">
-              “ส่องลึกสู่เส้นสายแห่งชะตากรรมผ่านกล้อง ถอดรหัส 4 เส้นหลักและเส้นสมรสตามตำราหัตถศาสตร์ The Street Ratchada”
+              "ตั้งจิตสงบนิ่ง รวบรวมสมาธิถึงเรื่องที่ปรารถนาจะล่วงรู้ แล้วเขย่ากระบอกไม้ไผ่เพื่อเปิดม่านลิขิตแห่งฟ้า..."
             </p>
 
-            <div class="ritual-setup-card">
-              <!-- Seeker Name Input -->
-              <div class="setup-group">
-                <label for="palm-seeker-name">
-                  <span class="label-icon">👤</span>
-                  <span>ชื่อผู้รับคำทำนาย</span>
+            <!-- Seeker Setup Card -->
+            <div class="ritual-card-box siamsi-setup-box">
+              <div class="form-group seeker-name-group">
+                <label class="form-label" for="siamsi-seeker-name">
+                  <span>👤</span>
+                  <span>ชื่อผู้ขอคำทำนายเซียมซี</span>
                 </label>
-                <div class="input-glow-wrapper">
-                  <input
-                    type="text"
-                    id="palm-seeker-name"
-                    class="mystic-input"
-                    placeholder="เช่น สุรวุฒิ หรือ พลอย (เพื่อระบุบนใบคำทำนายดวงลายมือ)"
-                    maxlength="60"
-                    autocomplete="off"
+                <div class="seeker-input-wrapper">
+                  <input 
+                    type="text" 
+                    id="siamsi-seeker-name" 
+                    class="mystic-text-input" 
+                    placeholder="เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกคำทำนายเฉพาะคุณ)"
+                    maxlength="50"
+                    autocomplete="name"
                   />
                 </div>
               </div>
-
-              <!-- Gender Selection (Essential for The Street Ratchada rule) -->
-              <div class="setup-group">
-                <label>
-                  <span class="label-icon">⚖️</span>
-                  <span>ระบุเพศตามหลักหัตถศาสตร์ (The Street Ratchada)</span>
-                </label>
-                <div class="palm-gender-chips-row">
-                  <button type="button" class="palm-gender-chip active" data-gender="female">
-                    <span>👩</span>
-                    <span>ผู้หญิง</span>
-                  </button>
-                  <button type="button" class="palm-gender-chip" data-gender="male">
-                    <span>👨</span>
-                    <span>ผู้ชาย</span>
-                  </button>
-                  <button type="button" class="palm-gender-chip" data-gender="general">
-                    <span>🌟</span>
-                    <span>ทั่วไป / มือที่ถนัด</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Hand Selection (Right vs Left) -->
-              <div class="setup-group">
-                <label>
-                  <span class="label-icon">🤚</span>
-                  <span>เลือกข้างมือที่จะสแกน</span>
-                </label>
-                <div class="palm-hand-grid">
-                  <div class="palm-hand-card active" data-hand="right">
-                    <div class="hand-card-icon">✋</div>
-                    <div class="hand-card-title">มือขวา (Right Hand)</div>
-                    <div class="hand-card-sub" id="hand-card-sub-right">ชะตาปัจจุบัน / อนาคต (สำหรับผู้หญิง)</div>
-                  </div>
-                  <div class="palm-hand-card" data-hand="left">
-                    <div class="hand-card-icon">🤚</div>
-                    <div class="hand-card-title">มือซ้าย (Left Hand)</div>
-                    <div class="hand-card-sub" id="hand-card-sub-left">พื้นดวงเดิม / อดีต (สำหรับผู้หญิง)</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Hand Rule Notice Box (Dynamically updated) -->
-              <div id="palm-hand-rule-notice" class="palm-hand-rule-notice">
-                <!-- Injected dynamically based on gender + hand -->
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="palm-intro-actions">
-                <button type="button" id="btn-start-palm-scan" class="btn-mystic-primary pulse-btn">
-                  <span>📸</span>
-                  <span>เริ่มเปิดกล้องสแกนลายมือ</span>
-                </button>
-                <button type="button" id="btn-back-to-tarot" class="btn-mystic-secondary">
-                  <span>🔮</span>
-                  <span>สลับไปดูดวงไพ่ทาโรต์</span>
-                </button>
-              </div>
-
             </div>
+
+            <!-- Interactive Shaking Altar Area -->
+            <div class="siamsi-shaking-altar">
+              <!-- Bamboo Cylinder Interactive Arena -->
+              <div class="siamsi-cylinder-arena" id="siamsi-cylinder-wrapper" title="คลิกค้างแล้วสะบัดเมาส์ หรือเขย่ามือถือเพื่อเสี่ยงทาย">
+                <div class="siamsi-cylinder-glow"></div>
+                <div class="siamsi-cylinder-container" id="siamsi-bamboo-cylinder">
+                  <!-- Top sticks protruding -->
+                  <div class="siamsi-sticks-bundle" id="siamsi-stick-bundle">
+                    <span class="bamboo-stick s1"></span>
+                    <span class="bamboo-stick s2"></span>
+                    <span class="bamboo-stick s3"></span>
+                    <span class="bamboo-stick s4"></span>
+                    <span class="bamboo-stick s5"></span>
+                    <span class="bamboo-stick s6"></span>
+                    <span class="bamboo-stick s7"></span>
+                    <span class="bamboo-stick s8"></span>
+                    <span class="bamboo-stick s9"></span>
+                  </div>
+
+                  <!-- Emerging single stick -->
+                  <div class="siamsi-emerging-stick" id="siamsi-emerging-stick">
+                    <span class="emerging-stick-tip"></span>
+                  </div>
+
+                  <!-- Cylinder Body -->
+                  <div class="bamboo-cylinder-body">
+                    <div class="cylinder-rim top-rim"></div>
+                    <div class="cylinder-carving">
+                      <span class="carving-seal">黃大仙</span>
+                      <span class="carving-sub">靈籤百首</span>
+                    </div>
+                    <div class="cylinder-ribbon"></div>
+                    <div class="cylinder-rim bottom-rim"></div>
+                  </div>
+                </div>
+
+                <!-- Shake Progress Bar & Gauge -->
+                <div class="siamsi-shake-gauge-container">
+                  <div class="siamsi-shake-progress-track">
+                    <div class="siamsi-shake-progress-fill" id="siamsi-shake-progress-fill"></div>
+                  </div>
+                  <p class="siamsi-shake-hint" id="siamsi-shake-hint">
+                    📱 เขย่ามือถือของคุณ หรือ 🖱️ คลิกค้างแล้วสะบัดเมาส์เขย่ากระบอก
+                  </p>
+                </div>
+              </div>
+
+              <!-- Fallen Stick Mat Display (appears when stick drops) -->
+              <div class="siamsi-dropped-stick-container" id="siamsi-dropped-stick-container">
+                <div class="altar-red-mat">
+                  <div class="siamsi-fallen-stick" id="siamsi-dropped-stick">
+                    <span class="fallen-stick-red-tip"></span>
+                    <span class="fallen-stick-number" id="siamsi-dropped-stick-label">เบอร์ 00</span>
+                  </div>
+                </div>
+                <button type="button" id="btn-siamsi-open-reveal" class="btn-mystic-primary pulse-btn btn-lg">
+                  <span>📜</span>
+                  <span>เปิดอ่านคำทำนายเซียมซี</span>
+                </button>
+              </div>
+
+              <!-- Action Controls -->
+              <div class="siamsi-actions-toolbar">
+                <button type="button" id="btn-siamsi-auto-shake" class="btn-mystic-primary">
+                  <span>🙏</span>
+                  <span>ตั้งจิตอธิษฐาน & เขย่าเซียมซี</span>
+                </button>
+                <button type="button" id="btn-open-direct-number-modal" class="btn-mystic-secondary">
+                  <span>🔢</span>
+                  <span>ระบุเบอร์ 00 - 99 โดยตรง</span>
+                </button>
+                <button type="button" id="btn-open-siamsi-directory" class="btn-mystic-secondary">
+                  <span>📖</span>
+                  <span>สารบัญ 100 ใบ</span>
+                </button>
+              </div>
+            </div>
+
           </div>
         </section>
 
         <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 2: PALM CAMERA & SCANNER (กล้องส่องฝ่ามือพร้อมโครง HUD) -->
+        <!-- SCREEN 2: SIAMSI RESULTS (หน้าแสดงผลคำทำนาย 100 ใบครบ 7 ด้าน) -->
         <!-- ----------------------------------------------------------------- -->
-        <section id="screen-palm-camera" class="view-screen">
-          <div class="altar-hero">
-            <h2>เนตรสแกนลายมือเวทมนตร์</h2>
-            <p class="hero-subtitle">
-              วางฝ่ามือของท่านให้อยู่ในกรอบโครงร่างแสง เปิดไฟให้สว่างพอดี แล้วกดปุ่มสแกนลายมือ
-            </p>
-
-            <div class="palm-camera-container">
-              <!-- Viewfinder Box -->
-              <div class="palm-camera-viewport">
-                <video id="palm-video-feed" playsinline autoplay muted></video>
-
-                <!-- Palm Silhouette HUD Overlay -->
-                <div class="palm-hud-overlay">
-                  <svg class="palm-silhouette-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M125 500 C110 430, 95 330, 80 270 C70 230, 100 220, 115 250 C125 270, 130 300, 135 220 C138 160, 165 160, 168 210 C170 250, 172 150, 192 140 C212 150, 210 230, 215 200 C220 160, 245 170, 242 220 C240 260, 248 240, 260 220 C278 200, 295 225, 280 260 C265 300, 255 370, 275 430 C290 470, 270 510, 220 530 C165 540, 135 530, 125 500 Z" stroke="rgba(245, 197, 66, 0.75)" stroke-width="2.5" stroke-dasharray="6 6" />
-                    <!-- Palm Center Focus Target -->
-                    <circle cx="200" cy="380" r="22" stroke="rgba(245, 197, 66, 0.6)" stroke-width="1.5" stroke-dasharray="4 4" fill="rgba(245, 197, 66, 0.08)" />
-                    <line x1="200" y1="350" x2="200" y2="410" stroke="rgba(245, 197, 66, 0.5)" stroke-width="1" />
-                    <line x1="170" y1="380" x2="230" y2="380" stroke="rgba(245, 197, 66, 0.5)" stroke-width="1" />
-                  </svg>
-                  <div class="palm-hud-instruction">
-                    <span>✋ วางฝ่ามือให้ตรงกับกรอบแสง</span>
-                  </div>
-                  <div class="palm-camera-tip">
-                    💡 วางฝ่ามือให้เต็มกรอบ กางนิ้วเล็กน้อย เพื่อให้ระบบตรวจจับเส้นได้ตรงตำแหน่ง
-                  </div>
-                </div>
-
-                <!-- Laser Scanning Beam -->
-                <div id="palm-laser-beam" class="palm-laser-beam"></div>
-              </div>
-
-              <!-- Camera Status -->
-              <div id="camera-status-text" class="camera-status-text">
-                กำลังเปิดเนตรเวทมนตร์ (กล้อง)...
-              </div>
-
-              <!-- Camera Action Toolbar -->
-              <div class="palm-camera-actions">
-                <button type="button" id="btn-switch-camera" class="btn-mystic-secondary btn-icon-round" title="สลับกล้องหน้า/หลัง">
-                  <span>🔄</span>
-                  <span class="btn-label-sm">สลับกล้อง</span>
-                </button>
-
-                <button type="button" id="btn-capture-palm" class="btn-mystic-primary btn-capture-main">
-                  <span>📸</span>
-                  <span>สแกนลายมือ</span>
-                </button>
-
-                <button type="button" id="btn-upload-palm-photo" class="btn-mystic-secondary btn-icon-round" title="ถ่ายรูปหรือเลือกรูปจากคลัง">
-                  <span>🖼️</span>
-                  <span class="btn-label-sm">เลือกรูป</span>
-                </button>
-                <input type="file" id="palm-file-upload" accept="image/*" capture="environment" style="display: none;" />
-              </div>
-
-              <div style="margin-top: 1rem;">
-                <button type="button" id="btn-cancel-camera" class="btn-text-subtle">
-                  <span>← ยกเลิกและกลับสู่หน้าก่อนหน้า</span>
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 3: PALM ANALYSIS & INTERACTIVE REFINEMENT -->
-        <!-- ----------------------------------------------------------------- -->
-        <section id="screen-palm-analysis" class="view-screen">
-          <div class="altar-hero">
-            <h2>ถอดรหัสเส้นพลังงานบนฝ่ามือ</h2>
-            <p class="hero-subtitle">
-              ระบบได้ตรวจจับและวาดโครงเส้นลายมือ 4 เส้นหลักและเส้นสมรส ท่านสามารถแตะลากเส้น หรือปรับขนาด/หมุน/ดัดจุด ให้ตรงกับรอยมือจริงของท่านได้ 100%
-            </p>
-
-            <div class="palm-analysis-layout">
-              <!-- Left: Canvas with Highlighted Lines & Calibration Toolbar -->
-              <div class="analysis-canvas-panel">
-                <div class="analysis-canvas-wrapper" id="analysis-canvas-wrapper">
-                  <canvas id="palm-analysis-canvas"></canvas>
-                  <div class="canvas-drag-hint-badge" id="canvas-drag-hint-badge">
-                    <span>🖐️</span>
-                    <span>แตะค้างแล้วลากบนภาพ เพื่อขยับเส้นลายมือให้ตรงกับมือจริง</span>
-                  </div>
-                </div>
-
-                <!-- Calibration Controls Card -->
-                <div class="palm-calibration-card" id="palm-calibration-card">
-                  <div class="calibration-header">
-                    <div class="calibration-title">
-                      <span>✨</span>
-                      <strong>ปรับลายเส้นให้ตรงกับรอยมือจริง</strong>
-                    </div>
-                    <div class="calibration-hint">ลากบนรูปโดยตรง หรือใช้เครื่องมือด้านล่าง</div>
-                  </div>
-
-                  <!-- Quick Tool Buttons -->
-                  <div class="calibration-quick-row">
-                    <button type="button" id="btn-toggle-pin-mode" class="btn-calib-pill" title="เปิด/ปิด โหมดดัดจุดแต่ละเส้น">
-                      <span class="btn-icon">📍</span>
-                      <span id="pin-mode-text">ดัดจุดเส้นอิสระ</span>
-                    </button>
-                    <button type="button" id="btn-peek-lines" class="btn-calib-pill" title="ซ่อน/แสดงเส้น เพื่อเทียบกับรอยมือจริง">
-                      <span class="btn-icon">👁️</span>
-                      <span id="peek-lines-text">เทียบรอยมือ</span>
-                    </button>
-                    <button type="button" id="btn-auto-detect-palm" class="btn-calib-pill" title="จัดตำแหน่งอัตโนมัติตามรูปมือ">
-                      <span class="btn-icon">🎯</span>
-                      <span>จัดออโต้</span>
-                    </button>
-                    <button type="button" id="btn-reset-palm-transform" class="btn-calib-pill" title="คืนค่าตั้งต้น">
-                      <span class="btn-icon">🔄</span>
-                      <span>รีเซ็ต</span>
-                    </button>
-                  </div>
-
-                  <!-- Sliders: Scale & Rotate -->
-                  <div class="calibration-sliders-grid">
-                    <div class="calib-slider-group">
-                      <div class="slider-label-row">
-                        <span>🔍 ขนาดเส้น (Scale)</span>
-                        <span id="scale-val-badge" class="calib-val-badge">100%</span>
-                      </div>
-                      <input type="range" id="palm-scale-slider" min="0.5" max="1.8" step="0.02" value="1.0" class="calib-range" aria-label="ขยายหรือย่อขนาดลายเส้น" />
-                    </div>
-
-                    <div class="calib-slider-group">
-                      <div class="slider-label-row">
-                        <span>🔄 หมุนเอียง (Rotate)</span>
-                        <span id="rotate-val-badge" class="calib-val-badge">0°</span>
-                      </div>
-                      <input type="range" id="palm-rotate-slider" min="-45" max="45" step="1" value="0" class="calib-range" aria-label="หมุนองศาลายเส้น" />
-                    </div>
-                  </div>
-
-                  <!-- 4-Direction Nudge Pad -->
-                  <div class="calibration-nudge-bar">
-                    <span class="nudge-title">ขยับเส้น:</span>
-                    <button type="button" class="btn-nudge" data-dir="up" title="ขยับขึ้น">⬆️</button>
-                    <button type="button" class="btn-nudge" data-dir="down" title="ขยับลง">⬇️</button>
-                    <button type="button" class="btn-nudge" data-dir="left" title="ขยับซ้าย">⬅️</button>
-                    <button type="button" class="btn-nudge" data-dir="right" title="ขยับขวา">➡️</button>
-                  </div>
-                </div>
-
-                <div class="canvas-lines-legend">
-                  <span class="legend-tag" style="--c:#10b981;">🌱 เส้นชีวิต</span>
-                  <span class="legend-tag" style="--c:#3b82f6;">🧠 เส้นสมอง</span>
-                  <span class="legend-tag" style="--c:#ec4899;">💖 เส้นหัวใจ</span>
-                  <span class="legend-tag" style="--c:#f59e0b;">👑 เส้นวาสนา</span>
-                  <span class="legend-tag" style="--c:#a855f7;">💍 เส้นสมรส</span>
-                </div>
-              </div>
-
-              <!-- Right: Interactive Line Refinement Tabs -->
-              <div class="analysis-refine-panel">
-                <div class="refine-panel-header">
-                  <h3>เลือกปรับจูนลักษณะเส้น (คลิกเพื่อเปลี่ยน)</h3>
-                  <p>สามารถแตะเลือกลักษณะเส้นที่ตรงกับฝ่ามือจริงของท่านมากที่สุด</p>
-                </div>
-
-                <div id="palm-refinement-tabs" class="refinement-tabs-scroll">
-                  <!-- Injected dynamically from PALM_LINES_DATA -->
-                </div>
-
-                <div class="analysis-actions-bar">
-                  <button type="button" id="btn-confirm-palm-analysis" class="btn-mystic-primary pulse-btn" style="flex: 2;">
-                    <span>🔮</span>
-                    <span>ยืนยันและเปิดคำทำนายดวงชะตา</span>
-                  </button>
-                  <button type="button" id="btn-retake-palm" class="btn-mystic-secondary" style="flex: 1;">
-                    <span>📸</span>
-                    <span>ถ่ายใหม่อีกครั้ง</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 4: PALM READING RESULTS (รายงานผลคำทำนายฉบับเต็ม) -->
-        <!-- ----------------------------------------------------------------- -->
-        <section id="screen-palm-results" class="view-screen">
-          <div class="results-container">
-
-            <!-- Shared Notice Banner (when viewing someone else's palm reading) -->
-            <div id="palm-shared-notice" class="shared-reading-notice" style="display: none;">
-              <div class="shared-notice-content">
-                <span class="shared-notice-icon">✋</span>
-                <div class="shared-notice-text">
-                  <strong>ผลดวงชะตาลายมือหัตถศาสตร์ที่แชร์มาให้ชม</strong>
-                  <p>ท่านกำลังอ่านคำทำนายลายมือของเพื่อน สามารถกดปุ่มเพื่อเริ่มสแกนลายมือของคุณเองได้ทุกเมื่อ</p>
-                </div>
-              </div>
-              <button id="btn-palm-start-own" class="btn-mystic-primary btn-sm">
-                <span>✨</span>
-                <span>สแกนลายมือของคุณเอง</span>
-              </button>
+        <section id="screen-siamsi-result" class="view-screen">
+          <div class="siamsi-result-wrapper">
+            
+            <div class="results-seeker-greeting" id="siamsi-result-seeker-greeting">
+              ชะตาแห่งสวรรค์สำหรับท่านผู้ขอพร
             </div>
 
-            <!-- Header & Greeting -->
-            <div class="results-header-banner">
-              <div class="results-seeker-greeting" id="palm-result-seeker-greeting"></div>
-              <h2>คำทำนายดวงชะตาจากลายมือ</h2>
-              <p class="results-subtitle">ถอดรหัสตามตำราหัตถศาสตร์ The Street Ratchada</p>
-            </div>
-
-            <!-- The Street Ratchada Rule Banner -->
-            <div id="palm-result-rule-banner" class="palm-rule-banner">
-              <!-- Injected dynamically -->
-            </div>
-
-            <!-- Palm Canvas Visual Map Display -->
-            <div id="palm-result-canvas-display" class="palm-result-canvas-display">
-              <!-- Highlighted Palm Image injected here -->
-            </div>
-
-            <!-- Grand Synthesis Box -->
-            <div class="palm-grand-synthesis-card">
-              <div class="synthesis-header">
-                <span>🔮</span>
-                <h3>บทสังเคราะห์ดวงชะตาภาพรวม (Overall Palmistry Verdict)</h3>
+            <!-- Plaque Header Card -->
+            <div class="siamsi-plaque-card">
+              <div class="plaque-top-meta">
+                <span class="siamsi-number-pill" id="siamsi-result-number-badge">เบอร์ 01 (ใบที่ 1)</span>
+                <span class="siamsi-level-badge" id="siamsi-result-level-badge">
+                  <span class="level-icon">✨</span> <span>ดีที่สุด</span>
+                </span>
               </div>
-              <div id="palm-synthesis-text" class="synthesis-content">
+              <h2 class="siamsi-chinese-title" id="siamsi-result-chinese-title">姜公封相</h2>
+              <h3 class="siamsi-thai-title" id="siamsi-result-thai-title">เจียงไท่กงได้รับแต่งตั้ง</h3>
+              <div class="siamsi-oneline-wisdom" id="siamsi-result-oneline">
+                "ได้ใบแรกในร้อยใบไม่ใช่เรื่องบังเอิญ"
+              </div>
+            </div>
+
+            <!-- Poem Parchment Scroll -->
+            <div class="siamsi-scroll-card">
+              <div class="scroll-ornament-header">
+                <span class="scroll-ornament-icon">📜</span>
+                <h4>บทกลอนประจำใบเซียมซี</h4>
+              </div>
+              <div class="siamsi-poem-thai-box" id="siamsi-result-poem-th">
+                <!-- Injected lines -->
+              </div>
+              <div class="siamsi-poem-chinese-box">
+                <span class="poem-cn-label">บทกลอนดั้งเดิม:</span>
+                <p class="poem-cn-text" id="siamsi-result-poem-cn"></p>
+              </div>
+            </div>
+
+            <!-- Story / Origin Card -->
+            <div class="siamsi-story-card">
+              <div class="story-header">
+                <span class="story-icon">🏮</span>
+                <h4>เรื่องราวความเป็นมาในอดีต</h4>
+              </div>
+              <div class="story-content" id="siamsi-result-story-text">
+                <!-- Injected story -->
+              </div>
+            </div>
+
+            <!-- 7 Aspects Comprehensive Section -->
+            <div class="siamsi-aspects-section">
+              <div class="aspects-section-header">
+                <h3>สรุปคำทำนายเจาะลึก 7 ด้าน</h3>
+                <p>คลิกที่การ์ดเพื่ออ่านบทวิเคราะห์เชิงลึก หรือเลือกกรองเฉพาะด้านที่ท่านต้องการ</p>
+              </div>
+
+              <!-- Filter tabs -->
+              <div class="siamsi-aspect-filter-row">
+                <button type="button" class="siamsi-aspect-filter-chip active" data-aspect="all">ทั้งหมด (7 ด้าน)</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="career">💼 อาชีพ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="wealth">💰 โชคลาภ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="love">❤️ ความรัก</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="health">🌿 สุขภาพ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="study">🎓 การเรียน</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="home">🏡 ครอบครัว</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general">🔮 ภาพรวม</button>
+              </div>
+
+              <!-- Cards container -->
+              <div class="siamsi-aspects-grid" id="siamsi-aspects-grid">
                 <!-- Injected dynamically -->
               </div>
             </div>
 
-            <!-- 5 Line Breakdown Feed -->
-            <div class="section-title-divider">
-              <h3>ความหมายของเส้นลายมือแต่ละด้าน (4 เส้นหลัก + เส้นสมรส)</h3>
-              <p>คำทำนายเจาะลึกเฉพาะลักษณะเส้นบนฝ่ามือของท่านตามหลักหัตถศาสตร์</p>
-            </div>
-
-            <div id="palm-lines-feed" class="palm-lines-feed">
-              <!-- 5 Line Detail Cards injected here -->
-            </div>
-
-            <!-- Gemini AI Assistant Card for Palmistry -->
-            <div class="gemini-ai-assistant-card">
-              <div class="gemini-card-header">
-                <div class="gemini-brand-badge">
-                  <span class="gemini-sparkle-icon">✨</span>
-                  <span>ส่งต่อข้อมูลลายมือถาม Google Gemini AI</span>
-                </div>
-                <h4>ปรึกษาดวงชะตาลายมือเจาะลึกเพิ่มเติมกับ AI</h4>
-                <p>ระบบได้รวบรวมข้อมูลเส้นลายมือของท่านไว้พร้อมแล้ว สามารถพิมพ์คำถามเฉพาะเจาะจง แล้วกดปุ่มคัดลอกไปวางใน Gemini ได้ทันที</p>
-              </div>
-
-              <div class="gemini-custom-question-group">
-                <label for="palm-custom-question">
-                  <span>❓</span>
-                  <span>คำถามเจาะจงที่ท่านต้องการถามเพิ่มเติม (ไม่บังคับ):</span>
-                </label>
-                <input
-                  type="text"
-                  id="palm-custom-question"
-                  class="mystic-input"
-                  placeholder="เช่น เรื่องความรักในปีนี้จะเป็นอย่างไร? หรือควรระวังเรื่องอะไรในการทำงานเป็นพิเศษ?"
-                />
-              </div>
-
-              <div class="gemini-prompt-preview-box">
-                <div class="prompt-preview-label">✦ ข้อความ Prompt ที่สร้างให้อัตโนมัติ (พร้อมนำไปวาง):</div>
-                <pre id="palm-gemini-prompt" class="gemini-prompt-code"></pre>
-              </div>
-
-              <div class="gemini-actions-row">
-                <button type="button" id="btn-palm-copy-gemini" class="btn-mystic-secondary">
-                  <span>📋</span>
-                  <span>คัดลอกข้อความ</span>
-                </button>
-                <button type="button" id="btn-palm-open-gemini" class="btn-mystic-primary">
-                  <span>✨</span>
-                  <span>คัดลอกและเปิดเว็บ Gemini</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Results Bottom Actions -->
-            <div class="results-actions-rack">
-              <button type="button" id="btn-palm-share" class="btn-mystic-secondary">
-                <span>🔗</span>
-                <span>แชร์ผลดวงลายมือ</span>
+            <!-- Result Actions -->
+            <div class="results-action-row siamsi-actions-footer">
+              <button type="button" id="btn-siamsi-reshake" class="btn-mystic-primary pulse-btn">
+                <span>🎋</span>
+                <span>เสี่ยงเซียมซีใหม่อีกครั้ง</span>
               </button>
-              <button type="button" id="btn-palm-pdf" class="btn-mystic-secondary">
-                <span>📄</span>
-                <span>ดาวน์โหลด PDF</span>
+              <button type="button" id="btn-siamsi-copy-result" class="btn-mystic-secondary">
+                <span>📋</span>
+                <span>คัดลอกคำทำนาย</span>
               </button>
-              <button type="button" id="btn-palm-scan-again" class="btn-mystic-primary">
-                <span>✋</span>
-                <span>สแกนดูลายมือใหม่อีกครั้ง</span>
+              <button type="button" id="btn-siamsi-share-result" class="btn-mystic-secondary">
+                <span>📤</span>
+                <span>แชร์ผลเซียมซี</span>
+              </button>
+              <button type="button" id="btn-siamsi-view-directory" class="btn-mystic-secondary">
+                <span>📖</span>
+                <span>สารบัญ 100 ใบ</span>
               </button>
             </div>
 
           </div>
         </section>
 
-      </div> <!-- /#palm-mode-container -->
+        <!-- ----------------------------------------------------------------- -->
+        <!-- SCREEN 3: SIAMSI DIRECTORY (สารบัญ 100 ใบ เบอร์ 00 - 99) -->
+        <!-- ----------------------------------------------------------------- -->
+        <section id="screen-siamsi-directory" class="view-screen">
+          <div class="siamsi-directory-wrapper">
+            <div class="directory-top-bar">
+              <button type="button" id="btn-back-from-directory" class="btn-mystic-secondary btn-sm">
+                <span>←</span>
+                <span>ย้อนกลับ</span>
+              </button>
+              <h2>สารบัญเซียมซีหว่องไทซิน 100 ใบ</h2>
+            </div>
+            <p class="directory-subtitle">ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai</p>
+
+            <!-- Search & Filter Controls -->
+            <div class="directory-controls">
+              <input 
+                type="search" 
+                id="siamsi-directory-search" 
+                class="mystic-text-input directory-search-input" 
+                placeholder="🔍 พิมพ์เบอร์ (เช่น 28, 00) หรือค้นหาชื่อเรื่อง..." 
+              />
+              <div class="directory-level-filters">
+                <button type="button" class="siamsi-dir-filter-chip active" data-level="all">ทั้งหมด (100 ใบ)</button>
+                <button type="button" class="siamsi-dir-filter-chip level-supreme" data-level="ดีที่สุด">ดีที่สุด (3)</button>
+                <button type="button" class="siamsi-dir-filter-chip level-great" data-level="ดีมาก">ดีมาก (10)</button>
+                <button type="button" class="siamsi-dir-filter-chip level-good" data-level="ค่อนข้างดี">ค่อนข้างดี (29)</button>
+                <button type="button" class="siamsi-dir-filter-chip level-neutral" data-level="ปานกลาง">ปานกลาง (40)</button>
+                <button type="button" class="siamsi-dir-filter-chip level-caution" data-level="ไม่ดี">ไม่ดี (18)</button>
+              </div>
+            </div>
+
+            <!-- Grid of 100 signs -->
+            <div class="siamsi-directory-grid" id="siamsi-directory-grid">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </section>
+
+      </div> <!-- /#siamsi-mode-container -->
 
     </main>
 
@@ -870,10 +723,38 @@
         Mystic Witch Tarot • พัฒนาด้วยความเคารพในศาสตร์แห่งไพ่ทาโรต์และจิตวิทยาเชิงสัญลักษณ์
       </p>
       <p style="margin-top: 0.4rem; font-size: 0.78rem;">
-        Based on Rider-Waite Tarot System & <a href="https://www.shitsuren-tarot.com/tarot/" target="_blank" rel="noopener">Shitsuren Tarot</a> • Palmistry based on <a href="https://www.thestreetratchada.com/Blogs/44/Palm-Reading-for-Beginners" target="_blank" rel="noopener">The Street Ratchada</a>
+        Tarot System: Rider-Waite & <a href="https://www.shitsuren-tarot.com/tarot/" target="_blank" rel="noopener">Shitsuren Tarot</a> • เซียมซีหว่องไทซิน 100 ใบ: อ้างอิงคำทำนายครบทุกด้านจาก <a href="https://www.kaucim.ai/th/sign" target="_blank" rel="noopener">kaucim.ai</a>
       </p>
     </footer>
 
+  </div>
+
+  <!-- Direct Number Input Modal -->
+  <div id="siamsi-direct-modal" class="modal-overlay">
+    <div class="modal-content-box siamsi-modal-content">
+      <button class="modal-close-btn" id="btn-close-direct-modal">&times;</button>
+      <div class="direct-modal-header">
+        <span class="direct-modal-icon">🎋</span>
+        <h3>เปิดดูคำทำนายตามเลขเซียมซี</h3>
+        <p>ระบุเบอร์ 00 - 99 หรือเลขใบที่ 1 - 100 ที่ท่านเสี่ยงทายได้</p>
+      </div>
+      <div class="direct-modal-body">
+        <div class="direct-input-row">
+          <input 
+            type="number" 
+            id="siamsi-direct-num-input" 
+            class="mystic-text-input direct-num-input" 
+            placeholder="เช่น 28 หรือ 00" 
+            min="0" 
+            max="100" 
+          />
+          <button type="button" id="btn-confirm-direct-num" class="btn-mystic-primary">
+            <span>🔍</span>
+            <span>ดูคำทำนาย</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Single Card Detail Modal -->
@@ -893,11 +774,11 @@
   <script src="js/tarot-data.js"></script>
   <script src="js/tarot-minor-data.js"></script>
   <script src="js/tarot-love-data.js"></script>
-  <script src="js/palm-data.js"></script>
-  <script src="js/palm-scanner.js"></script>
+  <script src="js/siamsi-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/siamsi.js"></script>
 
 </body>
 </html>

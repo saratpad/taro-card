@@ -111,7 +111,7 @@ const I18N = {
     love_single_badge: "👤 คนโสด",
     love_couple_badge: "💑 คนมีคู่",
     mode_tarot: "ไพ่ทาโรต์",
-    mode_palm: "สแกนดูลายมือ"
+    mode_siamsi: "เสี่ยงเซียมซี"
   },
   en: {
     brand_title: "MYSTIC WITCH",
@@ -216,7 +216,7 @@ const I18N = {
     love_single_badge: "👤 Singles",
     love_couple_badge: "💑 Couples",
     mode_tarot: "Tarot Cards",
-    mode_palm: "Palm Reading"
+    mode_siamsi: "Siamsi Oracle"
   }
 };
 
@@ -579,15 +579,10 @@ class TarotApp {
         : (this.lang === "th" ? `🔮 ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม` : `🔮 Shared Tarot Divination`);
     }
 
-    if (this.palmScanner) {
-      this.palmScanner.updateHandRuleNotice();
-      const refineEl = document.getElementById("screen-palm-analysis");
-      if (refineEl && refineEl.classList.contains("active")) {
-        this.palmScanner.renderRefinementTabs();
-      }
-      const resultsEl = document.getElementById("screen-palm-results");
-      if (resultsEl && resultsEl.classList.contains("active")) {
-        this.palmScanner.renderPalmResults();
+    if (this.siamsiApp && this.siamsiApp.currentSign) {
+      const resultEl = document.getElementById("screen-siamsi-result");
+      if (resultEl && resultEl.classList.contains("active")) {
+        this.siamsiApp.showResultScreen(this.siamsiApp.currentSign);
       }
     }
 
@@ -1961,8 +1956,8 @@ ${this.category === "love" ? "6. Specially for Love: Analyze distinct guidance f
 // Initialize on DOM load
 window.addEventListener("DOMContentLoaded", () => {
   window.tarotApp = new TarotApp();
-  if (typeof PalmScanner !== "undefined") {
-    window.palmScanner = new PalmScanner(window.tarotApp);
-    window.tarotApp.palmScanner = window.palmScanner;
+  if (typeof SiamsiApp !== "undefined") {
+    window.siamsiApp = new SiamsiApp(window.tarotApp);
+    window.tarotApp.siamsiApp = window.siamsiApp;
   }
 });
