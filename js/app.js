@@ -91,7 +91,18 @@ const I18N = {
     positions_section_sub: "คำทำนายเจาะลึกเฉพาะเรื่องที่คุณดู เพื่อให้อ่านและเข้าใจง่ายที่สุด",
     card_drawn_label: "ได้ไพ่:",
     domain_prediction_label: "ด้าน{domain} — คำทำนาย:",
-    card_advice_label: "สารเตือนใจจากไพ่:"
+    card_advice_label: "สารเตือนใจจากไพ่:",
+    label_seeker_name: "ชื่อผู้รับคำทำนาย",
+    placeholder_seeker_name: "เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกดวงชะตาเฉพาะคุณ)",
+    reading_for_user: "คำทำนายดวงชะตาสำหรับคุณ {name}",
+    btn_share_reading: "แชร์คำทำนาย",
+    btn_download_pdf: "ดาวน์โหลด PDF",
+    toast_share_success: "แชร์คำทำนายเรียบร้อยแล้ว!",
+    toast_share_copied: "คัดลอกข้อความและลิงก์สำหรับแชร์ไปยังคลิปบอร์ดแล้ว!",
+    love_single_title: "คำทำนายคนโสด",
+    love_couple_title: "คำทำนายคนมีคู่",
+    love_single_badge: "👤 คนโสด",
+    love_couple_badge: "💑 คนมีคู่"
   },
   en: {
     brand_title: "MYSTIC WITCH",
@@ -176,7 +187,18 @@ const I18N = {
     positions_section_sub: "In-depth interpretation tailored specifically to your chosen domain for maximum clarity",
     card_drawn_label: "Drawn Card:",
     domain_prediction_label: "{domain} — Interpretation:",
-    card_advice_label: "Card Guidance:"
+    card_advice_label: "Card Guidance:",
+    label_seeker_name: "Seeker's Name",
+    placeholder_seeker_name: "e.g., Alex or Surawut (for personalized certificate)",
+    reading_for_user: "Sacred Tarot Reading for {name}",
+    btn_share_reading: "Share Reading",
+    btn_download_pdf: "Download PDF",
+    toast_share_success: "Reading shared successfully!",
+    toast_share_copied: "Share summary and link copied to clipboard!",
+    love_single_title: "For Singles",
+    love_couple_title: "For Couples / In a Relationship",
+    love_single_badge: "👤 Singles",
+    love_couple_badge: "💑 Couples"
   }
 };
 
@@ -238,6 +260,7 @@ class TarotApp {
     this.category = "love";
     this.spreadCount = 3;
     this.userQuestion = "";
+    this.seekerName = "";
     
     this.deck = [];
     this.drawnCards = [];
@@ -276,6 +299,7 @@ class TarotApp {
     };
 
     // Screen 1: Intention
+    this.seekerNameInput = document.getElementById("seeker-name-input");
     this.catChips = document.querySelectorAll(".cat-chip");
     this.spreadCards = document.querySelectorAll(".spread-card");
     this.questionInput = document.getElementById("user-question-input");
@@ -289,6 +313,10 @@ class TarotApp {
     this.btnReShuffle = document.getElementById("btn-re-shuffle");
 
     // Screen 3: Results
+    this.resultsSeekerGreeting = document.getElementById("results-seeker-greeting");
+    this.printCertificateHeader = document.getElementById("print-certificate-header");
+    this.printSeekerLine = document.getElementById("print-seeker-line");
+    this.printMetaLine = document.getElementById("print-meta-line");
     this.resultsQuestionRecap = document.getElementById("results-question-recap");
     this.revealedCardsContainer = document.getElementById("revealed-cards-container");
     this.grandSynthesisText = document.getElementById("grand-synthesis-text");
@@ -296,7 +324,9 @@ class TarotApp {
     this.positionsSectionSubtitle = document.getElementById("positions-section-subtitle");
     this.interpretationsFeed = document.getElementById("interpretations-feed");
     this.btnAskAgain = document.getElementById("btn-ask-again");
-    this.btnShareReading = document.getElementById("btn-share-reading");
+    this.btnSocialShare = document.getElementById("btn-social-share");
+    this.btnDownloadPdf = document.getElementById("btn-download-pdf");
+    this.btnCopyReading = document.getElementById("btn-copy-reading") || document.getElementById("btn-share-reading");
     this.btnBrowseAll = document.getElementById("btn-browse-all-cards");
 
     // Direct Verdict Elements
@@ -372,6 +402,7 @@ class TarotApp {
 
     // Begin Ritual Button
     this.btnBegin.addEventListener("click", () => {
+      this.seekerName = this.seekerNameInput ? this.seekerNameInput.value.trim() : "";
       this.userQuestion = this.questionInput ? this.questionInput.value.trim() : "";
       window.mysticAudio.playCardShuffle();
       this.setupDrawingTable();
@@ -393,13 +424,29 @@ class TarotApp {
     this.btnAskAgain.addEventListener("click", () => {
       window.mysticAudio.playClick();
       if (this.questionInput) this.questionInput.value = "";
+      if (this.seekerNameInput) this.seekerNameInput.value = "";
+      this.seekerName = "";
       if (this.geminiCustomQuestion) this.geminiCustomQuestion.value = "";
       this.switchScreen("intention");
     });
 
-    this.btnShareReading.addEventListener("click", () => {
-      this.copyReadingToClipboard();
-    });
+    if (this.btnSocialShare) {
+      this.btnSocialShare.addEventListener("click", () => {
+        this.shareReading();
+      });
+    }
+
+    if (this.btnDownloadPdf) {
+      this.btnDownloadPdf.addEventListener("click", () => {
+        this.downloadPDF();
+      });
+    }
+
+    if (this.btnCopyReading) {
+      this.btnCopyReading.addEventListener("click", () => {
+        this.copyReadingToClipboard();
+      });
+    }
 
     if (this.geminiCustomQuestion) {
       this.geminiCustomQuestion.addEventListener("input", () => {
@@ -643,6 +690,28 @@ class TarotApp {
     const dict = I18N[this.lang];
     const domainName = I18N[this.lang]["cat_" + this.category];
     const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
+
+    // Seeker Greeting & Print Certificate Info
+    if (this.resultsSeekerGreeting) {
+      if (this.seekerName) {
+        this.resultsSeekerGreeting.innerHTML = `<span>✨</span> ${dict.reading_for_user.replace("{name}", `<strong style="color:var(--gold-primary);">${this.seekerName}</strong>`)}`;
+        this.resultsSeekerGreeting.style.display = "inline-flex";
+      } else {
+        this.resultsSeekerGreeting.style.display = "none";
+      }
+    }
+
+    if (this.printSeekerLine) {
+      this.printSeekerLine.textContent = this.seekerName 
+        ? (this.lang === "th" ? `ผู้รับคำทำนาย: คุณ${this.seekerName}` : `Seeker: ${this.seekerName}`)
+        : (this.lang === "th" ? "ผู้รับคำทำนาย: ผู้ตั้งจิตอธิษฐาน" : "Seeker: Anonymous Seeker");
+    }
+
+    if (this.printMetaLine) {
+      const nowStr = new Date().toLocaleDateString(this.lang === "th" ? "th-TH" : "en-US", { year: "numeric", month: "long", day: "numeric" });
+      this.printMetaLine.textContent = `${this.lang === "th" ? "หมวดหมู่" : "Category"}: ${domainName} • ${this.lang === "th" ? "รูปแบบการเปิดไพ่" : "Spread"}: ${spreadName} (${this.spreadCount} ใบ) • ${nowStr}`;
+    }
+
     this.resultsQuestionRecap.innerHTML = `<span>🔮 ${this.lang === "th" ? "หมวดหมู่พยากรณ์" : "Divination Domain"}: </span><strong>${domainName}</strong> <span style="margin: 0 0.6rem; opacity:0.5;">•</span> <span>${this.lang === "th" ? "รูปแบบการเปิดไพ่" : "Tarot Spread"}: </span><strong>${spreadName}</strong>`;
 
     // 1. Render Direct Verdict (Traditional synthesis based on cards and domain)
@@ -756,6 +825,30 @@ class TarotApp {
         </div>
 
         <!-- 2. ด้าน[ความรัก/การงาน/...] คำทำนาย ... -->
+        ${(this.category === "love" && aspect.love && aspect.love.single && aspect.love.couple) ? `
+        <div class="pos-domain-prediction-block love-prediction-block">
+          <div class="prediction-block-header">
+            <span class="prediction-icon">${domainIcon}</span>
+            <h5 class="prediction-title">${predictionHeader}</h5>
+          </div>
+          <div class="love-status-grid">
+            <div class="love-status-card status-single">
+              <div class="love-status-head">
+                <span class="love-status-icon">👤</span>
+                <span class="love-status-label">${dict.love_single_title || (this.lang === "th" ? "คำทำนายคนโสด" : "For Singles")}</span>
+              </div>
+              <p class="love-status-text">${aspect.love.single[this.lang]}</p>
+            </div>
+            <div class="love-status-card status-couple">
+              <div class="love-status-head">
+                <span class="love-status-icon">💑</span>
+                <span class="love-status-label">${dict.love_couple_title || (this.lang === "th" ? "คำทำนายคนมีคู่" : "For Couples")}</span>
+              </div>
+              <p class="love-status-text">${aspect.love.couple[this.lang]}</p>
+            </div>
+          </div>
+        </div>
+        ` : `
         <div class="pos-domain-prediction-block">
           <div class="prediction-block-header">
             <span class="prediction-icon">${domainIcon}</span>
@@ -765,6 +858,7 @@ class TarotApp {
             ${categoryContent}
           </div>
         </div>
+        `}
 
         <!-- 3. สารเตือนใจจากไพ่ -->
         <div class="pos-advice-block">
@@ -826,9 +920,15 @@ class TarotApp {
       const name = this.lang === "th" ? item.card.name_th : item.card.name_en;
       const orient = item.isReversed ? dict.card_reversed : dict.card_upright;
       const aspect = item.isReversed ? item.card.reversed : item.card.upright;
+      
       let categoryContent = "";
-      if (this.category === "love") categoryContent = aspect.love[this.lang];
-      else if (this.category === "career") categoryContent = aspect.career[this.lang];
+      if (this.category === "love") {
+        if (aspect.love && aspect.love.single && aspect.love.couple) {
+          categoryContent = `\n  - คำทำนายคนโสด: ${aspect.love.single[this.lang]}\n  - คำทำนายคนมีคู่: ${aspect.love.couple[this.lang]}`;
+        } else {
+          categoryContent = aspect.love[this.lang];
+        }
+      } else if (this.category === "career") categoryContent = aspect.career[this.lang];
       else if (this.category === "finance") categoryContent = aspect.finance[this.lang];
       else if (this.category === "health") categoryContent = aspect.health[this.lang];
       else categoryContent = aspect.general[this.lang];
@@ -836,7 +936,12 @@ class TarotApp {
       return `${pos}\n• ได้ไพ่: ${name} [${orient}]\n• ด้าน${domainName} คำทำนาย: ${categoryContent}\n• คำแนะนำ: "${aspect.advice[this.lang]}"`;
     }).join("\n\n");
 
+    const seekerLine = this.seekerName 
+      ? (this.lang === "th" ? `✦ ผู้รับคำทำนาย: คุณ${this.seekerName}\n` : `✦ Seeker: ${this.seekerName}\n`)
+      : "";
+
     const textToCopy = `🔮 MYSTIC WITCH TAROT READING 🔮\n\n` +
+      seekerLine +
       `✦ หมวดหมู่: ${domainName}\n` +
       `✦ รูปแบบการเปิดไพ่: ${spreadName}\n\n` +
       `✦ บทสรุปภาพรวมดวงชะตาตามตำรา:\n${this.verdictContent ? this.verdictContent.innerText.trim() : ""}\n\n` +
@@ -850,6 +955,64 @@ class TarotApp {
     }).catch(err => {
       console.error("Clipboard copy failed:", err);
     });
+  }
+
+  shareReading() {
+    const dict = I18N[this.lang];
+    const seeker = this.seekerName ? (this.lang === "th" ? `ของคุณ${this.seekerName}` : `for ${this.seekerName}`) : "";
+    const domain = I18N[this.lang]["cat_" + this.category];
+    const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
+    const shareTitle = `🔮 ผลทำนายไพ่ทาโรต์ ด้าน${domain} ${seeker} | Mystic Witch Tarot`;
+    const shareUrl = window.location.href.split("#")[0];
+    const cardNames = this.drawnCards.map(c => this.lang === "th" ? c.card.name_th : c.card.name_en).join(", ");
+    
+    let shareText = `🔮 ผลทำนายดวงชะตาไพ่ทาโรต์ Mystic Witch Tarot ด้าน${domain} ${seeker}:\n` +
+      `✦ รูปแบบไพ่: ${spreadName}\n` +
+      `✦ ไพ่ที่เปิดได้: ${cardNames}\n` +
+      `✦ ทดลองดูดวงแม่มดพยากรณ์ได้ที่: ${shareUrl}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: shareUrl
+      }).then(() => {
+        this.showToast(dict.toast_share_success);
+      }).catch(err => {
+        if (err.name !== "AbortError") {
+          this.copyShareFallback(shareText);
+        }
+      });
+    } else {
+      this.copyShareFallback(shareText);
+    }
+  }
+
+  copyShareFallback(text) {
+    const dict = I18N[this.lang];
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showToast(dict.toast_share_copied);
+        window.mysticAudio.playCrystalBell(880, 1.2);
+      }).catch(() => {
+        this.showToast(dict.toast_share_copied);
+      });
+    } else {
+      this.showToast(dict.toast_share_copied);
+    }
+  }
+
+  downloadPDF() {
+    window.mysticAudio.playClick();
+    const originalTitle = document.title;
+    const seekerPart = this.seekerName ? `_${this.seekerName}` : "";
+    document.title = `MysticWitch_Tarot_${this.category}${seekerPart}_Reading`;
+
+    // Trigger browser print to PDF
+    setTimeout(() => {
+      window.print();
+      document.title = originalTitle;
+    }, 250);
   }
 
   // =========================================================================
@@ -965,15 +1128,27 @@ class TarotApp {
 
       if (this.category === "love") {
         if (verdictType === "favorable") {
-          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#86efac;">กระแสพลังงานความรักสดใส มีเกณฑ์สมหวังและพบความสุขทางใจสูงมาก!</strong> ไพ่สะท้อนถึงความรู้สึกที่บริสุทธิ์ มีการเปิดใจและมองเห็นคุณค่าซึ่งกันและกันอย่างแท้จริง หากมีเรื่องค้างคาใจหรือความห่างเหิน พลังงานแห่งความเข้าอกเข้าใจจะเข้ามาช่วยประสานรอยร้าว โดยมีไพ่หลักอย่าง <strong>${primaryName}</strong> (${primaryKw}) ชี้ชัดว่าความสัมพันธ์มีเกณฑ์พัฒนาไปสู่ความมั่นคงและชัดเจน`;
+          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#86efac;">กระแสพลังงานความรักสดใส มีเกณฑ์สมหวังและพบความสุขทางใจสูงมาก!</strong> ไพ่สะท้อนถึงความรู้สึกที่บริสุทธิ์ มีการเปิดใจและมองเห็นคุณค่าซึ่งกันและกันอย่างแท้จริง โดยมีไพ่หลักอย่าง <strong>${primaryName}</strong> (${primaryKw}) ชี้ชัดว่าความสัมพันธ์มีเกณฑ์พัฒนาไปสู่ความมั่นคง
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 คำทำนายคนโสด:</strong> เสน่ห์เปิดกว้าง มีเกณฑ์พบคนที่ทำให้ใจเต้นแรง เป็นจังหวะดีในการเปิดใจทำความรู้จัก</div>
+            <div class="love-summary-item"><strong>💑 คำทำนายคนมีคู่:</strong> ความรักเบ่งบาน เข้าอกเข้าใจกันมากขึ้น มีเกณฑ์ก้าวหน้าไปสู่ความมั่นคงหรือมีข่าวดีร่วมกัน</div>
+          </div>`;
           doAction = "เปิดใจสื่อสารอย่างตรงไปตรงมา แสดงความจริงใจสม่ำเสมอ และให้เกียรติความรู้สึกของกันและกัน";
           dontAction = "อย่าคิดมากหรือสร้างความระแวงไปเอง และหลีกเลี่ยงการประชดประชันหรือเล่นเกมความรู้สึก";
         } else if (verdictType === "challenging") {
-          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#fca5a5;">มีจุดที่ต้องใช้ความระมัดระวัง มีความลังเลหรือความไม่เข้าใจกันอยู่</strong> พลังงานของไพ่สะท้อนถึงความอึดอัด ความไม่ชัดเจน หรือมีเรื่องส่วนตัวที่ต้องจัดการ ยังไม่ใช่จังหวะที่ควรเร่งรัดเอาคำตอบ ไพ่ <strong>${primaryName}</strong> (${primaryKw}) แนะนำให้เว้นระยะห่างที่พอเหมาะและมีสติเพื่อประคองสถานการณ์`;
+          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#fca5a5;">มีจุดที่ต้องใช้ความระมัดระวัง มีความลังเลหรือความไม่เข้าใจกันอยู่</strong> พลังงานของไพ่สะท้อนถึงความอึดอัด ความไม่ชัดเจน หรือมีเรื่องส่วนตัวที่ต้องจัดการ ไพ่ <strong>${primaryName}</strong> (${primaryKw}) แนะนำให้เว้นระยะห่างที่พอเหมาะและมีสติเพื่อประคองสถานการณ์
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 คำทำนายคนโสด:</strong> อย่าเพิ่งรีบร้อนเทใจ ระวังคนไม่จริงใจหรือคุยซ้อน ให้เวลากับการคัดกรองอย่างรอบคอบ</div>
+            <div class="love-summary-item"><strong>💑 คำทำนายคนมีคู่:</strong> หลีกเลี่ยงการใช้อารมณ์ปะทะ รับฟังกันให้มากขึ้น และเว้นพื้นที่ส่วนตัวให้หายใจ</div>
+          </div>`;
           doAction = "ให้เวลาและพื้นที่ส่วนตัว รับฟังให้มากกว่าพูด และหันกลับมารักและเห็นคุณค่าในตัวเอง";
           dontAction = "อย่าเซ้าซี้ กดดัน หรือใช้อารมณ์ตัดสินปัญหา เพราะจะยิ่งทำให้กำแพงในใจของอีกฝ่ายสูงขึ้น";
         } else {
-          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#fef08a;">ความสัมพันธ์อยู่ในช่วงทรงตัวและรอดูทิศทาง</strong> พลังงานของไพ่ยังไม่เอนเอียงไปด้านใดด้านหนึ่งอย่างชัดเจน มีทั้งโอกาสและความลังเล ไพ่ <strong>${primaryName}</strong> (${primaryKw}) ชี้ว่าผลลัพธ์ในอนาคตจะขึ้นอยู่กับทัศนคติและการวางตัวของคุณเป็นสำคัญ`;
+          body = `บทสรุปดวงชะตาความรักตามตำรา: <strong style="color:#fef08a;">ความสัมพันธ์อยู่ในช่วงทรงตัวและรอดูทิศทาง</strong> พลังงานของไพ่ยังไม่เอนเอียงไปด้านใดด้านหนึ่งอย่างชัดเจน มีทั้งโอกาสและความลังเล ไพ่ <strong>${primaryName}</strong> (${primaryKw}) ชี้ว่าผลลัพธ์ในอนาคตจะขึ้นอยู่กับทัศนคติของคุณ
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 คำทำนายคนโสด:</strong> ค่อยๆ คุยศึกษาดูใจ ไม่ต้องเร่งรัดปล่อยให้ความสัมพันธ์เติบโตตามธรรมชาติ</div>
+            <div class="love-summary-item"><strong>💑 คำทำนายคนมีคู่:</strong> รักษาสมดุลความสัมพันธ์ สร้างบรรยากาศที่สบายใจและเติมความหวานทีละนิด</div>
+          </div>`;
           doAction = "สร้างบรรยากาศที่สบายใจ เป็นมิตร และพิจารณาการกระทำมากกว่าเพียงคำพูด";
           dontAction = "อย่าด่วนสรุปหรือตัดสินใจด้วยความใจร้อนในขณะที่อารมณ์ยังไม่มั่นคง";
         }
@@ -1042,7 +1217,33 @@ class TarotApp {
       let doAction = "";
       let dontAction = "";
 
-      if (verdictType === "favorable") {
+      if (this.category === "love") {
+        if (verdictType === "favorable") {
+          body = `Traditional Tarot Synthesis in Love & Romance: <strong style="color:#86efac;">Vibrant romantic energy with high potential for fulfillment and mutual affection!</strong> Led by <strong>${primaryName}</strong> (${primaryKw}), the cards forecast heartfelt breakthroughs and emotional harmony.
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 For Singles:</strong> Auspicious window to meet someone who sparks joyful excitement. Be open to authentic courting.</div>
+            <div class="love-summary-item"><strong>💑 For Couples:</strong> Deepened intimacy, reciprocal appreciation, and promising milestones strengthening your union.</div>
+          </div>`;
+          doAction = "Communicate authentically, express sincere appreciation, and nurture mutual trust.";
+          dontAction = "Avoid overthinking, jealousy, or emotional mind-games.";
+        } else if (verdictType === "challenging") {
+          body = `Traditional Tarot Synthesis in Love & Romance: <strong style="color:#fca5a5;">Caution advised — unresolved emotional friction or hesitation is present.</strong> Guided by <strong>${primaryName}</strong> (${primaryKw}), prioritize calm patience and healthy personal boundaries.
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 For Singles:</strong> Take your time; guard against sweet-talkers or emotionally unavailable prospects.</div>
+            <div class="love-summary-item"><strong>💑 For Couples:</strong> Avoid heated arguments; grant each other space to breathe and listen with empathy.</div>
+          </div>`;
+          doAction = "Take space when emotions run high, practice active listening, and honor self-worth.";
+          dontAction = "Do not pressure for immediate answers or act out of defensive fear.";
+        } else {
+          body = `Traditional Tarot Synthesis in Love & Romance: <strong style="color:#fef08a;">Balanced & Steady — Outcomes depend on your mindful attitude.</strong> Guided by <strong>${primaryName}</strong> (${primaryKw}), patient steps will guide this situation toward peace.
+          <div class="verdict-love-summary">
+            <div class="love-summary-item"><strong>👤 For Singles:</strong> Allow connections to unfold naturally without rushing to conclusions.</div>
+            <div class="love-summary-item"><strong>💑 For Couples:</strong> Foster relaxed companionship and small, consistent gestures of care.</div>
+          </div>`;
+          doAction = "Maintain a relaxed, positive atmosphere and judge by actions rather than words.";
+          dontAction = "Avoid impulsive ultimatums or jumping to hasty conclusions.";
+        }
+      } else if (verdictType === "favorable") {
         body = `Traditional Tarot Synthesis in ${domainName}: <strong style="color:#86efac;">Highly favorable energy with strong momentum towards fruition!</strong> Led by <strong>${primaryName}</strong> (${primaryKw}), the cards forecast auspicious breakthroughs, clarity, and genuine progress.`;
         doAction = "Act decisively with confidence, maintain open communication, and seize momentum.";
         dontAction = "Avoid self-doubt or procrastination; do not overthink genuine opportunities.";
@@ -1072,6 +1273,9 @@ class TarotApp {
     const positions = this.getPositions();
 
     let prompt = "";
+    const seekerLineTh = this.seekerName ? `👤 ผู้รับคำทำนาย: คุณ${this.seekerName}\n` : "";
+    const seekerLineEn = this.seekerName ? `👤 Seeker Name: ${this.seekerName}\n` : "";
+
     if (this.lang === "th") {
       const cardsList = this.drawnCards.map((item, idx) => {
         const card = item.card;
@@ -1080,8 +1284,13 @@ class TarotApp {
         const aspect = item.isReversed ? card.reversed : card.upright;
         const kw = aspect.keywords.th.join(", ");
         let domainMeaning = "";
-        if (this.category === "love") domainMeaning = aspect.love.th;
-        else if (this.category === "career") domainMeaning = aspect.career.th;
+        if (this.category === "love") {
+          if (aspect.love && aspect.love.single && aspect.love.couple) {
+            domainMeaning = `${aspect.love.th}\n  * คำทำนายคนโสด: ${aspect.love.single.th}\n  * คำทำนายคนมีคู่: ${aspect.love.couple.th}`;
+          } else {
+            domainMeaning = aspect.love.th;
+          }
+        } else if (this.category === "career") domainMeaning = aspect.career.th;
         else if (this.category === "finance") domainMeaning = aspect.finance.th;
         else if (this.category === "health") domainMeaning = aspect.health.th;
         else domainMeaning = aspect.general.th;
@@ -1100,7 +1309,7 @@ class TarotApp {
 
       prompt = `สวัสดี Gemini ฉันเพิ่งเปิดไพ่ทาโรต์ดูดวงหมวด: ${domain} ตามตำราไพ่ทาโรต์ Rider-Waite
 
-${questionSection}
+${seekerLineTh}${questionSection}
 🏷️ หมวดหมู่เรื่อง: ${domain}
 🎴 รูปแบบการเปิดไพ่: ${spreadName} (${this.spreadCount} ใบ)
 
@@ -1114,7 +1323,8 @@ ${cardsList}
 2. อธิบายว่าไพ่แต่ละใบที่เปิดได้ตามตำแหน่ง สะท้อนและเชื่อมโยงกับคำถาม/สถานการณ์ของฉันอย่างไร
 3. แนะนำสิ่งที่ควรทำ (Do's) และสิ่งที่ไม่ควรทำ / ข้อควรระวัง (Don'ts) อย่างเป็นรูปธรรม
 4. แนวโน้มและช่วงเวลาของเหตุการณ์ในระยะอันใกล้นี้
-5. ข้อคิดเตือนใจและคำแนะนำเสริมกำลังใจในแบบที่อบอุ่นและมีพลังบวก`;
+5. ข้อคิดเตือนใจและคำแนะนำเสริมกำลังใจในแบบที่อบอุ่นและมีพลังบวก
+${this.category === "love" ? "6. พิเศษด้านความรัก: วิเคราะห์และให้คำแนะนำแยกอย่างตรงจุดทั้งสำหรับ 'คนโสด' และ 'คนมีคู่' ตามหน้าไพ่" : ""}`;
     } else {
       const cardsList = this.drawnCards.map((item, idx) => {
         const card = item.card;
@@ -1123,8 +1333,13 @@ ${cardsList}
         const aspect = item.isReversed ? card.reversed : card.upright;
         const kw = aspect.keywords.en.join(", ");
         let domainMeaning = "";
-        if (this.category === "love") domainMeaning = aspect.love.en;
-        else if (this.category === "career") domainMeaning = aspect.career.en;
+        if (this.category === "love") {
+          if (aspect.love && aspect.love.single && aspect.love.couple) {
+            domainMeaning = `${aspect.love.en}\n  * Singles: ${aspect.love.single.en}\n  * Couples: ${aspect.love.couple.en}`;
+          } else {
+            domainMeaning = aspect.love.en;
+          }
+        } else if (this.category === "career") domainMeaning = aspect.career.en;
         else if (this.category === "finance") domainMeaning = aspect.finance.en;
         else if (this.category === "health") domainMeaning = aspect.health.en;
         else domainMeaning = aspect.general.en;
@@ -1143,7 +1358,7 @@ ${cardsList}
 
       prompt = `Hello Gemini, I have just drawn a tarot spread in the domain of ${domain} based on traditional Rider-Waite tarot lore.
 
-${questionSection}
+${seekerLineEn}${questionSection}
 🏷️ Life Domain: ${domain}
 🎴 Tarot Spread: ${spreadName} (${this.spreadCount} Cards)
 
@@ -1157,7 +1372,8 @@ Please act as an "Empathetic Master Tarot Reader and Life Advisor", analyzing th
 2. Explain how each card in its spread position connects to my situation and question.
 3. Recommend concrete, actionable Do's and Donts to navigate this energy.
 4. Offer insights into near-term timeline and manifestation likelihood.
-5. Conclude with an uplifting, empowering message to inspire my journey.`;
+5. Conclude with an uplifting, empowering message to inspire my journey.
+${this.category === "love" ? "6. Specially for Love: Analyze distinct guidance for both 'Singles' and 'Couples' based on these cards." : ""}`;
     }
 
     this.geminiPromptText.textContent = prompt;

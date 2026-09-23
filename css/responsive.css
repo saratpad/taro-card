@@ -160,12 +160,27 @@
     width: 60px;
     height: 100px;
   }
+}
+
+@media (max-width: 640px) {
+  .love-status-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
 
   .results-action-row {
     flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
   }
 
   .results-action-row button {
     width: 100%;
+    justify-content: center;
+  }
+
+  .results-seeker-greeting {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.9rem;
   }
 }

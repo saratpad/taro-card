@@ -74,6 +74,25 @@
 
           <!-- Ritual Setup Card Box -->
           <div class="ritual-card-box">
+
+            <!-- Seeker Name Input (ชื่อผู้รับคำทำนาย) -->
+            <div class="form-group seeker-name-group">
+              <label class="form-label" for="seeker-name-input">
+                <span>👤</span>
+                <span data-i18n="label_seeker_name">ชื่อผู้รับคำทำนาย</span>
+              </label>
+              <div class="seeker-input-wrapper">
+                <input 
+                  type="text" 
+                  id="seeker-name-input" 
+                  class="mystic-text-input" 
+                  placeholder="เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกดวงชะตาเฉพาะคุณ)"
+                  data-i18n-placeholder="placeholder_seeker_name"
+                  maxlength="50"
+                  autocomplete="name"
+                />
+              </div>
+            </div>
             
             <!-- Category Chips -->
             <div class="form-group">
@@ -205,6 +224,15 @@
       <section id="screen-results" class="view-screen">
         
         <div class="results-header-banner">
+          <!-- Print-Only Certificate Header -->
+          <div class="print-certificate-header" id="print-certificate-header">
+            <div class="print-brand-title">🔮 MYSTIC WITCH TAROT SANCTUARY</div>
+            <div class="print-doc-title">ใบทำนายดวงชะตาไพ่ทาโรต์ (Tarot Reading Certificate)</div>
+            <div class="print-seeker-line" id="print-seeker-line"></div>
+            <div class="print-meta-line" id="print-meta-line"></div>
+          </div>
+
+          <div class="results-seeker-greeting" id="results-seeker-greeting"></div>
           <h2 data-i18n="results_title">คำทำนายจากม่านมนตรา</h2>
           <div class="user-question-recap" id="results-question-recap">
             <!-- Question text -->
@@ -317,12 +345,22 @@
 
         <!-- Actions -->
         <div class="results-action-row">
-          <button id="btn-ask-again" class="btn-mystic-primary" style="max-width: 320px;">
+          <button id="btn-ask-again" class="btn-mystic-primary" style="max-width: 260px;">
             <span>🔮</span>
             <span data-i18n="btn_ask_again">ถามคำถามใหม่</span>
           </button>
 
-          <button id="btn-share-reading" class="btn-secondary-mystic">
+          <button id="btn-social-share" class="btn-secondary-mystic btn-share-action">
+            <span>📤</span>
+            <span data-i18n="btn_share_reading">แชร์คำทำนาย</span>
+          </button>
+
+          <button id="btn-download-pdf" class="btn-secondary-mystic btn-pdf-action">
+            <span>📄</span>
+            <span data-i18n="btn_download_pdf">ดาวน์โหลด PDF</span>
+          </button>
+
+          <button id="btn-copy-reading" class="btn-secondary-mystic">
             <span>📋</span>
             <span data-i18n="btn_copy_reading">คัดลอกคำทำนาย</span>
           </button>
@@ -404,6 +442,7 @@
 
   <!-- JavaScript Modules -->
   <script src="js/tarot-data.js"></script>
+  <script src="js/tarot-love-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/app.js"></script>

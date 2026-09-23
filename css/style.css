@@ -1718,3 +1718,376 @@ body {
   transform: translateY(0);
   opacity: 1;
 }
+
+/* ==========================================================================
+   SEEKER NAME INPUT & PERSONALIZED BADGES
+   ========================================================================== */
+.seeker-name-group {
+  margin-bottom: 1.5rem;
+}
+
+.seeker-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mystic-text-input {
+  width: 100%;
+  padding: 0.95rem 1.2rem;
+  background: rgba(18, 7, 34, 0.7);
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mystic-text-input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  background: rgba(28, 11, 53, 0.85);
+  box-shadow: 0 0 16px rgba(245, 197, 66, 0.35), inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.mystic-text-input::placeholder {
+  color: rgba(203, 190, 222, 0.45);
+  font-size: 0.92rem;
+}
+
+.results-seeker-greeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, rgba(245, 197, 66, 0.12), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-full);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fef08a;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   LOVE SINGLE & COUPLE DUAL PREDICTION CARDS
+   ========================================================================== */
+.verdict-love-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed rgba(245, 197, 66, 0.25);
+}
+
+.love-summary-item {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background: rgba(18, 7, 34, 0.5);
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--gold-primary);
+}
+
+.love-prediction-block {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%) !important;
+  border-left-color: #f472b6 !important;
+}
+
+.love-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 0.9rem;
+}
+
+.love-status-card {
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.love-status-card:hover {
+  transform: translateY(-2px);
+}
+
+.love-status-card.status-single {
+  background: linear-gradient(145deg, rgba(244, 114, 182, 0.1) 0%, rgba(18, 7, 34, 0.6) 100%);
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-left: 4px solid #f472b6;
+}
+
+.love-status-card.status-couple {
+  background: linear-gradient(145deg, rgba(192, 132, 252, 0.1) 0%, rgba(18, 7, 34, 0.6) 100%);
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  border-left: 4px solid #c084fc;
+}
+
+.love-status-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.love-status-icon {
+  font-size: 1.25rem;
+}
+
+.love-status-label {
+  font-family: var(--font-thai);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.status-single .love-status-label {
+  color: #f472b6;
+}
+
+.status-couple .love-status-label {
+  color: #c084fc;
+}
+
+.love-status-text {
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #f8fafc;
+  margin: 0;
+}
+
+/* ==========================================================================
+   ENHANCED ACTION BUTTONS (SHARE & PDF)
+   ========================================================================== */
+.results-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2.5rem 0 3.5rem 0;
+}
+
+.btn-share-action:hover {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
+  border-color: #f472b6;
+  color: #fdf2f8;
+}
+
+.btn-pdf-action:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(147, 51, 234, 0.3));
+  border-color: #38bdf8;
+  color: #f0f9ff;
+}
+
+/* ==========================================================================
+   PRINT & PDF EXPORT STYLESHEET
+   ========================================================================== */
+.print-certificate-header {
+  display: none;
+}
+
+@media print {
+  /* Hide non-printable web UI */
+  #bg-canvas,
+  .mystic-header,
+  .results-action-row,
+  #gemini-ai-card,
+  .mystic-footer,
+  #card-detail-modal,
+  #mystic-toast,
+  .btn-icon,
+  .revealed-cards-flex,
+  .witch-synthesis-note,
+  .view-screen:not(#screen-results) {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #1e1e24 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 0.5cm !important;
+  }
+
+  .main-stage-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #screen-results {
+    display: block !important;
+  }
+
+  /* Show Print Certificate Header */
+  .print-certificate-header {
+    display: block !important;
+    text-align: center;
+    border-bottom: 2px solid #854d0e;
+    padding-bottom: 0.8cm;
+    margin-bottom: 0.8cm;
+  }
+
+  .print-brand-title {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #713f12;
+    letter-spacing: 2px;
+  }
+
+  .print-doc-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #475569;
+    margin: 0.2cm 0;
+  }
+
+  .print-seeker-line {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0.2cm 0;
+  }
+
+  .print-meta-line {
+    font-size: 10pt;
+    color: #64748b;
+  }
+
+  .results-header-banner h2,
+  .results-seeker-greeting,
+  .user-question-recap {
+    display: none !important;
+  }
+
+  .direct-verdict-box {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    margin-bottom: 0.8cm !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .verdict-title {
+    color: #713f12 !important;
+  }
+
+  .verdict-content {
+    color: #1e293b !important;
+  }
+
+  .verdict-actions-summary {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5cm !important;
+  }
+
+  .do-box, .dont-box {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+  }
+
+  .positions-feed-header {
+    margin: 0.6cm 0 0.4cm 0 !important;
+  }
+
+  .positions-section-title {
+    color: #713f12 !important;
+    font-size: 13pt !important;
+  }
+
+  .pos-reading-card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    margin-bottom: 0.6cm !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 0.6cm !important;
+  }
+
+  .pos-number-badge {
+    background: #713f12 !important;
+    color: #ffffff !important;
+  }
+
+  .pos-title {
+    color: #0f172a !important;
+  }
+
+  .pos-card-drawn-box {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .card-name-main {
+    color: #713f12 !important;
+  }
+
+  .pos-domain-prediction-block {
+    background: #fdf4ff !important;
+    border: 1px solid #f0abfc !important;
+    border-left: 4px solid #c026d3 !important;
+  }
+
+  .prediction-title {
+    color: #86198f !important;
+  }
+
+  .prediction-text-content {
+    color: #1e293b !important;
+  }
+
+  .love-status-grid {
+    display: block !important;
+  }
+
+  .love-status-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    margin-bottom: 0.3cm !important;
+    box-shadow: none !important;
+  }
+
+  .status-single {
+    border-left: 4px solid #db2777 !important;
+  }
+
+  .status-single .love-status-label {
+    color: #db2777 !important;
+  }
+
+  .status-couple {
+    border-left: 4px solid #9333ea !important;
+  }
+
+  .status-couple .love-status-label {
+    color: #9333ea !important;
+  }
+
+  .love-status-text {
+    color: #1e293b !important;
+  }
+
+  .pos-advice-block {
+    background: #f8fafc !important;
+    border: 1px dashed #94a3b8 !important;
+    color: #334155 !important;
+  }
+
+  .pos-card-drawn-thumb {
+    max-height: 80px !important;
+  }
+}
+
