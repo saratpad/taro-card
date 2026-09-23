@@ -583,6 +583,9 @@
                   <div class="palm-hud-instruction">
                     <span>✋ วางฝ่ามือให้ตรงกับกรอบแสง</span>
                   </div>
+                  <div class="palm-camera-tip">
+                    💡 วางฝ่ามือให้เต็มกรอบ กางนิ้วเล็กน้อย เพื่อให้ระบบตรวจจับเส้นได้ตรงตำแหน่ง
+                  </div>
                 </div>
 
                 <!-- Laser Scanning Beam -->
@@ -630,15 +633,79 @@
           <div class="altar-hero">
             <h2>ถอดรหัสเส้นพลังงานบนฝ่ามือ</h2>
             <p class="hero-subtitle">
-              ระบบได้ตรวจจับและวาดโครงเส้นลายมือ 4 เส้นหลักและเส้นสมรส ท่านสามารถเลือกปรับจูนลักษณะเส้นให้ตรงกับฝ่ามือจริงเพื่อผลทำนายที่แม่นยำสูงสุด
+              ระบบได้ตรวจจับและวาดโครงเส้นลายมือ 4 เส้นหลักและเส้นสมรส ท่านสามารถแตะลากเส้น หรือปรับขนาด/หมุน/ดัดจุด ให้ตรงกับรอยมือจริงของท่านได้ 100%
             </p>
 
             <div class="palm-analysis-layout">
-              <!-- Left: Canvas with Highlighted Lines -->
+              <!-- Left: Canvas with Highlighted Lines & Calibration Toolbar -->
               <div class="analysis-canvas-panel">
-                <div class="analysis-canvas-wrapper">
+                <div class="analysis-canvas-wrapper" id="analysis-canvas-wrapper">
                   <canvas id="palm-analysis-canvas"></canvas>
+                  <div class="canvas-drag-hint-badge" id="canvas-drag-hint-badge">
+                    <span>🖐️</span>
+                    <span>แตะค้างแล้วลากบนภาพ เพื่อขยับเส้นลายมือให้ตรงกับมือจริง</span>
+                  </div>
                 </div>
+
+                <!-- Calibration Controls Card -->
+                <div class="palm-calibration-card" id="palm-calibration-card">
+                  <div class="calibration-header">
+                    <div class="calibration-title">
+                      <span>✨</span>
+                      <strong>ปรับลายเส้นให้ตรงกับรอยมือจริง</strong>
+                    </div>
+                    <div class="calibration-hint">ลากบนรูปโดยตรง หรือใช้เครื่องมือด้านล่าง</div>
+                  </div>
+
+                  <!-- Quick Tool Buttons -->
+                  <div class="calibration-quick-row">
+                    <button type="button" id="btn-toggle-pin-mode" class="btn-calib-pill" title="เปิด/ปิด โหมดดัดจุดแต่ละเส้น">
+                      <span class="btn-icon">📍</span>
+                      <span id="pin-mode-text">ดัดจุดเส้นอิสระ</span>
+                    </button>
+                    <button type="button" id="btn-peek-lines" class="btn-calib-pill" title="ซ่อน/แสดงเส้น เพื่อเทียบกับรอยมือจริง">
+                      <span class="btn-icon">👁️</span>
+                      <span id="peek-lines-text">เทียบรอยมือ</span>
+                    </button>
+                    <button type="button" id="btn-auto-detect-palm" class="btn-calib-pill" title="จัดตำแหน่งอัตโนมัติตามรูปมือ">
+                      <span class="btn-icon">🎯</span>
+                      <span>จัดออโต้</span>
+                    </button>
+                    <button type="button" id="btn-reset-palm-transform" class="btn-calib-pill" title="คืนค่าตั้งต้น">
+                      <span class="btn-icon">🔄</span>
+                      <span>รีเซ็ต</span>
+                    </button>
+                  </div>
+
+                  <!-- Sliders: Scale & Rotate -->
+                  <div class="calibration-sliders-grid">
+                    <div class="calib-slider-group">
+                      <div class="slider-label-row">
+                        <span>🔍 ขนาดเส้น (Scale)</span>
+                        <span id="scale-val-badge" class="calib-val-badge">100%</span>
+                      </div>
+                      <input type="range" id="palm-scale-slider" min="0.5" max="1.8" step="0.02" value="1.0" class="calib-range" aria-label="ขยายหรือย่อขนาดลายเส้น" />
+                    </div>
+
+                    <div class="calib-slider-group">
+                      <div class="slider-label-row">
+                        <span>🔄 หมุนเอียง (Rotate)</span>
+                        <span id="rotate-val-badge" class="calib-val-badge">0°</span>
+                      </div>
+                      <input type="range" id="palm-rotate-slider" min="-45" max="45" step="1" value="0" class="calib-range" aria-label="หมุนองศาลายเส้น" />
+                    </div>
+                  </div>
+
+                  <!-- 4-Direction Nudge Pad -->
+                  <div class="calibration-nudge-bar">
+                    <span class="nudge-title">ขยับเส้น:</span>
+                    <button type="button" class="btn-nudge" data-dir="up" title="ขยับขึ้น">⬆️</button>
+                    <button type="button" class="btn-nudge" data-dir="down" title="ขยับลง">⬇️</button>
+                    <button type="button" class="btn-nudge" data-dir="left" title="ขยับซ้าย">⬅️</button>
+                    <button type="button" class="btn-nudge" data-dir="right" title="ขยับขวา">➡️</button>
+                  </div>
+                </div>
+
                 <div class="canvas-lines-legend">
                   <span class="legend-tag" style="--c:#10b981;">🌱 เส้นชีวิต</span>
                   <span class="legend-tag" style="--c:#3b82f6;">🧠 เส้นสมอง</span>

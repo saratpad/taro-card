@@ -231,6 +231,32 @@
     max-width: 100%;
   }
 
+  .canvas-drag-hint-badge {
+    font-size: 0.68rem;
+    padding: 4px 10px;
+    top: 6px;
+  }
+
+  .palm-calibration-card {
+    max-width: 100%;
+    padding: 10px 12px;
+  }
+
+  .calibration-quick-row {
+    gap: 5px;
+  }
+
+  .btn-calib-pill {
+    font-size: 0.74rem;
+    padding: 5px 8px;
+    min-width: 68px;
+  }
+
+  .calibration-sliders-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
   .analysis-actions-bar {
     flex-direction: column;
   }

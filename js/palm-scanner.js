@@ -17,9 +17,53 @@ class PalmScanner {
     this.stream = null;
     this.facingMode = "environment";
     this.capturedDataUrl = null;
+    this.capturedImage = null;
     this.isScanning = false;
 
-    // Default line variations (intelligent fallback defaults)
+    // Interactive Palm Alignment & Calibration State
+    this.palmTransform = { x: 0, y: 0, scale: 1.0, rotation: 0 };
+    this.isDragging = false;
+    this.dragStart = { x: 0, y: 0, initX: 0, initY: 0 };
+    this.pinMode = false; // Fine-tune anchor pins mode
+    this.showLines = true; // Toggle visibility for skin comparison
+    this.activePin = null; // { lineKey, pointIndex }
+
+    // Normalized line landmark templates (Right Hand view; mirrored horizontally for Left Hand)
+    this.defaultLinePoints = {
+      life: [
+        { x: 0.36, y: 0.44 },
+        { x: 0.32, y: 0.56 },
+        { x: 0.36, y: 0.72 },
+        { x: 0.44, y: 0.88 }
+      ],
+      head: [
+        { x: 0.36, y: 0.45 },
+        { x: 0.48, y: 0.52 },
+        { x: 0.63, y: 0.57 },
+        { x: 0.78, y: 0.62 }
+      ],
+      heart: [
+        { x: 0.84, y: 0.41 },
+        { x: 0.68, y: 0.37 },
+        { x: 0.52, y: 0.34 },
+        { x: 0.38, y: 0.31 }
+      ],
+      fate: [
+        { x: 0.52, y: 0.88 },
+        { x: 0.51, y: 0.68 },
+        { x: 0.50, y: 0.48 },
+        { x: 0.48, y: 0.32 }
+      ],
+      marriage: [
+        { x: 0.88, y: 0.36 },
+        { x: 0.78, y: 0.365 }
+      ]
+    };
+
+    // Active working line points (editable by user)
+    this.customLinePoints = JSON.parse(JSON.stringify(this.defaultLinePoints));
+
+    // Default line variations (The Street Ratchada baseline)
     this.selectedLines = {
       life: "life_long_deep",
       head: "head_straight_long",
@@ -68,12 +112,27 @@ class PalmScanner {
     this.btnUploadFallback = document.getElementById("btn-upload-palm-photo");
     this.btnCancelCamera = document.getElementById("btn-cancel-camera");
     this.cameraStatusText = document.getElementById("camera-status-text");
+    this.silhouetteSvg = document.querySelector(".palm-silhouette-svg");
 
     // Analysis / Refinement Screen Elements
     this.analysisCanvas = document.getElementById("palm-analysis-canvas");
     this.refinementTabs = document.getElementById("palm-refinement-tabs");
     this.btnConfirmAnalysis = document.getElementById("btn-confirm-palm-analysis");
     this.btnRetakePalm = document.getElementById("btn-retake-palm");
+    this.canvasDragHint = document.getElementById("canvas-drag-hint-badge");
+
+    // Calibration Toolbar Elements
+    this.btnTogglePinMode = document.getElementById("btn-toggle-pin-mode");
+    this.pinModeText = document.getElementById("pin-mode-text");
+    this.btnPeekLines = document.getElementById("btn-peek-lines");
+    this.peekLinesText = document.getElementById("peek-lines-text");
+    this.btnAutoDetect = document.getElementById("btn-auto-detect-palm");
+    this.btnResetTransform = document.getElementById("btn-reset-palm-transform");
+    this.scaleSlider = document.getElementById("palm-scale-slider");
+    this.scaleValBadge = document.getElementById("scale-val-badge");
+    this.rotateSlider = document.getElementById("palm-rotate-slider");
+    this.rotateValBadge = document.getElementById("rotate-val-badge");
+    this.nudgeButtons = document.querySelectorAll(".btn-nudge");
 
     // Results Screen Elements
     this.palmResultGreeting = document.getElementById("palm-result-seeker-greeting");
@@ -123,6 +182,7 @@ class PalmScanner {
         card.classList.add("active");
         this.handSide = card.dataset.hand;
         this.updateHandRuleNotice();
+        this.updateSilhouetteMirror();
       });
     });
 
@@ -171,6 +231,56 @@ class PalmScanner {
       this.fileUploadInput.addEventListener("change", (e) => {
         this.handleFileUpload(e);
       });
+    }
+
+    // Calibration Toolbar Controls
+    if (this.btnTogglePinMode) {
+      this.btnTogglePinMode.addEventListener("click", () => {
+        this.togglePinMode();
+      });
+    }
+
+    if (this.btnPeekLines) {
+      this.btnPeekLines.addEventListener("click", () => {
+        this.togglePeekLines();
+      });
+    }
+
+    if (this.btnAutoDetect) {
+      this.btnAutoDetect.addEventListener("click", () => {
+        this.runAutoDetect();
+      });
+    }
+
+    if (this.btnResetTransform) {
+      this.btnResetTransform.addEventListener("click", () => {
+        this.resetTransform();
+      });
+    }
+
+    if (this.scaleSlider) {
+      this.scaleSlider.addEventListener("input", (e) => {
+        this.onScaleChange(parseFloat(e.target.value));
+      });
+    }
+
+    if (this.rotateSlider) {
+      this.rotateSlider.addEventListener("input", (e) => {
+        this.onRotateChange(parseFloat(e.target.value));
+      });
+    }
+
+    if (this.nudgeButtons) {
+      this.nudgeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          this.onNudge(btn.dataset.dir);
+        });
+      });
+    }
+
+    // Direct Interactive Canvas Pointer Events (Touch & Mouse)
+    if (this.analysisCanvas) {
+      this.bindCanvasPointerEvents();
     }
 
     // Analysis / Refinement Screen Actions
@@ -236,8 +346,20 @@ class PalmScanner {
       });
     }
 
-    // Update rule notice on load
+    // Initial mirror state and hand rule update
     this.updateHandRuleNotice();
+    this.updateSilhouetteMirror();
+  }
+
+  updateSilhouetteMirror() {
+    const silhouette = document.querySelector(".palm-silhouette-svg");
+    if (silhouette) {
+      if (this.handSide === "left") {
+        silhouette.classList.add("mirror-silhouette");
+      } else {
+        silhouette.classList.remove("mirror-silhouette");
+      }
+    }
   }
 
   // =========================================================================
@@ -254,6 +376,7 @@ class PalmScanner {
       if (tarotSection) tarotSection.style.display = "none";
       if (palmSection) palmSection.style.display = "block";
       this.updateHandRuleNotice();
+      this.updateSilhouetteMirror();
       this.switchPalmScreen("intro");
     } else {
       if (this.modePalmBtn) this.modePalmBtn.classList.remove("active");
@@ -298,6 +421,7 @@ class PalmScanner {
   // =========================================================================
   async openCameraScreen() {
     this.switchPalmScreen("camera");
+    this.updateSilhouetteMirror();
     await this.startCamera();
   }
 
@@ -330,7 +454,7 @@ class PalmScanner {
         await this.videoElement.play();
         this.showCameraStatus(
           this.lang === "th" 
-            ? "วางฝ่ามือให้ตรงกับกรอบแสงเวทมนตร์ แล้วกดปุ่มสแกน" 
+            ? "วางฝ่ามือให้เต็มกรอบแสงเวทมนตร์ แล้วกดปุ่มสแกน" 
             : "Align your palm with the mystical outline and tap scan"
         );
       }
@@ -402,13 +526,13 @@ class PalmScanner {
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext("2d");
       
-      // If user camera, mirror it horizontally for intuitive feel
+      // If front camera, mirror it horizontally for intuitive feel
       if (this.facingMode === "user") {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
       }
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      this.capturedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      this.capturedDataUrl = canvas.toDataURL("image/jpeg", 0.92);
     } else {
       // Fallback synthetic palm template if camera feed is blank
       this.capturedDataUrl = this.generateSyntheticPalmCanvas();
@@ -418,7 +542,6 @@ class PalmScanner {
   }
 
   proceedToScanningEffect() {
-    // Play sound and trigger laser sweep
     if (window.mysticAudio && window.mysticAudio.playCardFlip) {
       window.mysticAudio.playCardFlip();
     }
@@ -441,134 +564,503 @@ class PalmScanner {
   }
 
   // =========================================================================
-  // 3. PALM ANALYSIS & CANVAS LINE TRACING
+  // 3. PALM ANALYSIS, AUTO-DETECTION & INTERACTIVE CALIBRATION
   // =========================================================================
   openAnalysisScreen() {
     this.switchPalmScreen("analysis");
-    this.renderAnalysisCanvas();
-    this.renderRefinementTabs();
+    this.renderAnalysisCanvas(true, () => {
+      this.renderRefinementTabs();
+    });
+
+    // Show temporary drag hint badge
+    if (this.canvasDragHint) {
+      this.canvasDragHint.style.display = "flex";
+      this.canvasDragHint.style.opacity = "1";
+      setTimeout(() => {
+        if (this.canvasDragHint) {
+          this.canvasDragHint.style.transition = "opacity 1.2s ease";
+          this.canvasDragHint.style.opacity = "0.2";
+        }
+      }, 5000);
+    }
   }
 
-  renderAnalysisCanvas() {
+  renderAnalysisCanvas(runDetection = false, callback = null) {
     if (!this.analysisCanvas || !this.capturedDataUrl) return;
-    const canvas = this.analysisCanvas;
-    const ctx = canvas.getContext("2d");
+
     const img = new Image();
-
     img.onload = () => {
-      // Fit to reasonable resolution (max 800px width)
+      this.capturedImage = img;
       const aspect = img.height / img.width;
-      canvas.width = 720;
-      canvas.height = Math.round(720 * aspect);
+      this.analysisCanvas.width = 720;
+      this.analysisCanvas.height = Math.round(720 * aspect);
 
-      // 1. Draw user photo
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      if (runDetection) {
+        // Run automatic hand region detection
+        const ctx = this.analysisCanvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, this.analysisCanvas.width, this.analysisCanvas.height);
+        const detection = this.detectPalmRegion(ctx, this.analysisCanvas.width, this.analysisCanvas.height);
 
-      // 2. Add subtle mystical vignette overlay
-      const grad = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, canvas.width * 0.25,
-        canvas.width / 2, canvas.height / 2, canvas.width * 0.75
-      );
-      grad.addColorStop(0, "rgba(10, 5, 20, 0.15)");
-      grad.addColorStop(1, "rgba(5, 2, 12, 0.75)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (detection.detected) {
+          this.palmTransform.x = detection.x;
+          this.palmTransform.y = detection.y;
+          this.palmTransform.scale = detection.scale;
+          this.palmTransform.rotation = 0;
+        } else {
+          this.palmTransform = { x: 0, y: 0, scale: 1.0, rotation: 0 };
+        }
+      }
 
-      // 3. Draw luminous traced palm lines
-      this.drawLuminousPalmLines(ctx, canvas.width, canvas.height);
+      this.updateCalibrationUI();
+      this.redrawAnalysisCanvas();
+      if (typeof callback === "function") callback();
     };
-
     img.src = this.capturedDataUrl;
   }
 
-  drawLuminousPalmLines(ctx, w, h) {
+  // Smart skin-color segmentation to auto-align palm bounds
+  detectPalmRegion(ctx, width, height) {
+    try {
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+      const step = 4; // Sample every 4th pixel for speed
+
+      let minX = width, maxX = 0, minY = height, maxY = 0;
+      let sumX = 0, sumY = 0, count = 0;
+
+      const startX = Math.floor(width * 0.05);
+      const endX = Math.floor(width * 0.95);
+      const startY = Math.floor(height * 0.06);
+      const endY = Math.floor(height * 0.94);
+
+      for (let y = startY; y < endY; y += step) {
+        for (let x = startX; x < endX; x += step) {
+          const idx = (y * width + x) * 4;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+
+          // Human skin color heuristics (robust across varied lighting & skin tones)
+          const isSkin = (
+            r > 65 && g > 40 && b > 20 &&
+            r > g && (r - b) > 14 && (g - b) > -8 &&
+            (Math.max(r, g, b) - Math.min(r, g, b)) > 14 &&
+            !(r > 248 && g > 248 && b > 248)
+          );
+
+          if (isSkin) {
+            sumX += x;
+            sumY += y;
+            count++;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+
+      const totalSamples = ((endX - startX) / step) * ((endY - startY) / step);
+      const skinRatio = count / totalSamples;
+
+      if (skinRatio > 0.05 && maxX > minX && maxY > minY) {
+        const handWidth = maxX - minX;
+        const handHeight = maxY - minY;
+        const palmCenterX = sumX / count;
+        // In palm photos, the palm center of mass sits around 56% down the hand
+        const palmCenterY = minY + handHeight * 0.56;
+
+        // Scale relative to canonical palm width (approx 52% of canvas width)
+        const idealScale = Math.min(1.5, Math.max(0.7, handWidth / (width * 0.52)));
+        const offsetX = palmCenterX - (width * 0.5);
+        const offsetY = palmCenterY - (height * 0.54);
+
+        return {
+          detected: true,
+          x: Math.round(offsetX),
+          y: Math.round(offsetY),
+          scale: parseFloat(idealScale.toFixed(2)),
+          rotation: 0
+        };
+      }
+    } catch (err) {
+      console.warn("Palm auto-detection fallback:", err);
+    }
+
+    return { detected: false, x: 0, y: 0, scale: 1.0, rotation: 0 };
+  }
+
+  // 100% Reversible Coordinate Transformation (Screen <-> Normalized Model)
+  toCanvasCoords(point) {
+    if (!this.analysisCanvas) return { x: 0, y: 0 };
+    const w = this.analysisCanvas.width;
+    const h = this.analysisCanvas.height;
     const isRight = this.handSide === "right";
-    const xMult = isRight ? 1 : -1;
-    const xBase = isRight ? 0 : w;
 
-    // Helper: translate relative coordinates considering Left / Right hand geometry
-    const tx = (relX) => isRight ? (relX * w) : (w - relX * w);
-    const ty = (relY) => relY * h;
+    // 1. Mirror horizontally if Left Hand
+    const bx = (isRight ? point.x : (1.0 - point.x)) * w;
+    const by = point.y * h;
 
+    // 2. Scale & Rotate around estimated palm center
+    const cx = w * 0.5;
+    const cy = h * 0.54;
+
+    const sx = cx + (bx - cx) * this.palmTransform.scale;
+    const sy = cy + (by - cy) * this.palmTransform.scale;
+
+    const rad = (this.palmTransform.rotation * Math.PI) / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    const rx = cx + (sx - cx) * cos - (sy - cy) * sin;
+    const ry = cy + (sx - cx) * sin + (sy - cy) * cos;
+
+    // 3. Translate
+    return {
+      x: rx + this.palmTransform.x,
+      y: ry + this.palmTransform.y
+    };
+  }
+
+  fromCanvasCoords(canvasX, canvasY) {
+    if (!this.analysisCanvas) return { x: 0.5, y: 0.5 };
+    const w = this.analysisCanvas.width;
+    const h = this.analysisCanvas.height;
+    const isRight = this.handSide === "right";
+    const cx = w * 0.5;
+    const cy = h * 0.54;
+
+    // 1. Untranslate
+    const tx = canvasX - this.palmTransform.x;
+    const ty = canvasY - this.palmTransform.y;
+
+    // 2. Unrotate
+    const rad = (-this.palmTransform.rotation * Math.PI) / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    const ux = cx + (tx - cx) * cos - (ty - cy) * sin;
+    const uy = cy + (tx - cx) * sin + (ty - cy) * cos;
+
+    // 3. Unscale
+    const scale = this.palmTransform.scale || 1.0;
+    const bx = cx + (ux - cx) / scale;
+    const by = cy + (uy - cy) / scale;
+
+    // 4. Unnormalize and unmirror
+    const ny = by / h;
+    const nx = isRight ? (bx / w) : (1.0 - (bx / w));
+
+    return {
+      x: Math.max(0.02, Math.min(0.98, nx)),
+      y: Math.max(0.02, Math.min(0.98, ny))
+    };
+  }
+
+  findPinAt(canvasX, canvasY, hitRadius = 32) {
+    let closest = null;
+    let minDistance = hitRadius;
+
+    const lineKeys = ["life", "head", "heart", "fate", "marriage"];
+    for (const key of lineKeys) {
+      if (key === "fate" && this.selectedLines.fate === "fate_absent_or_faint") continue;
+
+      const pts = this.customLinePoints[key];
+      if (!pts) continue;
+
+      for (let i = 0; i < pts.length; i++) {
+        const cp = this.toCanvasCoords(pts[i]);
+        const d = Math.hypot(canvasX - cp.x, canvasY - cp.y);
+        if (d < minDistance) {
+          minDistance = d;
+          closest = { lineKey: key, pointIndex: i, dist: d, canvasPoint: cp };
+        }
+      }
+    }
+    return closest;
+  }
+
+  // Pointer event listeners on canvas for intuitive direct touch/drag
+  bindCanvasPointerEvents() {
+    const canvas = this.analysisCanvas;
+
+    const getCanvasPos = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    };
+
+    canvas.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      const pos = getCanvasPos(e);
+
+      // Check if touching an anchor pin (in Fine-Tune mode or general touch)
+      const pinHit = this.findPinAt(pos.x, pos.y, this.pinMode ? 36 : 28);
+      if (pinHit) {
+        this.activePin = { lineKey: pinHit.lineKey, pointIndex: pinHit.pointIndex };
+        this.isDragging = false;
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+        if (this.canvasDragHint) this.canvasDragHint.style.display = "none";
+        this.redrawAnalysisCanvas();
+        return;
+      }
+
+      // Otherwise, drag the entire line constellation
+      this.isDragging = true;
+      this.activePin = null;
+      this.dragStart = {
+        x: pos.x,
+        y: pos.y,
+        initX: this.palmTransform.x,
+        initY: this.palmTransform.y
+      };
+
+      canvas.classList.add("dragging");
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      if (this.canvasDragHint) this.canvasDragHint.style.display = "none";
+    });
+
+    canvas.addEventListener("pointermove", (e) => {
+      if (!this.isDragging && !this.activePin) return;
+      e.preventDefault();
+      const pos = getCanvasPos(e);
+
+      if (this.activePin) {
+        // Drag individual landmark pin
+        const norm = this.fromCanvasCoords(pos.x, pos.y);
+        this.customLinePoints[this.activePin.lineKey][this.activePin.pointIndex] = norm;
+        this.redrawAnalysisCanvas();
+      } else if (this.isDragging) {
+        // Move whole constellation
+        this.palmTransform.x = this.dragStart.initX + (pos.x - this.dragStart.x);
+        this.palmTransform.y = this.dragStart.initY + (pos.y - this.dragStart.y);
+        this.redrawAnalysisCanvas();
+      }
+    });
+
+    const endDrag = (e) => {
+      this.isDragging = false;
+      this.activePin = null;
+      canvas.classList.remove("dragging");
+      try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      this.redrawAnalysisCanvas();
+    };
+
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+  }
+
+  // Calibration toolbar actions
+  togglePinMode() {
+    this.pinMode = !this.pinMode;
+    window.mysticAudio && window.mysticAudio.playClick();
+    this.updateCalibrationUI();
+    this.redrawAnalysisCanvas();
+    if (this.pinMode) {
+      this.showToast(this.lang === "th" ? "📍 แตะลากจุดหมุดบนเส้นเพื่อดัดให้ตรงรอยมือ" : "Drag the glowing pins to adjust line creases");
+    }
+  }
+
+  togglePeekLines() {
+    this.showLines = !this.showLines;
+    window.mysticAudio && window.mysticAudio.playClick();
+    this.updateCalibrationUI();
+    this.redrawAnalysisCanvas();
+  }
+
+  runAutoDetect() {
+    if (!this.analysisCanvas || !this.capturedImage) return;
+    window.mysticAudio && window.mysticAudio.playCardFlip();
+    const ctx = this.analysisCanvas.getContext("2d");
+    const det = this.detectPalmRegion(ctx, this.analysisCanvas.width, this.analysisCanvas.height);
+
+    if (det.detected) {
+      this.palmTransform.x = det.x;
+      this.palmTransform.y = det.y;
+      this.palmTransform.scale = det.scale;
+      this.palmTransform.rotation = 0;
+      this.updateCalibrationUI();
+      this.redrawAnalysisCanvas();
+      this.showToast(this.lang === "th" ? "🎯 ปรับตำแหน่งให้ตรงกับรูปมืออัตโนมัติแล้ว!" : "Auto-aligned lines with your palm!");
+    } else {
+      this.showToast(this.lang === "th" ? "⚠️ แตะหรือลากบนรูปเพื่อปรับตำแหน่งด้วยตนเอง" : "Please drag directly on canvas to position lines");
+    }
+  }
+
+  resetTransform() {
+    window.mysticAudio && window.mysticAudio.playClick();
+    this.palmTransform = { x: 0, y: 0, scale: 1.0, rotation: 0 };
+    this.customLinePoints = JSON.parse(JSON.stringify(this.defaultLinePoints));
+    
+    // Re-apply any currently selected variations
+    Object.keys(this.selectedLines).forEach(key => {
+      this.applyVariationPreset(key, this.selectedLines[key]);
+    });
+
+    this.updateCalibrationUI();
+    this.redrawAnalysisCanvas();
+    this.showToast(this.lang === "th" ? "🔄 คืนค่าตำแหน่งและขนาดเส้นเริ่มต้นแล้ว" : "Reset lines to default position");
+  }
+
+  onScaleChange(val) {
+    this.palmTransform.scale = val;
+    this.updateCalibrationUI();
+    this.redrawAnalysisCanvas();
+  }
+
+  onRotateChange(val) {
+    this.palmTransform.rotation = val;
+    this.updateCalibrationUI();
+    this.redrawAnalysisCanvas();
+  }
+
+  onNudge(dir) {
+    const step = 8;
+    if (dir === "up") this.palmTransform.y -= step;
+    if (dir === "down") this.palmTransform.y += step;
+    if (dir === "left") this.palmTransform.x -= step;
+    if (dir === "right") this.palmTransform.x += step;
+    this.redrawAnalysisCanvas();
+  }
+
+  updateCalibrationUI() {
+    if (this.scaleSlider) this.scaleSlider.value = this.palmTransform.scale;
+    if (this.scaleValBadge) this.scaleValBadge.textContent = Math.round(this.palmTransform.scale * 100) + "%";
+
+    if (this.rotateSlider) this.rotateSlider.value = this.palmTransform.rotation;
+    if (this.rotateValBadge) this.rotateValBadge.textContent = this.palmTransform.rotation + "°";
+
+    if (this.btnTogglePinMode) {
+      this.btnTogglePinMode.classList.toggle("active", this.pinMode);
+    }
+    if (this.pinModeText) {
+      this.pinModeText.textContent = this.pinMode 
+        ? (this.lang === "th" ? "ปิดโหมดดัดจุด" : "Exit Pin Mode") 
+        : (this.lang === "th" ? "ดัดจุดเส้นอิสระ" : "Fine-Tune Pins");
+    }
+
+    if (this.btnPeekLines) {
+      this.btnPeekLines.classList.toggle("active", !this.showLines);
+    }
+    if (this.peekLinesText) {
+      this.peekLinesText.textContent = this.showLines 
+        ? (this.lang === "th" ? "เทียบรอยมือ" : "Hide Lines") 
+        : (this.lang === "th" ? "แสดงลายเส้น" : "Show Lines");
+    }
+
+    if (this.analysisCanvas) {
+      this.analysisCanvas.classList.toggle("pin-mode", this.pinMode);
+    }
+  }
+
+  // Synchronous, high-performance canvas redraw (60 FPS during drag & calibration)
+  redrawAnalysisCanvas() {
+    if (!this.analysisCanvas || !this.capturedImage) return;
+    const canvas = this.analysisCanvas;
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // 1. Draw base photo
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(this.capturedImage, 0, 0, w, h);
+
+    // If lines are toggled off for peeking, show clean photo
+    if (!this.showLines) return;
+
+    // 2. Add subtle mystical vignette overlay
+    const grad = ctx.createRadialGradient(
+      w / 2, h / 2, w * 0.25,
+      w / 2, h / 2, w * 0.78
+    );
+    grad.addColorStop(0, "rgba(10, 5, 20, 0.12)");
+    grad.addColorStop(1, "rgba(5, 2, 12, 0.72)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 3. Draw 5 Luminous Palm Lines with smooth Bezier splines
     ctx.save();
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
     // 1. เส้นชีวิต (Life Line) - Emerald Green
-    this.traceCurvedLine(ctx, [
-      { x: tx(0.38), y: ty(0.48) },
-      { x: tx(0.35), y: ty(0.60) },
-      { x: tx(0.38), y: ty(0.75) },
-      { x: tx(0.44), y: ty(0.88) }
-    ], "#10b981", "🌱 เส้นชีวิต (Life)");
+    const lifeCanvasPts = this.customLinePoints.life.map(p => this.toCanvasCoords(p));
+    this.drawSmoothSpline(ctx, lifeCanvasPts, "#10b981", "🌱 เส้นชีวิต", "life");
 
     // 2. เส้นสมอง (Head Line) - Sapphire Blue
-    const isHeadCurved = this.selectedLines.head === "head_curved_down";
-    this.traceCurvedLine(ctx, [
-      { x: tx(0.38), y: ty(0.48) },
-      { x: tx(0.50), y: ty(0.54) },
-      { x: tx(0.65), y: ty(isHeadCurved ? 0.65 : 0.58) },
-      { x: tx(0.78), y: ty(isHeadCurved ? 0.76 : 0.62) }
-    ], "#3b82f6", "🧠 เส้นสมอง (Head)");
+    const headCanvasPts = this.customLinePoints.head.map(p => this.toCanvasCoords(p));
+    this.drawSmoothSpline(ctx, headCanvasPts, "#3b82f6", "🧠 เส้นสมอง", "head");
 
     // 3. เส้นหัวใจ (Heart Line) - Ruby Rose
-    this.traceCurvedLine(ctx, [
-      { x: tx(0.82), y: ty(0.42) },
-      { x: tx(0.65), y: ty(0.38) },
-      { x: tx(0.50), y: ty(0.36) },
-      { x: tx(0.38), y: ty(0.33) }
-    ], "#ec4899", "💖 เส้นหัวใจ (Heart)");
+    const heartCanvasPts = this.customLinePoints.heart.map(p => this.toCanvasCoords(p));
+    this.drawSmoothSpline(ctx, heartCanvasPts, "#ec4899", "💖 เส้นหัวใจ", "heart");
 
     // 4. เส้นวาสนา (Fate Line) - Radiant Gold
     if (this.selectedLines.fate !== "fate_absent_or_faint") {
-      const fromMoon = this.selectedLines.fate === "fate_from_moon";
-      const startX = fromMoon ? tx(0.65) : tx(0.50);
-      this.traceCurvedLine(ctx, [
-        { x: startX, y: ty(0.88) },
-        { x: tx(0.51), y: ty(0.68) },
-        { x: tx(0.50), y: ty(0.48) },
-        { x: tx(0.48), y: ty(0.32) }
-      ], "#f59e0b", "👑 เส้นวาสนา (Fate)");
+      const fateCanvasPts = this.customLinePoints.fate.map(p => this.toCanvasCoords(p));
+      this.drawSmoothSpline(ctx, fateCanvasPts, "#f59e0b", "👑 เส้นวาสนา", "fate");
     }
 
     // 5. เส้นสมรส (Marriage Line) - Mystic Purple
-    this.traceCurvedLine(ctx, [
-      { x: tx(0.88), y: ty(0.36) },
-      { x: tx(0.78), y: ty(0.365) }
-    ], "#a855f7", "💍 เส้นสมรส");
+    const marriageCanvasPts = this.customLinePoints.marriage.map(p => this.toCanvasCoords(p));
+    this.drawSmoothSpline(ctx, marriageCanvasPts, "#a855f7", "💍 เส้นสมรส", "marriage");
+
+    // 4. Draw Draggable Anchor Pins when Pin Mode is enabled
+    if (this.pinMode) {
+      this.drawAllAnchorPins(ctx);
+    }
 
     ctx.restore();
   }
 
-  traceCurvedLine(ctx, points, color, label) {
+  // Smooth Catmull-Rom cubic Bezier path passing directly through all control points
+  drawSmoothSpline(ctx, points, color, label, lineKey) {
     if (points.length < 2) return;
 
+    const buildPath = () => {
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      if (points.length === 2) {
+        ctx.lineTo(points[1].x, points[1].y);
+      } else {
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = i > 0 ? points[i - 1] : points[i];
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const p3 = i < points.length - 2 ? points[i + 2] : p2;
+
+          const cp1x = p1.x + (p2.x - p0.x) / 6;
+          const cp1y = p1.y + (p2.y - p0.y) / 6;
+          const cp2x = p2.x - (p3.x - p1.x) / 6;
+          const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+        }
+      }
+    };
+
     // Glowing outer halo
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
+    buildPath();
     ctx.strokeStyle = color;
     ctx.lineWidth = 14;
     ctx.shadowColor = color;
     ctx.shadowBlur = 18;
-    ctx.globalAlpha = 0.35;
+    ctx.globalAlpha = 0.38;
     ctx.stroke();
 
     // Crisp inner core
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.lineWidth = 4.5;
+    buildPath();
+    ctx.lineWidth = 4.2;
     ctx.strokeStyle = "#ffffff";
     ctx.shadowBlur = 8;
     ctx.globalAlpha = 0.95;
     ctx.stroke();
 
-    // Line Label pill
+    // Line Label pill at midpoint
     const midIdx = Math.floor(points.length / 2);
     const mid = points[midIdx];
     ctx.globalAlpha = 1.0;
@@ -577,11 +1069,10 @@ class PalmScanner {
     ctx.textBaseline = "middle";
 
     const textWidth = ctx.measureText(label).width;
-    ctx.fillStyle = "rgba(10, 5, 20, 0.85)";
+    ctx.fillStyle = "rgba(10, 5, 20, 0.88)";
     ctx.strokeStyle = color;
     ctx.lineWidth = 1.5;
-    
-    // Draw small rounded pill background
+
     ctx.beginPath();
     ctx.roundRect(mid.x - textWidth / 2 - 8, mid.y - 12, textWidth + 16, 24, 12);
     ctx.fill();
@@ -589,6 +1080,97 @@ class PalmScanner {
 
     ctx.fillStyle = color;
     ctx.fillText(label, mid.x, mid.y);
+  }
+
+  // Draw interactive anchor pins for fine-tuning
+  drawAllAnchorPins(ctx) {
+    const pinColors = {
+      life: "#10b981",
+      head: "#3b82f6",
+      heart: "#ec4899",
+      fate: "#f59e0b",
+      marriage: "#a855f7"
+    };
+
+    Object.keys(this.customLinePoints).forEach(lineKey => {
+      if (lineKey === "fate" && this.selectedLines.fate === "fate_absent_or_faint") return;
+      const pts = this.customLinePoints[lineKey];
+      const color = pinColors[lineKey] || "#f5c542";
+
+      pts.forEach((p, idx) => {
+        const cp = this.toCanvasCoords(p);
+        const isActive = this.activePin && this.activePin.lineKey === lineKey && this.activePin.pointIndex === idx;
+
+        // Outer pulsing ring
+        ctx.beginPath();
+        ctx.arc(cp.x, cp.y, isActive ? 16 : 11, 0, Math.PI * 2);
+        ctx.fillStyle = isActive ? "rgba(255, 255, 255, 0.4)" : "rgba(20, 10, 35, 0.85)";
+        ctx.strokeStyle = color;
+        ctx.lineWidth = isActive ? 3 : 2;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner solid core dot
+        ctx.beginPath();
+        ctx.arc(cp.x, cp.y, isActive ? 6 : 4, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+      });
+    });
+  }
+
+  // Update line landmark presets based on The Street Ratchada variations
+  applyVariationPreset(lineKey, varId) {
+    if (!this.customLinePoints[lineKey]) return;
+
+    if (lineKey === "life") {
+      if (varId === "life_short_or_broken") {
+        this.customLinePoints.life[2] = { x: 0.36, y: 0.65 };
+        this.customLinePoints.life[3] = { x: 0.39, y: 0.72 };
+      } else {
+        this.customLinePoints.life[2] = { x: 0.36, y: 0.72 };
+        this.customLinePoints.life[3] = { x: 0.44, y: 0.88 };
+      }
+    } else if (lineKey === "head") {
+      if (varId === "head_curved_down") {
+        this.customLinePoints.head[2] = { x: 0.63, y: 0.66 };
+        this.customLinePoints.head[3] = { x: 0.76, y: 0.76 };
+      } else if (varId === "head_straight_long") {
+        this.customLinePoints.head[2] = { x: 0.63, y: 0.57 };
+        this.customLinePoints.head[3] = { x: 0.78, y: 0.60 };
+      } else {
+        this.customLinePoints.head[2] = { x: 0.63, y: 0.58 };
+        this.customLinePoints.head[3] = { x: 0.76, y: 0.64 };
+      }
+    } else if (lineKey === "heart") {
+      if (varId === "heart_straight_to_jupiter") {
+        this.customLinePoints.heart[3] = { x: 0.32, y: 0.33 };
+      } else if (varId === "heart_between_fingers") {
+        this.customLinePoints.heart[3] = { x: 0.38, y: 0.30 };
+      } else if (varId === "heart_curved_steep") {
+        this.customLinePoints.heart[2] = { x: 0.50, y: 0.32 };
+        this.customLinePoints.heart[3] = { x: 0.40, y: 0.25 };
+      }
+    } else if (lineKey === "fate") {
+      if (varId === "fate_from_moon") {
+        this.customLinePoints.fate[0] = { x: 0.66, y: 0.88 };
+        this.customLinePoints.fate[1] = { x: 0.56, y: 0.68 };
+      } else if (varId === "fate_from_life") {
+        this.customLinePoints.fate[0] = { x: 0.39, y: 0.72 };
+        this.customLinePoints.fate[1] = { x: 0.46, y: 0.58 };
+      } else {
+        this.customLinePoints.fate[0] = { x: 0.52, y: 0.88 };
+        this.customLinePoints.fate[1] = { x: 0.51, y: 0.68 };
+      }
+    } else if (lineKey === "marriage") {
+      if (varId === "marriage_forked_tail") {
+        this.customLinePoints.marriage[1] = { x: 0.76, y: 0.37 };
+      } else {
+        this.customLinePoints.marriage[1] = { x: 0.78, y: 0.365 };
+      }
+    }
   }
 
   renderRefinementTabs() {
@@ -631,7 +1213,8 @@ class PalmScanner {
           this.selectedLines[lineKey] = v.id;
           chipsContainer.querySelectorAll(".refine-option-chip").forEach(c => c.classList.remove("active"));
           chip.classList.add("active");
-          this.renderAnalysisCanvas();
+          this.applyVariationPreset(lineKey, v.id);
+          this.redrawAnalysisCanvas();
         });
 
         chipsContainer.appendChild(chip);
@@ -641,6 +1224,12 @@ class PalmScanner {
       section.appendChild(chipsContainer);
       this.refinementTabs.appendChild(section);
     });
+  }
+
+  showToast(msg) {
+    if (this.app && typeof this.app.showToast === "function") {
+      this.app.showToast(msg);
+    }
   }
 
   // Fallback synthetic palm preview if browser camera is not accessible
@@ -981,9 +1570,10 @@ class PalmScanner {
 
       // Generate synthetic palm canvas to display
       this.capturedDataUrl = this.generateSyntheticPalmCanvas();
-      this.renderAnalysisCanvas();
-      this.renderPalmResults();
-      this.switchPalmScreen("results");
+      this.renderAnalysisCanvas(false, () => {
+        this.renderPalmResults();
+        this.switchPalmScreen("results");
+      });
 
       return true;
     } catch (err) {
