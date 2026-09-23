@@ -10,6 +10,10 @@
     max-width: 200px;
     margin: 0 auto;
   }
+
+  .spread-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -50,26 +54,36 @@
   }
 
   .spread-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   /* Card Target Slots on Mobile */
   .selected-slots-rack {
-    gap: 0.6rem;
+    gap: 0.5rem;
   }
 
   .card-target-slot {
-    width: 90px;
-    height: 150px;
-    padding: 0.4rem;
+    width: 85px;
+    height: 140px;
+    padding: 0.3rem;
   }
 
   .slot-position-label {
-    font-size: 0.65rem;
+    font-size: 0.58rem;
   }
 
   .slot-placeholder-icon {
     font-size: 1.3rem;
+  }
+
+  /* Compact slots even smaller on mobile */
+  .selected-slots-rack.compact-slots .card-target-slot {
+    width: 72px;
+    height: 120px;
+  }
+
+  .selected-slots-rack.compact-slots .slot-position-label {
+    font-size: 0.5rem;
   }
 
   /* Ribbon on Mobile */
@@ -81,16 +95,16 @@
 
   /* 3D Revealed Cards on Mobile */
   .revealed-cards-flex {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
   .revealed-card-cardunit {
-    width: 135px;
+    width: 120px;
   }
 
   .card-3d-flipper {
-    width: 135px;
-    height: 235px;
+    width: 120px;
+    height: 210px;
   }
 
   .interpretation-card {
@@ -117,7 +131,7 @@
   }
 
   .spread-cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .altar-hero h2 {
@@ -125,12 +139,26 @@
   }
 
   .revealed-card-cardunit {
-    width: 120px;
+    width: 100px;
   }
 
   .card-3d-flipper {
-    width: 120px;
-    height: 210px;
+    width: 100px;
+    height: 175px;
+  }
+
+  .card-target-slot {
+    width: 70px;
+    height: 115px;
+  }
+
+  .slot-position-label {
+    font-size: 0.5rem;
+  }
+
+  .selected-slots-rack.compact-slots .card-target-slot {
+    width: 60px;
+    height: 100px;
   }
 
   .results-action-row {

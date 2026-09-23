@@ -29,10 +29,12 @@ const I18N = {
     spread_1_desc: "คำตอบเร่งด่วน หรือไพ่ประจำวัน",
     spread_3_name: "ไพ่ 3 ใบ",
     spread_3_desc: "อดีต • ปัจจุบัน • อนาคต",
-    spread_4_name: "ไพ่ 4 ใบ",
-    spread_4_desc: "เจาะลึกแก้ไขปัญหา",
     spread_5_name: "ไพ่ 5 ใบ",
-    spread_5_desc: "ภาพรวมทิศทางชีวิต",
+    spread_5_desc: "วิเคราะห์ปัญหาและทิศทางชีวิต",
+    spread_7_name: "ไพ่ 7 ใบ",
+    spread_7_desc: "แบบเกือกม้า เจาะลึกรอบด้าน",
+    spread_10_name: "ไพ่ 10 ใบ",
+    spread_10_desc: "กางเขนเซลติก พยากรณ์ชะตาชีวิต",
     btn_begin: "เริ่มพิธีกรรมสับไพ่และเปิดดวงชะตา",
     
     drawing_title: "เลือกไพ่ทาโรต์ของท่าน",
@@ -112,10 +114,12 @@ const I18N = {
     spread_1_desc: "Direct answer or daily guidance",
     spread_3_name: "3 Cards Spread",
     spread_3_desc: "Past • Present • Future",
-    spread_4_name: "4 Cards Problem Solver",
-    spread_4_desc: "Root cause & clear remedies",
-    spread_5_name: "5 Cards Destiny",
-    spread_5_desc: "Comprehensive life path guidance",
+    spread_5_name: "5 Cards Spread",
+    spread_5_desc: "In-depth analysis & life direction",
+    spread_7_name: "7 Cards Horseshoe",
+    spread_7_desc: "The Horseshoe — deep all-around insight",
+    spread_10_name: "10 Cards Celtic Cross",
+    spread_10_desc: "Celtic Cross — full destiny forecast",
     btn_begin: "Commence the Sacred Shuffle Ritual",
     
     drawing_title: "Select Your Tarot Cards",
@@ -181,66 +185,49 @@ const I18N = {
 // =========================================================================
 const SPREAD_DEFINITIONS = {
   1: [
-    {
-      th: "1. คำตอบและแก่นแท้ของดวงชะตา",
-      en: "1. Core Oracle & Situation Essence"
-    }
+    { th: "1. คำตอบและสถานการณ์หลัก", en: "1. Core Situation & Oracle Answer" }
   ],
   3: [
-    {
-      th: "1. อดีต (Past) — รากเหง้าของเรื่องราว",
-      en: "1. Past — The Root of Matter"
-    },
-    {
-      th: "2. ปัจจุบัน (Present) — สถานการณ์ที่เป็นอยู่",
-      en: "2. Present — Current Dynamics"
-    },
-    {
-      th: "3. อนาคต (Future) — แนวโน้มผลลัพธ์ที่จะเกิดขึ้น",
-      en: "3. Future — Likely Manifestation"
-    }
-  ],
-  4: [
-    {
-      th: "1. จุดเริ่มต้น — สาเหตุของปัญหา",
-      en: "1. Origin — Root of Problem"
-    },
-    {
-      th: "2. ปัจจุบัน — อุปสรรคและสิ่งขัดขวาง",
-      en: "2. Present — Current Obstacle"
-    },
-    {
-      th: "3. สิ่งที่คาดไม่ถึง — ปัจจัยภายนอก",
-      en: "3. Hidden Factors — External Influences"
-    },
-    {
-      th: "4. ทางออก — บทสรุปและคำแนะนำแก้ไข",
-      en: "4. Resolution — Solution & Outcome"
-    }
+    { th: "1. อดีต (Past) — สิ่งที่ส่งผลมาถึงปัจจุบัน", en: "1. Past — What Led to Now" },
+    { th: "2. ปัจจุบัน (Present) — พลังงานที่กำลังเผชิญ", en: "2. Present — Current Energy" },
+    { th: "3. อนาคต (Future) — แนวโน้มที่จะเกิดขึ้น", en: "3. Future — Likely Outcome" }
   ],
   5: [
-    {
-      th: "1. ตัวตนของคุณ — พลังงานและสภาพจิตใจ",
-      en: "1. Your Core — State & Mindset"
-    },
-    {
-      th: "2. สถานการณ์แวดล้อม — ปัจจัยภายนอก",
-      en: "2. Environment — Surrounding Factors"
-    },
-    {
-      th: "3. สิ่งที่ซ่อนอยู่ในใจ — ความกลัวหรือความหวัง",
-      en: "3. Subconscious — Inner Hopes & Fears"
-    },
-    {
-      th: "4. อุปสรรคสำคัญ — จุดชี้ขาดสถานการณ์",
-      en: "4. Key Obstacle — Decisive Factor"
-    },
-    {
-      th: "5. บทสรุปปลายทาง — ทิศทางแห่งโชคชะตา",
-      en: "5. Destiny — Ultimate Outcome"
-    }
+    { th: "1. จุดเริ่มต้น / อดีต", en: "1. Origin / Past" },
+    { th: "2. สถานการณ์ปัจจุบัน", en: "2. Present Situation" },
+    { th: "3. ตัวตน / ตัวแปรหลัก", en: "3. Self / Key Variable" },
+    { th: "4. ปัจจัยที่ส่งผล / ไพ่ลับ", en: "4. Influencing Factor / Hidden Card" },
+    { th: "5. บทสรุป / ทิศทางผลลัพธ์", en: "5. Conclusion / Outcome Direction" }
+  ],
+  7: [
+    { th: "1. อดีต — จุดเริ่มต้นและสาเหตุ", en: "1. Past — Origin & Cause" },
+    { th: "2. ปัจจุบัน — สถานการณ์หลัก", en: "2. Present — Current Situation" },
+    { th: "3. สิ่งที่ซ่อนอยู่ — ความรู้สึกภายใน", en: "3. Hidden — Inner Feelings" },
+    { th: "4. อุปสรรค — บททดสอบที่ต้องผ่าน", en: "4. Obstacle — Challenge to Overcome" },
+    { th: "5. ปัจจัยที่ส่งผล — สภาพแวดล้อม", en: "5. Influence — Environment & Opportunity" },
+    { th: "6. คำแนะนำ — เสียงจากจักรวาล", en: "6. Advice — Voice of the Universe" },
+    { th: "7. บทสรุป — ผลลัพธ์สุดท้าย", en: "7. Conclusion — Final Outcome" }
+  ],
+  10: [
+    { th: "1. ปัจจุบัน — ศูนย์กลางสถานการณ์", en: "1. Present — Core Situation" },
+    { th: "2. อุปสรรคขัดขวาง — ไพ่ขวาง", en: "2. Challenge — Crossing Card" },
+    { th: "3. จิตใต้สำนึก / รากฐาน", en: "3. Subconscious / Foundation" },
+    { th: "4. อดีตที่ส่งผล", en: "4. Past Influence" },
+    { th: "5. ความคาดหวัง / สิ่งที่เพิ่งผ่านมา", en: "5. Recent Past / Crown" },
+    { th: "6. อนาคตอันใกล้", en: "6. Near Future" },
+    { th: "7. ตัวตนและทัศนคติ", en: "7. Self & Attitude" },
+    { th: "8. สภาพแวดล้อมภายนอก", en: "8. External Environment" },
+    { th: "9. ความหวังและความกลัว", en: "9. Hopes & Fears" },
+    { th: "10. บทสรุปสุดท้าย — ชะตากรรม", en: "10. Final Outcome — Destiny" }
   ]
 };
+
+// Love-specific 3-card spread (Him - You - Relationship)
+const SPREAD_DEFINITIONS_LOVE_3 = [
+  { th: "1. เขา — พลังงานและมุมมองของอีกฝ่าย", en: "1. The Other — Their Energy & Perspective" },
+  { th: "2. คุณ — ความรู้สึกและบทบาทของคุณ", en: "2. You — Your Feelings & Role" },
+  { th: "3. ความสัมพันธ์ — ทิศทางของเรื่องนี้", en: "3. The Relationship — Its Direction" }
+];
 
 // =========================================================================
 // 3. APPLICATION STATE
@@ -260,6 +247,14 @@ class TarotApp {
     this.bindEvents();
     this.applyLanguage();
     this.renderGrimoire();
+  }
+
+  // Helper: returns correct position definitions (love-specific for 3-card when category is love)
+  getPositions() {
+    if (this.spreadCount === 3 && this.category === "love") {
+      return SPREAD_DEFINITIONS_LOVE_3;
+    }
+    return SPREAD_DEFINITIONS[this.spreadCount];
   }
 
   initDOM() {
@@ -526,7 +521,9 @@ class TarotApp {
 
     // Build Slots
     this.targetSlotsRack.innerHTML = "";
-    const positions = SPREAD_DEFINITIONS[this.spreadCount];
+    // Add compact class for 7+ card spreads
+    this.targetSlotsRack.classList.toggle("compact-slots", this.spreadCount >= 7);
+    const positions = this.getPositions();
     for (let i = 0; i < this.spreadCount; i++) {
       const slot = document.createElement("div");
       slot.className = "card-target-slot";
@@ -594,7 +591,7 @@ class TarotApp {
     if (slotEl) {
       slotEl.classList.add("filled");
       slotEl.innerHTML = `
-        <span class="slot-position-label">${SPREAD_DEFINITIONS[this.spreadCount][slotIdx][this.lang]}</span>
+        <span class="slot-position-label">${this.getPositions()[slotIdx][this.lang]}</span>
         <div class="card-back-pattern" style="width:100%; height:130px; border-radius:6px;"></div>
       `;
     }
@@ -653,7 +650,7 @@ class TarotApp {
 
     // 2. Render 3D Cards Row
     this.revealedCardsContainer.innerHTML = "";
-    const positions = SPREAD_DEFINITIONS[this.spreadCount];
+    const positions = this.getPositions();
 
     this.drawnCards.forEach((item, index) => {
       const card = item.card;
@@ -681,14 +678,15 @@ class TarotApp {
 
       this.revealedCardsContainer.appendChild(unit);
 
-      // Staggered 3D Flip after mounting
+      // Staggered 3D Flip after mounting (faster for larger spreads)
+      const flipDelay = this.spreadCount >= 7 ? 200 : 350;
       setTimeout(() => {
         const flipper = document.getElementById(`flipper-${index}`);
         if (flipper) {
           flipper.classList.add("flipped");
           window.mysticAudio.playCardFlip();
         }
-      }, index * 350 + 200);
+      }, index * flipDelay + 200);
     });
 
     // 3. Render Gemini Prompt for easy AI follow-up
@@ -821,7 +819,7 @@ class TarotApp {
     const dict = I18N[this.lang];
     const domainName = I18N[this.lang]["cat_" + this.category];
     const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
-    const positions = SPREAD_DEFINITIONS[this.spreadCount];
+    const positions = this.getPositions();
 
     const cardsDetails = this.drawnCards.map((item, idx) => {
       const pos = positions[idx][this.lang];
@@ -1071,7 +1069,7 @@ class TarotApp {
     const customQuestion = this.geminiCustomQuestion ? this.geminiCustomQuestion.value.trim() : "";
     const domain = I18N[this.lang]["cat_" + this.category];
     const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
-    const positions = SPREAD_DEFINITIONS[this.spreadCount];
+    const positions = this.getPositions();
 
     let prompt = "";
     if (this.lang === "th") {
@@ -1230,7 +1228,7 @@ Please act as an "Empathetic Master Tarot Reader and Life Advisor", analyzing th
       ? (this.lang === "th" ? "กลับหัว (Reversed)" : "Reversed") 
       : (this.lang === "th" ? "ตั้งตรง (Upright)" : "Upright");
     const kw = aspect.keywords[this.lang].slice(0, 3).join(", ");
-    const pos = SPREAD_DEFINITIONS[this.spreadCount][index][this.lang];
+    const pos = this.getPositions()[index][this.lang];
     const domainName = I18N[this.lang]["cat_" + this.category];
 
     let categoryText = "";
@@ -1244,15 +1242,6 @@ Please act as an "Empathetic Master Tarot Reader and Life Advisor", analyzing th
       let roleDesc = "";
       if (this.spreadCount === 1) {
         roleDesc = `ในฐานะไพ่ชี้ขาดของดวงชะตาเรื่องนี้`;
-      } else if (this.spreadCount === 3) {
-        if (index === 0) roleDesc = `ในตำแหน่ง <strong>1. อดีต / รากเหง้าของเรื่องราว</strong>`;
-        else if (index === 1) roleDesc = `ในตำแหน่ง <strong>2. ปัจจุบัน / สถานการณ์ที่เป็นอยู่</strong>`;
-        else roleDesc = `ในตำแหน่ง <strong>3. อนาคต / แนวโน้มผลลัพธ์ที่จะเกิดขึ้น</strong>`;
-      } else if (this.spreadCount === 4) {
-        if (index === 0) roleDesc = `ในตำแหน่ง <strong>1. จุดเริ่มต้นและสาเหตุของปัญหา</strong>`;
-        else if (index === 1) roleDesc = `ในตำแหน่ง <strong>2. อุปสรรคและสิ่งที่ขัดขวางในปัจจุบัน</strong>`;
-        else if (index === 2) roleDesc = `ในตำแหน่ง <strong>3. ปัจจัยภายนอกหรือสิ่งที่คาดไม่ถึง</strong>`;
-        else roleDesc = `ในตำแหน่ง <strong>4. ทางออก บทสรุป และคำแนะนำแก้ไข</strong>`;
       } else {
         roleDesc = `ในตำแหน่ง <strong>${pos}</strong>`;
       }

@@ -367,7 +367,7 @@ body {
 /* Spread Selector Cards */
 .spread-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.85rem;
 }
 
@@ -472,9 +472,21 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1.2rem;
+  gap: 1rem;
   margin-bottom: 2.5rem;
   perspective: 1000px;
+  max-width: 100%;
+}
+
+/* Compact slots for 7+ card spreads */
+.selected-slots-rack.compact-slots .card-target-slot {
+  width: 95px;
+  height: 160px;
+  padding: 0.5rem;
+}
+
+.selected-slots-rack.compact-slots .slot-position-label {
+  font-size: 0.6rem;
 }
 
 .card-target-slot {
