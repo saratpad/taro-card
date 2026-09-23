@@ -220,4 +220,56 @@
     width: 100%;
     justify-content: center;
   }
+
+  /* Palm Mode Responsive */
+  .palm-analysis-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .analysis-canvas-wrapper {
+    max-width: 100%;
+  }
+
+  .analysis-actions-bar {
+    flex-direction: column;
+  }
+
+  .palm-rule-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 14px 16px;
+  }
+
+  .palm-camera-actions {
+    gap: 12px;
+  }
+
+  .btn-capture-main {
+    padding: 12px 20px !important;
+    font-size: 1rem !important;
+  }
+
+  .palm-gender-chips-row {
+    flex-direction: column;
+  }
+
+  .palm-gender-chip {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .palm-hand-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sanctuary-mode-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+  }
 }

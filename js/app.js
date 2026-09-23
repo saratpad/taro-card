@@ -109,7 +109,9 @@ const I18N = {
     love_single_title: "คำทำนายคนโสด",
     love_couple_title: "คำทำนายคนมีคู่",
     love_single_badge: "👤 คนโสด",
-    love_couple_badge: "💑 คนมีคู่"
+    love_couple_badge: "💑 คนมีคู่",
+    mode_tarot: "ไพ่ทาโรต์",
+    mode_palm: "สแกนดูลายมือ"
   },
   en: {
     brand_title: "MYSTIC WITCH",
@@ -212,7 +214,9 @@ const I18N = {
     love_single_title: "For Singles",
     love_couple_title: "For Couples / In a Relationship",
     love_single_badge: "👤 Singles",
-    love_couple_badge: "💑 Couples"
+    love_couple_badge: "💑 Couples",
+    mode_tarot: "Tarot Cards",
+    mode_palm: "Palm Reading"
   }
 };
 
@@ -573,6 +577,18 @@ class TarotApp {
       this.sharedNoticeTitle.textContent = this.seekerName
         ? (this.lang === "th" ? `🔮 คำทำนายดวงชะตาที่คุณ ${this.seekerName} แชร์มาให้ชม` : `🔮 Tarot Reading Shared by ${this.seekerName}`)
         : (this.lang === "th" ? `🔮 ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม` : `🔮 Shared Tarot Divination`);
+    }
+
+    if (this.palmScanner) {
+      this.palmScanner.updateHandRuleNotice();
+      const refineEl = document.getElementById("screen-palm-analysis");
+      if (refineEl && refineEl.classList.contains("active")) {
+        this.palmScanner.renderRefinementTabs();
+      }
+      const resultsEl = document.getElementById("screen-palm-results");
+      if (resultsEl && resultsEl.classList.contains("active")) {
+        this.palmScanner.renderPalmResults();
+      }
     }
 
     this.updateAudioButton(window.mysticAudio.isMuted);
@@ -1945,4 +1961,8 @@ ${this.category === "love" ? "6. Specially for Love: Analyze distinct guidance f
 // Initialize on DOM load
 window.addEventListener("DOMContentLoaded", () => {
   window.tarotApp = new TarotApp();
+  if (typeof PalmScanner !== "undefined") {
+    window.palmScanner = new PalmScanner(window.tarotApp);
+    window.tarotApp.palmScanner = window.palmScanner;
+  }
 });
