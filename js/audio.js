@@ -110,6 +110,62 @@ class MysticAudio {
     noise.stop(now + duration);
   }
 
+  playRiffleShuffle() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+
+    // 1. Initial Gather Slide (0.0s - 0.3s)
+    this.playCardShuffle();
+
+    // 2. Rapid Riffle Flutter (0.4s - 1.2s): 18 crisp textured card-edge clicks
+    const totalClicks = 18;
+    for (let i = 0; i < totalClicks; i++) {
+      const clickDelay = 0.4 + (i * 0.042) + (Math.random() * 0.008);
+      const clickTime = now + clickDelay;
+
+      // Small high-frequency noise tick
+      const tickOsc = this.ctx.createOscillator();
+      const tickGain = this.ctx.createGain();
+      const tickFilter = this.ctx.createBiquadFilter();
+
+      // Pitch slightly rises as cards release
+      const baseFreq = 800 + (i * 45) + (Math.random() * 80 - 40);
+      tickOsc.type = i % 2 === 0 ? "triangle" : "square";
+      tickOsc.frequency.setValueAtTime(baseFreq, clickTime);
+
+      tickFilter.type = "highpass";
+      tickFilter.frequency.setValueAtTime(1200, clickTime);
+
+      tickGain.gain.setValueAtTime(0.001, clickTime);
+      tickGain.gain.linearRampToValueAtTime(0.09, clickTime + 0.004);
+      tickGain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.028);
+
+      tickOsc.connect(tickFilter);
+      tickFilter.connect(tickGain);
+      tickGain.connect(this.ctx.destination);
+
+      tickOsc.start(clickTime);
+      tickOsc.stop(clickTime + 0.03);
+    }
+
+    // 3. Deck squaring friction swoosh (1.25s)
+    setTimeout(() => {
+      this.playCardShuffle();
+    }, 1250);
+
+    // 4. Harmonic crystal bell chime upon completion (1.6s)
+    setTimeout(() => {
+      this.playCrystalBell(880, 1.4); // A5 note
+      setTimeout(() => {
+        this.playCrystalBell(1174.66, 1.6); // D6 harmonic
+      }, 100);
+    }, 1600);
+  }
+
   playCardFlip() {
     if (this.isMuted) return;
     this.init();

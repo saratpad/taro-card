@@ -42,6 +42,9 @@ const I18N = {
     drawing_progress: "เลือกไพ่แล้ว {current} จากทั้งหมด {total} ใบ",
     btn_intuition: "พลังญาณทัศน์แม่มด (สุ่มเลือกให้)",
     btn_reshuffle: "สับไพ่อีกครั้ง",
+    btn_shuffling: "กำลังสับไพ่...",
+    shuffle_status_shuffling: "🔮 กำลังร่ายมนตร์สับไพ่ 78 ใบ...",
+    shuffle_status_ready: "✨ สำรับไพ่ 78 ใบถูกสับเรียบร้อยแล้ว! พร้อมเปิดรับพลังงานของท่าน",
     
     results_title: "คำทำนายจากม่านมนตรา",
     synthesis_title: "บทสังเคราะห์พลังงานชะตาจากแม่มด",
@@ -138,6 +141,9 @@ const I18N = {
     drawing_progress: "Drawn {current} of {total} cards",
     btn_intuition: "Witch's Intuition (Auto Draw)",
     btn_reshuffle: "Reshuffle the Deck",
+    btn_shuffling: "Shuffling Deck...",
+    shuffle_status_shuffling: "🔮 Weaving mystical energies to shuffle 78 cards...",
+    shuffle_status_ready: "✨ 78 Sacred Tarot Cards Shuffled! Ready for your intuition.",
     
     results_title: "Whispers from the Arcana",
     synthesis_title: "The Witch's Grand Synthesis",
@@ -311,6 +317,10 @@ class TarotApp {
     this.deckRibbonContainer = document.getElementById("deck-ribbon-container");
     this.btnWitchIntuition = document.getElementById("btn-witch-intuition");
     this.btnReShuffle = document.getElementById("btn-re-shuffle");
+    this.btnReShuffleText = document.getElementById("btn-re-shuffle-text");
+    this.altarShuffleStatus = document.getElementById("altar-shuffle-status");
+    this.shuffleStatusText = document.getElementById("shuffle-status-text");
+    this.isShuffling = false;
 
     // Screen 3: Results
     this.resultsSeekerGreeting = document.getElementById("results-seeker-greeting");
@@ -416,8 +426,7 @@ class TarotApp {
 
     // Re-shuffle
     this.btnReShuffle.addEventListener("click", () => {
-      window.mysticAudio.playCardShuffle();
-      this.setupDrawingTable();
+      this.triggerShuffleAnimation(false);
     });
 
     // Results Actions
@@ -608,6 +617,165 @@ class TarotApp {
     });
 
     this.updateDrawingProgress();
+
+    // Trigger authentic entrance shuffle ritual
+    this.triggerShuffleAnimation(true);
+  }
+
+  triggerShuffleAnimation(isInitial = false) {
+    if (this.isShuffling) return;
+    this.isShuffling = true;
+
+    const dict = I18N[this.lang];
+
+    // Reset drawn cards and slots if user reshuffles mid-draw
+    if (!isInitial && this.drawnCards.length > 0) {
+      this.drawnCards = [];
+      const positions = this.getPositions();
+      for (let i = 0; i < this.spreadCount; i++) {
+        const slot = document.getElementById(`target-slot-${i}`);
+        if (slot) {
+          slot.classList.remove("filled");
+          slot.innerHTML = `
+            <span class="slot-position-label">${positions[i][this.lang]}</span>
+            <span class="slot-placeholder-icon">✦</span>
+          `;
+        }
+      }
+      this.updateDrawingProgress();
+    }
+
+    // Audio & Haptics
+    window.mysticAudio.playRiffleShuffle();
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate([20, 35, 20, 35, 45]);
+      } catch (err) {}
+    }
+
+    // Update Status & Buttons
+    if (this.altarShuffleStatus) {
+      this.altarShuffleStatus.classList.remove("is-ready");
+      this.altarShuffleStatus.classList.add("is-shuffling");
+      if (this.shuffleStatusText) {
+        this.shuffleStatusText.textContent = dict.shuffle_status_shuffling || "🔮 กำลังร่ายมนตร์สับไพ่ 78 ใบ...";
+      }
+    }
+
+    if (this.btnReShuffle) {
+      this.btnReShuffle.classList.add("is-active");
+    }
+    if (this.btnReShuffleText) {
+      this.btnReShuffleText.textContent = dict.btn_shuffling || "กำลังสับไพ่...";
+    }
+    if (this.btnWitchIntuition) {
+      this.btnWitchIntuition.disabled = true;
+    }
+
+    // Card Elements
+    const cardEls = Array.from(this.deckRibbonContainer.querySelectorAll(".tarot-card-deck-item"));
+    if (this.deckRibbonContainer) {
+      this.deckRibbonContainer.classList.add("is-shuffling");
+    }
+
+    // Phase 1 (0ms - 420ms): Gather to center stack
+    cardEls.forEach((cardEl) => {
+      cardEl.classList.remove("selected", "shuffling-split-left", "shuffling-split-right", "shuffling-riffle", "shuffling-fan-out");
+      cardEl.classList.add("shuffling-phase-gather");
+    });
+
+    // Phase 2 (420ms - 800ms): Split into left and right piles
+    setTimeout(() => {
+      cardEls.forEach((cardEl, idx) => {
+        cardEl.classList.remove("shuffling-phase-gather");
+        if (idx < 39) {
+          cardEl.classList.add("shuffling-split-left");
+        } else {
+          cardEl.classList.add("shuffling-split-right");
+        }
+      });
+    }, 420);
+
+    // Phase 3 (800ms - 1450ms): 3D Riffle Interleaving Flutter
+    setTimeout(() => {
+      cardEls.forEach((cardEl, idx) => {
+        const isLeft = idx < 39;
+        const normalized = isLeft ? (idx / 39) : ((idx - 39) / 39);
+        const riffleX = isLeft ? (-60 + (normalized * 60)) : (60 - (normalized * 60));
+        const riffleRot = isLeft ? (-8 + (normalized * 8)) : (8 - (normalized * 8));
+
+        cardEl.style.setProperty("--riffle-x", `${riffleX}px`);
+        cardEl.style.setProperty("--riffle-rot", `${riffleRot}deg`);
+
+        // Staggered animation delay
+        const stagger = (idx % 2 === 0 ? (idx * 5) : ((77 - idx) * 5));
+        cardEl.style.animationDelay = `${stagger}ms`;
+
+        cardEl.classList.remove("shuffling-split-left", "shuffling-split-right");
+        cardEl.classList.add("shuffling-riffle");
+      });
+    }, 800);
+
+    // Phase 4 (1450ms - 1800ms): Reshuffle data & Fan out smoothly
+    setTimeout(() => {
+      // True random reshuffle
+      this.deck = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
+
+      // Particle burst in the center
+      if (window.mysticParticles && this.deckRibbonContainer) {
+        const rect = this.deckRibbonContainer.getBoundingClientRect();
+        window.mysticParticles.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 28);
+      }
+
+      cardEls.forEach((cardEl, idx) => {
+        cardEl.classList.remove("shuffling-riffle");
+        cardEl.classList.add("shuffling-fan-out");
+
+        // Natural fan angle
+        const rot = ((idx - 39) / 39) * 16;
+        cardEl.style.transform = `rotate(${rot}deg)`;
+        cardEl.style.marginLeft = idx === 0 ? "0px" : "-32px";
+        cardEl.style.animationDelay = "";
+        
+        // Re-bind to newly shuffled card
+        const newCard = this.deck[idx];
+        cardEl.dataset.index = idx;
+        cardEl.onclick = (e) => {
+          this.handleCardClick(newCard, cardEl, e);
+        };
+      });
+    }, 1450);
+
+    // Completion (1850ms): Ready state
+    setTimeout(() => {
+      cardEls.forEach((cardEl) => {
+        cardEl.classList.remove("shuffling-fan-out");
+      });
+
+      if (this.deckRibbonContainer) {
+        this.deckRibbonContainer.classList.remove("is-shuffling");
+      }
+
+      if (this.altarShuffleStatus) {
+        this.altarShuffleStatus.classList.remove("is-shuffling");
+        this.altarShuffleStatus.classList.add("is-ready");
+        if (this.shuffleStatusText) {
+          this.shuffleStatusText.textContent = dict.shuffle_status_ready || "✨ สำรับไพ่ 78 ใบถูกสับเรียบร้อยแล้ว! พร้อมเปิดรับพลังงานของท่าน";
+        }
+      }
+
+      if (this.btnReShuffle) {
+        this.btnReShuffle.classList.remove("is-active");
+      }
+      if (this.btnReShuffleText) {
+        this.btnReShuffleText.textContent = dict.btn_reshuffle || "สับไพ่อีกครั้ง";
+      }
+      if (this.btnWitchIntuition) {
+        this.btnWitchIntuition.disabled = false;
+      }
+
+      this.isShuffling = false;
+    }, 1850);
   }
 
   handleCardClick(card, cardEl, event) {

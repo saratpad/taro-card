@@ -197,6 +197,12 @@
             <!-- Dynamically populated slots -->
           </div>
 
+          <!-- Real-Time Shuffle Feedback Banner -->
+          <div id="altar-shuffle-status" class="altar-shuffle-status" aria-live="polite">
+            <span class="shuffle-status-icon">✨</span>
+            <span class="shuffle-status-text" id="shuffle-status-text">สำรับไพ่ 78 ใบพร้อมเปิดรับพลังงานของท่าน</span>
+          </div>
+
           <!-- The Deck Ribbon Fan (78 Cards) -->
           <div class="deck-spread-ribbon" id="deck-ribbon-container">
             <!-- Dynamically populated 78 card backs -->
@@ -209,9 +215,9 @@
               <span data-i18n="btn_intuition">พลังญาณทัศน์แม่มด (สุ่มเลือกให้)</span>
             </button>
 
-            <button id="btn-re-shuffle" class="btn-secondary-mystic">
-              <span>🌀</span>
-              <span data-i18n="btn_reshuffle">สับไพ่อีกครั้ง</span>
+            <button id="btn-re-shuffle" class="btn-secondary-mystic btn-shuffle-deck">
+              <span class="shuffle-btn-icon">🌀</span>
+              <span id="btn-re-shuffle-text" data-i18n="btn_reshuffle">สับไพ่อีกครั้ง</span>
             </button>
           </div>
 
@@ -442,6 +448,7 @@
 
   <!-- JavaScript Modules -->
   <script src="js/tarot-data.js"></script>
+  <script src="js/tarot-minor-data.js"></script>
   <script src="js/tarot-love-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>

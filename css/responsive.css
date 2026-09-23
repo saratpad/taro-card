@@ -93,6 +93,25 @@
     margin-left: -28px;
   }
 
+  .altar-shuffle-status {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.9rem;
+    max-width: 95%;
+    text-align: center;
+  }
+
+  .tarot-card-deck-item.shuffling-phase-gather {
+    margin-left: -44px !important;
+  }
+
+  .tarot-card-deck-item.shuffling-split-left {
+    transform: translate(-70px, -15px) rotate(-10deg) scale(1.03) !important;
+  }
+
+  .tarot-card-deck-item.shuffling-split-right {
+    transform: translate(70px, -15px) rotate(10deg) scale(1.03) !important;
+  }
+
   /* 3D Revealed Cards on Mobile */
   .revealed-cards-flex {
     gap: 1rem;
