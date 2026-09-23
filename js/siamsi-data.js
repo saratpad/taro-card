@@ -1,6 +1,7 @@
 /**
- * ฐานข้อมูลเซียมซี 100 ใบ (เบอร์ 00 - 99)
- * อ้างอิงคำทำนายครบทุกด้านจาก kaucim.ai/th/sign (เซียมซีหว่องไทซิน)
+ * ฐานข้อมูลเซียมซี 100 ใบ (เบอร์ 00 - 99 / ใบที่ 1 - 100)
+ * อ้างอิงคำทำนายครบทุกด้านจาก kaucim.ai (เซียมซีหว่องไทซิน)
+ * รองรับ 2 ภาษาอย่างสมบูรณ์: ภาษาไทย (TH) และ ภาษาอังกฤษ (EN)
  * ครอบคลุม: อาชีพ, โชคลาภ, ความรัก, สุขภาพ, การเรียน, ครอบครัว, ภาพรวม, บทกลอน และเรื่องราวดั้งเดิม
  */
 
@@ -57,6 +58,48 @@ const SIAMSI_DATA = [
         "summary": "ได้ใบแรกในร้อยใบไม่ใช่เรื่องบังเอิญ",
         "detail": "ได้ใบแรกในร้อยใบแล้วนะ ไม่ใช่เรื่องบังเอิญหรอก\n\nบทกลอนบอกว่า \"靈籤求得第一枝\" จับได้เซียมซีใบแรกเลย \"龍虎風雲際會時\" มังกรเจอลม เสือเจอเมฆ สี่อย่างมารวมกัน \"一旦凌霄揚自樂\" พุ่งขึ้นฟ้าเก้าชั้นด้วยความสำราญ \"任君來往赴瑤池\" จะไปงานเลี้ยงแม่นางเหมยยังได้เชิญเลย\n\nมาฟังเรื่องเจียงไท่กง (姜太公) กันเถอะ คุณตาคนนึงนั่งตกปลาข้างแม่น้ำเวย์ด้วยเบ็ดตรงๆ ไม่ใส่เหยื่อ คนเห็นก็หัวเราะเยาะว่าเพี้ยนแล้ว แต่เขาพูดเสมอว่า \"ปลาที่ใช่จะเอาเองมาติดเบ็ด\" นั่งแบบนี้มา 72 ปีกว่า จนกระทั่งกษัตริย์โจวเวินหวัง (周文王) ขี่รถผ่านมาแล้วมองเห็นว่าคนแก่คนนี้ไม่ธรรมดา ลงมาขอให้เป็นที่ปรึกษา เจียงไท่กงตอบ \"รออยู่แล้วครับ\" พอได้เป็นยอดนักยุทธ์ ช่วยทำสงครามชนะ กลายเป็นตำนานตลอดกาล\n\nนี่แหละสถานการณ์ของคุณตอนนี้ ที่ผ่านมาคุณรู้สึกว่าทำอะไรก็ไม่ถูกจังหวะใช่ไหม? เหมือนพยายามมาแล้วแต่ยังไม่ถึงเวลา ตอนนี้เวลานั้นมาถึงแล้ว มังกรมีลมแล้ว เสือมีเมฆแล้ว ขาดแค่คุณลงมือทำ\n\nเซียมซีใบนี้ไม่ได้บอกแค่ \"จะดีขึ้นหน่อย\" หรือ \"มีความหวังบ้าง\" ไม่นะ มันบอกว่าคุณจะได้ \"ขึ้นฟ้า\" ได้ไป \"เยาวฉือ\" ที่ดาวเทพอยู่ เหมือนเจียงไท่กงที่จากชาวประมงกลายเป็นองค์อุปราช นี่คือการเปลี่ยนแปลงระดับชีวิต ไม่ใช่แค่โชคดีชั่วคราว\n\nเก็บกดเอาไว้ทำไม? โอกาสมาแล้ว ควรจะพูดให้ใครฟังก็พูด ควรจะทำอะไรก็ทำ อย่าไปกลัวว่ายังไม่พร้อมหรือยังไม่ถึงเวลา เพราะเจียงไท่กงรอมา 72 ปีแล้วนะ คุณพร้อมแล้วแหละ"
       }
+    },
+    "en": {
+      "title": "Jiang Gong Becomes Prime Minister",
+      "fortune_level": "The Best",
+      "one_line_summary": "Stick #1 opens with Jiang Ziya by the Wei River.",
+      "poem": [
+        "At the moment the first lot is drawn",
+        "The dragon and the tiger meet in bond.",
+        "Once soaring up high in joy",
+        "You will roam in Heaven whatever be your choice."
+      ],
+      "story": "This sign tells the story of Jiang Ziya, also known as Jiang Taigong, one of ancient China's most legendary figures. Picture an old man fishing by the Wei River with a straight hook — no bait, no bend.\n\nPeople mocked him, but he'd simply say he was waiting for the right fish to come to him. That fish turned out to be King Wen of Zhou, who recognized Jiang's wisdom and appointed him as his military strategist.\n\nJiang was already in his seventies when his fortunes changed, proving that timing matters more than age. He helped establish the Zhou Dynasty and became its first prime minister.\n\nHis story represents the ultimate late bloomer — someone whose patience and hidden talents finally get the recognition they deserve.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "You're experiencing that rare career moment when everything clicks into place."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Years of quiet effort finally pay out. Hold your ground — don't chase shortcuts now."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In love, you've drawn the ultimate fortune stick."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Drawing this stick for health questions is like hitting the wellness jackpot."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Drawing the very first stick, with its image of Jiang Ziya finally lifted from the riverbank into the court, is the kind of result that makes you read the verse twice to be sure."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is approaching a major breakthrough moment."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick #1 opens with Jiang Ziya by the Wei River, a hook with no bend, no bait, and no apology for the years already spent waiting."
+        }
+      }
     }
   },
   {
@@ -110,6 +153,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เซียมซีที่ 2 วังเต่าเจินหลงเข้าสวนท้อ ระดับเซียงกิ๊ก ดวงเปลี่ยนจากตกต่ำเป็นรุ่งเรือง โอกาสดีจะมาโดยบังเอิญ",
         "detail": "โชคใหญ่กำลังจะมา แต่มาแบบไม่คาดคิด! บทกลอนพูดถึง \"枮木逢春盡發新\" ไม้แห้งแกกิ่งโค่นที่ดูจะตายไปแล้ว พอฤดูใบไผ่กลับมาก็แตกยอดใหม่เขียวขจี มันเหมือนบางคนที่เราคิดว่าหมดหวังแล้ว แต่ชีวิตมักจะให้โอกาสใหม่ในยามที่ไม่คิด \"花香葉茂蝶來頻\" ดอกไม้บานสะพรั่ง กลิ่นหอมล่อผีเสื้อให้บินมาเองโดยไม่ต้องเรียก \"桃源競鬭千紅紫\" สวนท้อแก้วแปลงเป็นปาฏิหาริย์ ดอกไม้สีแดงม่วงแข่งกันบานอย่างงดงาม แต่สำคัญสุดคือ \"一片漁舟誤入津\" เรือประมงใบหนึ่งหลงเข้าไปในอ่าวลึกลับโดยบังเอิญ\n\nเรื่องนี้เล่าถึงวัง เต่า เจิน (王道真) ชาวประมงธรรมดาคนหนึ่งที่กำลังแกว่งเรือหาปลาตามปกติ ลอยไปลอยมาตามกระแสน้ำ ไม่รู้ว่าจะไปทางไหน แต่พอเห็นกลีบท้อติดมากับน้ำ เขาก็ตัดสินใจพายตาม กลีบท้อหนึ่งกลีบสองกลีบ ยิ่งไปยิ่งมาก สุดท้ายเขาก็พบเมืองปลาในนิทานแห่งสวนท้อแก้ว (桃花源) ที่ผู้คนอาศัยอย่างสงบสุข ไม่มีทุกข์โศก ทั้งที่เขาไม่ได้วางแผนจะหาสวรรค์บนดินแต่อย่างใด เพียงแค่ทำในสิ่งที่ตัวเองถนัด แล้วชะตาก็นำทางให้\n\nตอนนี้คุณอาจรู้สึกเหมือนไม้แห้งในบทกลอน ชีวิตดูจืดชืด ไม่มีแววไหวของการเปลี่ยนแปลง งานก็ไม่มีความก้าวหน้า ความรักก็ไม่มีคนใหม่เข้ามา เงินทองก็ไม่เพิ่มพูน แต่เซียมซีใบนี้บอกว่าจุดเปลี่ยนผ่านกำลังจะมา และจะมาในรูปแบบที่คุณไม่เคยคิดถึง อาจจะมีคนแนะนำงานที่ฟังแล้วไม่น่าสนใจ แต่กลับเป็นจุดเริ่มต้นของบางสิ่งที่ยิ่งใหญ่ หรืออาจมีคนใหม่เข้ามาในชีวิตแบบไม่ได้นัด อย่างวังเต่าเจินที่หลงเข้าสวนท้อ โชคดีที่แท้จริงมักจะมาในชุดธรรมดา ไม่ใช่มาพร้อมกลองแตรเหมือนในหนัง\n\nหยุดวางแผนทุกอย่างเสียที แค่ทำดีในสิ่งที่อยู่ตรงหน้าเถอะ เหมือนชาวประมงที่พายเรือหาปลาตามความชำนาญ ถ้ามีโอกาสแปลกๆ เข้ามา อย่าปฏิเสธทันที ให้ความสนใจดูก่อน บางทีมันอาจเป็นกลีบท้อที่จะพาคุณไปสวนแก้วก็ได้นะ"
+      }
+    },
+    "en": {
+      "title": "Wang Daozhen Stumbles into the Peach Blossom Spring",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Wang Daozhen didn't set out to find paradise.",
+      "poem": [
+        "Withered woods turn green again in spring.",
+        "Luxuriant leaves and fragrant blossoms come with butterflies.",
+        "Along with the Peach, Fairyland flowers mingle in purple and red, A fishing boat having lost its way finally reaches land."
+      ],
+      "story": "This sign references Tao Yuanming's famous story 'Peach Blossom Spring' from 4th century China, combined with a character named Wang Daozhen who accidentally discovers this paradise. In the tale, a fisherman follows floating peach petals upstream and stumbles through a hidden cave into an idyllic village where people live in harmony, untouched by the outside world's troubles.\n\nThe residents descended from refugees who fled war centuries ago and created their own perfect society. When the fisherman tries to return and bring others, he can never find the entrance again.\n\nThe story became China's most famous utopia myth, representing the human longing for simplicity and peace. Wang Daozhen's 'mistake' of getting lost becomes his greatest fortune—sometimes our wrong turns lead us exactly where we need to be.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is about to bloom after what felt like a barren period."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The patient work you've quietly built is about to find its river and carry you forward."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is about to bloom like those withered woods in spring."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Stick 2 hands you the fisherman drifting off course and finding peach blossoms he never went looking for."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "You drew the stick of the fisherman who lost his way and stumbled into the peach grove."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family life is entering a season of unexpected renewal."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Wang Daozhen didn't set out to find paradise."
+        }
       }
     }
   },
@@ -165,6 +249,47 @@ const SIAMSI_DATA = [
         "summary": "ความสามารถดีแต่ถูกฟันทิ้งทีละนิด ต้องหยุดให้คนอื่นเอาประโยชน์",
         "detail": "ไม่ใช่ดวงดีดวงไม่ดี แต่คุณกำลังสูญเสียพลังแบบช้าๆ แต่แน่นอน\n\nบทกลอนนี้เล่าเรื่องหลู่ปัน (魯班) ช่างไม้ในตำนานที่เก่งที่สุดในประวัติศาสตร์จีน เขาประดิษฐ์เลื่อย สว่าน และเครื่องมือช่างนับไม่ถ้วน แต่วันหนึ่งเขาขึ้นไปบนภูเขานิวซาน พบว่าต้นไม้ที่เคยงามสง่าถูกคนฟันไปแล้วทีละต้น จนเหลือแต่ต้นไผ่เอียงงอที่ไม่ตรงตามมาตรฐาน จะเอามาทำเรือก็ไม่ได้ ทำบ้านก็ผิดขนาด มีดี แต่ใช้ไม่ได้ นี่คือเรื่องจริงที่โกจู้ได้ยืมมาเล่าในหนังสือเมิ่งจื่อ - ว่าภูเขานิวซานเคยเต็มไปด้วยป่าไผ่ใหญ่ แต่คนในเมืองไปฟันกันทุกวันจนหมด หน่อไม้งอกใหม่ก็โดนวัวแพะกัดไปอีก สุดท้ายกลายเป็นภูเขาโล้นที่ดูเหมือนว่าไม่เคยมีไผ่ที่ไหน\n\nคุณก็เหมือนป่าไผ่บนภูเขานิวซานนั่นแหละ ไม่ใช่ว่าไม่เก่ง ไม่ใช่ว่าไม่มีความสามารถ แต่กำลังถูกฟันทีละนิด จนเหลือแต่ความสามารถที่เอียงงอไปจากมาตรฐานที่ควรจะเป็น บางทีคุณอยากทำงานดีๆ แต่ต้องเสียเวลาไปกับงานเล็กงานน้อยที่ไม่ส่งผลอะไร หรืออยากลงทุนในความสัมพันธ์ที่มีคุณภาพ แต่พลังงานหมดไปกับการจัดการความขัดแย้งเล็กๆ ทุกวัน แบบนี้เรียกว่าสูญเสียคุณภาพอย่างช้าๆ ซึ่งเป็นอันตรายกว่าการสูญเสียแบบรวดเร็วด้วยซ้ำ เพราะคุณไม่รู้ตัว จนกว่าจะดูย้อนกลับไปแล้วตกใจว่า \"เฮ้ย ตอนไหนมันเละขนาดนี้\"\n\nตอนนี้คุณต้องหยุดให้คนอื่นฟันคุณก่อน ทั้งการตัดสินใจแทนคุณ ทั้งการเอาเวลาคุณไปใช้ในเรื่องที่ไม่คุ้มค่า ต้องบอก \"ไม่\" บ่อยๆ สัก 3 เดือน ให้ตัวเองฟื้นก่อนค่อยคิดทำอะไรใหญ่"
       }
+    },
+    "en": {
+      "title": "Lu Ban Felling Wood",
+      "fortune_level": "Average",
+      "one_line_summary": "The stick puts you on the same hillside as Lu Ban, looking up at a forest of perfectly good timber.",
+      "poem": [
+        "Beautiful are the trees on Buffalo Mount",
+        "Only no hatches are there to cut them down.",
+        "Oh, no wood can ever be made into a good raft, Since there's no rule to guide the maker's craft."
+      ],
+      "story": "Lu Ban was ancient China's master craftsman, living around 500 BCE during the Spring and Autumn period. Think of him as the patron saint of builders and engineers — every carpenter, architect, and woodworker still honors his memory today.\n\nLegend says he invented the saw, the drill, and countless other tools that revolutionized construction. But this sign tells a different story about Lu Ban.\n\nHere he stands before a mountain of beautiful trees, yet he cannot harvest them properly. Why?\n\nBecause having tools isn't enough — you need skill, planning, and the right approach. Even the greatest craftsman in Chinese history couldn't succeed without proper preparation and technique.\n\nThis story became a classic metaphor: raw materials and good intentions mean nothing without wisdom and method.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Lu Ban standing at the foot of a mountain of perfect timber, unable to fell a single trunk because the axe is missing, is the figure this stick holds up to you."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Lu Ban Fells the Timber says your skills outpace your income — shape what you already have."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation has all the right raw materials — attraction, chemistry, maybe even deep compatibility."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation resembles those beautiful trees on the mountain—there's genuine potential for improvement, but you're missing some crucial tools or knowledge to make real progress."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Lu Ban on Buffalo Mount is the patron saint of carpenters standing in front of perfect timber with no axe in his hand."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Lu Ban standing at the foot of Buffalo Mountain, surrounded by timber he cannot touch, is a strange image to draw for a family question."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The stick puts you on the same hillside as Lu Ban, looking up at a forest of perfectly good timber."
+        }
+      }
     }
   },
   {
@@ -218,6 +343,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "กำลังอยู่ในช่วงฝึกหัดสิ่งใหม่ ต้องอดทนซ้ำแสน",
         "detail": "รู้ไหม ใจเย็นๆ นะ คุณกำลังอยู่ในช่วงฝึกหัด\n\nบทกลอนเล่าเรื่องนกนางแอ่นพ่อแม่กำลังสอนลูกบิน ใต้ชายคาเต็มไปด้วยเสียงเจื้อยแจ้วของแม่นกและลูกนก บ่ายๆ แดดอ่อนๆ ลูกนางแอ่นบินออกไปแล้วกลับมา บินต่ำแล้วก็พยายามบินสูง บางทีก็ไปตัดผ่านควันเขียวของต้นหลิว ดูเหมือนงุ่มง่ามแต่ก็ไม่เคยตกเลย\n\nเซียมซีใบนี้ไม่มีตัวละครประวัติศาสตร์ให้เล่าหรอก เพราะภาพธรรมชาติเองก็อธิบายความหมายได้แล้ว นกนางแอ่นสอนลูกบินมาแต่โบราณด้วยวิธีเดียวกัน คือปล่อยให้ลูกบินออกไป กลับมา แล้วก็บินออกไปอีก ทำแบบนี้ซ้ำๆ จนปีกแข็งแรงพอ แม่นกนั่งเฝ้าอยู่ที่ชายคา ไม่เร่งไม่ห้าม เพราะรู้ว่านี่แหละคือวิธีเรียนรู้ที่ถูกต้อง บทกลอนบอกว่า \"ไปแล้วกลับ ต่ำแล้วสูง\" ฟังดูเหมือนวนเวียนใช่ไหม แต่จริงๆ แล้วคือก้าวหน้าแบบค่อยเป็นค่อยไป\n\nคุณคงกำลังทำอะไรบางอย่างที่ต้องฝึกฝนซ้ำๆ อาจจะเป็นงานใหม่ที่ยังไม่คล่อง ทักษะใหม่ที่ยังไม่แม่น หรือความสัมพันธ์ที่กำลังปรับตัวหากัน รู้สึกเหมือนนกน้อยใต้ชายคาไหม บางวันทำได้ดี บางวันก็ถอยหลัง แต่มองภาพรวมยังไม่แน่ใจว่าตัวเองก้าวหน้าจริงหรือเปล่า อย่าคิดมากเลย นี่คือกระบวนการเรียนรู้ปกติ ไม่ใช่การถดถอย\n\nให้เวลากับตัวเองมากหน่อย แต่ก็อย่าหยุดฝึก ทำแบบนกนางแอ่นนะ บินออกไป กลับมาดูผล แล้วก็บินออกไปอีกครั้ง"
+      }
+    },
+    "en": {
+      "title": "Swallow Teaching Flight",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're in a teaching phase of life right now, whether you recognize it or not.",
+      "poem": [
+        "Under the eaves mother swallow teaches the young, they murmur, they whisper, till noon is down.",
+        "They fly high, they flow low, they come and go, through the smoke of green weeping willow."
+      ],
+      "story": "This fortune stick draws from the universal image of swallow parents teaching their young to fly—a scene that plays out every spring under the eaves of traditional Chinese homes. Swallows hold special meaning in Chinese culture as symbols of loyalty, return, and family bonds.\n\nThey're migratory birds that come back to the same nests year after year, representing the cyclical nature of learning and growth. The image isn't about a specific historical figure, but about one of nature's most patient teaching moments.\n\nParent swallows spend weeks coaxing their babies from the safety of the nest, demonstrating flight patterns, showing them how to catch insects, gradually building their confidence. In Chinese poetry and folklore, this patient nurturing represents the ideal way wisdom passes between generations—not through force, but through gentle guidance and allowing natural timing to unfold.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career right now resembles those young swallows getting their first flying lessons."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, new streams need patience — not pressure to fly early."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation mirrors those young swallows learning to fly — there's potential here, but it needs patience and proper guidance to develop."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors those young swallows learning to fly."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The stick gives you swallows under the eaves, not a scholar at the top of the imperial exam list."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation calls for the patience of the mother swallow."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in a teaching phase of life right now, whether you recognize it or not."
+        }
       }
     }
   },
@@ -273,6 +438,46 @@ const SIAMSI_DATA = [
         "summary": "พายุผ่านไปแล้ว แต่รากยังแข็งแรง ได้เวลาฟื้นฟู",
         "detail": "พายุผ่านไปแล้ว แต่คุณยังนั่งมองซากปรักหักพังอยู่เหรอ? บทกลอนว่า \"東園昨夜狂風急 萬紫千紅亦盡傾\" สวนทางตะวันออกเมื่อคืนลมแรงมหาศาล ดอกไม้นานาพันธุ์ล้มโค่นกระจัดกระจาย แต่ต่อด้วย \"幸有惜花人起早 培回根本復栽生\" โชคดีที่มีคนรักดอกไม้ตื่นแต่เช้า เอาดินมาพูน ปลูกใหม่ให้กิ่งก้านฟื้นคืนชีพ\n\nเรื่องของเถาหยวนหมิง (陶淵明) กวีโบราณที่เบื่อการเมืองจนลาออกมาปลูกดอกเบญจมาศเล่น คืนหนึ่งพายุโถมใส่ สวนที่เขาดูแลมาหลายปีพังเป็นแถบ เพื่อนบ้านมาดูแล้วบอก \"ถอนทิ้งเถอะ ปลูกใหม่ดีกว่า\" แต่เถาหยวนหมิงเก็บเงียบ เช้าวันต่อมาคลานไปดูทีละต้น พอเห็นรากยังแข็งแรงก็ขุดดินใส่ รดน้ำดูแล ไม่กี่วันต่อมาดอกไม้เหล่านั้นผลิใส่เหลืองอร่ามยิ่งกว่าเก่า\n\nชีวิตคุณช่วงนี้คงเหมือนสวนหลังพายุ สิ่งที่สร้างมานานล้มโค่น ความสัมพันธ์ที่คิดว่ามั่นคงแตกร้าว หรืองานที่ทำมาปีๆ จู่ๆ ก็ต้องเริ่มใหม่ ที่เจ็บที่สุดคือต้องมองดูสิ่งที่รักพังทลายต่อหน้าต่อตา โดยที่ทำอะไรไม่ได้เลย\n\nแต่เซียมซีใบนี้มีคำว่า \"幸\" โชคดี โชคดียังไง? โชคดีที่ราก - สิ่งสำคัญที่สุด - ยังไม่ตาย โชคดีที่ยังมีคนเข้าใจว่าอะไรควรปล่อยให้ตาย อะไรควรช่วยไว้ คนนั้นอาจเป็นคนรอบข้าง หรืออาจเป็นตัวคุณเองก็ได้ ที่ต้องจับตาคือต้องมองให้ออกว่ารากของเรื่องนั้นคืออะไร อย่าไปงมงายกับซากปรักหักพังบนผิวดิน\n\nลงมือทำเลย หยิบพลั่วขึ้นมา เอาดินมาพูนให้สิ่งที่ยังมีชีวิต ตัดกิ่งที่เหี่ยวออก รดน้ำให้ที่เขียว อย่าฟังคนที่บอกให้ถอนทิ้งหมด"
       }
+    },
+    "en": {
+      "title": "Tao Yuanming Plants Flowers",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Life just hit you with one of those devastating winds that knocked down everything you were building.",
+      "poem": [
+        "A strong gale howled in eastern courtyard last night, Sweeping down blossoms of every kind.",
+        "Thanks to those who have pity for flowers, rising early they replant them so they will survive."
+      ],
+      "story": "Tao Yuanming was a 4th-century Chinese poet who walked away from government service to live simply as a farmer. He's famous for refusing to bow to his corrupt superior for a bag of rice, saying \"I won't bend my back for five pecks of grain.\n\n\" Instead, he chose poverty and freedom, growing chrysanthemums and writing poetry about the joy of honest work. His most famous line translates to \"picking chrysanthemums by the eastern fence, peacefully seeing the southern mountains.\n\n\" In Chinese culture, he represents someone who chose authentic living over status and money. The flower-planting reference isn't just gardening — it's about nurturing what matters after storms destroy what you thought was important.\n\nHis story resonates because he found contentment by simplifying, not accumulating.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The stick places you in Tao Yuanming's garden the morning after the storm, kneeling to replant flowers that the wind tore from the eastern courtyard."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your steady paycheck is the flower worth tending. Shortcuts are the wind."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Tao Yuanming chose chrysanthemums over court robes, and the verse remembers him not for what he walked away from but for what he returned to each morning: the same patch of soil, the same flowers the wind had flattened o..."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors that storm-swept garden."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your studies just took a hit, didn't they?"
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is in rebuild mode right now, and that's actually exactly where you need to be."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Life just hit you with one of those devastating winds that knocked down everything you were building."
+        }
+      }
     }
   },
   {
@@ -326,6 +531,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ช่วงโดดเดี่ยวใกล้จะจบ จะมีเพื่อนฝูงกลับมาหา",
         "detail": "กำลังจะฟื้นดวงเป็นปี่เป็นขลุ่ยแล้ว! บทกลอนบอกว่า \"一片孤帆萬里回\" เรือใบตัวเดียวแล่นมาไกลหมื่นลี้ การเดินทางอันเหงาเหงาในช่วงที่ผ่านมากำลังจะจบลงแล้วนะ เหมือนซู่ตงป๋อ (蘇東坡) ที่ถูกเนรเทศไปเกาะไหหลำแล้วได้กลับมาเที่ยววังเท็งหว่าง (滕王閣) อีกครั้ง ระหว่างทางเขาต้องอดทนผ่านพายุใหญ่พายุน้อย คิดถึงบ้าน คิดถึงเพื่อน คิดถึงช่วงเวลาดีๆ ที่เคยมีแต่เหมือนจะไม่กลับมาอีกแล้ว แต่พอเขากลับมาได้จริงๆ เพื่อนฝูงพร้อมใจกันรอต้อนรับ \"管弦嘔啞且停杯\" เครื่องดนตรีเล่นอึกอ่าง เสียงไม่ค่อยไพเราะเท่าไหร่ แต่ใครจะแคร์ล่ะ ยกแก้วขึ้นมาชนกันเสียงดัง \"如雲勝友談風月\" เพื่อนแท้มาเยอะแยะ นั่งล้อมวงกันคุยเรื่องโน้นเรื่องนี้จนดึก เล่าเรื่องตลกจนท้องแข็ง บอกความในใจที่เก็บมานาน \"暢叙幽情極樂哉\" ระบายความซึ้งในใจจนเยี่ยมเลย\n\nเคยรู้สึกเหงาไหม ว่าทำอะไรก็ไม่มีใครเข้าใจ พูดอะไรก็เหมือนพูดกับผนัง คิดถึงวันเก่าๆ ที่เคยมีคนใกล้ชิด มีคนคุย มีคนเล่นด้วย ช่วงนี้ของคุณเหมือนซู่ตงป๋อตอนถูกส่งไปไกลแสนไกลเลย ต้องเผชิญปัญหาคนเดียว ทำงานคนเดียว กลับบ้านก็อยู่คนเดียว แต่เดี๋ยวก่อนนะ ดูเซียมซีสิ เรือใบที่โดดเดี่ยวนั้นกำลังแล่นกลับท่าเทียบแล้วนะเจ้าคะ! ไม่นานเท่าไหร่เรื่องราวจะเปลี่ยน จะมีคนกลับมาหาคุณ จะมีคนมาเข้าใจคุณ จะมีกิจกรรมที่สนุกสนาน จะมีโอกาสได้ระบายใจให้คนฟัง สิ่งที่คุณเก็บไว้ในใจนานๆ จะได้เล่าออกมา และจะมีคนรับฟังด้วยความเข้าใจ\n\nแล้วพอโชคมาถึงจะทำยังไง? อย่าได้ปฏิเสธคำเชิญใดๆ เลยสักอาทิตย์นึง คนชวนไปไหนก็ไป คนชวนทำอะไรก็ทำ ที่สำคัญเอาใจใส่คนที่ยังติดต่อคุณมาตลอดแม้คุณจะไม่ค่อยตอบกลับ พวกนั้นแหละคือ \"勝友\" เพื่อนแท้ที่ดีที่สุด"
+      }
+    },
+    "en": {
+      "title": "Su Dongpo Visits the Pavilion of Prince Teng",
+      "fortune_level": "Very Good",
+      "one_line_summary": "This stick speaks to the power of reconnection and meaningful relationships in your life right now.",
+      "poem": [
+        "A bosom friend snails home alone from afar",
+        "With music and wine we welcome him alas.",
+        "How nice it is to chat with him.",
+        "Recalling the sweet old days gone by!"
+      ],
+      "story": "Su Dongpo was China's Shakespeare — a brilliant poet, philosopher, and politician from the Song Dynasty (1037-1101). The Pavilion of Prince Teng sits along the Yangtze River in Jiangxi Province, famous for inspiring countless poets over centuries.\n\nWhen Su Dongpo visited this iconic tower, he was likely reflecting on life's journey while watching boats return from distant travels. The pavilion itself was built by Prince Teng in 653 AD and became a symbol of literary achievement after Wang Bo wrote his famous preface there.\n\nFor Su Dongpo, known for finding joy in simple pleasures despite political exile, this visit represented the perfect moment when friendship, poetry, and wine converged. The image captures something quintessentially Chinese — learned friends gathering to discuss philosophy while sharing drinks, turning an ordinary evening into something memorable.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering a phase where relationships will be your greatest asset."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Old effort circles back as real income. Clients return, referrals land, past work pays."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The stick places you at the Tengwang Pavilion, watching Su Dongpo arrive after a long road."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Su Dongpo arriving at Tengwang Pavilion is the image of someone who has been travelling a long time — through exile, through weather, through his own restless thoughts — finally sitting down with people who know him."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey is about to get a major boost through meaningful connections."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "For your family situation, this sign brings exceptionally good news about reconnection and harmony."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick speaks to the power of reconnection and meaningful relationships in your life right now."
+        }
       }
     }
   },
@@ -381,6 +628,47 @@ const SIAMSI_DATA = [
         "summary": "ยังไม่ถึงเวลาเก็บเกี่ยว อดทนรอจังหวะที่เหมาะสม",
         "detail": "ยังไม่ใช่เวลาเก็บเกี่ยว คุณกำลังอยู่ในช่วงฤดูเปลี่ยน\n\nบทกลอนพาดพิงถึงฤดูใบไม้ร่วงที่นกป่าบินลงใต้ ใบเมเปิ้ลแดงกริบปลิวไปเต็มลาน เสียงตีเสื้อผ้าเตรียมหน้าหนาวดังแซ่บหูจากยอดเมือง ขณะที่ใบไผ่เขียวริมน้ำเหลืองเป็นสีไฟ ทิ่งซาน (丁山) เป็นนักธนูไผ่มือดีในตำนานที่เก่งยิงนกห่าน แต่เขาเข้าใจดีว่าไม่ใช่ทุกเวลาที่จะยิงได้สำเร็จ โดยเฉพาะเมื่อฝูงห่านเหิรมกำลังอพยพตามกฎธรรมชาติ บางครั้งต้องปล่อยให้เขาบินผ่านไป รอโอกาสที่เหมาะสม ไม่ใช่ข่มขืนจังหวะ เพราะเวลาผิด ลูกธนูแม่นแค่ไหนก็จีบไฟ\n\nตอนนี้คุณเหมือนทิ่งซานที่ถือธนูยืนมองฟ้า ฝูงห่านกำลังบินมา แต่ยังไม่เข้าระยะ อาจเป็นโครงการที่อยากเริ่ม ความสัมพันธ์ที่อยากก้าวต่อ หรือการตัดสินใจใหญ่ที่รอคิงค่าอยู่ คุณรู้สึกไหมว่าโอกาสใกล้จะมาถึงแล้ว แต่ยังไม่เพียงพอที่จะจับได้? เหมือนใบไม้ที่เหลืองแล้วแต่ยังไม่ร่วง หรือนกที่เตรียมจะบิน แต่ยังไม่ขึ้นฟ้า บรรยากาศเปลี่ยนไปแล้ว แต่เหตุการณ์สำคัญยังไม่เกิดขึ้น ใจอยากเร่ง แต่ลึกๆ รู้ว่าต้องรอ\n\nอย่าฟืดฟ่นเกินไป เก็บพลังไว้ดีกว่า ใช้เวลาช่วงนี้เตรียมของเตรียมคน เหลาธนูให้แหลม"
       }
+    },
+    "en": {
+      "title": "Ding Shan Shoots the Wild Geese",
+      "fortune_level": "Average",
+      "one_line_summary": "This sign suggests you're in a transitional phase where old patterns are shifting, like leaves falling in autumn.",
+      "poem": [
+        "Wild swans fly south when autumn nears",
+        "Red leaves in courtyard fall and disappear.",
+        "Maple trees turn fiery along the fishing shore, with laundry sounds of winter clothes piercing the ear."
+      ],
+      "story": "This sign draws from the image of Ding Shan, a skilled archer from Chinese legend who hunted migrating geese. The story isn't just about marksmanship — it's about someone trying to catch something that's naturally moving away.\n\nAutumn geese are following ancient migration patterns, and while a skilled hunter might bring down one or two, the flock will continue south regardless. This became a powerful metaphor in Chinese culture for the tension between human effort and natural timing.\n\nPoets often used Ding Shan's story to explore moments when we're working against the current rather than with it. The archer represents our desire to control outcomes, while the migrating geese symbolize forces larger than ourselves — market conditions, relationship dynamics, career cycles.\n\nTraditional Chinese wisdom suggests that sometimes the wisest action is recognizing when to let things flow naturally rather than forcing results through pure skill or determination.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering its autumn phase — a time of natural transition that calls for strategic patience rather than aggressive moves."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income is the real treasury — small leaks and impulse spending are the danger."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic situation is entering a transitional phase, much like autumn when everything shifts."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health right now mirrors nature's autumn transition – things are shifting, and you need to pay attention to the signs."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your studies are entering a testing phase, like autumn when preparation meets real challenge."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Drawing this sign for family matters suggests you're entering a season of change — think of those migrating geese in the poem."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign suggests you're in a transitional phase where old patterns are shifting, like leaves falling in autumn."
+        }
+      }
     }
   },
   {
@@ -434,6 +722,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ถูกรุกราน ต้องอดทนวางแผน",
         "detail": "คุณกำลังถูกแย่งที่ยืนแล้วยังต้องยิ้มให้คนที่แย่ง\n\nบทกลอนเล่าเรื่องนกกะเรียนแย่งรังนกสาลิกา \"鳴鳩爭奪鵲巢居\" ภาพที่เห็นคือนกกะเรียนบินมาเกาะรังที่นกสาลิกาสร้างด้วยความตั้งใจ แล้วอยู่อาศัยเหมือนเป็นเจ้าของตั้งแต่แรก นกสาลิกาผู้เป็นเจ้าของจริงกลับต้องยืนอยู่ข้างนอกมองดู ไม่รู้จะทำอะไรดี \"賓主參差意不舒\" แขกกับเจ้าบ้านสับสนหมดแล้ว บรรยากาศก็อึดอัดไปหมด เหมือนต้นสนบนเขาที่โดนเถาวัลย์พันรอบตัว \"滿嶺喬松蘿蔦附\" ต้นสนยิ่งโตเท่าไร เถาวัลย์ก็ยิ่งพันแน่นขึ้นเท่านั้น\n\nเซียมซีใบนี้พูดตรงๆ เลยนะ คุณกำลังอยู่ในสถานการณ์ที่ถูกคนอื่นมาแย่งที่ยืน แล้วคุณเป็นคนที่ต้องเก็บอารมณ์ เพราะไม่รู้ว่าถ้าสู้จริงๆ แล้วจะเสียอะไรไปอีก อาจเป็นที่ทำงาน มีเพื่อนร่วมงานหรือนายใหม่ที่มาแย่งงานที่คุณถนัด แล้วทำราวกับเป็นผู้เชี่ยวชาญคนแรกของบริษัท อาจเป็นในครอบครัว มีใครสักคนที่มาเอาอิทธิพลในบ้านไป แล้วคุณซึ่งเป็นคนในบ้านต้องมายืนดูอยู่ข้างๆ อาจเป็นเรื่องความสัมพันธ์ มีคนที่สามที่เข้ามาแย่งพื้นที่ในใจคนที่คุณรัก ไม่ว่าจะเป็นอะไรก็ตาม ความรู้สึกคล้ายๆ กัน คือรู้สึกว่าถูกรุกราน แต่ไม่กล้าขับไล่\n\nที่หนักใจที่สุดคือคุณรู้ดีว่าตัวเองควรจะต่อสู้ แต่ก็กลัวว่าถ้าเข้าไปสู้จริงๆ จะเสียทุกอย่างไปหมด เหมือนต้นสนที่ถ้าจะเด็ดเถาวัลย์ออก อาจต้องหักกิ่งไปด้วยเสียนึก คุณอาจกำลังนอนหลับไม่ได้ นึกถึงคำพูดที่อยากจะพูดแต่ไม่กล้าพูด นึกถึงสิ่งที่อยากทำเพื่อแย่งคืนสิ่งที่เป็นของตัวเองแต่กลัวผลที่ตามมา ยิ่งยืดเยื้อไป ยิ่งรู้สึกว่าเวลากำลังเอื้อประโยชน์ให้กับคนที่รุกรานมากกว่า\n\nทำอะไรต่อดี? อย่าไปสู้กับเขาตรงๆ เดี๋ยวนี้ ให้เวลาแก่ตัวเองในการวางแผนและหาพันธมิตรก่อน พอถึงเวลาที่เหมาะ ให้เคลื่อนไหวแบบเงียบๆ เพื่อสร้างฐานอำนาจใหม่ของตัวเอง"
+      }
+    },
+    "en": {
+      "title": "The Cuckoo's Nest",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The verse opens with a turtledove sitting in a magpie's nest, neither bird at ease.",
+      "poem": [
+        "Turtledove deprives the magpie of her nest",
+        "neither party is happy, the host nor the guest.",
+        "When cypresses are curled up by vines, Guess what is said within these lines."
+      ],
+      "story": "This stick refers to an ancient Chinese idiom about displacement and usurpation. The story tells of a cuckoo bird (sometimes translated as turtledove) that takes over a magpie's carefully built nest.\n\nIn Chinese culture, magpies symbolize good fortune and hard work—they're the birds that build the strongest, most beautiful nests. The cuckoo, however, represents opportunism.\n\nIt doesn't build its own home but steals what others have created. The cypress and vine imagery reinforces this theme: parasitic vines slowly strangle the noble trees they climb.\n\nThis wasn't just a nature observation but a political metaphor. Ancient scholars used this image to describe corrupt officials who displaced honest ones, or how weak leaders could be overwhelmed by manipulative advisors.\n\nThe phrase became shorthand for any situation where someone's rightful place gets taken by an interloper.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation feels like that uncomfortable office dynamic where boundaries have become blurred and roles confused."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Someone or something is quietly nesting in your income. Time to see who, and why."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse hands you the magpie's empty nest and the dove sitting awkwardly inside it, and asks you to look honestly at which role you're playing in your current connection."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health is being undermined by something that seems harmless but is actually draining your energy."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The magpie weaves the nest twig by twig; the turtledove walks in and roosts."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The image of the turtledove sitting in the magpie's nest is doing all the work in this verse."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse opens with a turtledove sitting in a magpie's nest, neither bird at ease."
+        }
       }
     }
   },
@@ -489,6 +818,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 9 ระดับ ดี เถาหยวนหมิงชมดอกเก๊กฮวย บอกว่าความสุขแบบใหม่กำลังมา",
         "detail": "โชคดีแต่ต้องรู้จักพึงพอใจ! บทกลอนเล่าว่า \"瑤琴一曲奏新腔\" พิณแก้วบรรเลงเสียงใหม่ ลมเย็นพระจันทร์สว่าง ที่นอนที่หนุนเซาสบาย แขกดีๆ มาร่วมชมดอกเก๊กฮวย บ้างก็ร้องเพลง บ้างก็เต้นรำ บ้างก็ยกแก้วดื่มกัน ภาพนี้เล่าเรื่องเถาหยวนหมิง (陶淵明) กวีโบราณที่เลิกเป็นข้าราชการแล้วกลับไปปลูกดอกเก๊กฮวยในสวนหลังบ้าน ไม่ใช่เพราะล้มเหลว แต่เขาเห็นแล้วว่าการค้อมแค้นต่อเจ้านายในราชการมันไม่คุ้ม จนวันหนึ่งเพื่อนๆ มาเยี่ยม เห็นเขาใส่ใจต้นไม้ดอกไม้ ใช้ชีวิตเรียบง่าย ทุกคนรู้สึกชื่นใจมากจนนั่งดื่มด่ำกับความสุขที่แท้จริงไปเลย\n\nเซียมซีใบนี้บอกว่าคุณกำลังจะได้รสชาติของความสุขแบบใหม่นะ ไม่ใช่ความสำเร็จตามมาตรฐานคนอื่น แต่เป็นความพึงพอใจที่มาจากการรู้จักตัวเอง สิ่งที่คุณค้นหามานาน กำลังจะมาหาคุณเองโดยไม่ต้องไปแย่งชิงใคร สังเกตคำว่า \"咸集\" หมายความว่าคนดีๆ จะมารวมตัวมาหาคุณ ไม่ใช่คุณไปขอร้องใคร งานการงานอาจจะได้โอกาสใหม่ที่ไม่ได้คาดฝัน ความรักก็เหมือนกัน คนที่เข้ากับคุณจริงๆ จะเข้ามาเองโดยที่คุณไม่ต้องแสร้งเป็นคนอื่น แต่จำไว้นะ ความสุขแบบนี้มาได้ก็เพราะคุณยอมปล่อยวางสิ่งที่ไม่ใช่เรื่องของคุณ\n\nหยุดพยายามทำใจคนอื่นให้ชอบเสียที ทำในสิ่งที่ใจรักจริงๆ แล้วคนที่เข้ากันได้จะมาเองครับ"
       }
+    },
+    "en": {
+      "title": "Tao Yuanming Appreciating Chrysanthemums",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Tao Yuanming walked away from a government post to tend chrysanthemums and pour wine for friends under the moon.",
+      "poem": [
+        "From the jade harp a new melody arises",
+        "Mattresses and cushions are refreshed by moonlight and breezes.",
+        "Guests gathered here to appreciate the beauty of chrysanthemum",
+        "Here we sing, here we dance, here we rejoice in happy \"cheers\"."
+      ],
+      "story": "Tao Yuanming was a 4th-century Chinese poet who gave up his government job to become a farmer and live simply. He's famous for choosing contentment over career advancement, spending his days growing chrysanthemums and writing poetry about rural life.\n\nThe guy basically invented the \"drop everything and find happiness\" lifestyle centuries before it became trendy. His chrysanthemum garden became legendary — not because the flowers were spectacular, but because he found such genuine joy in tending them.\n\nIn Chinese culture, chrysanthemums represent resilience and quiet dignity, blooming beautifully even as autumn arrives. This story resonates because Tao Yuanming discovered that true wealth isn't about status or money, but about appreciating what you have and surrounding yourself with people who matter.\n\nHis gatherings were simple but joyful — friends sharing wine, music, and the simple pleasure of watching flowers bloom.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "This stick suggests your career is entering a period of genuine satisfaction—the kind where work doesn't feel like work anymore."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The harvest lands on patient work — clients sign, raises clear, side projects finally pay."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a season of genuine appreciation and natural harmony."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your body is entering a season of natural restoration, much like those autumn chrysanthemums that bloom when everything else fades."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Tao Yuanming's chrysanthemums bloom in autumn, after the showier flowers have already wilted."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your home is entering a golden period where everything feels more harmonious."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Tao Yuanming walked away from a government post to tend chrysanthemums and pour wine for friends under the moon."
+        }
+      }
     }
   },
   {
@@ -542,6 +913,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ยังไม่ถึงเวลาแต่อย่าหมดหวัง ต้องอดทนรอจังหวะ",
         "detail": "ยังไม่ถึงเวลาคุณนะ แต่อย่าหมดหวัง บทกวีเล่าภาพสวยๆ ดวงเดือนเหมือนกระจกส่องแสงกลางท้องฟ้า แต่มีเมฆเข้ามาปิดกั้นชั้นแล้วชั้นเล่า ดาบในฝักรอวันปลิวแสง ใครจะยืมลมแรงให้พัดเมฆให้หาย เรื่องของสู่ฉิน (蘇秦 ซูฉิน) นี่แหละที่ต้องเล่าให้ฟัง เพราะเขาเป็นตัวอย่างคนฉลาดแต่ดวงไม่ออก ยุคสมัยรบราชอาณาจักร เขาเที่ยวไปหาเจ้านายใหม่ทุกประเทศ แต่ไม่มีใครให้ตำแหน่ง กลับบ้านมาภรรยาไม่ยอมลงจากหลังทอผ้า แม่นางสะใภ้ไม่ทำกับข้าวให้ พ่อแม่ก็ไม่พูดด้วย เหมือนถือว่าเขาเป็นตัวอับโชค แต่สู่ฉินไม่ยอมแพ้ เก็บตัวไปอ่านหนังสือท่าไท่กง เอาไม้เสียบขาตัวเองเวลาง่วง แขวนเชือกผูกผมไว้กับคานเพื่อไม่ให้นอนหลับ ทรมานตัวเองขนาดนี้ก็เพื่อรอวันที่ใครสักคนจะเห็นคุณค่า สุดท้ายได้เป็นนายกรัฐมนตรี 6 ประเทศพร้อมกัน กลายเป็นคนทรงอิทธิพลที่สุดในยุคนั้น คุณตอนนี้คือดวงเดือนที่ถูกเมฆบัง แสงสว่างยังอยู่ แต่คนอื่นมองไม่เห็น อาจเป็นเพราะเวลายังไม่ถึง หรือคนรอบข้างยังไม่เข้าใจความสามารถที่แท้จริง อุปสรรคเหล่านี้ไม่ใช่ภูเขาหิน แต่เป็นเมฆที่ลอยไปลอยมา ทำให้รู้สึกหงุดหงิดเพราะคาดเดาไม่ได้ว่าจะหายเมื่อไหร่ เหมือนกำลังส่องแสงในขวดแก้วใส คนข้างนอกมองไม่เจอ ตัวเองก็ส่องออกไปไม่ได้ แต่จำไว้ว่าปัญหาไม่ได้อยู่ที่ดวงเดือน ปัญหาอยู่ที่เมฆเท่านั้นเอง การรออย่างสู่ฉินไม่ใช่แค่นั่งเฉยๆ หาความรู้เพิ่ม ฝึกฝนทักษะให้แกว่งขึ้น รอลมแรงที่จะพัดเมฆออกไป"
+      }
+    },
+    "en": {
+      "title": "Scholar Su Qin's Failed Examination",
+      "fortune_level": "Average",
+      "one_line_summary": "The verse hands you a full moon hidden behind drifting cloud-mountains.",
+      "poem": [
+        "Above hangs the full moon, crystal as a mirror",
+        "Floating clouds like mountains conceal its glamour.",
+        "When shall thy light shine for me again?",
+        "Pray lend me a gust of roving wind?"
+      ],
+      "story": "Su Qin was a brilliant scholar during China's Warring States period who faced repeated failure in the imperial examinations. Despite his intelligence and preparation, he couldn't pass the tests that would grant him an official position.\n\nHe returned home humiliated, scorned by his family and friends who saw his failures as personal shortcomings. His wife wouldn't even cook for him.\n\nBut Su Qin didn't give up. He continued studying, eventually becoming one of history's most successful diplomats, convincing six kingdoms to unite against the powerful Qin state.\n\nHis story became a symbol of perseverance through temporary setbacks. The examination system he struggled with was the backbone of Chinese society for over a thousand years, making his early failures particularly meaningful to anyone facing career or academic obstacles.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career feels stuck right now, like that brilliant moon hidden behind stubborn clouds."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your earning power is intact, but something's blocking the view. Watch for hidden leaks."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The image at the heart of this stick is a full moon hidden behind drifting cloud."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse holds up a full moon hidden behind drifting clouds, and asks when its light will shine clearly again."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse hands you a full moon behind drifting cloud, and Su Qin's name on the slip is no accident."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Su Qin's moon hangs over this reading because something in your household is being misread, including by you."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse hands you a full moon hidden behind drifting cloud-mountains."
+        }
       }
     }
   },
@@ -597,6 +1010,46 @@ const SIAMSI_DATA = [
         "summary": "โชคดีมาเองไม่ต้องขอ เหมือนต้นหลิวงามโดยธรรมชาติ",
         "detail": "ตอนนี้คุณเหมือนต้นหลิวริมน้ำที่กำลังโชว์ความงามระบำในสายลม ไม่ต้องไปหาใคร ใครจะมาหาคุณเอง\n\nบทกลอนเล่าว่า \"楊柳垂隄鎖綠烟\" หลิวเขียวระย้าห้อยลงริมตลิ่ง เขียวขจีจนเหมือนใสมิดไปด้วยหมอกบาง \"日長三起又三眠\" วันยาวนาน หลิวผลิบไหวไปมา ลุกแล้วนอน นอนแล้วลุก ตามจังหวะธรรมชาติ \"往來紫燕紛飛舞\" นกนางแอ่นบินไปบินมา เต้นระบำรอบกิ่งหลิว \"嬝娜迎風倩我憐\" หลิวเล้าลมไหวไปมาละมุนนัก ทำให้ใครดูแล้วก็หลงใหล\n\nเรื่องเล่าว่าจักรพรรดิฮั่นเหวินตี้ (漢文帝) เสด็จผ่านไปริมแม่น้ำ เห็นต้นหลิวระบำในสายลมสวยงามจริงๆ ปราบมือชื่นชมแล้วพูดทันทีว่าจะให้รางวัลต้นหลิวนี้ ไม่ใช่ต้นหลิวมาขอนะ แต่องค์จักรพรรดิมองเห็นคุณค่าแล้วอยากให้รางวัลเอง นี่แหละสิ่งที่กำลังเกิดขึ้นกับคุณ คุณไม่ต้องทำอะไรพิเศษ เพียงแค่เป็นตัวเองแล้วของดีก็จะมาเอง\n\nแต่รู้ไหมต้นหลิวเก่งตรงไหน มันไม่ขืน เมื่อลมพัดก็โค้งไปตามลม เมื่อลมหยุดก็ตั้งตัวขึ้นเหมือนเดิม สามครั้งลุก สามครั้งนอน ไปตามจังหวะของมัน ไม่ว่าจะเรื่องงานหรือเรื่องรัก คนที่ชอบขูดขีดท้าทายแบบแข็งกร้าว มักจะหักง่ายที่สุด คนที่รู้จักโค้งตัวต่างหากที่รากแกว่งลึก คุณก็เหมือนกัน ถ้าเจอปัญหาไม่ต้องไปดื้อ ลองโค้งตัวดูก่อน บางทีการยืดหยุ่นกลับทำให้คุณแข็งแกร่งขึ้น\n\nตอนนี้รอบตัวคุณอาจมีเสียงจ๊อกแจ๊กเยอะเหมือนฝูงนกนางแอ่น เห็นคุณเริ่มดีขึ้นแล้วก็แวะมาบินไปบินมาใกล้ๆ แสดงความคิดเห็น คอมเม้นท์นั่นนี่ บางคนอาจจริงใจ แต่ส่วนใหญ่แค่มาดูความคึกคัก อย่าไปสนใจมากเกินไป ต้นหลิวไม่เคยเปลี่ยนการระบำเพราะนกบินมาหรือบินไป มันมีจังหวะของมันเอง คุณก็ควรทำแบบเดียวกัน\n\nรักษาความเป็นธรรมชาติไว้นะ อย่าไปทำท่าเกินจริง เหมือนต้นหลิวนั่นแหละ งามโดยไม่ต้องโวยวาย ประทับใจโดยไม่ต้องอวดอ้าง ผู้คนจะจำคุณได้จากความงดงามแบบเงียบๆ ไม่ใช่จากเสียงดัง\n\nสิ่งที่ควรทำตอนนี้คือหยุดประกาศข่าวดีให้ทั้งโลกฟังก่อน ให้เรื่องดีๆ เดินทางมาหาคุณเองแบบเงียบๆ เหมือนสายลมที่มาหาต้นหลิว"
       }
+    },
+    "en": {
+      "title": "Emperor Wen Appreciates the Willow",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Emperor Wen sat under the palace willows while the empire ran itself.",
+      "poem": [
+        "Like a green curtain of smoke the weeping willow sweeps, The day being long, three times one rises and sleeps",
+        "One after the other, purple swallows flutter by, Amidst breezes and dancing trees, how pleasant to the eye!"
+      ],
+      "story": "Emperor Wen of Han ruled China from 180-157 BCE and became legendary for creating an era of peace and prosperity. Unlike many rulers obsessed with expansion and control, he found joy in simple pleasures — watching willow trees sway in the palace gardens, observing swallows dart between branches.\n\nThe story goes that he would often pause his imperial duties to sit beneath the palace willows, finding wisdom in nature's rhythms. His courtiers initially worried this showed weakness, but his reign proved that a leader who appreciates life's natural beauty governs with compassion and insight.\n\nHis empire flourished precisely because he understood that sustainable success comes from harmony, not force. This sign captures that moment of imperial contemplation — a reminder that sometimes the most productive thing you can do is observe and appreciate what's already working in your life.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Emperor Wen choosing to spend a full afternoon watching willows and swallows instead of marching armies is the image at the heart of this stick."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Patient work is ripening into steady income. Favors earned money, not shortcuts."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a season of natural flow and genuine contentment."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health is entering a particularly favorable cycle, much like Emperor Wen finding restoration beneath the willow branches."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors Emperor Wen's approach to wisdom — steady, cyclical, and deeply rewarding."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family life is entering a season of natural harmony and growth."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Emperor Wen sat under the palace willows while the empire ran itself."
+        }
+      }
     }
   },
   {
@@ -650,6 +1103,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ภาพลวงตาสูงเสียดฟ้า แต่จับต้องไม่ได้",
         "detail": "เดินข้ามฟ้าใส ไปจับภาพลวงตา\n\nบทกลอนเซียมซีว่า \"蜃樓海市幻無邊\" ภาพลวงตาสูงเสียดฟ้าไร้ขีดจำกัด เก่าแก่เล่าว่าหอยยักษ์ตัวใหญ่ในทะเลลึกพ่นลมหายใจขึ้นไป กลายเป็นเมืองปรากฏกลางน้ำ เห็นวังวัง ปราสาท หอสูง งดงามเสียจนคนโบราณเชื่อว่าเป็นเมืองเซียนแท้ๆ แต่พอลมแรงๆ พัดมา ก็กลับกลายเป็นควัน เป็นไอ เป็นความว่างเปล่า ปรากฏแล้วหาย หายแล้วปรากฏอีก ไม่มีวันจับต้องได้\n\nคุณกำลังไล่จับอะไรบางอย่างที่ดูใกล้ แต่จับไม่ได้ใช่ไหม? เหมือนเวลาเอื้อมมือจับเงาในน้ำ ยิ่งใกล้ยิ่งเบลอ ยิ่งคิดว่าได้แล้วยิ่งหลุดมือ ทั้งงาน ทั้งคน ทั้งโอกาสต่างๆ ที่ดูเหมือนพร้อมจะเป็นจริง แต่พอใกล้ชิดก็มีอะไรบางอย่างเข้ามาขัดจังหวะ บอกให้รอ บอกให้อดทนอีกหน่อย บอกว่า \"อีกนิดเดียว\" แล้วอีกนิดนั้นไม่มีวันมา\n\nปัญหาไม่ใช่ว่าคุณฝันไป แต่คุณเอาแรงไปใส่กับของที่ไม่มีรากฐาน เหมือนปลูกดอกไม้ในอากาศ รดน้ำก็รด ใส่ปุ๋ยก็ใส่ แต่มันไม่มีดินรองรับ คุณอาจต้องยอมรับว่าบางอย่างที่กำลังไล่ตามอยู่ มันอาจเป็นแค่ภาพลวงตาจริงๆ เนอะ ไม่ใช่เพราะคุณไม่ดีพอ แต่เพราะมันไม่ได้มีตัวตนจริงตั้งแต่แรกแล้ว\n\nหยุดเอาแรงไปใส่กับสิ่งที่ไม่แน่นอน หันไปสร้างอะไรที่มีพื้นฐานมั่นคงกว่านี้แทน"
+      }
+    },
+    "en": {
+      "title": "Mirage Over the Sea",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. You're probably feeling frustrated right now.",
+      "poem": [
+        "Stretching over the boundless sea, visions are but dreams, Like pillars supporting the Heaven, built in paradise they seem",
+        "Being swept up suddenly by a dusking wind, Changed now and then into green smoke sliding in."
+      ],
+      "story": "This sign references the phenomenon of mirages, particularly the famous 'Penglai mirage' off China's eastern coast. Ancient Chinese texts describe how travelers would see magnificent palaces and cities floating above the sea, complete with towers reaching toward heaven.\n\nThese weren't just optical illusions to the ancients — they were symbols of humanity's tendency to chase impossible dreams. The most famous account comes from Emperor Qin Shi Huang, who sent expeditions to find these floating islands, believing they held the secret to immortality.\n\nThe explorers never returned, having chased phantoms across endless waters. In Chinese literature, sea mirages became metaphors for beautiful but ultimately empty pursuits — things that look real and attainable from a distance but dissolve when you get close.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The shen-mirage in this verse is the kind of career vision that looks magnificent from a distance: the role with the inflated title, the startup pitch with the celebrity advisor, the offer letter that arrived faster than..."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A shiny deal is circling, but the math stays vague. Sail the other way."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "蜃樓海市 — the mirage palace shimmering above the sea — is the image this stick hands you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now feels like chasing those floating palaces in the poem."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The clam-tower mirage in this verse is the most seductive image in the Wong Tai Sin set: a city floating above the water, towers and markets fully formed, and sailors rowing toward it until it dissolves into green smoke."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The mirage over the sea is the stick's central image: a city of golden palaces shimmering above the water, complete down to the crowds in its markets, dissolving the moment a dusk wind passes through."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're probably feeling frustrated right now, watching your carefully laid plans shimmer and fade like those ancient mirages."
+        }
       }
     }
   },
@@ -705,6 +1198,46 @@ const SIAMSI_DATA = [
         "summary": "มาถึงช้าแต่ไม่เสียโอกาส ต้องปรับวิธีคิดใหม่",
         "detail": "ช้าไปแล้ว แต่ไม่ใช่แพ้ไป บทกลอนเล่าภาพสวยๆ ว่า \"嶺南初放一枝梅\" ดอกแม่ไผ่บนเขาใต้เพิ่งเริ่มผลิ กลีบใสวาวปลิวลงไปในแก้วเหล้า แต่พอมองขึ้นมาก็เจอคนขี่ลาคนอื่นมาถึงก่อนแล้ว พาเด็กมาเก็บดอกไม้ใส่กระเป๋าไปหมดเลย นี่คือเรื่องของเม็งเฮาเหร่าน (孟浩然) กวีเซียนในสมัยถังที่ชอบเที่ยวตามหาดอกแม่ไผ่ที่ผลิก่อนใคร วันหนึ่งเขาปีนเขาไปดูดอกไม้ที่คิดว่าจะเป็นคนแรก แต่พอถึงจุดหมายแล้วพบว่ามีชาวบ้านขี่ลามาก่อนแล้ว ดอกไม้สวยๆ ถูกเด็กเก็บใส่กระเป๋าไปเรียบร้อย เขาได้แค่ดมกลิ่นหอมกับดูกลีบปลิวใส่แก้วเหล้า\n\nคุณก็กำลังเจอแบบนี้อยู่ใช่ไหม เตรียมงานโปรเจ็กต์ไว้นานแล้ว วางแผนมาเป็นเดือนๆ รู้สึกว่าจะเป็นคนแรกที่นำเสนอไอเดียนี้ แต่ตอนนี้เพื่อนร่วมงานคนอื่นเอาความคิดคล้ายๆ กันไปทำก่อนแล้ว หรือบางทีคุณกำลังตั้งใจจีบคนที่ชอบอยู่ แต่ยังไม่ทันได้สารภาพก็เห็นเขาเดินคู่กับใครคนอื่น ความรู้สึกนั้นเหมือนเม็งเฮาเหร่านกำลังถือแก้วเหล้าดูกลีบไม้ปลิว รู้ว่าดอกไม้ยังสวยอยู่ แต่ของดีๆ คนอื่นเอาไปก่อนแล้ว ที่เหลืออยู่คือความเสียดายกับคำถามว่าทำไมไม่รีบกว่านี้\n\nแต่เดี๋ยวก่อนนะ เม็งเฮาเหร่านแม้จะไม่ได้เป็นคนแรก แต่เขาก็ยังได้ดื่มเหล้าใต้ต้นแม่ไผ่อยู่ดี ยังได้แต่งบทกลอนสวยๆ จากประสบการณ์นี้ ที่สำคัญเขาไม่ได้เลิกเที่ยวหาดอกไม้ เพราะรู้ว่าสิ่งที่ตัวเองชอบจริงๆ ไม่ได้อยู่ที่การเป็นคนแรก แต่อยู่ที่ความสุขจากการได้ทำในสิ่งที่รัก คุณเองก็เหมือนกัน อาจจะไม่ได้เป็น first mover แต่ไม่ได้แปลว่าโอกาสหมดไป\n\nเริ่มต้นใหม่ในสิ่งที่คุณเตรียมไว้แล้ว แต่เปลี่ยนมุมมองใหม่ ไอเดียเก่าอาจจะมีคนทำไปแล้ว แต่เวอร์ชันของคุณยังไม่มีใครเห็น อย่าไปพิจารณาว่าช้าหรือเร็ว ให้สำคัญกับคุณภาพและเอกลักษณ์ของผลงานมากกว่า"
       }
+    },
+    "en": {
+      "title": "Meng Haoran Seeking Plum Blossoms",
+      "fortune_level": "Average",
+      "one_line_summary": "Your life right now feels like Meng Haoran's winter journey — you're searching for signs of progress while others…",
+      "poem": [
+        "On the Southern Hill, plum flowers begin to bloom, Sipping the goblet of wine with crystal petals flown.",
+        "Early arrives the traveller on donkey's back, with page ahead presenting a scene of glamour of spring."
+      ],
+      "story": "Meng Haoran was an 8th century Chinese poet who lived during the Tang Dynasty's golden age. Unlike his contemporary Li Bai who chased fame at court, Meng chose a hermit's life in the mountains.\n\nHe became famous for poems about nature and quiet contemplation. The story behind this fortune stick comes from his wandering journeys seeking plum blossoms in early spring.\n\nPicture this: while others stayed indoors during late winter, Meng would travel by donkey to remote hillsides, looking for the first plum trees to bloom. He'd sit beneath them, drinking wine and writing poetry as petals fell into his cup.\n\nChinese culture sees plum blossoms as symbols of perseverance and hope — they bloom in harsh winter conditions when other flowers won't. Meng's patient search for beauty in unlikely places made him a beloved figure representing the scholar who finds wisdom through quiet observation rather than aggressive pursuit.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Meng Haoran rides out before the rest of the city is awake, donkey ambling, page-boy ahead, wine cup in hand, looking for plum blossoms that have only just opened."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income is fine — the real leak is the restless spending that protests it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Meng Haoran rides out alone in the cold to see plum blossoms most people would rather admire from inside a warm room."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Meng Haoran's early spring — you're seeing the first small signs of improvement, but the full transformation hasn't arrived yet."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Meng Haoran rides out before the plum trees have fully opened."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family life right now resembles Meng Haoran's mountain journey — you're in a transitional phase where small signs of positive change are just beginning to appear."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your life right now feels like Meng Haoran's winter journey — you're searching for signs of progress while others might not see what you're looking for."
+        }
+      }
     }
   },
   {
@@ -758,6 +1291,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ได้พื้นที่ส่วนตัวแล้วแต่ยังกังวลใจ",
         "detail": "หนีไปแล้วแต่ใจยังไม่สงบ นี่คือสภาวะของคุณตอนนี้เลยนะ บทกลอนเล่าเรื่องเถาหยวนหมิง (陶淵明) นักปราชญ์โบราณที่เลิกเป็นข้าราชการแล้วกลับไปอยู่บ้านนา 'เพื่อรักความสงบจึงปลูกไผ่รอบบ้าน ซื้อเหล้ามาดื่มฟังฝนในกระท่อมหญ้า เมื่อเมาก็นอนหงายใต้ต้นแอปริคอต กลัวเสียงนกจะปลุกจากฝันดี' เขาเลิกงานไม่ใช่เพราะเกียจคร้าน แต่เพราะไม่ยอมก้มหัวให้ผู้ใหญ่ที่คิดผิด เลือกชีวิตเรียบง่าย ปลูกไผ่ ดื่มเหล้า ฟังฝน นอนใต้ดอกไม้ แต่แล้วทำไมเขายังต้องกลัวเสียงนกล่ะ กลัวอะไรในเมื่อทุกอย่างดูสบายแล้ว เพราะเขารู้ดีว่าความสงบใสนี้อ่อนไหวมาก เสียงเล็กๆ ก็ทำลายได้ เหมือนคุณที่หนีออกมาจากบางสถานการณ์แล้ว อาจจะเป็นงาน ความรัก หรือข้อพิพาท ตอนนี้ชีวิตเรียบเฉยกว่าเดิม แต่ใจยังระแวง ยังกลัวว่าปัญหาเก่าจะตามมาถึง หรือมีเรื่องใหม่มาทำลายความสงบนี้ เคยนอนไม่หลับเพราะคิดมากไหม เคยรู้สึกอยากแยกตัวออกจากทุกคนไหม นี่แหละสภาวะ 'เถาหยวนหมิง' ของยุคนี้ แต่ลองมาดูใหม่นะ ความกลัวที่คุณมีอาจจะมีจริง อาจจะไม่มีจริง แต่มันกำลังทำให้คุณไม่ได้รื้นรมย์กับชีวิทที่เงียบสงบนี้เท่าที่ควร คุณกำลังดูแลตัวเองดี มีพื้นที่ส่วนตัว มีกิจกรรมที่ชอบ แต่หัวใจยังไม่ยอมปล่อยวาง คิดแบบนี้เถอะ แทนที่จะกลัวเสียงนก ทำไมไม่ลองฟังดูว่าเขาร้องเพลงอะไร บางทีมันอาจจะไม่ได้มาปลุกคุณ แต่มาบอกว่าเช้าใหม่มาแล้วก็ได้"
+      }
+    },
+    "en": {
+      "title": "Tao Yuanming's Drunken Retreat",
+      "fortune_level": "Average",
+      "one_line_summary": "You're at a crossroads where the world's definition of success might not align with what actually fulfills you.",
+      "poem": [
+        "A hermit adores the bamboo around a thatched hut, Enchanting himself by listening to dazzling rain flood.",
+        "Just lying beside the apricots whenever drunk, He hates to be wakened up by nightingale twitters snug."
+      ],
+      "story": "Tao Yuanming lived during China's Jin Dynasty (365-427 CE) and became the archetype of the scholar who chose contentment over ambition. After serving as a low-ranking government official, he famously resigned rather than compromise his principles, declaring he would 'not bow down for five pecks of rice.\n\n' He retreated to rural life, growing chrysanthemums, writing poetry, and occasionally getting pleasantly drunk while contemplating nature. His decision wasn't about laziness or failure — it was radical self-determination in a culture that prized official success.\n\nTao became legendary for finding genuine happiness in simple pleasures: rainfall on his thatched roof, wine among flower blossoms, the rustling of bamboo. His story represents the Chinese ideal that true wisdom sometimes means knowing when to step away from the rat race.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image on this stick is Tao Yuanming under his apricot trees, half-drunk, listening to rain on bamboo."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your money is genuinely fine. The real question is why steady feels like failure."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life needs what Tao Yuanming found in his cottage — authentic contentment rather than external validation."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The stick gives you Tao Yuanming under his apricot tree, half-drunk on rain and rice wine, irritated only when a bird wakes him too early."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your academic journey is calling for a fundamental shift in perspective."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Tao Yuanming under his apricot tree, half-drunk and content with the sound of rain, is the image this stick hands you for a reason."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're at a crossroads where the world's definition of success might not align with what actually fulfills you."
+        }
       }
     }
   },
@@ -813,6 +1386,47 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 15 ถังหมิงหวงเยือนวังจันทร์ ระดับเซียมซีดีมาก บอกว่าโอกาสดีๆ กำลังมา",
         "detail": "โชคลาภระดับเทพมาถึงแล้ว แต่คุณยังไม่เชื่อสายตาตัวเอง!\n\nบทกลอนเล่าว่า \"仙槎一葉泛中流\" เรือแคแผ่นเดียวลอยกลางกระแสน้ำ พาขึ้นไปยัง \"月殿蟾宮\" วังจันทร์ที่เต็มไปด้วยเสียงเพลงสวรรค์ นี่คือเรื่องของจักรพรรดิถังหมิงหวง (唐明皇) ที่ได้เดินทางไปเยือนพระราชวังบนดวงจันทร์ในคืนวันไหว้พระจันทร์ เขาได้ยินบรรเลงสวรรค์จนหลงใหล กลับมาก็นำท่วงทำนองนั้นมาแต่งเป็นเพลงระบำสุดประณีตที่โลกยังจำได้จนทุกวันนี้ ที่ต้องจับตาคือเขาไม่ได้ไปเอง แต่มีพ่อมดส่งไป เหมือนมีคนส่งโอกาสมาให้\n\nคุณกำลังอยู่ในช่วงที่มีโอกาสพิเศษเข้ามา แต่อาจจะไม่เชื่อว่าดีขนาดนั้นจริงๆ เหมือนถังหมิงหวงที่เมื่อไปถึงวังจันทร์แล้วยังงงว่าตัวเองมาได้ยังไง คุณอาจได้รับข้อเสนองานที่ดีกว่าที่คิด หรือมีคนชอบคุณแต่คุณไม่แน่ใจว่าจริงมั้ย หรือมีโอกาสลงทุนที่เพื่อนแนะนำแต่กลัวเสี่ยงเกินไป ความจริงคือ เมื่อโชคมาแล้ว ไม่ต้องคิดมากเรื่องเหตุผลให้ปวดหัว\n\nเซียมซีถามว่า \"酒詩吟飲幾時休\" จะดื่มกิน เล่นเพลงไปจนกี่โมงกัน หมายความว่าอย่าไปกลัวว่าความสุขจะหมด ตอนนี้คือเวลาของการเฉลิมฉลอง ไม่ใช่เวลาเก็บเงิน อย่าไปนั่งคำนวณจนโอกาสผ่านไป\n\nลงมือทำสิ่งที่คุณใจลอยอยู่สักพักแล้วนั่นเลย เรื่องใหญ่ที่คุณคิดถึงตอนนี้ ให้คำตอบเป็นใช่ซะ"
       }
+    },
+    "en": {
+      "title": "Emperor Tang Minghuang's Journey to the Moon Palace",
+      "fortune_level": "Very Good",
+      "one_line_summary": "You're entering a golden period where your natural talents and accumulated wisdom are finally aligning with…",
+      "poem": [
+        "Riding on a raft and floating is midstream, He travels far and wide to the glistening moon.",
+        "Songs of angels from Heaven may stop for a while.",
+        "Yet wine and poetry never cease to make you smile."
+      ],
+      "story": "This sign tells the story of Emperor Tang Minghuang (685-762), one of China's most celebrated rulers during the Tang Dynasty's golden age. Legend has it that during the Mid-Autumn Festival, a Taoist master took the emperor on a magical journey to the moon palace, where he witnessed the celestial maidens dancing and heard their otherworldly music.\n\nThe emperor was so enchanted that he memorized their melodies and brought them back to earth. This tale represents the height of Tang Dynasty culture — a time when art, poetry, and music flourished under imperial patronage.\n\nThe emperor himself was a poet and musician who understood that true leadership meant cultivating beauty and wisdom alongside power. The moon palace journey symbolizes reaching beyond earthly concerns to touch something transcendent, then returning to share that inspiration with others.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Tang Minghuang's journey to the Moon Palace is the figure behind this stick, and the verse keeps returning to the same idea: a raft drifting midstream, music from somewhere beyond, wine and poetry that don't stop."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The raft is built and the winds favor you — ride steady work, skip the shortcuts."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a genuinely magical phase."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The image of Emperor Minghuang drifting on a raft toward the moon is not a story about transcendence as escape."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey is about to take flight in ways you haven't imagined."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your home is entering a golden phase where harmony and abundance flow naturally."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're entering a golden period where your natural talents and accumulated wisdom are finally aligning with opportunity."
+        }
+      }
     }
   },
   {
@@ -866,6 +1480,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เวลากลับสู่ที่เดิม ไม่ต้องเร่งรีบ ปล่อยให้สิ่งต่างๆ คลี่คลายตามธรรมชาติ",
         "detail": "ได้เวลากลับบ้านแล้วล่ะ! บทกลอนเซียมซีใบนี้วาดภาพสุดชิลล์ให้เห็น - พระอาทิตย์ตกดิน กานับแบกเงามืดกลับรัง เด็กเลี้ยงวัวขี่ควายเดินช้าๆ ลากกลับหมู่บ้าน มือก็เป่าปี่ไผ่ไปด้วย เสียงดนตรีโซไซ่ไม่ค่อยเป็นทำนอง แต่ฟังแล้วใจฟู เออ นี่ไงคือภาพแห่งความสงบและการกลับสู่ที่เดิม พอเวลาเย็นแล้วทุกอย่างก็รู้ว่าต้องไปไหน ไม่ต้องรีบร้อนอะไร\n\nมันเหมือนภาพชีวิตสมัยก่อนตอนเย็นๆ ที่ไร่นา พ่อแม่เรียกลูกกลับกิน ไก่เข้าเล้า วัวกลับคอก ฟ้าที่กว้างใหญ่ก็เริ่มปิดตัวลง เด็กๆ ไม่ต้องเร่งมาก ขี่ควายไปเรื่อยๆ มือเป่าปี่เล่น เสียงเป่าออกมาไม่ค่อยไพเราะ บ้างเสียงยาว บ้างเสียงสั้น แต่อย่างนั้นแหละถึงจะสนุก ไม่ต้องเป็นนักดนตรี แค่เป็นตัวเอง\n\nตอนนี้คุณรู้สึกแบบนั้นมั้ย เหมือนอยากจะ \"กลับบ้าน\" แล้ว อาจไม่ใช่กลับบ้านจริงๆ นะ แต่กลับสู่สิ่งที่ทำให้จิตใจสงบ งานที่ทำมันก็พอใจได้แล้ว ไม่ต้องขัดแย่งอะไรกับใครให้เมื่อย ความสัมพันธ์ก็ปล่อยไปตามเป็นไป อย่าไปคิดว่าทุกอย่างต้องเพอร์เฟค เหมือนเด็กเลี้ยงควายในเซียมซี เขาไม่ได้เร่งให้ควายวิ่ง เขาแค่นั่งบนหลังมัน ปล่อยให้มันเดินไปเอง เพราะรู้ว่าควายจำทางกลับบ้าน\n\nตอนนี้อย่าไปบีบคั้นตัวเองหรือคนอื่นแล้วนะ ให้เวลากับเรื่องต่างๆ มันจะค่อยๆ คลี่คลายเอง แบบกานับที่รู้ว่าพอมืดแล้วต้องกลับรัง"
+      }
+    },
+    "en": {
+      "title": "The Shepherd Boy Returns Home",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Your life right now feels like that shepherd boy's journey home.",
+      "poem": [
+        "Far from the horizon fly back crows at sunset, over the ridges a shepherd on a calf comes back.",
+        "Sounds of flute music off and on are heard",
+        "How joyful are the tunes long and short jerk!"
+      ],
+      "story": "This sign depicts a classic scene from rural Chinese life — a young shepherd boy riding his water buffalo home at sunset, playing a bamboo flute as crows return to their nests. It's not about a specific historical figure, but rather captures an archetypal moment of contentment and completion.\n\nIn traditional Chinese culture, the shepherd boy represents innocence and wisdom gained through simple living. These children would spend entire days in the fields with their animals, learning patience and developing a deep connection with natural rhythms.\n\nThe image appears throughout Chinese poetry and art as a symbol of finding joy in modest circumstances. The flute music mentioned isn't just entertainment — it's the sound of someone who has found peace with their place in the world, making music because the moment feels right.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career journey is entering a phase where patience and steady progress will pay off more than rushing or forcing outcomes."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds and the harvest arrives on time — the real test is knowing when enough is enough."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The shepherd boy on his calf isn't rushing toward anything."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The shepherd boy on his calf is not hurrying anywhere."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors this shepherd boy's unhurried return home."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "For family matters, this stick paints a picture of gentle progress toward harmony."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your life right now feels like that shepherd boy's journey home."
+        }
       }
     }
   },
@@ -921,6 +1576,48 @@ const SIAMSI_DATA = [
         "summary": "ช่วงเวลาแห่งการรอคอย ไม่มีปัญหาใหญ่แต่ยังไม่ถึงจังหวะที่จะมีความคืบหน้า",
         "detail": "ดวงพอได้ แต่ไม่ใช่เวลาที่จะรีบร้อน บทกลอนเล่าเรื่องคืนฤดูใบไผ่ร่วง ต้นกกริมแม่น้ำเต็มไปด้วยหยาดน้ำค้าง แสงจันทร์เต็มดวงส่องลงมาในบ้านจนใสเหมือนกระจก ลมเซาะผ่านระฆังม้า ให้เสียงไพเราะสะท้อนไปจนถึงกลองวัดเช้า ภาพนี้สวยงามแต่เงียบสงัด เหมือนกับใครคนหนึ่งยืนมองพระจันทร์อยู่คนเดียว ไม่เศร้าหรือดีใจมากเกินไป แค่รู้สึกสงบในใจ\n\nเรื่องนี้มาจากบทกวีโบราณ \"เจียนเจี่ย\" (蒹葭) ในเก่าเชอจิง (詩經) ที่เล่าถึงคนรักที่อยู่อีกฟากแม่น้ำ มองเห็นแต่ไปหาไม่ได้ แต่เซียมซีใบคุณไม่ได้เศร้าขนาดนั้น นี่เป็นเรื่องของการรอคอย มีความหวังแต่ไม่เครียดจนนอนไม่หลับ แค่รู้ว่าสิ่งที่ต้องการยังไม่ถึงเวลา แต่ก็อยู่ใกล้แล้วนะ เหมือนกับรอให้น้ำค้างเปลี่ยนเป็นน้ำแข็งตอนเช้า ธรรมชาติมีจังหวะของมัน\n\nคุณกำลังอยู่ในช่วงที่ทำอะไรไม่ได้มาก หยิบจับสิ่งใดขึ้นมาก็รู้สึกแป๊บๆ ไม่ค่อยมีอะไรน่าตื่นเต้น แต่ก็ไม่มีปัญหาใหญ่โต อาจจะเป็นเพราะคุณรออะไรบางอย่างอยู่ รอผลสอบ รอการตอบรับงาน รอคนบางคนตัดสินใจ หรือแม้แต่รอให้ตัวเองเข้าใจชัดขึ้นว่าต้องการอะไรกันแน่ อย่าไปงุ่นง่านใจนัก เพราะบางครั้งการไม่มีอะไรเกิดขึ้นก็เป็นสัญญาณดีนะ มันแสดงว่าคุณยังไม่ได้ทำผิดพลาดอะไรร้ายแรง\n\nพระจันทร์เต็มดวงในบทกวีนี่ก็จะต้องลดค่อยลดลงในอีกไม่กี่วัน แล้วก็จะกลมใหม่อีกทีในเดือนหน้า นี่คือเรื่องปกติของธรรมชาติ ดวงของคุณก็แบบนี้แหละ จะต้องมีขึ้นมีลง ตอนนี้อยู่ตรงกลางพอดี ไม่ต้องไปเปรียบเทียบกับคนอื่นว่าเขาดูมีความสุขกว่า เพราะเซียมซีบอกว่าความเรียบง่ายในตอนนี้ก็เป็นแบบของความสมบูรณ์\n\nอย่าไปรีบเร่งหาคำตอบ ช่วงนี้ให้ทำในสิ่งที่ควรทำตามปกติ แต่เพิ่มการสังเกตสิ่งรอบตัวให้มากขึ้น บางทีสัญญาณที่คุณรอจะมาในรูปแบบที่ไม่คาดคิด เหมือนเสียงระฆังที่ดังมาจากไกลนั่นแหละ"
       }
+    },
+    "en": {
+      "title": "Moonlight Fulfillment",
+      "fortune_level": "Average",
+      "one_line_summary": "This sign suggests you're in a phase where steady observation serves you better than bold action.",
+      "poem": [
+        "In the autumn brook are reeds full of morning dew.",
+        "Bathed in moonlight, courtyard steps are crystal clear.",
+        "Tinkling horse-bells echo in refreshing breeze",
+        "Loudly follows the repeating sound of morning bell."
+      ],
+      "story": "This stick draws from the classical Chinese poetic tradition of moonlit contemplation, particularly the Tang Dynasty aesthetic of finding beauty in quiet, ordinary moments. The imagery reflects the concept of 'moonlight fulfillment' — a state where clarity comes not from dramatic revelation but from patient observation.\n\nAncient Chinese scholars would often write about autumn nights when the moon was full and bright enough to read by, seeing this as nature's gift of illumination for study and reflection. The reeds, dew, and temple bells create a scene of perfect harmony between human activity and natural rhythms.\n\nThis isn't about a specific historical figure, but rather captures a universal moment of peaceful awareness that Chinese poets celebrated as the foundation of wisdom. In traditional thought, such moments of clarity were considered more valuable than gold or status.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The full moon in this verse doesn't dramatize anything."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money flows in and out evenly this season. The real question isn't how to earn more — it's why enough never feels enough."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation right now resembles that moonlit courtyard — clear, peaceful, but perhaps a bit quiet."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "This stick is telling you that your health journey right now is like that autumn scene - everything is visible, nothing is hidden."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse hands you a courtyard at night: reeds heavy with dew, steps washed in moonlight, a horse-bell tinkling somewhere down the road, the temple bell repeating its slow count toward dawn."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "For home and family matters, this sign suggests you're entering a period of quiet stability rather than dramatic change."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign suggests you're in a phase where steady observation serves you better than bold action."
+        }
+      }
     }
   },
   {
@@ -974,6 +1671,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ความเศร้าที่เก็บไว้คนเดียว",
         "detail": "ใจเศร้าแบบที่เก็บไว้คนเดียว สายเลือดไหลเปียกแก้วตา นกกาเหว่าร้องจนคอแตก เสียงนั้นไม่ได้ร้องให้ใครฟัง แต่ร้องให้ตัวเองคลายทุกข์ 'ดูจวนที่เสียงโหยหวนลั่นฟ้า ร้องจนแก้วคอแตกแสงแสง ใครไกลบ้านฟังแล้วใจระทม คิดถึงถิ่นเก่าอยู่ในฝัน' เรื่องเศร้าใบนี้เอาจากตำนานดู่วี่ (杜宇) กษัตริย์แห่งจงซาน เจ้านายที่ยอมสละบัลลังก์เพื่อคนรัก พอประเทศโดนน้ำท่วม ภัยแล้งสลับกัน ท้าวดู่วี่รู้สึกผิดใจจนตายไป วิญญาณกลายเป็นนกกาเหว่า ร้องอยู่ทุกค่ำคืนด้วยเสียงโศกเศร้า 'บู่หรูกุ้ยชวี่' แปลว่า 'กลับบ้านเถอะ กลับบ้านเถอะ' จนกบเลือดเป็นตัน คุณรู้ไหมว่าใจเศร้าแบบไหนที่ร้องจนคอแตก ไม่ใช่เสียใจธรรมดา แต่เป็นความรู้สึกที่บีบคั้นจากข้างใน เหมือนมีอะไรสำคัญที่ทำผิดแล้วแก้ไขไม่ได้ กิ่งไผ่ที่หักแล้วติดกลับไม่ได้เหมือนเดิม เซียมซีใบนี้บอกว่าคุณกำลังเป็นนกกาเหว่าในชีวิตตัวเอง ร้องอยู่คนเดียวในความทรงจำ บางทีคุณผิดพลาดเรื่องสำคัญมาแล้ว ทิ้งคนสำคัญไป หรือเลือกผิดทางในจุดเลี้ยวชีวิต ตอนนี้มองย้อนกลับไปแล้วเสียดายใจ อยากจะกลับไปแก้ไข แต่เวลามันไม่เดินถอยหลัง ยิ่งคิดมากยิ่งทรมาน คุณอาจจะกำลังอยู่ที่ที่ไม่ใช่บ้าน ทำงานที่ไม่ใช่ความฝัน หรือคบคนที่ไม่ใช่ครึ่งหนึ่งที่แท้จริง รู้สึกเหมือนลอยอยู่กลางอากาศ ไม่มีที่ยึดเหนี่ยว หาความสุขไม่เจอ ความเศร้าก็ระบายไม่ออก แค่เก็บไว้ในใจแล้วร้องเพลงเศร้าไปเรื่อยเปื่อย ยิ่งดึกยิ่งคิดมาก ยิ่งคิดยิ่งเจ็บปวด เรื่องงานก็ไม่ค่อยราบรื่น อาจมีคนใจร้าย ใส่ร้ายใส่ป่าว หรือบิดเบือนเรื่องราว ทำให้เสียชื่อเสียงได้ เรื่องเงินทองเช่นกันไม่มั่นคง หาได้ยากกว่าเดิม หนี้สินเพิ่มขึ้น ความรักเหี่ยวแห้งเหมือนใบไม้ในฤดูแล้ง ใครก็ไปคนละทิศคนละทาง ไม่มีใครเข้าใจความเศร้าที่แท้จริงในใจคุณ หยุดร้องอยู่คนเดียวซะที่ ออกไปหาคนคุยสักคน หรือไปทำงานอาสาช่วยเหลือคนอื่น เวลาดูแลคนที่ลำบากกว่า ใจเราจะค่อยๆ เบาลง"
+      }
+    },
+    "en": {
+      "title": "The Cuckoo's Lament",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Right now, you might feel like that cuckoo — displaced, crying out, unsure where you belong.",
+      "poem": [
+        "With blood and tears the enenkoo weeps, Full of grievance and full of sorrow deep.",
+        "Being a stranger in a strange place, He awakened from his dreams with homesick memories."
+      ],
+      "story": "The cuckoo (杜鵑) in Chinese culture carries one of literature's most tragic stories. According to ancient legend, Emperor Wang of Shu fell so deeply in love that he abandoned his kingdom for romance.\n\nWhen natural disasters struck and his people suffered, he transformed into a cuckoo bird, forever crying out in regret. The bird's distinctive call sounds like 'bu ru gui qu' (不如歸去) — 'better to go home.\n\n' Chinese poets have used the cuckoo's cry for centuries to represent exile, regret, and the pain of being cut off from where you belong. The bird literally cries blood — its red beak and throat creating the illusion of bloody tears.\n\nThis isn't just about homesickness; it's about the consequences of choices that separate us from our foundation.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Career-wise, you're the cuckoo right now — feeling displaced in your professional world."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Shortcuts and speculation are blocked, but your steady income and real skills stay protected."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The cuckoo in this verse cries from a place that isn't home, grieving something it cannot return to."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The cuckoo in this verse cries until its throat bleeds, calling out for a home it can no longer reach."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The cuckoo of this verse cries until blood mixes with its tears, a bird that once was a king and now wakes far from anything it recognises."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The cuckoo in this verse weeps blood not because it is far from home in miles, but because the home it remembers no longer answers back."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now, you might feel like that cuckoo — displaced, crying out, unsure where you belong."
+        }
       }
     }
   },
@@ -1029,6 +1766,46 @@ const SIAMSI_DATA = [
         "summary": "พลังแกร่งแต่ต้องรอเวลาที่เหมาะสม อย่าเร่งรัดผลลัพธ์",
         "detail": "ฟ้าผ่าไฟฟ้าแล้ว แต่ยังไม่ถึงเวลาออกฤทธิ์! บทกลอนเล่าเรื่องฟูซี (伏羲) จักรพรรดิโบราณที่คิดค้นผาบ่าก๊วย หรือ \"ปาเกา\" ออกมา เขานั่งมองฟ้าดูดิน เฝ้าสังเกตลวดลายบนตัวมังกร-ม้าที่โผล่ขึ้นจากแม่น้ำเหลือง แล้วก็วาดเครื่องหมายอันเป็นตำนานออกมาเป็นแปดรูปแบบ ย่อยๆ ลง ย่อยๆ ลง จนเหลือแค่เส้นทึบ เส้นขาด ธรรมดาๆ แต่ในความธรรมดานั้นแหละ มีความลับของจักรวาลซ่อนอยู่เต็มไปหมด กลอนบอกว่า \"ฉี่ย้นกัวซัมเหลี่ยนเฮาไท่หยาง\" - ค้อนแกว่าประกอบด้วยสามเส้นทึบ เป็นสัญลักษณ์ของดวงอาทิตย์ แต่อีกประโยคหนึ่งบอกว่า \"เฉี่ยนหลงอู๋หย่องตี้หยี่จาง\" - มังกรซ่อนตัว อย่าใช้เลย บทแรก นี่คือความขัดแย้งที่สวยงาม พลังแกร่งแต่ต้องซ่อนไว้ก่อน ฟูซีรู้เรื่องนี้ดี เขาถอดรหัสธรรมชาติได้แล้ว แต่ไม่เร่งรัดเอาออกมาโชว์ทั้งหมด เขาใช้สัญลักษณ์ง่ายๆ เก็บความซับซ้อนไว้ เหมือนใส่เพชรนิลจินดาไว้ในถุงผ้าธรรมดา\n\nชีวิตคุณตอนนี้เหมือนสถานการณ์ของฟูซีเลย คุณมีความรู้ความสามารถ มีไอเดียดีๆ หรืออาจจะมีโอกาสที่น่าสนใจรออยู่ แต่ดาราจรของคุณบอกว่า \"ยังไม่ถึงเวลา\" เคยรู้สึกหงุดหงิดไหมที่เห็นคนอื่นๆ ดูเหมือนก้าวหน้ากว่า ขณะที่คุณยังต้องรอ? นี่ไม่ใช่เพราะคุณด้อยกว่าใคร เหมือนมังกรที่ซ่อนตัวอยู่ใต้น้ำก่อนที่จะบินขึ้นฟ้า พลังอยู่ครบแต่ยังต้องสะสมเวลาพอดี คุณอาจกำลังทำงานที่ดูธรรมดา แต่จริงๆ แล้วกำลังสะสมประสบการณ์ล้ำค่า หรือความสัมพันธ์ที่ดูเหมือนไม่มีอะไรพิเศษ แต่จริงๆ กำลังสร้างรากฐานแน่นหนา ปัญหาคือเรามักจะใจร้อน อยากเห็นผลเร็วๆ แต่ธรรมชาติไม่ทำงานแบบนั้นนะ\n\nอย่าไปแข่งกับเวลา หยุดกดดันตัวเองให้เกิดผลลัพธ์เร็วๆ ให้เวลากับสิ่งที่คุณกำลังทำอย่างจริงจัง สิ่งที่ดูเหมือนชะลอตัวในตอนนี้ จะกลายเป็นพลังผลักดันที่แรงกว่าเดิม"
       }
+    },
+    "en": {
+      "title": "Fuxi Creates the Eight Trigrams",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This sign carries Fuxi's core lesson: there's a right time for everything, and forcing the moment usually backfires.",
+      "poem": [
+        "The lot of \"Chain\" belongs to the sun, do not push yourself too hard top the front.",
+        "Wait till the God's Message is firm in your hand, Fortune puts in, good luck will not bend."
+      ],
+      "story": "Fuxi is one of China's legendary founding emperors, credited with creating the I Ching's eight trigrams around 5,000 years ago. According to myth, he observed patterns in nature — the markings on a dragon-horse that emerged from the Yellow River — and translated these into the fundamental symbols that would become Chinese philosophy's foundation.\n\nThink of him as both inventor and philosopher, the person who first tried to map the universe's underlying patterns into a system humans could understand. The eight trigrams became the basis for everything from feng shui to traditional medicine.\n\nWhat makes Fuxi's story powerful isn't the supernatural elements, but his patience. He didn't rush to create his system.\n\nHe observed, studied, waited for clarity, then acted with precision.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Fu Xi's patient observation before innovation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, but the urge to accelerate risks harvesting a crop that isn't ripe."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation mirrors Fu Xi's approach to understanding the cosmos — everything has its proper timing and natural order."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Fu Xi did not invent the trigrams by forcing an answer."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors Fu Xi's patient observation of natural patterns."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Drawing Fuxi's stick for family matters signals you're in a foundational phase — like an architect surveying the land before building."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign carries Fuxi's core lesson: there's a right time for everything, and forcing the moment usually backfires."
+        }
+      }
     }
   },
   {
@@ -1082,6 +1859,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ยังไม่ถึงเวลา อย่าไล่ตามสิ่งที่เอื้อมไม่ถึง",
         "detail": "ยังไม่ถึงเวลา อย่าไปฝันถึงของบนฟ้า\n\nบทกลอนเล่าว่า \"天上仙花難問種\" ดอกไม้นางฟ้าบนสวรรค์นั่นหาเมล็ดไม่ได้นะ ไม่ใช่เพราะใครขี้เหนียวไม่ให้ แต่มันไม่ใช่ของคนโลกนี้จริงๆ \"人間塵事幾多更\" เรื่องราวบนโลกมนุษย์นี้เปลี่ยนแปรไปเรื่อย วันนี้เป็นอย่างนี้ พรุ่งนี้ก็อีกแบบหนึ่ง แต่สิ่งที่ไม่เปลี่ยนคือ \"前程已注公私簿\" อนาคตของเราถูกบันทึกไว้ในสมุดบัญชีแล้ว ทำดีได้ดี ทำชั่วได้ชั่ว \"罰賞分明濁與清\" ใสกับขุ่นแยกออกจากกันชัดเจน\n\nเล่าให้ฟังเรื่องหนึ่งนะ มีนักเรียนคนหนึ่งใฝ่ฝันอยากได้ดอกไม้วิเศษจากสวนสวรรค์ เขาพยายามทุกวิถีทาง ปีนต้นไผ่สูงๆ ผูกเชือกโยนขึ้นฟ้า ทำแผ่นใบบินรี่ใส่เชือก อะไรก็ทำ แต่มือก็ยังไม่ถึงเมฆสักครั้ง สุดท้ายเขาเหนื่อยจนนั่งฮืดฮาดอยู่ใต้ต้นไผ่ แล้วก็เริ่มสังเกตดูว่า ใต้เท้าเขานี่มีดอกไผ่เล็กๆ ผลิบานสวยงามไม่แพ้ดอกไม้วิเศษอะไรเลย พอเขาหยุดมองขึ้นฟ้า เริ่มใส่ใจดูแลดอกไผ่ที่มีอยู่ ไม่นานสวนของเขาก็กลายเป็นสวนที่สวยที่สุดในหมู่บ้าน\n\nนี่คือสิ่งที่คุณกำลังเผชิญอยู่เดี๋ยวนี้เลย คุณกำลังจ้องมองสิ่งที่อยู่สูงเกินเอื้อม ใช่ไหมล่ะ อาจเป็นตำแหน่งงานที่ดูเหมือนจะไม่มีวันได้ อาจเป็นคนที่ดูเหมือนจะไม่มีวันหันมามอง หรืออาจเป็นเป้าหมายที่คิดว่า \"ถ้าได้แล้วชีวิตจะสมบูรณ์\" แต่เอาจริงๆ นะ บางทีมันก็ไม่ใช่ของเรา ไม่ใช่เพราะเราไม่ดีพอ แต่เพราะจังหวะยังไม่ถึง หรือบางทีมันก็ไม่ใช่สิ่งที่จะทำให้เราสุขจริงๆ\n\nรอบๆ ตัวคุณตอนนี้มีอะไรดีๆ อยู่ที่คุณไม่ได้สังเกตบ้าง เพื่อนที่ใส่ใจ งานที่ทำอยู่แม้จะไม่ใช่ฝันใหญ่แต่มั่นคง หรือแม้แต่เวลาว่างที่คุณมีอยู่ตอนนี้ บางทีแทนที่จะไปยืดคอดูฟ้า ลองก้มลงดูพื้นดินใต้เท้าดูสิ อาจจะมีอะไรงดงามรออยู่ก็ได้\n\nลองหยุดไล่ตามสิ่งที่ไม่ใช่ของเราสักเดือนสองเดือน แล้วใส่ใจกับสิ่งที่มีอยู่แล้วในมือให้มากขึ้น คุณจะแปลกใจเอาเอง"
+      }
+    },
+    "en": {
+      "title": "Heavenly Flowers",
+      "fortune_level": "Average",
+      "one_line_summary": "You're at a crossroads where the path forward isn't crystal clear, and honestly, that's exactly where you need to be.",
+      "poem": [
+        "Flowers in heaven bear very uncommon name, Things on earth, too are never a moment the same.",
+        "One's future is destined in the Book of Justice, Which by no means mixes up praise with blame."
+      ],
+      "story": "This sign references the mythical flowers that bloom in celestial gardens, beyond the reach of earthly gardeners. In Chinese cosmology, these heavenly blooms represent perfection that exists only in the divine area — beautiful, rare, but impossible to cultivate through human effort.\n\nThe 'Book of Justice' mentioned in the poem refers to a celestial ledger where deeds are recorded without bias or emotion. Think of it as the universe's accounting system, where good and bad actions are tallied with mathematical precision.\n\nThis concept appears throughout Chinese literature and philosophy, suggesting that while we can't control every outcome, we can influence what gets written in our cosmic record. The flowers symbolize goals that seem impossibly distant, while the book reminds us that consistent character matters more than dramatic gestures.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation feels uncertain right now, and honestly, that's exactly where this sign expects you to be."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, but shortcuts and clever schemes are the real trap to avoid."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life right now exists in that tricky space between dreams and reality."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse opens with flowers that have no earthly equivalent, blossoms whose name belongs only to the celestial register."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now is like trying to name those heavenly flowers — you're dealing with concepts that feel just beyond your grasp."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation feels uncertain right now, like you're trying to cultivate something beautiful but can't quite figure out the right conditions."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're at a crossroads where the path forward isn't crystal clear, and honestly, that's exactly where you need to be."
+        }
       }
     }
   },
@@ -1137,6 +1954,47 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 21 ระดับกลางดี อู่เหวินจื่อจัดงานเลี้ยง บอกว่าโอกาสดีหลายทาง แต่อย่าเพิ่ง",
         "detail": "เรื่องใหญ่กำลังจะเกิด แต่คุณยังเลือกไม่ถูก!\n\nบทกลอนเอ่ยว่า \"天外紅霞如抹錦\" เมฆสีแดงลอยทอดเหมือนผ้าไหมปักทอง ริมรั้วบ้านดอกท้อดอกแอปริคอตแข่งกันบาน มองไปทิศไหนก็สวยหมด แต่จะเลือกดูดอกไหนดีนะ? ขณะที่ไวน์หอมหวานรินไหล แต่ต้องดื่มให้พอดีจิบ ห้ามขลุกขลัก\n\nอู่เหวินจื่อ (吳穩之) นักเขียนราชสำนักสมัยถัง ชื่อเล่นคือ \"เจ้าของงานเลี้ยงที่ดีที่สุดในจีน\" คุณมองดู เวลาเขาจัดปาร์ตี้ไม่เคยรีบร้อนอะไรทั้งนั้น เซตโต๊ะกลางสวนลิง โคมไฟแขวนเก๋ไก๋ แขกมาแต่งชุดไหมสีสวย นั่งแชร์บทกวี ดื่มไวน์แบบจิมๆ ชิมๆ ไม่ใช่ปาร์ตี้แก๊งค์ที่ต้องมากิน-ดื่ม-เมา-ล้ม เขาเข้าใจว่าความสุขที่แท้จริงมาจากการไม่เร่ง ไม่ฟอร์ส ให้เวลามันค่อยๆ ผลิบาน\n\nคุณเจออะไรแบบนี้ไหม? ตอนนี้โอกาสเด็ดมาเป็นโขยง แต่ไอ้ปัญหาคือเลือกไม่ถูก ทั้งงานใหม่ที่หน้าสนใจแต่ไม่รู้มั่นคงไหม ทั้งคนใหม่ที่น่ารักแต่ยังไม่แน่ใจจริงจัง ทั้งการลงทุนที่น่าสนแต่เสี่ยงสูง คุณกำลังยืนมองสวนดอกไม้ที่ทุกต้นสวยแย่งตา เหมือนถามตัวเองว่า \"ถ้าเลือกผิดล่ะ?\" \"ถ้าพลาดโอกาสอื่นล่ะ?\" สมองคิดจนปวดหัว\n\nอู่เหวินจื่อจะบอกคุณว่า อย่าเพิ่งตัดสินใจเลย ให้เวลาตัวเองอีกสัก 2-3 เดือน สังเกตดูทุกตัวเลือกแบบสบายๆ เหมือนจิบไวน์แบบไม่เมา เดี๋ยวเอาเองเด้งออกมาว่าอันไหนใช่"
       }
+    },
+    "en": {
+      "title": "The Banquet of Wu Wenzhi",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Right now, your life resembles Wu's garden party — multiple good things are blooming simultaneously.",
+      "poem": [
+        "High in the sky clouds are tinted brocade red, on the doorway peach and apricot blossoms compete, Behold and judge who will win in such a splendid scene?",
+        "With wine and leisure.",
+        "Let's see who is the beauty queen."
+      ],
+      "story": "Wu Wenzhi was a Tang Dynasty scholar-official known for hosting elaborate garden parties that became legendary for their refined atmosphere. Picture this: spring evenings in his courtyard, lanterns casting warm light on blooming fruit trees, guests in silk robes debating poetry over fine wine.\n\nThese weren't just social gatherings but cultural salons where artists, poets, and officials mingled freely. Wu understood something profound about success — that the most meaningful achievements often happen not through aggressive pursuit, but in creating beautiful spaces where good things naturally unfold.\n\nHis banquets represented the Chinese ideal of cultivated leisure, where genuine connections and opportunities arise organically. The peach and apricot blossoms competing for attention symbolize how true beauty and worth reveal themselves when given proper time and setting, rather than being forced into existence.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career right now resembles Wu Wen's banquet—there's genuine opportunity for recognition, but it requires patience and strategic positioning."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but lifestyle creep may be eating the gains before you notice."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a season of opportunity and choice, much like Wu Wen's grand banquet where beauty and charm were on full display."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Wu Wen's three-day banquets weren't about excess; they were about pacing."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse opens onto Wu Wen's banquet: brocade clouds, peach and apricot competing at the door, scholars passing wine while the examination looms."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your home situation is like Wu Wen's garden in spring — there's natural beauty emerging, but it needs the right attention to truly flourish."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now, your life resembles Wu's garden party — multiple good things are blooming simultaneously, but you're trying to rush the judging process."
+        }
+      }
     }
   },
   {
@@ -1190,6 +2048,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ลง ทั่วไป: ความเหงาใจไม่มีที่พึ่ง",
         "detail": "ใจไม่มีที่พึ่งจริงๆ\n\nบทกลอนจีนเล่าถึงคนที่ไกลบ้านไกลเมือง \"秋水伊人各一方\" ฟ้าสีเศร้า คนรักอยู่คนละฟากฟ้า \"天南地北恨偏長\" ยิ่งห่างไกลยิ่งคิดถึงมาก \"相思詩問憑誰寄\" อยากเขียนจดหมายไปหา แต่จะให้ใครเป็นคนนำไป \"不盡淒涼幾斷腸\" ความเศร้าใจทุรนทุรายถึงขั้นหัวใจสลาย\n\nเรื่องราว \"ท่าเจียนขวักเค่อ\" (他鄉作客) พูดถึงนักเดินทางโบราณที่ต้องไปทำมาหากินแดนไกล ไม่ใช่แค่เดินทางสั้นๆ แต่เป็นการไปตั้งรกรากใหม่ที่ไม่รู้จะกลับเมื่อไหร่ ช่วงนั้นไม่มีโทรศัพท์ ไม่มีอินเทอร์เน็ต การติดต่อกันได้ก็แค่เขียนจดหมาย แต่อันถ้าพูดตรงๆ ที่เจ็บปวดที่สุดไม่ใช่ระยะทาง แต่เป็นประโยคว่า \"憑誰寄\" หาคนนำจดหมายไปให้ไม่ได้ ไม่ใช่ไม่อยากติดต่อ แต่ไม่มีใครช่วยเป็นตัวกลางได้\n\nคุณรู้สึกแบบนี้ไหม ไม่ใช่เหงาแบบอยู่คนเดียว แต่เหงาแบบอยู่ท่ามกลางคนเยอะแยะ แต่ไม่มีใครเข้าใจความรู้สึกจริงๆ ของคุณ กลางวันก็ยังไหว ทำงานไป ยุ่งไป แต่พอดึกๆ นอนไม่หลับ ความรู้สึกโดดเดี่ยวก็จะเข้ามาเต็มๆ อยากคุยกับใครสักคน แต่เอามือถือขึ้นมาแล้วก็วางลง จะโทรหาใคร จะเล่าอะไร เขาจะฟังไหม เขาจะเข้าใจไหม\n\nบางทีคุณพยายามอธิบายสถานการณ์ของตัวเองให้คนรอบข้างฟังแล้ว แต่พอเล่าออกไปแล้ว รู้สึกว่าเขาไม่ได้ฟังจริงๆ หรือฟังแล้วก็แค่พยักหน้า แต่ไม่เข้าใจ ค่อยๆ คุณก็เลิกเล่า ไม่ใช่เลิกหวัง แต่เหนื่อย เหนื่อยกับการพยายามให้คนอื่นเข้าใจ\n\nปัญหาตอนนี้ไม่ใช่ว่าคุณไม่มีคนคุย แต่คุณไม่มีคนที่ \"คุยรู้เรื่อง\" คนที่ฟังแล้วจะเข้าใจบริบทที่คุณกำลังเผชิญ ไม่ต้องอธิบายยาวนาน เขาก็รู้ว่าคุณกำลังรู้สึกยังไง\n\nอย่าไปหาคนฟังใหม่เดี๋ยวนี้ ให้เวลาตัวเองจัดระเบียบความรู้สึกก่อน เขียนบันทึกส่วนตัวลงกระดาษ หรือจดโน้ตในมือถือ อย่างน้อยความรู้สึกก็จะมีที่ไป"
+      }
+    },
+    "en": {
+      "title": "A Guest in Foreign Lands",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The stick of 他鄉作客 places you in the role of the guest who has travelled far — the scholar…",
+      "poem": [
+        "Far, far apart, my love and I, So sad, so distant as the land from the sky.",
+        "Would someone bring my heart to her?",
+        "It aches no much as tears go by."
+      ],
+      "story": "This sign captures one of the most enduring themes in Chinese literature: the wanderer's loneliness. The title \"A Guest in Foreign Lands\" echoes countless poems written by scholars, merchants, and officials who left home for work or study.\n\nThink of it like the Chinese version of homesickness, but deeper — it's about spiritual displacement. During imperial times, passing the civil service exams often meant years away from family, serving in distant provinces.\n\nThe poem reflects this bittersweet reality where success came at the cost of separation. Even today, millions of Chinese work far from their hometowns, sending money back while missing births, deaths, and festivals.\n\nThis isn't just about physical distance — it's about the emotional cost of pursuing your path when it takes you away from your roots.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The figure behind this stick is the scholar-official posted to a far province: title earned, salary intact, and yet writing poems at midnight because the people he wanted to impress are months of road away."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A season of blocked shortcuts. Stop chasing the deal across the river — the boat isn't coming."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Drawing this stick suggests your relationship is caught in a season of distance — physical, emotional, or both."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The figure behind this stick is the traveller stranded in a distant land, writing letters that may never arrive, watching the sky and feeling the ground beneath them belong to someone else."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Stick 22 places you in the position of the scholar who has travelled far from the village to chase the examination, and finds the distance is not only geographical."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family feels scattered right now, like everyone's living in different worlds even under the same roof."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The stick of 他鄉作客 places you in the role of the guest who has travelled far — the scholar posted to a distant province, the merchant whose ledger thickens while his letters home thin out."
+        }
       }
     }
   },
@@ -1245,6 +2144,48 @@ const SIAMSI_DATA = [
         "summary": "ฝันถึงความสำเร็จแต่ยังไม่ถึงเวลา",
         "detail": "อยู่ในช่วงฝันๆ ตื่นๆ ที่ชีวิตทำให้งงๆ บทกลอนว่า \"邯鄲一夢幻無邊\" มันพูดถึงเรื่องลู่เสิง (盧生) นักเรียนจนที่แวะพักร้านในเมืองฮั่นตั่น เจ้าของร้านให้หมอนวิเศษให้หลับ ในฝันเขาใช้ชีวิตไปเป็นสิบๆ ปี แต่งงานกับสาวสวย เป็นข้าราชการใหญ่ รวยมากมาย เพลิดเพลินไปทั้งชีวิต แต่พอตื่นขึ้นมา ข้าวที่ต้มใส่หม้อยังไม่สุกเลย ที่เขาคิดว่าเป็นทั้งชีวิตจริงๆ มันเป็นแค่ฝัน 10 นาที\n\nเซียมซีใบนี้ไม่ได้หมายความว่าความฝันของคุณเป็นเรื่องเหลวไหล แต่มันบอกว่าคุณกำลังอยู่ในช่วง \"เกือบได้แล้ว\" ที่มันทรมานใจมากกว่าไม่มีเลย คุณเห็นโอกาสชัดๆ อยู่ตรงหน้า มีสัญญาณดีๆ ส่องมา บางครั้งรู้สึกว่าสิ่งที่อยากได้อยู่แค่เอื้อมมือ แต่พอจะคว้า มันก็หายไป เหมือนดึงแขนในฝัน ยิ่งพยายามยิ่งเหนื่อย\n\nสถานการณ์แบบนี้เกิดขึ้นได้หลายรูปแบบนะ อาจจะเป็นงานที่รอ feedback จากเจ้านายอยู่นานจนเริ่มสงสัยว่าผ่านไหม หรือคนที่ชอบส่งสัญญาณดีๆ แต่ยังไม่ตัดสินใจจริงจัง หรือแม้แต่เรื่องเงินที่เห็นโอกาสลงทุนแต่ยังไม่กล้าลงมือ จิตใจคุณแกว่งไปมาระหว่าง \"ได้แน่ๆ\" กับ \"จริงเหรอ\" จนเหนื่อยหน่าย\n\nความจริงคือ ช่วงนี้เป็นช่วงทดสอบความอดทนของคุณ ไม่ใช่ทดสอบว่าคุณดีพอหรือเปล่า แต่ทดสอบว่าคุณจะทำอะไรในช่วงรอมากกว่า หยุดไปนอนฝันกลางวันซะ กลับมาทำสิ่งที่ควรทำตอนนี้ให้เต็มที่ดีกว่า"
       }
+    },
+    "en": {
+      "title": "Treasure in Dreams",
+      "fortune_level": "Average",
+      "one_line_summary": "夢中得寶 places you inside Lu Sheng's borrowed pillow at Handan Inn.",
+      "poem": [
+        "Endless illusion is the dream for wealth and fame",
+        "Years of prosperity are nothing but a false game.",
+        "The fruit of success is hardly ripe to reap",
+        "One will mourn lost glory after waking up from sleep."
+      ],
+      "story": "This sign references the famous Chinese tale of Lu Sheng's dream at Handan Inn. Lu Sheng was a poor scholar who met a Taoist priest while traveling.\n\nThe priest gave him a magical pillow, and Lu fell asleep on it while rice was being cooked nearby. In his dream, he lived an entire lifetime — marrying a beautiful woman, becoming a high official, accumulating vast wealth, and enjoying decades of glory.\n\nWhen he woke up, the rice wasn't even finished cooking. The whole \"lifetime\" had been just minutes.\n\nThis story became a cornerstone of Chinese philosophy about the illusory nature of worldly success. The phrase \"Handan dream\" still means chasing empty ambitions in Chinese culture.\n\nIt's not about giving up goals, but recognizing when we're chasing mirages instead of substance.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Lu Sheng fell asleep at the Handan inn and lived an entire glittering career before the innkeeper's millet finished cooking."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Coins come and go at the same pace. Ask whose dream your money is really buying."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic life might be built on fantasies rather than solid ground."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your body might be playing tricks on you right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Lu Sheng's millet was still cooking when he woke from a lifetime of imperial honors."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Drawing 夢中得寶 on a family question is the kaucim's way of holding up the Handan pillow to your household."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "夢中得寶 places you inside Lu Sheng's borrowed pillow at Handan Inn."
+        }
+      }
     }
   },
   {
@@ -1298,6 +2239,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เก่งแต่ไม่มีใครเห็นคุณค่า",
         "detail": "ห่างเหินสุดๆ เลยนะเซียมซีใบนี้ บทกลอนเล่าว่า 詩酒琴棋可解愁 — เอาบทกวี ดนตรี เหล้า หมากรุกมาปลอบใจตัวเอง 座中無客樂難休 แต่รอบตัวไม่มีคนฟัง ความสนุกก็ไม่สมปรารถนา แม้จะเล่นเก่งร้องไพเราะแค่ไหน ก็ไม่มีใครเห้ย์ ดื่มเหล้าคนเดียวแล้วจิตใจยิ่งหม่นหมอง\\n\\nเรื่องราวของฉินฉง (秦瓊) จอมทัพแห่งราชวงศ์ถัง ช่วงหนึ่งเขาต้องมาขายม้าสีน้ำตาลที่ร่วงรบมาด้วยกัน ไม่ใช่ขายเพราะอยากขาย แต่ครอบครัวป่วยไข้ เงินหมดตัว ม้าตัวนั้นเป็นเหมือนเพื่อนแท้ที่ถือดาบข้ามสมรภूมิมาด้วยกัน แต่ชีวิตมันไม่เลือกคน ทีแรกเขาก็คิดว่าขายให้คนที่รู้จักม้าดี แต่พอมาถึงตลาด คนที่มาดูก็เป็นพวกต่อรองราคา ไม่เข้าใจว่าตัวนี้ไม่ใช่แค่ม้าธรรมดา มันคือศักดิ์ศรีของนักรบ\\n\\nคุณคงรู้สึกเหมือนฉินฉงตอนขายม้าแน่ๆ ไม่ใช่เรื่องเงินทองอย่างเดียวนะ แต่เป็นความรู้สึกว่า สิ่งที่เรามีความสามารถ สิ่งที่เราทำได้ดี กลับไม่มีใครเข้าใจค่าของมัน บางทีคุณอาจนั่งอยู่ในที่ประชุม แต่รู้สึกว่าไอเดียดีๆ ที่พูดออกไปไม่มีใครสนใจ หรือคุณอาจมีฝีมือในอะไรบางอย่าง แต่คนรอบตัวมองข้าม ความเหงาแบบนี้เจ็บกว่าการไม่มีอะไรเลย เพราะคุณมีอะไรอยู่ในตัว แต่ไม่มีใครเห็นคุณค่าจริงๆ\\n\\nอย่าไปทำอะไรตัวคนเดียวมากนัก หาคนที่เข้าใจคุณมาคุยแบบจริงจัง ถึงจะได้หลุดจากกรงแก้วที่สร้างใส่ตัวเอง"
+      }
+    },
+    "en": {
+      "title": "General Qin Qiong Sells His Horse",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Qin Qiong selling his war horse is not a story about failure.",
+      "poem": [
+        "Poetry, wine, music and chess are meant to entertain",
+        "Yet they bring no joy without the company of friends.",
+        "Is it not a potty to have no audience for your song?",
+        "Is it not sad to sing and drink with nobody along?"
+      ],
+      "story": "Qin Qiong was a legendary general from the early Tang Dynasty, celebrated as one of China's greatest warriors. His story took a heartbreaking turn when illness struck his family and poverty forced him to sell his beloved war horse — the very companion that had carried him through countless battles.\n\nThis wasn't just any horse; it was his partner, his status symbol, his livelihood. The sale represented the ultimate sacrifice of a proud warrior reduced to desperate circumstances.\n\nChinese audiences know this tale as the epitome of a hero's fall from grace. Qin Qiong eventually recovered his fortune and became a door god in Chinese folklore, but his moment of selling the horse remains a powerful symbol of how even the mightiest can face periods where they must let go of what they hold most dear.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career feels like performing a beautiful song to an empty room right now."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The shortcut voice is loudest now. Block it, return to slow legitimate work."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "This stick speaks to the loneliness that can creep into relationships, even when you're surrounded by all the right ingredients for happiness."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Qin Qiong selling his war horse is the image to sit with."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Qin Qiong selling his warhorse is the image to sit with."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation feels like an empty house right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Qin Qiong selling his war horse is not a story about failure."
+        }
       }
     }
   },
@@ -1353,6 +2336,48 @@ const SIAMSI_DATA = [
         "summary": "ธรรมชาติแห่งการเป็นผู้นำ คนอื่นจะหันมาหาคุณเอง",
         "detail": "คุณกำลังกลายเป็นศูนย์กลางแล้ว ไม่ใช่เพราะเก่ง แต่เพราะถึงเวลา\n\nบทกลอนเล่าภาพภูเขาห้าดาว ภูเขาเล็กใหญ่มากมายหันหน้ามาหาเทือกเขาไต๋ซาน (泰山) กลางกลุ่ม เหมือนข้าราชบริพารแต่งตัวเรียบร้อยเข้าเฝ้า เรียงแถวสองฝั่งเป็นระเบียบ ไม่มีใครยื่นหัวยื่นตัว ท่าทางสุภาพนิ่ม ส่วนคนที่นั่งตรงกลางเนี่ย สบายใจมากเพราะรู้ว่าตัวเองอยู่ในที่ที่ควรอยู่ ไม่ต้องพิสูจน์อะไร ไม่ต้องแย่งใคร ธรรมชาติของการเป็นศูนย์กลางมันเป็นแบบนี้แหละ ไม่ใช่เพราะคุณไปจับจองหรือแย่งชิง แต่เพราะคนอื่นมองเห็นแล้วรู้เองว่าต้องหันมาทางคุณ\n\nเทือกเขาไต๋ซานในตำนานจีนนี่เป็นราชาแห่งภูเขาทั้งห้าที่ศักดิ์สิทธิ์ที่สุด จักรพรรดิในอดีตต้องปีนขึ้นไป 7,000 กิโลเมตรเพื่อประกาศกับฟ้าดินว่าตัวเองคือผู้ปกครองโลก ไม่ใช่เพราะเขาสูงที่สุด แต่เพราะเขาเป็นจุดศูนย์กลางเชื่อมฟ้าดิน คุณก็เหมือนเทือกเขาไต๋ซานนี่แหละ ไม่ใช่เพราะคุณฉลาดที่สุดหรือเก่งที่สุด แต่คุณอยู่ในตำแหน่งที่คนอื่นต้องมองหา ต้องพึ่งพา ต้องรอการตัดสินใจ\n\nเรื่องงานการงานคุณกำลังได้รับการยอมรับในระดับที่ไม่คาดคิด คนที่เคยเมินคุณมาเริ่มหันมาฟัง เรื่องความรักหรือความสัมพันธ์ คุณจะกลายเป็นคนที่อีกฝ่ายคิดถึงเป็นอันดับแรก เรื่องเงินทอง โชคลาภจะไหลมาจากทิศทางที่คุณไม่ได้คาดหวัง ผู้คนจะมาขอความช่วยเหลือ หาคำปรึกษา ทำให้คุณมีอิทธิพลมากขึ้น\n\nแต่ระวังนะ อย่าไปคิดว่าตัวเองไม่สมควรได้ หรือไปสงสัยว่าทำไมถึงง่ายดาย เทือกเขาไต๋ซานไม่เคยสงสัยตัวเองว่าสมควรเป็นราชาภูเขาไหม เขาแค่เป็นไปตามธรรมชาติ คุณก็อยู่ตรงจุดที่ถูกต้องแล้ว แค่ยอมรับแล้วรับผิดชอบ\n\nนั่งให้มั่นในตำแหน่งของคุณ อย่าไปก้มหัวให้ใคร ทำตัวสมกับที่คนอื่นมองคุณ"
       }
+    },
+    "en": {
+      "title": "Mount Tai Among the Five Sacred Peaks",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Drawing this sign means you're entering a period where leadership comes naturally to you.",
+      "poem": [
+        "Surrounding hills embrace the central mount",
+        "Like courtiers linking up to greet the Crown.",
+        "Respectfully and solemnly they stand in parallel rows.",
+        "What rapture is to play the role as a host."
+      ],
+      "story": "Mount Tai, known as Taishan, sits in China's Shandong Province as the most revered of the Five Sacred Mountains. For over 2,000 years, emperors climbed its 7,000 stone steps to perform feng shan ceremonies — rituals declaring their divine mandate to rule.\n\nThe mountain literally means 'Great Peace,' and ancient Chinese believed the souls of the dead traveled here first. What makes this mountain special isn't just its height, but its role as the axis between heaven and earth.\n\nWhen you see those smaller peaks arranged around Taishan's summit, they really do look like courtiers bowing before an emperor. This isn't just poetic fancy — it's geography that shaped an entire worldview about natural hierarchy and cosmic order.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Mount Tai doesn't announce itself."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Mount Tai rewards the quiet work you've already done. Don't chase — be found."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In matters of the heart, you're entering a phase where natural magnetism works in your favor."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation resembles Mount Tai commanding respect from surrounding peaks - you're entering a period where your body's natural systems will work in harmony, supporting your overall wellbeing."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Mount Tai doesn't announce itself."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Stick 25 places Mount Tai at the centre of the four sacred peaks, with the surrounding hills standing in respectful rows like courtiers around a host."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Drawing this sign means you're entering a period where leadership comes naturally to you."
+        }
+      }
     }
   },
   {
@@ -1406,6 +2431,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ทั่วไป เตือนอย่าหลงภาพลวงตา",
         "detail": "ยังไม่ถึงเวลาจริงๆ นะ ดูดีผิวเผิน แต่รากฐานยังโซ่เซ่\n\nบทกลอนว่า \"花影遲遲侵砌上\" ดูเหมือนร่มไผ่ใต้แสงจันทร์น่ารักไหม แต่เงาดอกไม้เนี่ยก็เป็นแค่เงา \"月鏡掛長空\" ดวงจันทร์ส่องใสบนฟ้า แต่คุณจับดวงจันทร์ได้เหรอ พอถึง \"忽聞鶴淚聲淒切\" นกกระเรียนร้องโศกเศร้าขึ้นมา เหมือนสัญญาณเตือนว่าอย่าหลงอยู่กับความงามที่จับต้องไม่ได้ ท้ายสุด \"早買歸舟返里中\" รีบซื้อตั๋วเรือกลับบ้านเถอะ\n\nเรื่องเล่าจากสมัยโบราณมีนักเรียนหนุ่มคนหนึ่งสอบติดเป็นเจ้าหน้าที่ในราชวัง คิดว่าตัวเองเจริญแล้ว มีคนเข้าหาเยอะ มีเงินใช้ มีหน้ามีตา แต่วันหนึ่งได้ยินเสียงลือว่าฝ่ายที่สนับสนุนเขากำลังจะล้มละลาย เขาไม่รอให้คนอื่นมาบอก รีบจัดกระเป๋ากลับบ้านทันที ปรากฏว่าไม่กี่เดือนต่อมา เพื่อนร่วมงานที่เหลืออยู่โดนล้างบัญชีกันแทบหมด มีแต่เขาคนเดียวที่รอดมาได้\n\nสิ่งที่คุณเห็นตอนนี้อาจดูดี ผิวเผินแล้วน่าพอใจ แต่ลึกๆ แล้วยังไม่มั่นคงจริง เหมือนยืนบนน้ำแข็งบางๆ ดูเรียบเนียนดี แต่ก้าวผิดที เดี๋ยวก็ตกน้ำ อย่างงานที่คิดว่าได้แน่ๆ แล้ว หรือความสัมพันธ์ที่ดูหวานซึ้งอยู่ แต่ในใจลึกๆ คุณรู้สึกไม่สบายใจ รู้สึกเหมือนมีอะไรขาดหายไป บางทีสัญชาตญาณของคุณถูกต้องก็ได้นะ\n\nหยุดพยายามจับเงาดวงจันทร์ในน้ำเถอะ ถอยออกมาประเมินสถานการณ์ใหม่ รอจังหวะที่แน่นอนกว่านี้"
+      }
+    },
+    "en": {
+      "title": "Moonlight and Flowers in Water",
+      "fortune_level": "Average",
+      "one_line_summary": "This sign speaks to those caught between dreams and reality.",
+      "poem": [
+        "Shadows of flowers linger on the doorstep.",
+        "High up in the sky shines the mirror moon.",
+        "Suddenly comes the mournful cry of a distant crane",
+        "It urges the wanderer to hurry back home."
+      ],
+      "story": "水月鏡花 translates to 'moon in water, flowers in a mirror' — a classical Chinese metaphor for beautiful illusions that cannot be grasped. The image comes from Buddhist philosophy, where monks would meditate on the moon's reflection in still water or flowers seen in a mirror.\n\nBoth appear real but vanish when you try to touch them. This concept appears throughout Chinese poetry and art as a reminder that life's most alluring moments are often fleeting.\n\nThe crane in this sign represents longing and homesickness — in Chinese culture, cranes symbolize longevity and the soul's journey. Ancient poets wrote of cranes calling travelers home when they'd been away too long, chasing dreams that might be as ephemeral as moonbeams on water.\n\nThe sign suggests a moment of clarity when someone realizes they've been pursuing something beautiful but ultimately intangible.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation right now resembles chasing reflections."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Paper gains look rich, but the bank says level. Ask why that gap feels okay."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The image at the heart of this stick is flowers reflected in a mirror, the moon reflected in water, beautiful and ungraspable."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now involves distinguishing between what's real and what's anxiety-driven illusion."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Drawing 水月鏡花 for a question about studies is the kind of stick that stings a little, because part of you already suspected this."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The verse sets up two images side by side: the flower shadows actually falling across your own doorstep, and the moon's reflection hanging high and unreachable."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign speaks to those caught between dreams and reality."
+        }
       }
     }
   },
@@ -1461,6 +2528,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซี 27 ระดับกลาง มดรู้เวลา ต้องอ่านสัญญาณรอบตัวก่อนตัดสินใจ",
         "detail": "ยังไม่ใช่เวลา แต่ก็ไม่ใช่เวลาแย่ด้วยนะ\n\nบทกลอนวาดภาพให้เห็นเป็นตัวๆ เลย \"天晴粉蝶翻衣曬\" ฟ้าใส ผีเสื้อกางปีกนั่งตากแดด ส่วน \"又看庭前蟻陣排\" มองไปหน้าบ้านเห็นขบวนมดเรียงแถว บางทีเดินหน้า บางทีถอย บางทีรวมกัน บางทีแยกกัน แต่ดูแล้วมันก็พอใจดีนี่นา เพราะรู้ว่าเวลาไหนควรทำอะไร\n\nเรื่องของมดเนี่ย มันเป็นปริศนาธรรมชาติที่คนจีนโบราณตั้งข้อสังเกตมานาน ก่อนฝนจะตกมดจะเคลื่อนย้ายทั้งโคโลนี่ขึ้นที่สูง ไม่ใช่เพราะใครสั่ง แต่เป็นสัญชาตญาณที่สั่งสมมาหลายล้านปี พอแดดออกก็ออกมาหาอาหาร พอลมแรงก็หลบเข้ารัง ไม่เหมือนผีเสื้อที่บินเล่นตอนแดดดี พอฝนเริ่มจะมาก็ตายแต๋ว มดรู้จังหวะของโลกใบนี้\n\nคุณตอนนี้กำลังเป็นแบบมดพอดี รู้สึกว่าควรจะเคลื่อนไหว แต่ยังไม่แน่ใจว่าควรเดินหน้าหรือถอย ใช่ไหม? บางวันคิดว่าพร้อมแล้ว บางวันรู้สึกว่ายังไม่ถึงเวลา นี่ไม่ใช่ความลังเล แต่เป็นปัญญาธรรมชาติที่กำลังอ่านสัญญาณรอบตัว งานการงาน ความรัก หรือเรื่องใหญ่ที่คิดค้นอยู่ ล้วนมีจังหวะของมันเอง ตอนนี้คุณกำลังอยู่ในช่วงสแกนสถานการณ์\n\nเซียมซีระดับกลางไม่ได้หมายความว่าธรรมดา แต่หมายถึงสมดุล คุณไม่จำเป็นต้องเป็นวีรบุรุษที่บุกไปข้างหน้าแบบไม่กลัวตาย หรือขี้ขลาดที่หลบหนีทุกอย่าง แค่เป็นคนที่รู้จังหวะก็พอ บางครั้งต้องรวมกลุ่ม บางครั้งต้องแยกตัว บางครั้งเดินหน้า บางครั้งถอยหลัง\n\nทำตามสัญชาตญาณในท้องแหละ ถ้ารู้สึกว่าควรรอก็รอ ถ้ารู้สึกว่าถึงเวลาแล้วก็เคลื่อนไหว ไม่ต้องฟังคนอื่นมาก แต่อย่าลืมสังเกตสัญญาณรอบตัวด้วยนะ"
       }
+    },
+    "en": {
+      "title": "Ants Know Their Time",
+      "fortune_level": "Average",
+      "one_line_summary": "You're in a phase where small, consistent actions will serve you better than grand gestures.",
+      "poem": [
+        "Brightly under the sun butterflies air they wings",
+        "Yet aunts in courtyards are found in array.",
+        "They scatter, they assemble",
+        "they advance and they retreat, So neatly set and so beautifully displayed are they."
+      ],
+      "story": "This sign draws from ancient Chinese observations of nature's wisdom, particularly the seasonal behaviors of insects. The title 'Ants Know Their Time' reflects a core Confucian principle that timing is everything.\n\nTraditional Chinese scholars noted how ants instinctively know when to gather food, when to retreat to their colonies, and when to venture out. They contrasted this with butterflies — beautiful but fleeting, dancing in the sun without purpose.\n\nThe poem becomes a metaphor for human society: some people flutter about aimlessly like butterflies, while the wise organize themselves like ant colonies, moving with collective intelligence. This wasn't about any specific historical figure, but about the accumulated wisdom of agricultural societies that survived by understanding natural cycles.\n\nThe image of ants in formation represents the ideal of knowing your role, your timing, and your place in the larger order.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse sets butterflies against ants on purpose."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but a quiet leak drains the field. This sign points right at it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a phase that requires the wisdom of ants rather than the flutter of butterflies."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse sets two creatures side by side: butterflies flashing their wings in the sun, and ants moving in quiet formation across the courtyard."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors those methodical ants rather than the showy butterflies."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The verse sets butterflies against ants on purpose."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in a phase where small, consistent actions will serve you better than grand gestures."
+        }
+      }
     }
   },
   {
@@ -1514,6 +2623,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ทั่วไป ยังไม่ถึงเวลา ต้องอดทนรอจังหวะ",
         "detail": "ยังไม่ถึงเวลา ต้องอดทนรอจังหวะที่ใช่กว่านี้\n\nบทกลอนวาดภาพ \"เรือจอดปากแม่น้ำซิ่นหยาง ค่ำคืนจันทร์ส่อง เสียงพิณผาผึ้งดึงหัวใจให้โศกเศร้า ความคิดถึงกั้นสองแดน ใครจะไปส่งให้ ผมขาวค่อยๆ ขึ้นตรงหน้าผาก\" นี่เป็นเรื่องของไป๋จวี่อี่ (白居易) กวีสามสิบเอ็ดที่เคยรุ่งเรืองในราชสำนัก แต่เจอเรื่องการเมืองจนโดนเนรเทศไปอยู่จังหวัดทุรกันดาร คืนหนึ่งเขาไปส่งแขกที่ท่าเรือ ได้ยินเสียงพิณผาผึ้งลอยมาจากเรือลำหนึ่ง พอถามดูปรากฏว่าสาวนักดนตรีที่ดีดพิณนั่นก็เป็นคนจากเมืองหลวงเหมือนกัน สมัยหนุ่มเธอดังฟ้าผ่า พอแก่แล้วแต่งกับพ่อค้าที่ไม่ค่อยกลับบ้าน เธอจึงต้องคอยคนเดียวบนเรือ\n\nไป๋จวี่อี่ฟังแล้วนึกถึงตัวเองที่ก็กำลังถูกเนรเทศเหมือนกัน สองคนต่างทราบดีว่าไม่ได้อยู่ในที่ที่ตัวเองอยากอยู่ คุยกันไปคุยกันมาจนน้ำตาไหล ไม่ใช่เศร้าแบบรุนแรง แต่เป็นความเศร้าแบบเหนื่อยๆ ที่สะสมมานาน เหมือนใครเอาผ้าคลุมชีวิตไว้ เห็นทุกอย่างแต่แตะไม่ถึง\n\nคุณก็น่าจะรู้สึกแบบนี้นะ ไม่ใช่ว่าชีวิตแย่หรือเจอปัญหาใหญ่ แต่เป็นความรู้สึกอึดอัดที่บอกไม่ถูก มีคำพูดที่อยากจะพูดแต่รู้ว่าพูดแล้วคนฟังก็คงไม่เข้าใจ มีความฝันที่อยากทำแต่ดูเหมือนจังหวะยังไม่เหมาะ คุณอาจกำลังรออะไรบางอย่างโดยไม่รู้ตัวว่ากำลังรออะไร เวลาผ่านไปเรื่อยๆ ผมขาวก็เพิ่มขึ้นเรื่อยๆ แต่สถานการณ์ยังคงเหมือนเดิม บางคืนคุณอาจจะนอนไม่หลับ นึกถึงตัวเองเมื่อก่อนที่เต็มไปด้วยความหวัง แล้วก็สงสัยว่าทำไมชีวิตถึงได้กลายมาเป็นแบบนี้\n\nอย่าพยายามบังคับให้อะไรเกิดขึ้นตอนนี้เลย ให้เวลากับความรู้สึกที่กำลังสั่งสมอยู่ข้างใน บางทีสิ่งที่คุณรอคอยอาจกำลังค่อยๆ ก่อตัวขึ้นโดยที่คุณยังไม่รู้ตัว"
+      }
+    },
+    "en": {
+      "title": "The Banished White Official",
+      "fortune_level": "Average",
+      "one_line_summary": "Bai Juyi's verse arrives in the voice of a man docked in the wrong harbor.",
+      "poem": [
+        "Under moonlight anchors at the River my lonely boat",
+        "The Song of your Pi Pa moves me to tears.",
+        "II know not how to send home my longing heart",
+        "White as snow turns the hair by my ears."
+      ],
+      "story": "This stick references Bai Juyi, one of China's greatest Tang Dynasty poets, who lived from 772 to 846 CE. Known as the 'White Official' (Bai Sima), he was a brilliant court minister until political troubles got him banished to remote Jiangxi province in 815.\n\nDuring this exile, he wrote his masterpiece 'Song of the Pipa Player' after meeting a former courtesan musician on a moonlit boat. The poem became legendary for capturing the universal pain of exile, loneliness, and dreams deferred.\n\nWhat makes Bai Juyi's story powerful isn't just his fall from grace, but how he transformed personal suffering into art that spoke to millions. His exile wasn't permanent — he eventually returned to high office — but those dark years produced his most enduring work.\n\nThe image of the lonely boat under moonlight, tears falling to beautiful music, became a symbol throughout Chinese culture for life's inevitable seasons of isolation and reflection.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career feels stuck in a frustrating holding pattern right now."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income holds but doesn't grow. Watch the small comfort spends that quietly drain the month."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Bai Juyi's verse lands you on the riverbank at night, listening to a pipa player whose music says everything you've been holding back."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Bai Juyi's exile poem doesn't open with a complaint about politics."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Bai Juyi was already a celebrated scholar when he was sent into exile, and the verse catches him at the river's edge listening to a stranger's pipa, weeping at music he had no hand in making."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation feels like that lonely boat on the river right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Bai Juyi's verse arrives in the voice of a man docked in the wrong harbor, hearing a stranger's pipa across the water and recognising his own grief in it."
+        }
       }
     }
   },
@@ -1569,6 +2720,48 @@ const SIAMSI_DATA = [
         "summary": "จังหวะที่รอมาถึงแล้ว แต่ต้องรู้จักเลือกเวลาให้เหมาะสม",
         "detail": "จังหวะมาแล้ว แต่ต้องรู้จักดื่มด่ำ!\n\nบทกลอนวาดภาพหว่างซื่อจื (王羲之) นักเขียนอันดับหนึ่งของจีน กำลังนั่งริมน้ำในยามบ่ายสีทอง ตัดปลากะพงเป็นแผ่นบางๆ จัดใส่จานสีขาว ขณะที่ดอกเก๊กหวานบานเป็นสีเหลืองอร่าม เหล้าในถ้วยเต็มไปหมด ลมเย็นพัดมาจากน้ำ เขาเอาเรือใบลงน้ำพอดีกับที่น้ำขึ้นถึงระดับที่เหมาะ ทุกอย่างสมบูรณ์แบบเสียจนไม่อยากให้วันนี้จบ\n\nนี่ไม่ใช่เรื่องใหญ่โตอะไรนะ แค่วันดีๆ วันหนึ่งที่เขารู้จักเลือกจังหวะให้ถูก ไม่รีบร้อนเหมือนคนอื่น ไม่เอาดอกไม้ที่ยังไม่บาน ไม่เอาปลาที่ไม่สด ไม่เอาน้ำขึ้นหรือน้ำลง แต่เลือกเวลาที่น้ำระดับพอดีจะพาเรือไปไหนก็ได้ นี่แหละคือศิลปะของการจับจังหวะ\n\nสำหรับคุณแล้ว ตอนนี้เหมือนกับที่หว่างซื่อจืนั่งรอน้ำขึ้น สิ่งที่คุณเตรียมมานานๆ กำลังจะถึงจุดที่พร้อมจะเกิดขึ้น ไม่ว่าจะเป็นงานที่รอผลตอบรับ โปรเจ็กต์ที่คิดมานาน หรือความสัมพันธ์ที่กำลังจะเปลี่ยนไป อย่าใจร้อนไปก่อนเวลา เหมือนกับไม่ควรเอาเรือลงน้ำตอนน้ำยังแห้ง\n\nแต่เมื่อถึงเวลา อย่าลังเลเหมือนกัน หว่างซื่อจืไม่ได้นั่งรอน้ำขึ้นทั้งคืน เขารู้ว่าเมื่อไหร่ควรกดปุ่ม มือที่เขียนตัวหนังสือสวยที่สุดในโลกก็ต้องรู้จักจับจังหวะเหมือนกัน\n\nรื้อความกังวลทิ้งไป เตรียมเรือให้พร้อม รอน้ำขึ้นอีกหน่อยก็ถึงเวลาออกเรือแล้ว"
       }
+    },
+    "en": {
+      "title": "Wang Xizhi Enjoying Chrysanthemums",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "The image at the heart of this stick is Wang Xizhi seated beside chrysanthemums in autumn.",
+      "poem": [
+        "Perches on my dish, chrysanthemum by my side, I enjoy the cooling evening with real good wine.",
+        "The tide is rising, the boat is moving",
+        "My heart is joyous",
+        "my spirit is high."
+      ],
+      "story": "Wang Xizhi (303-361 AD) was China's most celebrated calligrapher, known as the 'Sage of Calligraphy. ' Beyond his artistic genius, he embodied the Chinese scholar's ideal of finding joy in simple pleasures.\n\nThis sign references the autumn tradition of chrysanthemum viewing, when educated Chinese would gather to appreciate the flowers while composing poetry and sharing wine. Wang Xizhi famously wrote his masterpiece 'Preface to the Orchid Pavilion' during such a gathering, slightly tipsy and inspired by the moment.\n\nThe chrysanthemum, blooming late in the year when other flowers have faded, symbolizes resilience and the wisdom that comes with maturity. This isn't about luxury or excess—it's about cultivating an appreciation for life's refined pleasures and finding contentment in the present moment.\n\nThe rising tide mentioned in the poem suggests perfect timing, when natural forces align to carry you forward effortlessly.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering what we'd call a 'wine and chrysanthemums' phase — a time when your hard work starts paying off and you can actually enjoy the fruits of your labor."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income rises like a quiet tide — earned, not lucky. Watch for slow leaks."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Wang Xizhi's scene is famously still: chrysanthemums by the dish, wine in the cup, the boat drifting on a rising tide."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Wang Xizhi stepped away from his calligraphy desk to sit with chrysanthemums and evening wine, and somehow that's where his work deepened."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "This stick speaks to finding your natural rhythm in learning."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Wang Xizhi is remembered for brushwork that other calligraphers have studied for sixteen centuries, but the figure in this stick isn't bent over an inkstone."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The image at the heart of this stick is Wang Xizhi seated beside chrysanthemums in autumn, wine cup in hand, watching the tide come in."
+        }
+      }
     }
   },
   {
@@ -1622,6 +2815,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ประสบปัญหาเพราะโดดเด่นเกินไป ถูกอิจฉาและใส่ร้าย",
         "detail": "ลำบากจริงๆ นะเนี่ย ทั้งคนอิจฉาและคนที่ถูกอิจฉา ใครจะลำบากกว่ากัน\n\nบทกลอนเล่าว่า \"傾國傾城媚百生\" หน้าตาหวานจนแผ่นดินแตก เมืองล้มเพราะรอยยิ้มเดียว \"六宮粉黛盡無名\" สาวๆ ในวังหลายร้อยคนกลายเป็นพวกไม่มีชื่อไปเลย แล้วท้ายที่สุด \"馬嵬山下魂飛去\" ก็ตายใต้เขามาไหว ทิ้งให้จักรพรรดิคิดถึงจนแก่ตาย นี่คือเรื่องของหยางกุ่ยเฟย (楊貴妃) นางเอกในวังที่สวยจนประเทศแตก\n\nเธอไม่ได้ทำผิดอะไรเลยนะ แค่เกิดมาหน้าตาดี ได้รับความรักจากจักรพรรดิสวนเจ๋อง (玄宗) มากไป พอเกิดสงครามอานลู่ซาน (安祿山) ทหารโกรธที่ประเทศวุ่นวายเพราะจักรพรรดิเมาแต่ความรัก ก็เลยบังคับให้ฆ่าหยางกุ่ยเฟยเป็นแพะรับบาป ที่เขามาไหวนั่นแหละ เธอตายเพราะคนอื่นต้องการคนมาโทษ ไม่ใช่เพราะเธอทำอะไรผิด\n\nคุณก็รู้สึกแบบนี้อยู่ใช่ไหม? รู้สึกว่าตัวเองโดดเด่นเกินไป มีอะไรดีๆ มากไป แล้วเริ่มกลัวว่าคนอื่นจะมองไม่ดี จะคิดว่า \"ทำไมต้องเป็นเขา ทำไมไม่ใช่เรา\" ยิ่งคุณได้โอกาสดีๆ หรือมีอะไรเรียบร้อยเท่าไหร่ ยิ่งรู้สึกว่าใครสักคนกำลังจ้องมองแล้วรอจังหวะที่จะดึงคุณลงมา\n\nความกลัวนี้มันจริงนะ แต่ไม่ใช่เพราะคุณทำอะไรผิด เหมือนหยางกุ่ยเฟยที่โดนฆ่าไม่ใช่เพราะเธอร้าย แต่เพราะเธอเป็นเป้าที่ง่ายที่สุดในการโยนความผิด คุณก็เหมือนกัน กำลังกลายเป็นเป้าหมายของคนที่หาคนโทษ\n\nหยุดพยายามทำตัวเบาๆ หรือซ่อนความสำเร็จที่คุณควรจะภูมิใจได้เถอะ แทนที่จะหลบ ให้เปลี่ยนมาสร้างพันธมิตรแทน หาคนที่เข้าใจและสนับสนุนคุณจริงๆ ให้มากขึ้น"
+      }
+    },
+    "en": {
+      "title": "The Imperial Concubine's Tragedy",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Yang Guifei's story is not really about beauty or even love.",
+      "poem": [
+        "So charming is she that cities fall in her name.",
+        "Other beauties in the court are never mentioned again.",
+        "Yet Fate ordered that she on the Mount hang herself, Leaving the Emperor grief that would never wane."
+      ],
+      "story": "This stick tells the tragic story of Yang Guifei, one of China's most famous beauties and concubine to Emperor Xuanzong of the Tang Dynasty. She was so captivating that the emperor neglected his duties for her, leading to the catastrophic An Lushan Rebellion in 755 AD.\n\nAs rebels closed in, the imperial army forced the emperor to execute Yang Guifei at Mount Mawei to appease their anger over the dynasty's decline. The reference to 'cities falling in her name' reflects how her beauty was blamed for the empire's near-collapse, though historians know the causes were far more complex.\n\nThe emperor's grief became legendary, immortalized in countless poems and operas. Her story became a cautionary tale about how personal obsessions can blind us to growing dangers around us.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The stick lands on Yang Guifei at Mawei Post, the moment when the most favoured woman in the empire became the price the court demanded."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Closes every shortcut and speculative bet, but quietly guards the steady income you already have."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Drawing this sign in matters of love suggests you're caught in a relationship dynamic that feels all-consuming but may be heading toward serious problems."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Drawing this stick suggests your health concerns might stem from imbalance—just as Yang Guifei's beauty became her downfall when taken to extremes."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Yang Guifei was not unintelligent, and her downfall at Mawei Slope was not because she lacked talent."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "For your home and family situation, this sign is asking you to examine whether someone or something has become too much of a focus, creating imbalance."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Yang Guifei's story is not really about beauty or even love."
+        }
       }
     }
   },
@@ -1677,6 +2911,47 @@ const SIAMSI_DATA = [
         "summary": "ล่าง เรื่องทั่วไป: หลงทิศทางในช่วงเปลี่ยนผ่าน ต้องหยุดหาทิศก่อน",
         "detail": "หลงทิศแล้วนะ ลมพายุซัดใส่แผงหลังเรือ ดอกท้อริมธารร่วงโรยจนเกลี้ยงกลด ปลุกชาวประมงจากฝันหวานของฤดูใบไม้ผลิ วุ่นวายคว้าไผ่เสียบจะขุดเรือ แต่กลับแยกไม่ออกว่าทิศไหนคือทิศไหน\n\nนี่มันเรื่องจริงของชาวประมงคนหนึ่งที่กำลังมีความสุขอยู่ในฝัน อาจฝันถึงปลาเต็มแห อาจฝันถึงครอบครัวที่รออยู่บ้าน หรือฝันถึงวันพรุ่งนี้ที่ดีกว่าวันนี้ แต่ลมพายุที่มาแบบไม่ทันตั้งตัวนั่นแหละ ทำให้เขาตื่นมาเจอกับความจริงที่โหดร้าย ดอกไม้ที่เพิ่งบานสวยงามก็ถูกซัดจนหมดสีสัน\n\nสิ่งที่น่ากลัวที่สุดไม่ใช่พายุ แต่เป็นตอนที่ตื่นจากฝันหวานมาเจอกับความเป็นจริง ชาวประมงคนนั้นยังมีไผ่อยู่ในมือ ยังพยายามขุดเรือ แต่ปัญหาคือเขาไม่รู้ว่าควรจะพุ่งไปทางไหน ทุกทิศทางดูเหมือนจะไม่ใช่ ทุกทิศทางกลับดูคล้ายๆ กัน\n\nคุณรู้สึกแบบนี้อยู่ใช่ไหม? เหมือนกำลังหลงทิศทางในชีวิตตัวเอง แต่งานที่คิดว่าไปได้สวย กลับมีอุปสรรคที่ไม่เคยคิดมาก่อน คนที่เชื่อมั่นว่าจะอยู่เคียงข้าง กลับกลายเป็นคนที่ทำให้สับสนมากขึ้น เงินทองที่คิดว่าเข้าแล้ว กลับไหลออกไปแบบไม่ทันรู้ตัว มันเหมือนการตื่นจากฝันหวานแล้วมาเจอพายุใหญ่เข้าพอดี\n\nสิ่งที่ทำให้หัวใจแทบแตกไม่ใช่เรื่องที่ต้องเผชิญปัญหา แต่เป็นเรื่องที่รู้สึกว่าตัวเองเหมือนไม่เคยเข้าใจอะไรเลย เหมือนแต่ก่อนที่คิดว่ารู้ทิศทางชีวิต ที่จริงกลับเป็นแค่ฝันไปเปล่าๆ ตอนนี้ถึงได้ไม่รู้ว่าจะไปทางไหน\n\nหยุดพยายามหาทิศเหนือใต้เดี๋ยวนี้เถอะ ให้พายุสงบก่อน แล้วค่อยดูเข็มทิศใหม่ ตอนนี้จับไผ่ให้แน่น อย่าให้เรือล่ม นั่นสำคัญกว่า"
       }
+    },
+    "en": {
+      "title": "The Fisherman Lost in the Storm",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. You're experiencing a wake-up call moment right now.",
+      "poem": [
+        "On the top of the fishing boat howls a gale with rain",
+        "By the river peach blossoms fall in chain.",
+        "Startles from his dream, the fisherman wakes up, With the oars in his hand, he finds himself lost."
+      ],
+      "story": "This stick draws from the timeless Chinese image of the fisherman — a symbol of simple contentment and harmony with nature. In classical Chinese literature, fishermen represent those who find peace away from worldly ambitions.\n\nThe peach blossoms falling suggest spring's end, a time when nature's beauty fades and reality intrudes. The dream motif reflects Zhuangzi's famous butterfly dream, questioning what's real versus illusion.\n\nIn ancient China, sudden storms were seen as manifestations of cosmic imbalance, when natural harmony breaks down. The fisherman's disorientation upon waking mirrors how quickly life can shift from peaceful routine to chaos.\n\nThis image resonated deeply in a culture where most people lived close to nature's rhythms and understood how vulnerable human plans are to forces beyond our control.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is heading into choppy waters, and honestly, you might not see it coming until you're already in the middle of it."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The real risk isn't a storm, it's drifting into a shortcut you haven't thought through."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic life is in choppy waters right now."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health right now feels like that fisherman's situation — you're holding the tools you need, but nothing seems to be working the way it should."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The fisherman in this verse knows his river."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation feels like that fisherman's boat right now — what seemed stable is being shaken by unexpected turbulence."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're experiencing a wake-up call moment right now."
+        }
+      }
     }
   },
   {
@@ -1730,6 +3005,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ยังไม่ถึงเวลา ต้องรอให้ครบกำหนด แต่ความอดทนจะทำให้คุณแกร่งขึ้น",
         "detail": "ยังไม่ถึงเวลา แต่ไม่ได้หมายความว่าให้ยอมแพ้\n\nบทกวีสี่บรรทัดนี้เล่าเรื่องสู่อู่ (蘇武) ทูตราชสำนักฮั่นที่ถูกส่งไปเจรจากับชาวซง หูนู ใต้สีห์นู แต่เหตุเกิดข้องใจ เขาถูกกักตัวไว้ หนาวจัด อดอยาก ไม่มีใครเอาใจใส่ มีแต่ฝูงแกะเป็นเพื่อน อายุยี่สิบเก้าปีเต็ม! พวกซื่อหู่นูบอกเขาว่า \"ถ้าแกะผู้ออกลูกได้ เจ้าถึงจะได้กลับบ้าน\" เหมือนพูดว่าชาติหน้าเถอะนะ แกะผู้จะออกลูกได้ยังไง แต่สู่อู่ไม่ท้อ กิ้งก่าหิน มดค้นเก็บข้าว เขาก็ขุดตัวอ่างเมาส์ขึ้นมากิน หิวก็เกรียมหนังสัตว์ หวะก็เลียหิมะ ยื่นยงถือไม้เท้าผ้าไหมแดงของราชอาณาจักรไว้แน่น ถึงแม้ไหมจะขาดรุ่งริ่งจนเห็นแต่ไม้เปล่าก็ไม่ยอมทิ้ง\n\nเคยรู้สึกแบบนี้ไหม? เหมือนอยู่บนทะเลสาบไบคาลเยือกแข็ง รอเรื่องที่มันรอไม่ได้ คนรอบข้างบอกว่า \"มันเป็นไปไม่ได้แล้วนะ ปล่อยวางเถอะ\" แต่คุณยังไม่ยอมปล่อยมือ อาจเป็นงานที่ผ่านมาแล้วหลายปีแต่ยังไม่มีผลตอบรับ ความรักที่อีกฝ่ายดูจะไม่มีทางหันมามอง หรือเป้าหมายชีวิทที่ทุกคนว่ามันไกลเกินไป คุณเคยคิดเหมือนสู่อู่ไหม ว่าถึงแกะผู้จะไม่ออกลูก แต่ก็ยังเลี้ยงแกะต่อไป ไม่ใช่เพราะหวัง แต่เพราะนี่แหละคือตัวตน\n\nสิบเก้าปีผ่านไป มีทูตจากฮั่นมาเจรจาใหม่ สู่อู่กลับบ้านได้ในที่สุด คนที่เคยหัวเราะเยาะก็กลับมายกย่องเป็นฮีโร่ แต่สำหรับเขาแล้ว รางวัลที่แท้จริงไม่ใช่การได้กลับบ้าน แต่คือการที่เขาไม่เคยทิ้งตัวเองไป คุณก็เหมือนกัน สิ่งที่คุณกำลังรออาจจะมาช้ากว่าคาด แต่การรอนี่แหละที่กำลังสร้างคุณ ทำให้คุณแกร่งกว่าเดิม อดทนกว่าเดิม มั่นคงกว่าเดิม\n\nหยุดมองหาเหตุผลที่จะปล่อยมือ เริ่มหาเหตุผลที่จะยึดมั่นต่อไป"
+      }
+    },
+    "en": {
+      "title": "Su Wu Tending Sheep",
+      "fortune_level": "Average",
+      "one_line_summary": "This sign points to a season of endurance rather than breakthrough.",
+      "poem": [
+        "For nineteen years he suffered in the Northern Land.",
+        "His war flag fell sadly onto the dusty sand.",
+        "His heart was heavy, his meals were but snow.",
+        "It was his flock that cheered him through his woe."
+      ],
+      "story": "Su Wu was a Han dynasty diplomat sent to negotiate with the Xiongnu nomads around 100 BCE. When talks broke down, he was taken captive and offered wealth and position if he'd betray China.\n\nHe refused. The Xiongnu exiled him to the frozen wastelands of Lake Baikal, thinking harsh conditions would break his spirit.\n\nFor nineteen years, Su Wu herded sheep in bitter cold, surviving on mare's milk and gnawing his leather gear when starving. He kept a Han dynasty ceremonial staff as his only connection to home.\n\nWhen rescue finally came, his beard had turned white, but his loyalty never wavered. He returned to China as a living legend of perseverance.\n\nTo Chinese minds, Su Wu represents the ultimate test of character through prolonged hardship.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Su Wu's nineteen years on the steppe weren't a detour from his career; they were the career, just unrecognisable as one."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Su Wu tends the flock. Your steady income is quiet stewardship, not stagnation."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Su Wu kept his Han banner through nineteen winters by Lake Baikal, eating snow and tending sheep that didn't speak his language."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Su Wu kept his ambassador's staff for nineteen winters even after the tassels rotted off."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors Su Wu's exile — it feels endless, cold, and thankless."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Su Wu standing in the snow with his small flock is the image this stick presses into your hands."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign points to a season of endurance rather than breakthrough."
+        }
       }
     }
   },
@@ -1785,6 +3102,46 @@ const SIAMSI_DATA = [
         "summary": "อย่าคิดซับซ้อนเกินไป บางที ทางตรงง่ายกว่า",
         "detail": "ฉลาดเกินไปแล้ว จนกลายเป็นงม! บทกลอนบอกว่า เล่ห์เหลี่ยมเฉาเฉา (曹操) ใครจะไม่รู้ แต่พอเจอจูเกอลั่ง (諸葛亮) ดันเล่นไม่ลง เจ้าเล่ห์คิดสเตรทซี 10 ขั้น ส่วนจูเกอลั่งเอาผ้าพัดแก้ปัญหาเรื่องไฟไหม้เรือ แล้วก็สร้างม้าไม้ควายไม้ขนเสบียง อะไรง่ายๆ ทำได้ผลทำไมต้องไปโก่งเพิ่ม เฉาเฉานี่ตัวอย่างของคนที่ฉลาดจนโง่ ยิ่งคิดมาก ยิ่งทำอะไรไม่ถูก เพราะจริตของเขาคือชอบหาช่องว่าง ชอบเล่นตุกติก จนลืมไปว่าบางเรื่องตรงไปตรงมาแค่ใส่ใจก็จบ จูเกอลั่งไม่ได้สร้างลม แต่รอจังหวะลมพัด ม้าไม้ควายไม้ก็แค่แก้ปัญหาขนของให้ได้ผล ไม่ต้องซับซ้อน เรื่องราวของพวกเขาเกิดขึ้นตอนสามก๊กเนอะ ยุคที่ทั้งประเทศแตกเป็น 3 ก๊ก มีแต่คนเก่งๆ ชิงกันปกครองจีน เฉาเฉาเป็นหนึ่งในจอมยุทธที่ฉลาดที่สุดในสมัยนั้น แต่พอเจออีกคนฉลาดจริงอย่างจูเกอลั่งดันแพ้เละ เพราะอะไร? เพราะเขาชอบคิดอ้อมค้อม ชอบเอาปัญหาง่ายๆ มาทำยากจนได้ คุณเองก็เหมือนกัน คิดซ้ำคิดซ้อนจนงง ทุกอย่างในหัวมีแผนแล้ว มีแบ็กอัปแล้ว มีสำรองแล้ว แต่ทำไมยิ่งคิดยิ่งรู้สึกว่าไม่ได้เรื่อง?"
       }
+    },
+    "en": {
+      "title": "Cao Cao's Flight from Danger",
+      "fortune_level": "Average",
+      "one_line_summary": "Cao Cao was nobody's fool.",
+      "poem": [
+        "Despite his wit and ingenious scheme, The traitor's tricks never worked in this scene.",
+        "He's the man who claimed from heaven the easterly wind, And turned wood into horses that worked as keen."
+      ],
+      "story": "This sign references Cao Cao, one of Chinese history's most complex figures from the Three Kingdoms period (around 220 AD). Think of him as a brilliant but ruthless politician-general who nearly unified China through cunning rather than virtue.\n\nThe poem refers to specific episodes from the famous novel Romance of the Three Kingdoms, where Cao Cao's clever schemes repeatedly backfired. His most famous defeat came at the Battle of Red Cliffs, where his massive fleet was destroyed by fire ships aided by an opportune easterly wind - wind that seemed heaven-sent to his enemies.\n\nThe 'wooden horses' reference alludes to various stratagems that looked ingenious on paper but failed in practice. Despite his intelligence and resources, Cao Cao learned that raw cunning without moral foundation often leads to spectacular failures.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Cao Cao was no fool."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money flows in and out without building. The test isn't cleverness — it's your habits."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Cao Cao at Red Cliffs is the figure behind this stick: a brilliant tactician with the larger fleet, the better intelligence, the more elaborate plan, undone by an opponent who simply read the wind better."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors Cao Cao's predicament — you've been trying to outsmart or control what's happening with your body, but you're discovering there are limits to what willpower and planning can achieve."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Cao Cao arrived at Red Cliffs with the bigger fleet, the better logistics, and the cleverer plan."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "This sign speaks to families caught in the exhausting cycle of trying too hard to control everything."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Cao Cao was nobody's fool."
+        }
+      }
     }
   },
   {
@@ -1838,6 +3195,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "การทำดีท่ามกลางความยากลำบาก ได้รับความช่วยเหลือจากที่ไม่คาดคิด",
         "detail": "ทำดีไม่ได้ดีเสมอไป แต่ไม่ได้หมายความว่าคุณทำผิด บทกลอนเล่าเรื่องท้าวสุ่น (舜) ที่ไถนาในดงหลี่ซาน พ่อแม่เลี้ยงรังแกแค่ไหนเขาก็ยังกตัญญูต่อไป แต่ไม่ใช่แค่นิ่งเฉย เขาทำมาหากินด้วยหัวใจที่ตรง ช้างป่าเลยมาช่วยไถนา นกก็มาช่วยขจัดวัชพืช นี่ไม่ใช่เรื่องเวทมนตร์นะ แต่เป็นการที่จิตใจแท้จริงดึงดูดความช่วยเหลือจากที่ไม่คิดมาก่อน เรื่องราวของท้าวสุ่นเนี่ย ฟังแล้วหัวใจสั่น พ่อชื่อกู่โส่ว (瞽叟) ตาบอด แต่ใจบอดกว่าตาอีก แม่เลี้ยงกับน้องชายชื่อเสียง (象) คิดจะฆ่าเขาตลอด บ้างก็บอกให้ขึ้นไปซ่อมหลังคา แล้วจุดไ火เผาบ้านข้างล่าง บ้างก็สั่งให้ลงไปขุดบ่อ แล้วเอาดินทรายกลบทับ แต่ท้าวสุ่นรอดตลอด เพราะเขารู้จักป้องกันตัวเอง ไม่ได้โง่เง่าอะไร กตัญญูแต่ไม่โง่ นั่นแหละคือภูมิปัญญาแท้จริง สุดท้ายพระเจ้าอิโย่ว์ (堯) ก็ยกให้เขาครองแผ่นดินเลย คุณตอนนี้อาจกำลังอยู่ในสถานการณ์ที่คล้ายกัน ทำอะไรก็ไม่ถูกใจใคร พยายามดีแล้วแต่กลับโดนว่า หรืออาจจะเป็นเรื่องในครอบครัวที่ต้องแบกภาระคนเดียว ทำงานก็เหมือนกัน มีคนคอยจ้องจับผิด แม้ว่าจะทำดีกว่าคนอื่น เคยคิดไหมว่าทำไมต้องทนแบบนี้? ทำไมคนดีต้องเจอแต่เรื่องลำบาก?"
+      }
+    },
+    "en": {
+      "title": "Emperor Shun Plowing the Fields",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "The figure of Shun working the fields of Mount Li.",
+      "poem": [
+        "Though abandoned to the fields of the Mountain, He never fails in his love for his unjust parents.",
+        "Even wild elephants turned to him and became tame, For his heart's so kind that nobody could blame."
+      ],
+      "story": "This stick tells the story of Shun, one of China's legendary sage emperors from around 2300 BCE. His stepmother and father treated him terribly — they literally tried to kill him multiple times, burning down his granary and attempting to bury him alive in a well.\n\nYet Shun never retaliated or spoke ill of them. Instead, he worked quietly in the fields of Mount Li, practicing radical kindness even toward those who wronged him.\n\nThe legend says that wild elephants would come help him plow, and birds would weed his crops, because his heart was so pure that even animals trusted him. His reputation for goodness eventually reached the previous emperor, who abdicated in Shun's favor.\n\nThe story became the ultimate example of how consistent moral behavior, especially in the face of unfairness, eventually transforms everything around you.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The figure behind this stick is Shun, cast out to farm the rocky slopes of Mount Li by the family that wanted him dead."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Earned income is solid, but unchecked generosity may be quietly draining it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation calls for the kind of patience Shun showed — genuine, persistent kindness without keeping score."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Shun's patient cultivation of barren fields."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors Shun's patient cultivation."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Shun on Mount Li is the figure the stick puts in front of you: the son sent away to plow, treated as the problem, who keeps tending the field anyway."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The figure of Shun working the fields of Mount Li, plowing alongside elephants who came of their own accord, is the image this stick hands you."
+        }
       }
     }
   },
@@ -1893,6 +3290,46 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 35 ถังซั่งซางไปขอพระไตรปิฎก ระดับกลาง ทั่วไป",
         "detail": "หนักๆ ก่อนเบาๆ เนอะ หว่องไทซินบอกว่าคุณกำลังอยู่ในช่วงขัดสนที่มีความหมาย ไม่ใช่แค่เคราะห์ธรรมดา บทกลอนว่า \"天將降任此其人 筋骨先勞苦彼身\" ฟ้าจะให้ภารกิจสำคัญกับใคร ต้องให้เขาเหน็ดเหนื่อยแกว่งแขนขาก่อน ถึงจะแข็งแรงพอรับหน้าที่ใหญ่ได้ เรื่องเล่าของถังซั่งซาง (唐僧) หรือเจ้าหนูตังซันจั่ง ที่เดินทางไปขอพระไตรปิฎกจากอินเดีย เดินเท้า 10 หมื่น 8 พันลี้ ใช้เวลา 17 ปี ตลอดทางมีแต่ปัญหา ทะเลทรายร้อนจี๋ จนเท้าแตก ภูเขาหิมะเย็นสั่น จนเกือบตาย โจรป่าออกปล้น เสือป่าออกกิน พระราชาต่างชาติไม่ให้ผ่าน แต่ท่านไม่เคยคิดกลับ เพราะรู้ว่างานนี้ทำเสร็จแล้วจะเปลี่ยนโลก คุณเคยรู้สึกแบบท่านบ้างไหม?"
       }
+    },
+    "en": {
+      "title": "Tang Monk's Journey to the West",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Your current struggles aren't punishments — they're preparation.",
+      "poem": [
+        "When heaven confers greatness upon a man, He makes him first suffer body and souls",
+        "For happiness doesn't come so easy, There is always reason for wealth or poverty."
+      ],
+      "story": "This stick refers to Xuanzang, a Buddhist monk who lived during the Tang Dynasty (602-664 CE). Known as Tang Sanzang or the Tang Monk, he begined on an epic 17-year journey to India to collect Buddhist scriptures.\n\nHe traveled over 25,000 kilometers through deserts, mountains, and hostile kingdoms, facing bandits, extreme weather, and political intrigue. His journey wasn't just physical — it was a spiritual quest that transformed both him and Chinese Buddhism forever.\n\nWhen he returned to Chang'an (modern Xi'an) in 645 CE, he brought back 657 Buddhist texts and spent the rest of his life translating them. His story became the foundation for 'Journey to the West,' one of China's four great classical novels, where he's accompanied by the Monkey King and other magical companions.\n\nFor Chinese culture, Xuanzang represents the ultimate example of perseverance through hardship to achieve something meaningful.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 35 sets Xuanzang's seventeen-year walk in front of you, and the verse around it is blunt: heaven hands greatness to those it has first worn down."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income holds and the road is right, but impatience near the finish line is the real risk."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Tang Sanzang did not travel west because the road was clear."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Tang Monk's pilgrimage—you're in the difficult phase that comes before breakthrough."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Stick 35 places Xuanzang in front of you, the monk who walked ten thousand miles for texts most of his contemporaries thought were already good enough."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Xuanzang didn't choose his seventeen-year journey because it looked rewarding."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your current struggles aren't punishments — they're preparation."
+        }
+      }
     }
   },
   {
@@ -1946,6 +3383,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เหมือนเรือใกล้ถึงฝั่ง ได้เวลาพักจากความวุ่นวาย",
         "detail": "เหนื่อยแล้วใช่ไหม? ได้เวลากลับบ้านแล้ว\n\nบทกลอนเล่าว่า \"此事真如到岸船\" เรื่องที่คุณทำอยู่เหมือนเรือที่ใกล้จะถึงฝั่งแล้ว \"何憂風水不相全\" ยังจะกังวลอะไรเรื่องลมน้ำไม่เอื้ออำนวย \"舉頭便見前村落\" แค่เงยหน้าขึ้นก็เห็นหมู่บ้านแล้ว \"屋角陽斜爨已煙\" แสงแดดเฉียงส่องมุมบ้าน ควันไฟจากเตาทำอาหารลอยขึ้นมา หมายความว่าคนบ้านเตรียมอาหารรอคุณกลับแล้ว\n\nเซียมซีใบนี้เล่าเรื่อง เถาหยวนหมิง (陶淵明) กวีดังสมัยโบราณ ทำงานราชการมาสิบกว่าปี วันหนึ่งเขาเหนื่อยกับการเมืองมีแต่คนเท่ง อำนาจมีแต่คนชั่ว เลยตัดสินใจลาออกกลับไปปลูกดอกเบญจมาศที่บ้าน คนอื่นก็ว่าเขาบ้า ทิ้งตำแหน่งมั่นคงไปทำสวนหย่ะ แต่เถาหยวนหมิงไม่สน เขารู้ว่าบ้านคือที่ที่หัวใจสงบ ไม่ต้องใส่หน้ากากกับใคร ไม่ต้องแสดงละครชีวิต\n\nพอคิดดูแล้ว เรื่องของคุณก็คล้ายๆ กันนะ ไม่ว่าจะเป็นงาน ความรัก หรือโครงการอะไรที่วุ่นวายมานาน ตอนนี้ใกล้จะจบแล้ว ไม่ใช่จบแบบเจ๋งวิเศษ แต่จบแบบที่คุณได้พักใจ ได้หายใจเฮือกใหญ่ เหมือนคนเดินทางไกลแล้วมองเห็นหลังคาบ้านตัวเอง เห็นควันไฟฟุ้งขึ้นมา รู้ว่ามีคนรอด้วยข้าวร้อนๆ\n\nบางทีชีวิตดีที่สุดไม่ใช่การชนะเบ้อเร่อ แต่เป็นการได้กลับไปที่ที่เราเป็นตัวของตัวเอง ได้พักจากความวุ่นวายภายนอก หาความสงบให้กับใจ\n\nอย่ารออีกต่อไป หยุดดิ้นรนกับสิ่งที่บีบคั้นคุณ ถ้าหัวใจบอกว่าพอแล้ว ก็ถึงเวลากลับบ้านจริงๆ"
+      }
+    },
+    "en": {
+      "title": "Tao Yuanming Returns Home",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This stick suggests you're entering a phase where things finally start making sense again.",
+      "poem": [
+        "Like a wandering boat returning to its pier, This lot brings good news that home is near.",
+        "When you raise your eyes there stands your hometown, And dinner's ready for you ere the sun is down."
+      ],
+      "story": "Tao Yuanming was a 4th-century Chinese poet who famously quit his government job to return to farming. Fed up with political corruption and bureaucratic nonsense, he walked away from a comfortable career to grow chrysanthemums and write poetry in the countryside.\n\nHis decision seemed crazy to his contemporaries — who gives up status and steady income? But Tao became one of China's most beloved poets, celebrated for choosing authenticity over ambition.\n\nHis story represents the courage to prioritize personal values over social expectations. The 'returning home' isn't just geographic — it's about coming back to your true self.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Tao Yuanming's image is of a man walking back toward his own gate, recognising the smoke from his kitchen before he sees the door."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your base is steadier than you realize — stop chasing, start counting what's already yours."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Tao Yuanming walked away from the official's robes and the bow he refused to make, and the verse pictures him at the moment his own roof comes back into view, dinner already on the table."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Tao Yuanming walked away from the magistrate's seal and went back to his chrysanthemums because his body had been telling him something his career kept overruling."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Tao Yuanming's return home is the image at the heart of this stick: a scholar who spent years in the wrong building, doing the wrong work, before he raised his eyes and recognised where he actually belonged."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The image at the heart of this stick is Tao Yuanming walking away from the magistrate's office, refusing to bend his back for five pecks of rice, and turning toward the chrysanthemums waiting at home."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick suggests you're entering a phase where things finally start making sense again."
+        }
       }
     }
   },
@@ -2001,6 +3478,46 @@ const SIAMSI_DATA = [
         "summary": "โชคลาภมาเจอะกับสิ่งที่เตรียมไว้ พร้อมแบ่งปันความสุขกับคนใกล้ชิด",
         "detail": "โชคมาแล้ว แต่คุณต้องรู้จักเก็บ! บทกลอนบอกว่า \"月夜秋江下釣鰲\" ในคืนจันทร์เดือนเก้า ริมแม่น้ำโค้งเงี้ยวมีนายท่านคนหนึ่งนั่งตกปลา ที่ได้มาคือปลากะพงสี่เหงือกที่หายาก \"魚形恰似四腮鱸\" จับได้ปลาดีแล้วยังไม่พอ บ้านมีเหล้าเก่าเกลื่อนกุ้ยอีก \"家藏舊釀堪盈斗\" เพื่อนมาร่วมดื่มกันจนโอ่ง \"與友飛觴盡倒壺\" นี่คือเรื่องราวของหว่างซีจื่อ (王羲之) นักเขียนพู่กันซุปเปอร์สตาร์แห่งจีนโบราณ ที่เขียนตัวหนังสือสวยที่สุดในโลก แต่ช่วงหลังชีวิตไม่ได้อยู่ในราชสำนัก เขาชอบไปตกปลาคนเดียว ปลาดีๆ ที่จับได้ไม่ได้มาจากฝีมือเพียงอย่างเดียว แต่ต้องมีบุญเก่าช่วยด้วย คืนนั้นหว่างซีจื่อตกปลากะพงสี่เหงือก พอดีบ้านเก็บเหล้าไว้นานๆ พอดีเพื่อนมาเยี่ยม ทุกอย่างเจอะกันพอดี\n\nคุณคล้ายหว่างซีจื่อตอนนี้แหละ อะไรที่เตรียมไว้นานๆ กำลังจะเจอกับโอกาสใหม่ที่กำลังเข้ามา งานที่ทำไว้ ความสัมพันธ์ที่สร้างไว้ ความรู้ที่สะสมไว้ อยู่ๆ มันก็จะมาขบกันพอดี แต่ที่สำคัญมันไม่ใช่เรื่องบังเอิญ คุณเตรียมมันไว้ดีแล้วแหละ เหมือนเหล้าที่เก็บไว้ในโอ่งบ้าน หรือความสามารถที่ฝึกมายาวนาน พอเจอจังหวะดี อยู่ๆ ก็ใช้ได้เลย แค่ว่าคนอื่นจะมองว่าคุณโชคดี แต่จริงๆ แล้วคุณเตรียมตัวไว้ดี\n\nสนุกที่สุดคือช่วงนี้คุณไม่ได้กดดันตัวเองหนักเหมือนเดือนก่อนๆ เปิดใจกว้างขึ้น มีเวลาใส่ใจคนรอบข้าง กิจกรรมส่วนตัวที่ชอบก็กลับมาทำได้อีกครั้ง ยิ่งยอมให้ชีวิตลื่นไหลมากเท่าไหร่ โอกาสดีๆ ยิ่งเข้ามาหาเองมากขึ้นเท่านั้น อย่าตื่นเต้นจนใจลอย จดจำไว้ว่าทุกอย่างมาจากพื้นฐานที่คุณเตรียมไว้ดีแล้ว ถ้าใครชมคุณ อย่าลืมแบ่งปันกับคนที่มาช่วย ก็เหมือนหว่างซีจื่อเชิญเพื่อนมาดื่มเหล้าด้วย\n\nอย่าลืมว่าช่วงดีนี้ ต้องไปต่อด้วยการเก็บผลไผ่ให้เป็น อย่าใช้หมด ให้เก็บไว้บ้าง เพื่อเป็น \"เหล้าเก่า\" สำหรับโอกาสต่อไปนะ"
       }
+    },
+    "en": {
+      "title": "Wang Xizhi Goes Fishing",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Wang Xizhi could have stayed at court, climbed another rank, signed his name on more decrees.",
+      "poem": [
+        "Under the autumn moon fishing is a pleasure, For the perches here are big and delicious.",
+        "Come and fill your cup with my homemade wine, Drink to our friendship, dear friend of mine."
+      ],
+      "story": "Wang Xizhi lived in 4th-century China and remains the most celebrated calligrapher in Chinese history. His flowing brush strokes basically defined what beautiful Chinese writing should look like for the next 1,600 years.\n\nBut here's what makes this story interesting — despite being incredibly talented and holding high government positions, Wang Xizhi chose to retire early from court life. He spent his later years enjoying simple pleasures: practicing calligraphy, hosting friends, and yes, fishing under moonlight.\n\nThe fishing scene represents his philosophy that true success means knowing when you have enough. Wang Xizhi could have climbed higher in politics, accumulated more wealth, gained more fame.\n\nInstead, he chose contentment. He'd rather catch fish with friends and share homemade wine than chase endless ambitions.\n\nThis wasn't about being lazy or giving up — it was about recognizing that life's best rewards often come from appreciating what you already have.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Wang Xizhi did not abandon his brushes when he went out to fish under the autumn moon; he trusted that the work he had already done was steeping somewhere beneath the surface."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income from work already done. Don't chase shortcuts — protect the catch."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Wang Xizhi by the river, line in the water, wine cup ready for whoever wanders past — that's the figure this stick puts in front of you, and it's worth sitting with for a moment."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Wang Xizhi could have spent every autumn night perfecting another brushstroke."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Wang Xizhi by the river, line in the water, autumn moon overhead — this is the calligrapher who burned his own drafts when they failed him, now letting himself catch a fish and pour a cup of wine."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Wang Xizhi could have spent every hour chasing rank at court."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Wang Xizhi could have stayed at court, climbed another rank, signed his name on more decrees."
+        }
+      }
     }
   },
   {
@@ -2054,6 +3571,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เถาหยวนหมิงลาออก แนะให้หยุดไล่ตามและชื่นชมสิ่งที่มี",
         "detail": "ถึงเวลาปลดเกราะแล้ว บทกลอนบอกว่า 歸去來兮仕官閒 กลับบ้านเถอะ เรื่องทำงานให้มันพักไว้ก่อน ห้องเล็กแค่พอเข่าแต่ใจสบาย พิงหน้าต่างคุยเรื่องเก่าจิบเหล้า เดินเล่นดูภูเขาให้หัวใจเต็ม เล่าให้ฟัง เถาหยวนหมิง (陶淵明) นักกวีเจ้าอารมณ์ที่เป็นข้าราชการได้แค่ 80 กว่าวัน พอเจ้านายส่งคนมาตรวจงาน เพื่อนร่วมงานบอกให้แต่งตัวดีๆ ไปรับ เขายิ้มๆ แล้วเอาตราราชการโยนทิ้ง บอกว่าจะไม่โค้งหลังให้ใครเพื่อเงินเดือนห้าถังข้าวหรอก กลับบ้านไปปลูกผักกินเอง อยู่ในบ้านหลังเล็กที่แทบหันตัวไม่ได้ แต่ใจเขาอิ่มกว่าตอนนั่งโต๊ะทำงานใหญ่ๆ ในวัง ทำไมเขาถึงเลือกแบบนี้ เพราะเขารู้ว่าการวิ่งไล่ตามตำแหน่ง เงิน เกียรติ มันเหมือนงูกินหาง ไม่มีวันจบ ยิ่งได้มากยิ่งกลัวเสีย ยิ่งมีมากยิ่งคิดว่าไม่พอ แต่การมีน้อยแต่ใจสบาย นี่ต่างหากที่เขาเรียกว่าความร่ำรวย คุณก็เหมือนเถาหยวนหมิง ตอนนี้กำลังยืนอยู่ที่ทางแยก ระหว่างการไล่ตามสิ่งที่คิดว่าจะทำให้ชีวิตดีขึ้น กับการหยุดมาชื่นชมสิ่งที่ตัวเองมีอยู่แล้ว เคยสังเกตไหมว่าช่วงที่คุณพยายามปีนป่ายไปทางบนที่สุด กลับเป็นช่วงที่เหนื่อยที่สุด หลับไม่ลึก กินไม่อร่อย แต่พอหยุดแล้วมองรอบตัว บ้านเดิม เพื่อนเก่า งานเก่า กลับดูน่ารักขึ้น อันตองเถาหยวนหมิงรู้เรื่องนี้ เขาเลยเลือกบ้านเล็กแทนวังใหญ่ เลือกกบเหล้าแทนโต๊ะประชุม เลือกเสรีภาพแทนเงินเดือน หลายคนมองแล้วคิดว่าเขาบ้า แต่เขากลับเป็นคนที่มีความสุขที่สุดในสมัยนั้น ลองนั่งลงมาคิดดูนะ สิ่งที่คุณไล่ตามอยู่ตอนนี้ มันเป็นความต้องการจริงของคุณ หรือเป็นแค่ความคาดหวังที่สังคมใส่เข้ามา บางทีคำตอบไม่ได้อยู่ข้างหน้า แต่อยู่ใต้เท้าเราแล้วก็ได้ หยุดค้นหาคำตอบจากข้างนอกสักเดือน ลองใส่ใจกับชีวิตที่มีอยู่แล้วตอนนี้ สิ่งเล็กๆ น้อยๆ ที่ผ่านไปแบบไม่สังเกต"
+      }
+    },
+    "en": {
+      "title": "Tao Yuanming Resigns from Office to Live in Seclusion",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "The figure behind this stick is Tao Yuanming setting down the official seal and sailing home to a small cottage.",
+      "poem": [
+        "Quitting his busy office, leisurely sailed the poet home, Through not spacious, his little cottage pleased him well.",
+        "Often he relished poetry and wine by the south window",
+        "For the beauty of the mountains he'd go for a lazy stroll."
+      ],
+      "story": "Tao Yuanming was a 4th-century Chinese poet who walked away from a promising government career to live as a simple farmer. Picture this: a man in his thirties, frustrated with the corruption and politics of court life, literally throws down his official seal and goes home to plant beans.\n\nHe became dirt poor but wrote some of China's most beloved poetry about finding joy in simple things — drinking wine, watching clouds, talking to his chickens. His essay \"Going Home\" is still taught in schools today.\n\nFor centuries, Chinese people have seen him as the ultimate example of choosing authenticity over status. When you're burned out from chasing success, Tao Yuanming reminds you there's another way to live.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Tao Yuanming walked away from his magistrate's seal after eighty days because the cost of staying had become clearer than the cost of leaving."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income grows steadily through real work, but quiet lifestyle leaks drain it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Tao Yuanming walked away from office not because he failed there, but because the version of himself required to succeed had become unbearable to wear."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Tao Yuanming's wisdom about finding peace through stepping back from life's pressures."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your educational journey is calling for a major reset."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Tao Yuanming's image sits behind this stick like a quiet rebuke to ambition: a man who folded up his official robes, sailed home, and found that a small cottage with a south-facing window held more of his life than the c..."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The figure behind this stick is Tao Yuanming setting down the official seal and sailing home to a small cottage, a south window, and a stroll through the hills."
+        }
       }
     }
   },
@@ -2109,6 +3667,46 @@ const SIAMSI_DATA = [
         "summary": "เปยอี้ชูฉีสละราชบัลลังก์แต่หิวตายในป่า เตือนไม่ให้ยืนหยัดหลักการจนเสียโอกาส",
         "detail": "มันยากจริงๆ นะ เวลาต้องเลือกระหว่างหลักการกับความอยู่รอด บทกลอนเล่าเรื่องเปยอี้ ชูฉี (伯夷叔齊) สองพี่น้องที่ไม่ยอมรับตำแหน่งกษัตริย์ที่พ่อจะมอบให้ แต่ละคนพูดว่าอีกคนเหมาะสมกว่า \"夷齊不忍食周粟\" — สองคนนี้ไม่ยอมกินข้าวโจวแม้จะหิวโหย \"兄弟心甘採蕨餐\" — เก็บผักกูดในป่ามากิน \"讓國名應垂萬古\" — ชื่อเสียงเรื่องการสละราชบัลลังก์จะเป็นอมตะ \"可憐餓倒首陽山\" — แต่ก็น่าเวทนา ที่ท้ายที่สุดต้องหิวตายบนภูเขาโสวหยาง เขาทั้งคู่หนีไปอยู่ในป่า ปฏิเสธที่จะกินอาหารจากราชวงศ์โจวที่เพิ่งโค่นราชวงศ์เซิ่งลง ไม่ใช่เพราะรักใคร่ราชวงศ์เซิ่งนะ แต่เขาคิดว่าการโค่นกษัตริย์แม้จะเผด็จการขนาดไหนก็เป็นเรื่องผิด หลักการของเขาไม่อนุญาตให้กินข้าวของคนที่ทำสิ่งที่เขาคิดว่าผิด ท้ายที่สุดเขาก็หิวตายในป่า กลายเป็นสัญลักษณ์ความดื้อรั้นที่สูงส่งแต่เศร้าใจ คุณอาจกำลังอยู่ในสถานการณ์คล้ายๆ กัน ไม่ยอมประนีประนอมในเรื่องที่คิดว่าสำคัญ อาจเป็นเรื่องงานที่ไม่อยากไปโค้งหลังใส่ใจเจ้านายที่ทำผิด ห้ามโกงแต่เพื่อนร่วมงานทำกันหมด หรือความรักที่อีกฝ่ายแค่สามารถความรัก แต่คุณยังหวงหลักการว่าความรักต้องจริงใจเท่านั้น การยืนหยัดในสิ่งที่ถูกต้องไม่ผิดเลยนะ แต่เซียมซีใบนี้เตือนว่า หลักการที่สูงส่งเกินไปอาจทำให้คุณ \"หิวตาย\" ได้ เป็นความหิวในแง่โอกาส ความสัมพันธ์ หรือแม้แต่ความสุข ใหญ่ใจเหลือเกิน ให้ตัวเองมีทางเลือกที่สาม ไม่ต้องเลือกระหว่างขายหลักการกับหิวตาย ลองหาวิธีที่จะยืนหยัดในสิ่งที่สำคัญแต่ไม่ต้องพลีชีพ"
       }
+    },
+    "en": {
+      "title": "The Righteous Brothers' Sacrifice",
+      "fortune_level": "Average",
+      "one_line_summary": "You're facing a situation where your principles are being tested against practical considerations.",
+      "poem": [
+        "Denouncing the favour of the Chau Dynasty, The saintly brothers took mountain fern for food.",
+        "Their names should forever be remembered, For they died for the principle and for the good."
+      ],
+      "story": "This story comes from ancient China, around 1100 BCE. Brothers Bo Yi and Shu Qi were princes of a small kingdom called Guzhu.\n\nWhen their father died, each brother refused the throne, insisting the other should rule instead. Eventually they fled together.\n\nLater, when King Wu of Zhou overthrew the corrupt Shang Dynasty, the brothers were horrified — not because they supported Shang, but because they believed overthrowing any ruler, even a tyrant, was morally wrong. They refused to eat grain from the new Zhou kingdom, considering it tainted.\n\nInstead, they retreated to Mount Shouyang and survived on wild ferns. They eventually starved to death, becoming symbols of unwavering moral principles.\n\nChinese culture remembers them as examples of integrity taken to its ultimate extreme.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The stick puts Boyi and Shuqi in front of you, two brothers who walked away from a throne and later starved on mountain ferns rather than eat grain from a dynasty they considered tainted."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Holding the line is the work. Flat income isn't failure — it's quiet discipline."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Boyi and Shuqi did not flee to the mountain because they hated the throne."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse holds Bo Yi and Shu Qi on Shouyang Mountain, chewing wild fern rather than swallowing grain they couldn't reconcile with."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors these ancient brothers — you're being asked to choose between taking shortcuts and maintaining your standards."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is asking you to examine what you truly value."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're facing a situation where your principles are being tested against practical considerations."
+        }
+      }
     }
   },
   {
@@ -2162,6 +3760,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "คนที่เข้าใจเราจริงๆ หายากมาก อย่าปิดใจเพราะเสียใจกับคนเก่า",
         "detail": "โลกนี้หาคนที่เข้าใจจริงๆ ยากเหลือเกิน เซียมซีใบนี้เล่าเรื่องเศร้าของปอหยา (俞伯牙) นักดนตรีเก่งที่สุดในจีนโบราณ กับจงจื่อฉี (鍾子期) คนตัดฟืนธรรมดาที่เป็นเพื่อนแท้คนเดียวของเขา บทกลอนว่า \"人世知音能有幾\" โลกกว้างนี้มีกี่คนกันที่เข้าใจเรา? เวลาปอหยาเล่นขิมเพลงภูเขา จงจื่อฉีจะบอกว่า \"สูงใหญ่เหมือนภูเขาใหญ่\" พอเล่นเพลงแม่น้ำ เขาจะบอก \"ไหลเชี่ยวเหมือนสายน้ำโซ่ส่าย\" ไม่ใช่แค่ฟัง แต่เข้าใจถึงหัวใจ แต่พอจงจื่อฉีตาย ปอหยาทุบขิมแตกที่หน้าหลุมศพ ร้องไห้จนน้ำตาแห้ง บอกว่า \"คนเข้าใจตายแล้ว เล่นขิมให้ใครฟัง?\" ตั้งแต่นั้นไม่เคยแตะขิมอีกเลย\n\nเคยรู้สึกแบบนี้ไหม? มีคนเข้าใจคุณจริงๆ แล้วเขาหายไป ไม่ใช่แค่ตาย นะ อาจเป็นห่างกัน เลิกกัน หรือเปลี่ยนไป จู่ๆ คุณก็กลายเป็นคนพูดกับผนัง มีคนฟังแต่ไม่มีใครเข้าใจ ไม่ใช่ว่าพวกเขาไม่ดี แต่ความถี่ไม่ตรงกัน เหมือนวิทยุเสียไป หาสถานีเดิมไม่เจอ คุณอาจเริ่มคิดว่าตัวเองพูดไม่เป็น หรือคาดหวังสูงไป จนหยุดแบ่งปันสิ่งสำคัญในใจไป เก็บไว้คนเดียว เหมือนปอหยาที่เก็บขิมไว้ไม่เล่น\n\nแต่ถ้าไม่เล่นขิมจริงๆ ดนตรีก็จะหายไปด้วย เราไม่ได้มีชีวิตเพื่อคนเดียว แม้คนที่เข้าใจจะหายากแค่ไหน ลองหาช่องทางใหม่สิ อาจไม่ใช่คนใหม่ แต่เป็นวิธีใหม่ในการแสดงออก เขียน วาดรูป ร้องเพลง หรือแม้แต่ช่วยเหลือคนอื่น บางทีความเข้าใจไม่ได้เกิดจากการฟัง แต่เกิดจากการทำร่วมกัน อย่าปิดตัวเองจนเปลืองของดี"
+      }
+    },
+    "en": {
+      "title": "Bo Ya Breaks His Qin",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Bo Ya smashing his qin at Zhong Ziqi's grave is one of the heaviest images in the whole sign…",
+      "poem": [
+        "How many bosom friends will one have?",
+        "No one appreciates my music since you left.",
+        "Breaking my heart, I weep before your grave.",
+        "We are so far apart, separated by your death."
+      ],
+      "story": "This sign tells the story of Bo Ya, one of ancient China's greatest qin (guqin) players during the Spring and Autumn period. Bo Ya was a master musician whose skill was legendary, but he struggled to find anyone who truly understood his art.\n\nThen he met Zhong Ziqi, a humble woodcutter who could listen to Bo Ya's playing and perfectly describe what the music conveyed — mountains, flowing water, deep emotions. They became the closest of friends.\n\nWhen Ziqi died unexpectedly, Bo Ya was devastated. He realized that without his friend who truly appreciated his music, playing had lost all meaning.\n\nIn his grief, Bo Ya smashed his precious qin and never played again. Their friendship became the classical Chinese ideal of zhiyin — a soul mate who truly understands you.\n\nThe phrase 'breaking the qin' became synonymous with losing someone irreplaceable.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Bo Ya smashing his lute is one of the harshest images in the whole deck, and drawing it for a career question usually lands with a particular kind of recognition."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Feeling unseen makes you undercharge and overspend. Skip shortcuts and rebuild your worth."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "You're facing the pain of losing someone who truly understood you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "You're experiencing a health challenge that feels deeply isolating."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Boya smashing his qin at Ziqi's grave is the image behind this stick, and it lands hard on a study question because learning is one of the loneliest things you can do well."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Boya smashing his guqin at the graveside is one of the most extreme images in the whole stick set."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Bo Ya smashing his qin at Zhong Ziqi's grave is one of the heaviest images in the whole sign deck."
+        }
       }
     }
   },
@@ -2217,6 +3857,48 @@ const SIAMSI_DATA = [
         "summary": "คุณมีของดีแต่คนไม่เห็นคุณค่า รอจังหวะที่ใช่",
         "detail": "ห้องใต้หลังคาเต็มไปด้วยของเก่าที่ไม่มีใครอยากเอา ทั้งที่ในนั้นมีชิ้นโบราณราคาหลักแสน บทกลอนพูดถึงจางเฉียน (張騫) นักเดินทางสมัยฮั่นที่แล่นเรือไปเจอนางฟ้าบนสายฟ้าแลบ เห็นนางกำลังถักผ้าด้วยหินเล็กๆ เขาขอหินมาเก็บเป็นของที่ระลึก พอกลับลงมายังโลกมนุษย์ ไม่มีใครรู้จักหินก้อนนี้ ไม่มีใครเชื่อว่าเป็นของศักดิ์สิทธิ์จากเวหาขันธ์ แค่มองดูก็เหมือนก้อนหินธรรมดา\n\nเรื่องของจางเฉียนคือเรื่องของคุณเป็นต้นเปลี้ยง ตอนนี้คุณกำลังถือก้อนหินที่ดูธรรมดา แต่จริงๆ แล้วคือหินที่นางฟ้าใช้ถักผ้าเทพ มีคุณค่าแบบที่วัดด้วยเงินไม่ได้ ปัญหาคือไม่มีใครเชื่อ ไม่มีใครเห็นคุณค่า เหมือนเอาเพชรไปขายแต่คนดูแค่เห็นแก้ว ใจคุณก็รู้นะว่าตัวเองมีของดี มีความสามารถที่ไม่ใช่เรื่องธรรมดา แต่ทำไมคนรอบข้างถึงไม่เห็นล่ะ ทำไมโอกาสดีๆ ไม่เอื้อมมาหาล่ะ ไม่ใช่เรื่องที่ปวดร้าวแบบหักอก แต่เป็นความอึดอัดใจ เหมือนตะโกนใส่ฝาผนัง\n\nบางทีคุณอาจเริ่มสงสัยตัวเองแล้วก็ได้ ว่าที่คิดไว้จริงๆ หรือเปล่า ของที่ถืออยู่มันดีจริงๆ หรือแค่เราไปใส่ความหมายเอง แต่เซียมซีใบนี้บอกชัดแล้วว่า ไม่ได้คิดผิด ไม่ได้หลงตัวเอง คุณถือก้อนหินแท้ๆ จากสวรรค์ แค่รอให้เจอคนที่มีนัยน์ตาเห็นเท่านั้นเอง\n\nอย่าเอาหินไปขายในตลาดนัด ตอนนี้ยังไม่ใช่จังหวะ รอให้เจอคนที่รู้จักของแท้ของจริงแล้วค่อยเปิดมือให้ดู"
       }
+    },
+    "en": {
+      "title": "Zhang Qian Meets the Weaving Maiden",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're entering a phase where unexpected connections will bring hidden opportunities your way.",
+      "poem": [
+        "In the moonlight the boat floated along the Milky Way.",
+        "There he met the brocade-weaving maid.",
+        "To him she gave a weight made of heavenly stone",
+        "To those on earth its value was never known."
+      ],
+      "story": "This stick tells the story of Zhang Qian, the Han Dynasty explorer who opened the Silk Road around 130 BCE. But it mixes his historical journey with the legend of the Weaving Maid (Zhinü), one half of the famous star-crossed lovers separated by the Milky Way.\n\nIn the original myth, Zhang Qian supposedly sailed up the Yellow River until he reached the heavens, where he met this celestial weaver. She gave him a stone shuttle as proof of his otherworldly encounter.\n\nWhen he returned to earth, court astronomers confirmed the shuttle had indeed disappeared from her constellation on that exact night. The story represents the Chinese ideal of discovering hidden treasures through bold exploration and divine encounters.\n\nIt's about finding value in the unexpected, especially when you venture beyond familiar territory.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 41 hands you a stone from the loom of the Weaving Maid, the same kind of object Zhang Qian's traveller brought back from beyond the Milky Way."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your steady income is the real treasure — stop undercharging for it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "You're about to encounter something — or someone — whose true value won't be immediately obvious to others around you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey is like Zhang Qian's celestial voyage — you're discovering something valuable that others might not immediately understand."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey is about to yield something unexpectedly valuable, though others might not see its worth right away."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is like Zhang Qian's celestial gift — there's hidden value in what might seem ordinary or underappreciated right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're entering a phase where unexpected connections will bring hidden opportunities your way."
+        }
+      }
     }
   },
   {
@@ -2270,6 +3952,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ปัญหาถึงทางตัน แต่ทางออกมาจากทิศที่ไม่คิด",
         "detail": "ปัญหาเก่าใหม่ถึงทางตัน แต่ทางออกมาจากที่ไม่คิด! บทกลอนวาดภาพแสงเดือนส่องดอกไม้ ขณะที่คนเดินเซาะใจหาทางเอาชนะคนร้าย แต่ก็โล่งอกเมื่อเตียวเสียน (貂蟬) สาวงามคิดแผนช่วยชาติ เพราะแม้วีรบุรุษยังต้องพ่ายแพ้ต่อเสน่ห์สตรี เรื่องนี้เล่าถึงหวังอี้ (王允) ขุนนางผู้จงรักภักดีในสมัยสามก๊ก ที่นอนไม่หลับเพราะโต๋งโจ (董卓) คนเลวกำลังทำลายราชธานี เขาเดินไปเดินมาในสวนดอกไม้ใต้แสงจันทร์ คิดสูตรมานับเดือน ลองทุกวิธี แต่ไม่มีอะไรทำให้โต๋งโจหายไป จนกระทั่งเตียวเสียนสาวงามเอาตัวเองเป็นเครื่องมือ เธอไปจีบทั้งโต๋งโจแลลื่ยป๋ (呂布) พ่อลูกบุญธรรม จนสองคนนี้อิจฉาแย่งกันเองตาย\n\nเห็นไหมว่าหวังอี้ไม่ใช่คนโง่ไม่มีความสามารถ แต่บางปัญหามันแก้ด้วยกำลังหรือกฎหมายไม่ได้ ต้องใช้ไหวพริบ เขาไม่ได้ไปหาทหารมาปราบโต๋งโจ เขาหาวิธีให้โต๋งโจทำลายตัวเอง คุณก็เหมือนกัน ปัญหาที่กำลังเจออาจจะไม่ต้องไปปะทะหน้าตา บางทีต้องให้คู่ต่อสู้ทำร้ายตัวเองเสียก่อน หยุดคิดว่าต้องแข็งกร้าวไปทุกเรื่องเถอะ บางครั้งเราต้องยอมใช้กลยุทธ์ที่ดูแปลกๆ หรือขอความช่วยเหลือจากคนที่ไม่เคยคิดมาก่อน ปัญหาในเรื่องงานอาจแก้ได้ด้วยการให้คนอื่นมาเป็นคนกลาง ความรักที่ขัดข้องอาจต้องให้เวลาและสถานการณ์เป็นเครื่องมือ\n\nพอเจอทางตัน ลองมองหาคนที่มีเสน่ห์หรือทักษะที่ตรงข้ามกับคุณ บางทีคำตอบอยู่ในการทำงานร่วมกับคนที่คุณไม่เคยคิดว่าเขาจะช่วยได้"
+      }
+    },
+    "en": {
+      "title": "Wang Yun Meets Diao Chan",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're in that moonlight garden moment right now—knowing what needs to change but feeling like your usual approaches…",
+      "poem": [
+        "In this moonlight garden the loyal courtier strolled, Eager was he to cut the usurper's throat.",
+        "Then appeared the charming lady Diu ready to sacrifice",
+        "By her beauty was doomed the traider's artifice."
+      ],
+      "story": "This stick tells the story of Wang Yun, a loyal minister during China's Three Kingdoms period (around 190 CE), when the tyrant Dong Zhuo terrorized the Han court. Wang Yun felt helpless against this powerful warlord until he met Diao Chan, one of the legendary Four Beauties of ancient China.\n\nTogether they devised a brilliant scheme: Diao Chan would seduce both Dong Zhuo and his adopted son Lu Bu, turning them against each other. The plan worked perfectly—jealousy over Diao Chan's affections led Lu Bu to kill Dong Zhuo, ending his reign of terror.\n\nWhat makes this story powerful isn't just the intrigue, but the collaboration. Wang Yun had the loyalty and determination, Diao Chan had different strengths.\n\nNeither could have succeeded alone, but together they toppled a tyrant who seemed invincible.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career challenges require the strategic patience of Wang Yun rather than direct confrontation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income quietly recovers — resist shortcuts dressed up as ambition."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse sets you in a moonlit garden where Wang Yun walks with a blade in mind and Diaochan steps forward knowing exactly what her beauty will cost her."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health challenges mirror Wang Yun's impossible situation — you're facing something that seems too big to tackle head-on."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Wang Yun could not face Dong Zhuo's spear with his own."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors this ancient story of strategic thinking triumphing over seemingly insurmountable challenges."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in that moonlight garden moment right now—knowing what needs to change but feeling like your usual approaches aren't enough."
+        }
       }
     }
   },
@@ -2325,6 +4048,47 @@ const SIAMSI_DATA = [
         "summary": "หันเหวินกงเล่าความจริงแล้วโดนขับไล่ ติดหิมะกลางทาง",
         "detail": "ทำถูกแล้ว แต่ต้องโดนจากๆ\n\nบทกลอนเล่าว่า \"只因直諫怒天顏\" แค่เพราะเล่าความจริงตรงๆ ไปทำให้พระราชา(หรือเจ้านาย)หน้าบึ้ง \"晝夜難離在馬鞍\" กลางวันกลางคืนต้องนั่งอานม้าไม่หยุด วิ่งหนีไปข้างหน้า ทั้งนาย ทั้งคนใช้เหนื่อยจนเทพเจ้ายังมองเห็นใจ แถมหิมะหนาปิดผ่านเขาหลานกวน (藍關) หนีต่อไปข้างหน้าก็ไม่ได้ ถอยกลับไปก็ไม่มีทาง\n\nเรื่องนี้เล่าถึง หันเหวินกง (韓文公) หรือ หันเยว่ (韓愈) นักเขียนโบราณขื้นชื่อ เขาเขียนจดหมายถึงจักรพรรดิว่า \"อย่าไปงมงายกับพระธาตุพุทธะอะไรแล้ว เสียเงินเปล่าๆ\" เขาพูดถูกนะ แต่จักรพรรดิไม่อยากฟัง โมโหเป็นฟืนเป็นไฟ เลยขับไล่ไปเมืองไกลชื่อ เช่าโจว (潮州) ระหว่างเดินทางเจอหิมะใหญ่ ม้าไปไม่ได้ คนก็ติดอยู่กลางทางข้ามเขาไม่ผ่าน เขาเลยประพันธ์บทกวีดังว่า \"เมฆปกคลุมเทือกเขาฉินหลิง บ้านอยู่ที่ไหนใครจะรู้ หิมะปิดปากช่องหลานกวน ม้าไปข้างหน้าแทบไม่ไหว\"\n\nชีวิตคุณตอนนี้เหมือนหันเยว่เป๊ะ ทำดีแล้วโดนบ่น เล่าความจริงแล้วไม่มีใครฟัง อยู่ในจุดที่ไปไม่ได้กลับไม่เป็น คิดมั้ยว่าทำไมทำถูกแล้วต้องโดนแบบนี้? ทำไมพูดด้วยหลักผลด้วยเหตุแล้วไม่มีใครเข้าใจ? เคยรู้สึกว่าอยู่กลางลมหนาวตอนนี้มั้ย ไม่มีใครมายืนข้างๆ แม้แต่คนที่เคยเข้าใจก็ไปซุกกันหมดแล้ว สิ่งที่เจ็บปวดที่สุดคือคุณยังต้องเดินต่อ เพราะมีภาระรับผิดชอบ มีคนที่ต้องช่วย มีเป้าหมายที่ยังทำไม่สำเร็จ แต่หิมะใหญ่ขนาดนี้ ตัวเองจะไปไหวไหม\n\nรู้ไหมว่าหันเยว่เดินทางไปเช่าโจวได้ในที่สุด และไปทำงานที่นั่นได้ดีมาก ช่วยคนเจ็บคนป่วย ขุดแคนาลให้น้ำไหล สอนคนอ่านหนังสือเขียนหนังสือ ชาวเช่าโจวถึงกับสร้างศาลให้เขา เพราะเขาไม่ได้ยอมแพ้กับหิมะหนา คุณก็เหมือนกัน ช่วงนี้อาจจะเป็นช่วงที่หนักที่สุด แต่พอผ่านไปแล้ว คนจะเห็นคุณค่าที่แท้จริงของสิ่งที่คุณทำ อย่างที่หันเยว่เล่าไว้ในบทกวีอีกบทหนึ่ง \"ข้าวโพดปลูกในหิน มีวันออกข้าวโพดได้\"\n\nหาทางเดินเบี่ยงหน่อยนะ ไม่ต้องฝ่าหิมะโดยตรง รอให้คลื่นความโมโหเงียบลงก่อน 2-3 อาทิตย์ แล้วค่อยมาพูดคุยใหม่"
       }
+    },
+    "en": {
+      "title": "Han Yu's Bold Counsel",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. You're in a Han Yu moment right now.",
+      "poem": [
+        "The scholar's straightforward advice offended the emperor.",
+        "Exiled to the south, he was forever a traveller.",
+        "His page was tired and his horse refused to go, At the gate they were blocked by merciless snow."
+      ],
+      "story": "This sign tells the story of Han Yu (768-824 AD), one of China's greatest prose writers and a stubborn idealist. During the Tang Dynasty, Emperor Xianzong became obsessed with Buddhist relics, spending enormous sums to welcome a finger bone of Buddha to the palace.\n\nHan Yu, then a high court official, wrote a scathing memorial calling the emperor's devotion to Buddhism wasteful superstition. The emperor was furious.\n\nHan Yu barely escaped execution and was instead banished to Chaozhou in the remote south, a journey through treacherous mountain passes in winter. The 'Blue Pass' (Lan Guan) mentioned in the Chinese poem became synonymous with political exile.\n\nHan Yu's story represents the classic conflict between moral courage and political survival - sometimes doing the right thing leads to immediate punishment.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Han Yu's exile is the stick's central image, and it lands hard for a reason: you are probably standing at a moment where the principled move and the safe move have separated, and you can feel the cold air at the gate."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A slow season where patience guards your income. Protect the steady path, skip shortcuts."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation feels like Han Yu's lonely exile right now."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Han Yu's exile verse arrives carrying the image of a tired page and a horse that simply will not move, snow piling at the gate."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your academic journey mirrors Han Yu's painful exile."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Think of it this way: you're the Han Yu of your household right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in a Han Yu moment right now."
+        }
+      }
     }
   },
   {
@@ -2378,6 +4142,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "หลายทางเลือก แต่ของจริงจะปรากฏชัดเอง",
         "detail": "ตัวจริงที่แท้จริงเดี๋ยวก็ปรากฏออกมาเอง\n\nบทกลอนแปลว่า \"สวนเต็มไปด้วยดอกไม้บานรับฤดูใส แต่งตัวสวยสดขอใจเปรียบดั่งสวรรค์ แข่งกันอวดโฉมใครจะงามกว่า แต่สุดท้ายดอกโบตั๋นยืนเจ้าสวน\" เรื่องเล่าถึงจักรพรรดิ์ถังเฮวียนจง (唐玄宗) ในยุคเถียนเปา่อ ช่วงรุ่งเรืองที่สุดของราชวงศ์ถัง ที่ทรงจัดงานชมดอกไม้ในสวนพระราชวังทุกฤดูใบไม้ผลิ ในสวนพระราชวังมีดอกไม้ร้อยชนิด บานพร้อมกันเวลาฤดูใส ดอกบ๊วยบอกตัวเองสูงส่ง ดอกท้อบอกตัวเองอ่อนหวาน ดอกซากุระบอกตัวเองโรแมนติก แต่พอจักรพรรดิ์เดินชมดอกไม้ทั้งสวน ท้ายสุดก็หยุดยืนหน้าดอกโบตั๋นชนิดหนึ่งไม่ยอมเดิน นี่แหละ \"มลทินอารีดงาม\" โบตั๋นที่ได้ใจจักรพรรดิ์จนขึ้นชื่อว่าราชินีแห่งดงบุปผา\n\nคุณตอนนี้คงเหมือนจักรพรรดิ์ถังที่ยืนดูดอกไม้ใช่ไหม มีหลายทางเลือกขนาดงงไปหมด งานก็มีหลายตำแหน่ง คนก็มีหลายคนให้เลือก โครงการลงทุนก็มีหลายโครงการ ทุกอย่างมองดูมีเหตุผล เพื่อนบอกคนนี้ดี เจ้านายบอกทางนี้มีอนาคต ที่ปรึกษาบอกลงทุนนั่นได้กำไร ฟังมาฟังไปปวดหัว คิดไปคิดมาแต่ละอย่างก็ดูมีข้อดี แต่ไม่มีอันไหนที่ชัดเจนว่าใช่แน่ๆ\n\nแต่เซียมซีใบนี้เน้นคำว่า \"到底是誰君麗首\" นั่นคือของจริงจะโผล่ออกมาเองแหละ เหมือนดอกโบตั๋นที่ไม่ต้องไปขอร้องให้จักรพรรดิ์ชม แต่พอจักรพรรดิ์เห็นก็รู้เลยว่านี่แหละสิ่งที่ต้องการ ของจริงไม่ต้องมาหาเหตุผลมากมายให้ตัวเองเชื่อ มันจะชัดเจนเองจนคุณปฏิเสธไม่ได้\n\nให้เวลาสิ่งต่างๆ แสดงฝีมือออกมาสักพัก อย่าไปกดดันตัวเองให้เลือกเดี๋ยวนี้ ที่แท้จริงจะไม่หายไป"
+      }
+    },
+    "en": {
+      "title": "Emperor Xuanzong's Peony Garden",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're entering a phase where your natural talents are ready to bloom spectacularly.",
+      "poem": [
+        "Competing so keenly to become the Queen of Spring, The flowers in the garden blossomed to their full swing.",
+        "Guess who will win the golden crown of beauty?",
+        "Amongst the flowers outstands the Champion Peony."
+      ],
+      "story": "This sign references Emperor Xuanzong during the Tianbao era (742-756 CE) of the Tang Dynasty, considered the golden age of Chinese civilization. Xuanzong was famous for creating elaborate imperial gardens where he hosted poetry competitions and flower-viewing parties.\n\nThe peony became the ultimate symbol of imperial splendor during his reign — wealthy beyond imagination, beautiful beyond compare, but also fleeting. These garden gatherings represented the peak of Tang court culture: artistic achievement, refined taste, and confident prosperity.\n\nHowever, this same emperor later fell from grace due to his obsession with beauty (particularly his concubine Yang Guifei), leading to rebellion and the dynasty's decline. The peony thus carries a dual meaning — it represents both the pinnacle of success and the reminder that all glory has its season.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career field is heating up with competition, and you're positioned to come out on top."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is blooming, but Tang peonies ask what you're paying to be admired."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic situation is entering a season of natural blossoming, much like the imperial gardens during peak spring."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The Tianbao peony garden is a strange mirror to hold up to your body."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "In your academic journey, you're entering a period where your natural abilities are ready to bloom spectacularly."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The Tianbao peony competition gives this stick its texture: a household where everyone is, in some quiet way, blooming for recognition."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're entering a phase where your natural talents are ready to bloom spectacularly."
+        }
       }
     }
   },
@@ -2433,6 +4238,46 @@ const SIAMSI_DATA = [
         "summary": "เตือนว่าคุณกำลังหลุดจากกาลเวลา ต้องตื่นขึ้นสู้",
         "detail": "ยังไม่ถึงเวลานะ แต่ไม่ใช่เพราะดวงไม่ดี ในบทกลอนเล่าว่า \"採樵不意到雲巔 閒看敲棋二老仙\" นักตัดไม้เข้าไปในป่าลึก เจอเซียนสองคนเล่นหมากรุก ดูจนลิงลืมกิ่งไผ่ \"柯爛也思歸故里 山中七日世千年\" ด้ามขวานผุกร่อนหมดแล้วถึงนึกจะกลับบ้าน แต่บนภูเขาเจ็ดวัน โลกมนุษย์ผ่านไปแล้วพันปี นี่คือเรื่องของหวังจื่อ (王質) ชายตัดไม้ที่หลงทางเข้าไปในโลกเซียน ดูหมากรุกจนหลุดออกจากกาลเวลา คิดว่าแค่นั่งดูชั่วโมงสองชั่วโมง ใครจะรู้ว่าโลกข้างนอกเปลี่ยนไปหมดแล้ว\n\nคุณกำลังเป็นเหมือนหวังจื่อใช่ไหม นั่งดูอะไรบางอย่างอยู่ คิดว่าตัวเองควบคุมเวลาได้ แต่จริงๆ แล้วเวลากำลังไหลผ่านไปโดยที่คุณไม่ทันสังเกต อาจจะเป็นงานที่ทำซ้ำๆ จนกลายเป็นเครื่องจักร หรือความสัมพันธ์ที่เดินไปตามนิสัยเดิมๆ จนลืมมองคนข้างๆ หรือฝันที่เก็บไว้ในใจนานมากจนไม่รู้ว่าตัวเองยังอยากทำจริงๆ รึเปล่า เวลามันไม่หยุดรอใครหรอกนะ ขณะที่คุณคิดว่ากำลังพิจารณาตัวเลือก โอกาสแท้ๆ อาจจะลื่นไหลผ่านมือไปแล้ว แบบเดียวกับที่หวังจื่อคิดว่าแค่ดูหมากครู่เดียว แต่โลกเปลี่ยนไปแสนปี\n\nหยุดดูแล้วลุกขึ้นทำอะไรสักอย่างเถอะ ไม่ต้องใหญ่โต แค่ก้าวเล็กๆ ออกจากรูทีนเดิม เปลี่ยนเส้นทางไปทำงาน คุยกับคนที่นานๆ จะคุยสักครั้ง หรือลองทำในสิ่งที่เลิกทำไปนานแล้วดูสิ"
       }
+    },
+    "en": {
+      "title": "Wang Zhi Meets the Immortals",
+      "fortune_level": "Average",
+      "one_line_summary": "Wang Zhi's axe handle didn't rot because the immortals cursed him.",
+      "poem": [
+        "Plucking firewood the woodcutter strolled into a forest, There he watched two fairies engaged in a game of chess.",
+        "Preparing to go home he found his axe became rotten, For centuries have elapsed and our earthly years forgotten."
+      ],
+      "story": "Wang Zhi was a woodcutter during the Jin Dynasty who accidentally wandered into a mystical area while collecting firewood. Deep in the mountains, he discovered two immortals playing weiqi (Chinese chess).\n\nMesmerized by their cosmic game, he sat and watched what felt like a few hours. When he finally stood to leave, his wooden axe handle had rotted completely away — centuries had passed in the mortal world.\n\nThis ancient tale became China's most famous story about losing track of time, inspiring the phrase \"one day in heaven equals a thousand years on earth. \" Wang Zhi's story warns about becoming so absorbed in fascinating pursuits that you forget the passage of time and your earthly responsibilities.\n\nThe immortals' chess game represents any captivating activity that can pull you away from practical concerns.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Wang Zhi's experience — you're currently absorbed in something that feels important, but you might be losing perspective on the bigger picture."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The ledger balances, but something quiet is draining you. Check where your attention actually goes."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation has this dreamy, suspended-in-time quality that Wang Zhi experienced."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Wang Zhi sat down to watch a chess game and stood up centuries later with a rotted axe handle."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors Wang Zhi's forest encounter."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Wang Zhi watched two immortals play weiqi for what felt like an afternoon, and walked home to find his axe handle crumbling and his village unrecognisable."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Wang Zhi's axe handle didn't rot because the immortals cursed him."
+        }
+      }
     }
   },
   {
@@ -2486,6 +4331,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เรื่องการถูกหลอกลวงด้วยสิ่งที่ดูดีแต่ไม่มีสาระ",
         "detail": "หลอกจนเหลือแต่เปลือก!\n\nบทกลอนเล่าเรื่องส้มเปลือกหวานที่ซ่าจื่อ (左慈) เอาไปถวายโจโฉ เปิดออกมาดูแล้วแทบช็อก ข้างในว่างเปล่าไม่มีอะไรเลย โจโฉโมโหจัดควานิดเอาขวานมาไล่ฟัน ซ่าจื่อต้องรีบเผ่นไปซ่อนตัวในฝูงแกะ จนโจโฉแยกไม่ออกว่าตัวไหนคือคน ตัวไหนคือแกะ นี่มันใช่เป็นเรื่องตลกทางโบราณ แต่ความจริงที่เจ็บนะ — การหลอกลวงโบราณยุคสามก่อ ยังคงเกิดขึ้นในสมัยนี้อีก\n\nสิ่งที่คุณกำลังเผชิญตอนนี้ก็เหมือนกับกล่องส้มของซ่าจื่อ ภายนอกดูสวยงาม มีสีสัน น่าหวงแหน แต่พอเปิดออกดูข้างในแล้วรู้สึกว่าโดนหลอกใช่ไหม? งานที่คิดว่าได้แล้ว ความรักที่คิดว่าแน่น โครงการที่คิดว่าแจ่มใส หรือแม้แต่คำสัญญาที่คิดว่าจริงใจ อาจจะกำลังจะกลายเป็นเปลือกส้มเหลือๆ เฉยๆ ที่เหลือแต่ความผิดหวัง\n\nที่แย่กว่าการผิดหวังธรรมดา คือการรู้สึกว่าคุณถูกใครบางคนเล่นงาน มีคนจงใจทำให้คุณเข้าใจผิด เพื่อประโยชน์ของเขาเอง เหมือนโจโฉที่คิดว่าได้ของดีแล้วโดนซ่าจื่อหยอกเล่น แต่การหยอกเล่นครั้งนี้ไม่ตลกเท่าไหร่เพราะส่งผลถึงชีวิตคุณ คุณอาจจะมีความรู้สึกโกรธ หงุดหงิด อยากไล่ตะเพิดใครบางคนเหมือนโจโฉเอาขวานไล่ซ่าจื่อ\n\nแต่จำไว้นะ ซ่าจื่อไม่ได้ยืนดื้อดึงกับโจโฉ เขารู้ว่าเมื่อไหร่ควรหนี เมื่อไหร่ควรซ่อนตัว บางทีการถอยออกมาก่อนจะดีกว่าการยืนดื้อรอรับผลเสีย เซียมซีใบนี้บอกคุณแล้วว่าสิ่งที่คุณเฝ้ารอมันไม่มีอะไรให้ได้ อย่าไปเสียเวลาเปิดกล่องที่รู้แล้วว่าว่างเปล่า\n\nตัดใจทิ้งสิ่งที่รู้ดีอยู่แล้วว่าเป็นแค่เปลือกเปล่า แล้วไปหาอะไรที่มีเนื้อให้กินจริงๆ"
+      }
+    },
+    "en": {
+      "title": "Zuo Ci Tricks Cao Cao",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The verse shows Cao Cao opening a beautiful box and finding only dried peel inside.",
+      "poem": [
+        "Lord Cho was presented a box of tangerine.",
+        "He found in it nothing but fruit skin.",
+        "In his anger, he promptly drew his sword.",
+        "Disguised as a sheep the giver escaped from his blow."
+      ],
+      "story": "This sign references Zuo Ci, a legendary Taoist magician during the Three Kingdoms period (220-280 CE), known for his supernatural abilities and his talent for embarrassing powerful people. Cao Cao was the ruthless warlord who effectively controlled the last Han emperor — think of him as the era's most feared political strongman.\n\nThe story goes that Zuo Ci, knowing Cao Cao's violent temper, presented him with beautiful tangerine boxes during winter. When opened, they contained only dried peels.\n\nCao Cao flew into a rage and drew his sword, but Zuo Ci had already shape-shifted into a sheep and disappeared into a nearby flock. It's a classic tale about the difference between appearance and reality, and how our expectations can make us look foolish when we react without thinking.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation right now mirrors Cao Cao's frustration with those empty tangerine peels."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A warning about shiny packages and fast-money pitches. The box looks full — check inside."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation feels like that box of tangerines right now — what looked promising has turned out to be mostly empty shells."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The Zuo Ci story sits at the centre of this stick like a warning written in fruit peel."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your studies right now are like those tangerine boxes — everything looks promising on the surface, but you're finding empty shells when you dig deeper."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now feels like opening that box of tangerines — what looked promising on the surface has left you feeling cheated or disappointed."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse shows Cao Cao opening a beautiful box and finding only dried peel inside, then drawing his sword on a giver who has already slipped away as a sheep in the flock."
+        }
       }
     }
   },
@@ -2541,6 +4428,46 @@ const SIAMSI_DATA = [
         "summary": "ติดอยู่กับสิ่งที่รู้ว่าต้องทำแต่ทำไม่ลง",
         "detail": "รู้ว่าต้องทำแต่ทำไม่ได้ ติดอยู่ตรงนี้แหละ\n\nบทกลอนภาพนี้เล่าว่า 'เมื่อไหร่เจิงโจวจะคืน เที่ยวพันลี้ไปถามกัน' หลู่สู่ (魯肅) นายทูตเก่งจากแคว้นอู๋ขี่ม้าข้ามเมืองข้ามแปลงหลายพันลี้มาถึงถิ่นเสฉวน เขามาเก็บหนี้เมืองเจิงโจวที่หลิวเป่ย (劉備) ยืมไปตั้งแต่ยุคยังไร้ที่อยู่ ตอนนั้นหลิวเป่ยสัญญาว่าได้เมืองอี๋โจวแล้วจะคืนให้ทันที แต่พอได้จริงๆ กลับไม่อยากปล่อยเมืองดีๆ ให้ใครง่ายๆ พอหลู่สู่มาถาม หลิวเป่ยนั่งร้องไห้เงียบๆ ไม่รู้จะตอบยังไง ไม่ใช่ไม่รู้ว่าผิด แต่จริงๆ แล้วปล่อยมือไม่ได้\n\nเห็นมั้ยคะ บางเวลาเรารู้ดีว่าต้องทำอะไร แต่พอถึงเวลาจริงกลับทำไม่ลง คุณอาจกำลังเจอเหมือนหลิวเป่ยตอนนั้น มีบางอย่างที่รู้ว่าควรจะปล่อย ควรจะคืน ควรจะยุติ แต่มันสำคัญหรือมีค่าจนปล่อยมือไม่ได้ อาจเป็นความสัมพันธ์ที่มีปัญหาแต่ยังไม่อยากจบ อาจเป็นงานที่เหนื่อยแต่กลัวเปลี่ยน หรืออาจเป็นสถานการณ์ที่รู้ว่าต้องตัดสินใจแต่เลื่อนไปเรื่อย การที่คุณติดอยู่ตรงนี้ไม่ได้แปลว่าคุณเห็นแก่ตัวหรือไม่รับผิดชอบนะ บางครั้งแค่ยังไม่พร้อมจริงๆ\n\nแต่อย่าลืมว่าบทกลอนจบด้วย 'หาทางแก้ไขจากเมืองอู๋' หลิวเป่ยไม่ได้นั่งร้องไห้ไปเฉยๆ เขายังคิดหาทางอ้อมเพื่อแก้ปัญหาอยู่ดี\n\nคิดทางอ้อมก่อนสิ หาคนกลางช่วยคุยแทน หรือเจรจาเงื่อนไขใหม่ที่ทั้งสองฝ่ายรับได้"
       }
+    },
+    "en": {
+      "title": "Lu Su Demands the Return of Jingzhou",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 47 hands you Liu Bei's tears.",
+      "poem": [
+        "From a thousand miles came the envoy of Wu, Demanding the return of a country from Su.",
+        "Lord of Su said nothing but tears ran down his cheeks, For his realized the county Wu could no longer keep."
+      ],
+      "story": "This stick references a diplomatic crisis from China's Three Kingdoms period (220-280 CE). Lu Su was chief advisor to Sun Quan, ruler of the Wu kingdom.\n\nHe came to demand the return of Jingzhou province from Liu Bei (Lord of Su), who had borrowed it years earlier when he was desperate and homeless. Liu Bei had promised to return it once he established himself, but success made him reluctant to give up this strategic territory.\n\nWhen Lu Su arrived for negotiations, Liu Bei could only weep - he knew he should honor his word, but returning Jingzhou would severely weaken his position. This moment captures the painful conflict between moral obligation and practical survival, when doing the right thing might cost everything you've worked to build.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 47 places you inside Liu Bei's tent the day Lu Su arrives."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but unsettled debts and borrowed ground quietly drain what you've earned."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship is at a crossroads where someone needs to return something that was never really theirs to keep."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Lu Su arrives at the gate, polite and immovable, and Liu Bei weeps not because he is wronged but because he already knows the answer."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey has reached a reckoning point."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is facing one of those situations where everyone's right, but someone's going to end up disappointed."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 47 hands you Liu Bei's tears."
+        }
+      }
     }
   },
   {
@@ -2594,6 +4521,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ตั๊กหวินจุนขายเหล้า เล่าถึงการต้องลงมาทำสิ่งที่ไม่เคยคิด",
         "detail": "จากฟ้าลงดิน สบายเป็นลำบากแต่ใจยังแน่น\n\nคิดถึงเสียงพิณที่ดังขึ้นในค่ำคืน ทำให้สาวในปราสาทแต่งตัวออกไปหาผู้ชายที่เล่นเพลงนั้น แต่พอตื่นจากความโรแมนติกมาเมื่อไหร่ ก็เจอตัวเองยืนขายเหล้าในตลาดแจ้งร้อนๆ บทกลอนเล่าว่า \"繡閣聽琴自起思 改粧寅夜最歡時 可憐沽酒臨邛市 才子佳人兩下廚\" เห็นภาพไหม ในห้องปักผ้าหรูหราเดิมทีนี่ได้ยินเสียงพิณ ใจเริ่มคิดถึงคนเล่น ตกกลางคืนก็แต่งตัวออกไปหาเขา นั่นเป็นช่วงเวลาที่มีความสุขที่สุด แต่สุดท้ายแล้ว คู่รักที่เก่งกาจทั้งคู่ก็ต้องลงมาขายเหล้าในตลาดเมืองลินชง และช่วยกันทำครัว\n\nนี่คือเรื่องของตั๊กหวินจุน (卓文君) ลูกสาวเศรษฐีใหญ่ที่ตกหลุมรักซื่อม่าเซี่ยงหรู (司馬相如) หนุ่มยากจนที่เล่นพิณเก่ง เสียงเพลงฟ้องขวาง (鳳求凰) ของเขาทำให้นางใจแตกสลาย ทั้งๆ ที่รู้ว่าพ่อไม่เอา แต่นางก็แอบหนีออกจากบ้านไปอยู่กับเขา พอจริงจังแล้ว ชีวิตไม่เหมือนในเพลง เงินหมด บ้านไม่มี สุดท้ายต้องไปเปิดร้านเหล้าเล็กๆ ที่เมืองลินชง นางผู้ที่เคยมีคนรับใช้ ต้องมาล้างจาน เสิร์ฟลูกค้า เขาก็ต้องลงมาคิดเงิน จัดของ ไม่มีความโรแมนติกอีกแล้ว มีแต่ความเป็นจริงเรื่องค่าครองชีพ\n\nคุณกำลังเจอสถานการณ์คล้ายๆ กันใช่ไหม? มีสิ่งที่คุณตกหลุมรักหรือตัดสินใจเลือก ตอนแรกดูแวววาวสวยงาม แต่พอเข้าไปจริงๆ แล้วกลับเจอแต่ความยุ่งยาก เหนื่อยล้า ต้องทำในสิ่งที่ไม่เคยคิดว่าจะต้องทำ บางทีคุณอาจกำลังรู้สึกเซ็งที่ต้องเริ่มต้นใหม่ หรือปรับตัวลงมาทำสิ่งที่รู้สึกว่า \"ไม่เหมาะกับสถานะ\" อย่างเก่า ไม่ว่าจะเป็นเรื่องงาน ความรัก หรือแผนชีวิตที่กำลังไปไม่ได้ดังใจ\n\nทำใจกับช่วงนี้เถอะ มันเป็นแค่จุดที่คุณต้องลงมาเดินใกล้พื้นดิน ไม่ใช่ว่าคุณตกต่ำหรือเลือกผิด แต่เป็นว่าทุกอย่างที่มีค่าจริงๆ ล้วนต้องผ่านช่วงที่เหนื่อย ไม่ได้โรแมนติกแบบแรกๆ ตั๊กหวินจุนและซื่อม่าเซี่ยงหรูทำร้านเหล้าได้สำเร็จนะ และเขาก็มีชื่อเสียงขึ้นมาในภายหลัง แต่จุดสำคัญไม่ใช่ตรงนั้น แต่อยู่ตรงที่เขาไม่ยอมแพ้กับความยากจน"
+      }
+    },
+    "en": {
+      "title": "The Scholar's Wife Sells Wine",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 48 hands you Zhuo Wenjun behind the counter of a wine shop.",
+      "poem": [
+        "The zither music so moved the widow pitifully shy, That she, disguised eloped with him at midnight.",
+        "Having renounced their fortune, they sold wine and food.",
+        "Alas!",
+        "Our genteel couple had to wear the chef's hood."
+      ],
+      "story": "This refers to Zhuo Wenjun, a wealthy widow from the Han Dynasty who fell in love with the poet Sima Xiangru after hearing him play the zither. Despite her family's fierce opposition, she eloped with the penniless scholar in the middle of the night.\n\nWhen they arrived in his hometown with nothing but love, they had to survive by opening a small wine shop. The pampered noblewoman found herself serving customers and washing dishes alongside her husband.\n\nHer story became legendary because she chose authentic love over social status, even when it meant trading silk robes for work aprons. The tale resonates because it shows how sometimes life's most meaningful choices require us to abandon our comfort zones completely.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image at the heart of this stick is jarring on purpose: a wealthy widow and a gifted poet, both raised to expect refinement, ladling wine and scrubbing pots in their own small shop."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "You're not losing ground, but quietly paying to protect an image you've outgrown."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Stick 48 hands you Zhuo Wenjun and Sima Xiangru — the widow and the poor zither player who ran off at midnight and ended up washing wine cups for strangers."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey might require some uncomfortable adjustments right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse leaves Sima Xiangru and Zhuo Wenjun behind a wine counter, ladling drinks for strangers while their books gather dust in a back room."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation calls for some serious soul-searching about what you're willing to sacrifice for love and unity."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 48 hands you Zhuo Wenjun behind the counter of a wine shop, ladling drinks for strangers, her silk sleeves rolled up."
+        }
       }
     }
   },
@@ -2649,6 +4618,47 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 49 ซือหม่าเซียงหู่เขียนข้อความที่สะพาน ระดับกลาง ความอดทนของคุณกำลังจะเป็นผล",
         "detail": "ฝนตกแล้วก็ต้องหยุด คนเก่งแล้วก็ต้องได้รับการยอมรับ\n\nบทกลอนบอกว่า \"十年窗下苦功成\" สิบปีเรียนหนังสือใต้หน้าต่าง ความขยันขันแข็งก็สำเร็จแล้ว เรื่องของซือหม่าเซียงหู่ (司馬相如) นี่เนื่องมาก เขาเป็นนักเขียนเก่งสมัยฮั่น แต่เกิดมาในครอบครัวยากจน นั่งอ่านหนังสือจนตาแฉะ 10 กว่าปี ทำงานเป็นพนักงานราชการกิ๊บๆ เงินเดือนก็น้อยนิดเดียว แต่ในใจยังมีความฝันใหญ่โต อยากเป็นนักเขียนชื่อดังที่ได้เข้าราชสำนัก วันหนึ่งเขาไปงานเลี้ยงที่เมืองเจิ้งตู (成都) เจอหญิงสาวชื่อโจ่วเหวินจวิน (卓文君) ลูกพ่อค้ารวย แต่เป็นหม้าย เขาเล่นเครื่องดนตรีให้ฟัง แล้วก็หนีรักกันไป ตอนนั้นเขาจนจริงๆ แม้แต่ม้าก็ไม่มี เขาเลยเขียนข้อความไว้ที่สะพานว่า \"他日不乘高車駟馬，不過此橋\" ถ้าสักวันฉันไม่ได้นั่งรถม้าหรูหราข้ามสะพานนี้ ก็จะไม่ข้ามไปเลย\n\nเสียงใครเนี่ย คล้ายๆ กับคุณเลยนะ ใช่ไหม? คุณก็ทำงานหนักมานาน สั่งสมความรู้ ฝึกฝนทักษะ แต่รู้สึกเหมือนยังไม่ได้รับการยอมรับที่สมควร อาจจะเป็นเรื่องการงาน ที่คิดว่าควรจะได้เลื่อนตำแหน่งแล้ว หรือเรื่องธุรกิจ ที่ทำมาหลายปีแต่ยังไม่ปัง หรือแม้แต่เรื่องความรัก ที่รู้สึกว่าให้ความจริงใจไปเยอะแล้ว แต่อีกฝ่ายก็ยังลังเลอยู่ บทกลอนบอกว่า \"有志難舒願不輕\" มีความมุ่งมั่นแต่ยังแสดงออกได้ยาก ความปรารถนาไม่ใช่เรื่องเล็กน้อย แต่จริงๆ แล้วช่วงนี้คุณกำลังอยู่ในจุดเปลี่ยนนะ เหมือนซือหม่าเซียงหู่ตอนเขียนข้อความไว้ที่สะพาน มันไม่ใช่การโม้ เป็นการตั้งเป้าหมายที่ชัดเจน\n\nปีต่อมาเขาเขียนบทกวี \"ฟู่\" (賦) เรื่อง \"หม่ายฟู่\" ถึงพระเจ้าอู๋ตี้ ใครๆ ก็อ่านแล้วเกือบร้องไห้ พระองค์ทรงประทับใจมาก เชิญเขาเข้าราชสำนักทันที แล้วก็แต่งตั้งให้เป็นข้าราชการชั้นสูง ตอนกลับบ้านเกิดจริงๆ เขาขี่รถม้าคันสวยๆ ข้ามสะพานสายเดิม สมใจปิ๊งนั่นแหละ\n\nคุณคงรู้แล้วใช่ไหมว่าเรื่องที่คุณทำอยูนี่มันไม่ใช่ของเล่น \"生平心誓確鍾情\" คำปฏิญาณในใจตลอดชีวิตเป็นความจริงใจที่แน่วแน่ นี่คือสิ่งที่คุณอยากทำจริงๆ ไม่ใช่แค่ชั่วคราว และจากสัญญาณที่ได้รับ โอกาสใหญ่กำลังจะมา แต่อย่าเพิ่งผ่อนแรงนะ\n\nขยันต่อไปอีกหน่อย แล้วเริ่มบอกคนรอบข้างให้ชัดๆ ว่าคุณต้องการอะไร ไม่ต้องเก็บใจเหมือนเด็กดีแล้ว"
       }
+    },
+    "en": {
+      "title": "Sima Xiangru Writes on the Bridge",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Your current situation mirrors Sima Xiangru's decade of preparation.",
+      "poem": [
+        "For ten years the scholar devoted to studies by the window.",
+        "Though ambitions are high, yet no chance did grow.",
+        "When the pledge he wrote on the bridge was realized, He saw his efforts awarded with fame and prestige."
+      ],
+      "story": "This sign tells the story of Sima Xiangru, one of China's greatest poets from the Han Dynasty (around 140 BC). Born into poverty, he spent years studying literature while dreaming of court recognition.\n\nThe \"bridge writing\" refers to a romantic legend where he carved a pledge on a bridge, promising his beloved Zhuo Wenjun that he would return successful and wealthy. In reality, Sima Xiangru eloped with this merchant's daughter, scandalizing society.\n\nThey ran a wine shop together until his literary talents eventually caught Emperor Wu's attention. His famous rhapsodies earned him a position at court, transforming him from a struggling poet into one of history's most celebrated writers.\n\nThe story became a symbol of how persistent effort, even through hardship and social disapproval, can eventually lead to recognition.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Sima Xiangru's decade of preparation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your raise is real, but so is the leak. Reward the slow build, skip the shortcut."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Sima Xiangru wrote his pledge on the bridge before he had anything to back it up."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Sima Xiangru's long path to recognition."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The stick of Sima Xiangru carving his name on the bridge is one of the most studied-related verses in the whole set, and it has landed in front of you for a reason."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Sima Xiangru's pledge on the bridge wasn't a dramatic gesture; it was a private accounting of what he owed the woman who had already chosen him over her father's house."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your current situation mirrors Sima Xiangru's decade of preparation."
+        }
+      }
     }
   },
   {
@@ -2702,6 +4712,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ช่วยเหลือมาจากที่ไม่คาด อย่าปฏิเสธด้วยความกังวล",
         "detail": "อยู่ในจุดที่คิดว่าไม่มีทางออกแล้ว แต่ความช่วยเหลือกำลังจะมาจากที่ที่คุณไม่คิด\n\n\"記得當年伍子胥 潛奔難渡幸逢漁\" บทกลอนเล่าถึงอี้จื่อซวี่ (伍子胥) นักรบที่หลบหนีจากกษัตริย์ชู่ เพราะถูกใส่ร้ายให้ฆ่าพ่อและพี่ชาย เขาวิ่งหนีมาถึงริมแม่น้ำ หลังมีกองทหารไล่ล่า หน้ามีน้ำกว้างใหญ่ไม่รู้จะข้ามยังไง พอกำลังสิ้นคิดก็เจอชาวประมงคนหนึ่ง ไม่เคยเห็นหน้าไม่รู้จักกัน แต่เห็นเขาตกระกำลำบากก็ขอให้ขึ้นเรือ พาข้ามฟากไปโดยไม่ถามไถ่อะไร\n\nพอข้ามจนปลอดภัยแล้ว อี้จื่อซวี่อยากให้ดาบล้ำค่าที่ติดตัวมาเป็นค่าขนส่ง แต่ชาวประมงปฏิเสธ บอกว่าช่วยคนเป็นเรื่องธรรมดา ไม่ต้องการสิ่งตอบแทน \"欲將寶劍相持贈 大義交朋卻也辭\" มันไม่ใช่ธุรกิจแลกเปลี่ยน แต่เป็นน้ำใจคนต่อคน\n\nตอนนี้คุณอาจรู้สึกเหมือนอี้จื่อซวี่ตอนที่ยืนอยู่ริมฝั่งน้ำ มีปัญหาใหญ่ไล่ทับ มีอุปสรรคขวางหน้า คิดไปคิดมาก็ไม่เห็นทางออก แต่เซียมซีใบนี้บอกว่าความช่วยเหลือจะมาจากคนที่คุณไม่เคยคิดว่าเขาจะช่วยได้ อาจเป็นเพื่อนร่วมงานที่ไม่ได้สนิทกัน เพื่อนบ้านที่แค่ยิ้มทักทายกัน หรือแม้แต่คนแปลกหน้าที่บังเอิญเจอในช่วงเวลาที่ถูกต้อง\n\nแต่สิ่งสำคัญคือ เวลามีคนมาช่วยจริงๆ อย่าไปคิดมากว่าเขาต้องการอะไรตอบแทน หรือคุณต้องทำอะไรให้เขาบ้าง บางครั้งการช่วยเหลือที่แท้จริงไม่มีเงื่อนไข ไม่มีสัญญาแลกเปลี่ยน\n\nเปิดใจรับความช่วยเหลือที่กำลังจะมา อย่าปฏิเสธเพราะคิดว่าตัวเองไม่มีอะไรตอบแทนแล้ว"
+      }
+    },
+    "en": {
+      "title": "Wu Zixu Flees Across the Border",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Wu Zixu reaches the riverbank with a price on his head and a sword at his hip.",
+      "poem": [
+        "Fleeing from the angry lord, Wu rushed to the river.",
+        "There a friendly fisherman offered to ferry him over.",
+        "In gratitude Wu presented him his precious sword, Refusing the offer, he claimed friendship was above all."
+      ],
+      "story": "Wu Zixu lived during China's Spring and Autumn period (7th-5th centuries BCE), a time of warring states and political intrigue. His father and brother were executed by the King of Chu after being falsely accused of treason.\n\nWu fled for his life, spending years as a fugitive before eventually reaching the rival state of Wu. The story centers on his desperate escape across a river, where a humble fisherman risked everything to help him cross safely.\n\nWhen Wu offered his precious sword in payment, the fisherman refused, saying true friendship couldn't be bought. This fisherman later killed himself to protect Wu's identity, embodying the Chinese ideal of righteousness over personal gain.\n\nWu eventually became a powerful minister who helped Wu defeat Chu, fulfilling his revenge. The tale represents how unexpected kindness from ordinary people can change the course of history.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 50 places you at the riverbank with Wu Zixu, sword in hand, watching a fisherman who refuses payment for the most consequential ferry ride of his life."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your books balance, but over-giving quietly drains you. Price your worth clearly."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "This sign suggests your love life is entering a phase where authentic connection matters more than impressive gestures or expensive gifts."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey is entering a phase where support will come from unexpected sources."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Drawing this stick for a question about studies or learning is quietly pointed."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors Wu's river crossing moment — you're handling troubled waters, but help is closer than you think."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Wu Zixu reaches the riverbank with a price on his head and a sword at his hip, and the fisherman who rows him across won't take the blade."
+        }
       }
     }
   },
@@ -2757,6 +4808,46 @@ const SIAMSI_DATA = [
         "summary": "คำพูดที่พูดไปแล้วต้องรับผิดชอบ",
         "detail": "คำพูดที่แกล้งหลุดออกมา กลับกลายเป็นสัตย์จริงที่ทำให้เจ็บหัวใจ บทกลอนบอกว่า \"剪桐雖是作兒嬉\" ตัดใบผิวป่าน เล่นๆ แค่เด็กเอาใบไม้มาตัดเป็นรูปผนึก พูดเล่นๆ ว่าจะแต่งตั้งให้ แต่พอพูดออกไปแล้วเก็บคืนไม่ได้ เรื่องมันเริ่มจากโจวเฉิงหวัง (周成王) พระกุมารที่ขึ้นครองราชย์ตอนยังเด็ก วันหนึ่งเล่นกับพี่ชายในสวนพระราชวัง เอาใบผิวป่านมาตัดเป็นรูปผนึกหยก แล้วยื่นให้พี่ชายพลางพูดเล่นๆ ว่า \"ข้าแต่งตั้งท่านเป็นขุนนาง\" แค่เด็กเล่นใหญ่เท่านั้นเอง แต่พอโจวกง (周公) ท่านอำมาตย์ใหญ่เดินมาเห็น ก็เข้ามาแสดงความยินดีทันที พระกุมารตกใจ บอกว่าพูดเล่นๆ ไง แต่โจวกงยิ้มบางๆ พูดว่า \"พระราชาไม่มีคำพูดเล่น\" เพราะงั้นต้องจัดให้จริงๆ แต่งตั้งพี่ชายไปปกครองเมืองถัง ซึ่งกลายมาเป็นอาณาจักรจิ้นในยุคต่อมา\n\nเคยมีคำพูดที่หลุดออกมาแล้วอยากเก็บคืนไหม คุณอาจกำลังติดอยู่กับสิ่งที่พูดไปแล้วไม่รู้จะทำยังไง อาจจะตอบรับงานที่หนักเกินไป หรือสัญญาว่าจะช่วยใครบางคนแต่ตอนนี้รู้สึกว่าเกินกำลัง บางทีคือการพูดปฏิเสธคนที่มาขอร้อง แล้วตอนนี้เสียใจที่ไม่ให้โอกาส หรืออาจจะเป็นคำพูดในอารมณ์โกรธที่พูดไปแล้ว ตอนนี้ฝ่ายตรงข้ามเอาจริง ทำให้ความสัมพันธ์ตึงเครียด สถานการณ์แบบนี้ทำให้รู้สึกเหมือนเดินบนเส้นด้าย หวั่นไหวว่าจะก้าวผิดก้าวพลาด คำพูดเนี่ยมันมีชีวิตของมันเอง พอออกจากปากแล้ว มันจะเดินทางไปตามกฎหมายของมันเอง\n\nแล้วทำไงดีล่ะ เซียมซีใบนี้ไม่ได้บอกให้หนี แต่บอกให้ยอมรับผลที่ตามมา ถ้าพูดไปแล้วรู้ตัวว่าผิด ก็ไปคุยตรงๆ แก้ไขทันที อย่าปล่อยให้มันบั่นทอนใจเรา ถ้าเป็นสัญญาที่ให้ไว้ ก็ทำให้สำเร็จแม้จะหนักหน่อย บางทีการรับผิดชอบกับคำพูดของตัวเอง กลับทำให้คนอื่นเคารพเรามากขึ้นก็ได้"
       }
+    },
+    "en": {
+      "title": "King Cheng's Playful Promise",
+      "fortune_level": "Average",
+      "one_line_summary": "The image at the heart of this stick is a boy king cutting a sycamore leaf in the garden.",
+      "poem": [
+        "As an appointment to his brother as a feudal prince, The king cut a leaf to symbolize authority.",
+        "Though he did it jokingly as in a game, Yet his promise must be kept to show royal dignity."
+      ],
+      "story": "This story comes from ancient China's Zhou Dynasty, around 1000 BCE. King Cheng was just a boy when he became ruler, playing in the palace gardens with his younger brother.\n\nDuring their games, the young king playfully cut a sycamore leaf into the shape of a jade tablet — the symbol of royal authority — and handed it to his brother, saying \"I make you a feudal lord. \" It was just kid's play.\n\nBut the court minister saw this and insisted the king honor his word, arguing that royal promises, even made in jest, must be kept to maintain the dignity of the throne. The reluctant boy king had to officially grant his brother a territory.\n\nThis became a cornerstone story in Chinese culture about the weight of words and commitments. The tale shows how casual actions can have serious consequences, and how integrity sometimes means following through even when you didn't mean to make a real promise.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation reflects the tension between casual words and serious consequences."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income flows fine, but a careless promise is quietly draining your treasury."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "You're at a crossroads where playful promises and casual commitments are becoming unexpectedly serious."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now resembles King Cheng's dilemma — what started as something small or casual has grown into something you need to take seriously."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors King Cheng's dilemma — you've made commitments that felt casual at the time but now demand serious follow-through."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now revolves around promises, expectations, and the weight of words spoken — maybe too casually."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The image at the heart of this stick is a boy king cutting a sycamore leaf in the garden, handing it to his younger brother as if it were a jade tablet."
+        }
+      }
     }
   },
   {
@@ -2810,6 +4901,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ตรีศักดิ์ท้องฟ้าแผ่นดิน สอนให้รู้จักตำแหน่งตัวเอง",
         "detail": "อยู่ตรงกลางไม่ใช่เรื่องแย่ แต่ต้องรู้ว่าตัวเองยืนตรงไหน\n\nบทกลอนเล่าเรื่องท้องฟ้าแผ่นดิน \"上清下濁成天地\" ความใสเบิกบานลอยขึ้นเป็นฟ้า ความขุ่นข้นตกลงเป็นดิน ส่วนคนเรานี่พอดีอยู่ตรงกลาง ครึ่งใสครึ่งขุ่น กะเปื่อยๆ นั่นแหละ นี่คือปรัชญาตรีศักดิ์ (三才) ที่คนจีนโบราณค้นพบนานแล้ว คิดดูสิ เวลาน้ำเดือดจะเห็นควันใสลอยขึ้นฟ้า แต่ตะกอนขุ่นจมก้นหม้อ คนเราก็เหมือนกัน บางทีทำดีจนเกือบเป็นเทพ บางทีโลภจนเกือบเป็นปีศาจ ธรรมชาติของความเป็นมนุษย์ก็แค่นี้\n\nเรื่องที่คุณกำลังคิดอยู่มันก็เหมือนกันนะ ไม่ได้ดีขาวหรือแย่ดำไปเสียหมด มันอยู่ในโซนสีเทา ทำให้คุณสับสนว่าควรเดินไปทางไหน เหมือนยืนอยู่ชั้น 15 ของตึก มองขึ้นเห็นดาวดวงวิเศษ มองลงเห็นความจริงใจโลก คุณอาจกำลังเจอสถานการณ์ที่ไม่มีใครบอกได้ว่าถูกหรือผิด เพราะมันขึ้นอยู่กับมุมมองและค่านิยมของแต่ละคน ไม่ว่าจะเรื่องงาน ความรัก หรือการตัดสินใจใหญ่ๆ\n\nอย่าไปหาคำตอบจากคนอื่น เพราะคำตอบอยู่ในใจคุณแล้ว ถามตัวเองตรงๆ ว่าถ้าทำแล้วจะนอนหลับสบายไหม"
+      }
+    },
+    "en": {
+      "title": "Heaven, Earth, and Humanity",
+      "fortune_level": "Average",
+      "one_line_summary": "The verse arranges existence into three layers.",
+      "poem": [
+        "The sky was first formed through floating pure air",
+        "Whereas foul vapour congealed into the great earth.",
+        "Neither pure nor foul was the man in the middle.",
+        "One must be able to distinguish their equal worth."
+      ],
+      "story": "This sign references the fundamental Chinese philosophical concept of 'San Cai' (三才) - the Three Powers that govern existence: Heaven (天), Earth (地), and Humanity (人). Ancient Chinese thinkers believed these three forces work together to create harmony in the universe.\n\nHeaven represents the pure, spiritual area of ideals and principles. Earth symbolizes the material world - practical, sometimes messy, but essential.\n\nHumanity sits between them, neither purely good nor purely bad, but capable of choosing which direction to lean toward. This wasn't just abstract philosophy - it guided everything from governance to daily decision-making.\n\nThe concept appears in the I Ching and influenced centuries of Chinese thought about balance and moderation.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse places you in the middle register of the Three Powers, neither sky nor soil, and that middle is exactly where your career sits right now."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A holding pattern, not a loss. Watch the small comfort spending that quietly drains you."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse places you in the middle position of the Three Powers: not the bright clarity of Heaven, not the settled weight of Earth, but the human space between."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health sits in that delicate middle space right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse splits the cosmos into three: pure air rising, heavy vapour settling, and the human standing between them, neither one nor the other."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "In family matters, this sign highlights your role as the bridge between different forces and perspectives within your household."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse arranges existence into three layers: pure air rising into sky, dense vapour settling into earth, and you standing in the middle, made of both."
+        }
       }
     }
   },
@@ -2865,6 +4998,47 @@ const SIAMSI_DATA = [
         "summary": "ดี เตือนให้มองหาคนที่มีคุณค่าแท้จริง",
         "detail": "คนเก่งที่แท้จริงมักซ่อนตัวอยู่ใกล้ๆ คุณ แต่คุณอาจยังไม่ทันสังเกต บทกลอนเล่าว่า \"珠履三千客孟嘗 誰人識得有膺揚\" ในบรรดาแขกผู้ใส่รองเท้าประดับไข่มุกสามพันคน ใครจะรู้หนอว่าใครคือผู้ที่จะก้าวหน้าได้? คำตอบอยู่ที่ \"其中彈鋏歸來者 便是英雄志莫當\" คนที่เล่นดาบแคะฟันร้องเพลงนั่นแหละ คือวีรบุรุษที่มีใจใหญ่เหนือใครจะเทียบ\n\nเรื่องนี้มาจากเม็งฉางจวิน (孟嘗君) เจ้าชายแห่งชิง ที่เลี้ยงแขกนับพันคน ในนั้นมีฟงเสวิน (馮煖) คนหนึ่งที่ดูเหมือนจะไม่มีอะไรพิเศษ วันๆ ก็แค่เอาดาบแคะฟัน แล้วร้องเพลงบ่น \"เอาดาบกลับบ้านเถอะ! อยู่ที่นี่กินข้าวไม่มีปลา ออกไปไม่มีรถ\" คนอื่นฟังแล้วรำคาญ แต่เม็งฉางจวินกลับสนใจ ให้ปลาให้รถตามที่เขาขอ และเลื่อนฐานะให้สูงขึ้นเรื่อยๆ ท้ายที่สุดฟงเสวินก็กลายเป็นมือขวาที่ช่วยเจ้าชายรอดจากวิกฤตครั้งใหญ่ได้\n\nคุณก็เหมือนเม็งฉางจวินในตอนนี้แหละ รอบตัวคุณเต็มไปด้วยคนหลายประเภท บางคนดูเด่น บางคนดูเรียบๆ แต่มีคนหนึ่งที่อาจจะไม่ค่อยโดดเด่น หรือแม้แต่ดูหน่วงเหนี่ยวนิดหน่อย เขาอาจจะเป็นเพื่อนร่วมงานที่มักจะถามแต่คำถามยาก หรือคนที่ชอบให้ความเห็นที่ฟังแล้วไม่ค่อยสบายใจ แต่ถ้าคุณไม่รีบปฏิเสธ ลองฟังให้จริงจังดูสิ อาจจะพบว่าเขาคือคนที่จะช่วยคุณผ่านด่านสำคัญได้ เหมือนที่ฟงเสวินช่วยเม็งฉางจวิน\n\nในเรื่องงาน คุณอาจกำลังมองหาทีมงานที่ใช่ หรือหุ้นส่วนที่เหมาะสม อย่าเพิ่งตัดสินใครจากรอบแรกนะ คนที่ดูเงียบๆ หรือชอบถามคำถามแปลกๆ อาจจะเป็นคนที่คิดลึกกว่าที่เราเห็น ส่วนเรื่องส่วนตัว ถ้ามีคนที่ดูไม่ค่อย \"เข้าสังคม\" แต่พูดกับคุณตรงๆ ไม่อ้อมค้อม ลองให้โอกาสเขาดูสิ บางทีเขาอาจจะเป็นคนที่จริงใจที่สุดก็ได้\n\nที่ต้องจับตาคือต้องมีสายตาเหมือนเม็งฉางจวิน มองเห็นคุณค่าที่ซ่อนอยู่ในตัวคน ไม่ใช่แค่ดูรูปลักษณ์ภายนอกหรือการแสดงออกผิวเผิน ลองสังเกตคนที่ \"เล่นดาบแคะฟัน\" รอบตัวคุณดูสิ แล้วให้โอกาสเขาได้แสดงความสามารถที่แท้จริง"
       }
+    },
+    "en": {
+      "title": "Lord Mengchang",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This sign speaks directly to your relationship with the people around you and how you handle overlooked potential —…",
+      "poem": [
+        "The Prince of Chai housed three thousand guests",
+        "Who could tell which one was the best.",
+        "Among them one dared to complain of being ignored, Whose ambition and courage should ever be adored."
+      ],
+      "story": "Lord Mengchang was a nobleman during China's Warring States period (around 300 BCE) famous for keeping over 3,000 retainers at his estate. These weren't servants but scholars, warriors, craftsmen, and even lowly thieves — anyone with useful skills.\n\nThe story goes that one guest complained about being overlooked despite his talents. Mengchang's advisors wanted to dismiss him for his boldness, but Mengchang recognized the man's courage and promoted him instead.\n\nThis guest later saved Mengchang's life during a dangerous political mission. The tale became a classic example of recognizing hidden talent and the wisdom of surrounding yourself with diverse perspectives, even when they challenge you.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Lord Mengchang's hall of three thousand retainers is the image the stick is holding up to you."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your next income stream is already in the room — you're just ignoring the right guest."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In your love life, you're surrounded by possibilities but struggling to see who's genuinely worth your attention."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Mengchang's diverse household — you need multiple approaches, not just one magic solution."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Lord Mengchang's hall held three thousand guests, and the verse lingers on the one bold enough to say he was being overlooked."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors Mengchang's household right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign speaks directly to your relationship with the people around you and how you handle overlooked potential — including your own."
+        }
+      }
     }
   },
   {
@@ -2918,6 +5092,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "กำลังอยู่ในวังวนความฝัน มองไม่ชัดว่าอะไรจริงอะไรหลอก",
         "detail": "กำลังอยู่ในวังวนความฝัน! บทกลอนบอกว่า \"莊周酣眠成蝶夢\" จวงโจวหลับลึกแล้วฝันตัวเองเป็นผีเสื้อ บินไปในป่าดอกไม้สีรุ้ง ดูดน้ำหวานจากดอกโลตัสทองคำ แต่พอตื่นมาเหลือแค่หมอนนุ่มบนเตียงสูง ไม่มีผีเสื้อตัวไหน ไม่มีกลิ่นหอมตัวไหน มีแค่ความจำที่หวานชื่น เรื่องราวนี้ไม่ใช่แค่ความฝันธรรมดานะ จวงโจว (莊周) เป็นปราชญ์เต๋าที่ชื่อดังอีกชื่อหนึ่งว่า จวงจื่อ (莊子) หลังจากตื่นฝันผีเสื้อแล้ว เขาถามคำถามที่สั่นสะเทือนจิตใจมาตั้งแต่สมัยโบราณ ว่า \"จริงๆ แล้วใครเป็นใครกันแน่ ผมฝันไปเป็นผีเสื้อ หรือผีเสื้อฝันมาเป็นผม?"
+      }
+    },
+    "en": {
+      "title": "Zhuangzi's Butterfly Dream",
+      "fortune_level": "Average",
+      "one_line_summary": "Right now, you might feel like you're floating between different versions of yourself or your life.",
+      "poem": [
+        "In a dream the Sage found himself changed into a butterfly.",
+        "With wings fluctuating he flew high up into the sky.",
+        "Waking up while plucking fragrant flower, He realized he was in fact lying on the pillow in slumber."
+      ],
+      "story": "This sign references one of Chinese philosophy's most famous puzzles. Zhuangzi, a Taoist philosopher from the 4th century BCE, once dreamed he was a butterfly fluttering freely through a garden.\n\nUpon waking, he faced a mind-bending question: was he Zhuangzi who had dreamed of being a butterfly, or was he actually a butterfly now dreaming of being Zhuangzi? This paradox became central to Taoist thinking about the nature of reality and identity.\n\nZhuangzi used this story to challenge our assumptions about what's real versus what's illusion. The butterfly dream represents the fluid boundary between different states of consciousness and the question of whether our waking life is any more \"real\" than our dreams.\n\nIt's become a symbol for life's uncertainty and the need to remain flexible in our understanding of ourselves and our circumstances.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Zhuangzi's butterfly drifts through this stick because you've been holding two versions of your working life in your head at once: the role you actually clock into, and the one you keep half-imagining when you scroll job..."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but spending to chase a feeling is quietly draining the treasury."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Zhuangzi's butterfly drifts through your reading because something about this relationship has the texture of a dream you don't want to wake from."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Zhuangzi waking from the butterfly dream isn't sure which state was real: the man or the winged thing among flowers."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now feels a bit like Zhuangzi's butterfly dream — you're not entirely sure what's real progress and what's just wishful thinking."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Zhuang Zhou wakes from the butterfly dream and cannot tell which was real, the wings or the pillow."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now, you might feel like you're floating between different versions of yourself or your life."
+        }
       }
     }
   },
@@ -2973,6 +5188,47 @@ const SIAMSI_DATA = [
         "summary": "เรื่องอู่หยิ่นจื่อทิ้งไม้หอมลงทะเล สอนให้ปล่อยวางสิ่งที่ผ่านไป",
         "detail": "ยังไม่ถึงเวลาอ่ะ รีบไม่ได้เรื่อง บทกลอนว่า \"浦號沉香遺舊恨\" เล่าเรื่องอู่หยิ่นจื่อ (吳隱之) เจ้าเมืองสมัยราชวงศ์จิ้น ตอนจะกลับบ้านชาวเมืองเอาไม้หอมมาให้เป็นของฝากขอบคุณ เขารับมาเพราะคิดว่าเป็นน้ำใจจริงใจ แต่พอเรือไปถึงกลางทะเลเจอพายุใหญ่ เขาคิดว่าฟ้าไม่พอใจที่ตัวเองยอมรับของขวัญ เลยเอาไม้หอมนั่นทิ้งทะเลทั้งหมด เพราะรู้ว่าเรือต้องปลอดภัยก่อน ไม้หอมแพงแค่ไหนถ้าเรือจมก็ไร้ค่า กลิ่นหอมที่ลอยอยู่ในน้ำนั้นหาย ตามกระแสไปแล้ว\n\nเรื่องนี้สะท้อนสถานการณ์คุณเลย กำลังติดใจอะไรสักอย่างที่รู้ในใจว่าควรจะปล่อยวาง แต่อยากให้มันอยู่ต่อไป อาจเป็นงานที่มั่นคงแต่ไม่มีความก้าวหน้า คนที่เคยรักแต่มันไม่ได้ผล หรือโอกาสที่ผ่านมาแล้วแต่ยังคิดถึง เหมือนกลิ่นไม้หอมที่ลอยอยู่ในน้ำ ยิ่งจับยิ่งหนีไป คุณอาจบอกตัวเองว่า \"เดี๋ยวนะ อีกหน่อยนึง อีกนิดเดียว\" แต่จริงๆ แล้วมันผ่านไปแล้วนะ\n\nดูเหมือนว่าคุณกำลังถือของหนักไว้บนเรือที่กำลังโซเซ ยิ่งไม่ยอมทิ้งเรือยิ่งโซเซมาก เคราะห์กรรมไม่ใช่เพราะคุณทำผิดอะไร แต่เพราะไม่ยอมปล่อยสิ่งที่ควรปล่อยไปนานแล้ว เซียมซีอู่หยิ่นจื่อสอนให้รู้ว่า บางครั้งการทิ้งคือการรักษา การปล่อยคือการรอด\n\nเลิกคิดถึงสิ่งที่ผ่านไปแล้วเถอะ ทิ้งมันลงน้ำแบบเด็ดขาดเหมือนอู่หยิ่นจื่อ แล้วมองหาจังหวะใหม่ที่กำลังจะมา"
       }
+    },
+    "en": {
+      "title": "Wu Yinzhi Returns to Privacy",
+      "fortune_level": "Average",
+      "one_line_summary": "This stick asks you to examine where you might be cutting moral corners, even with good intentions.",
+      "poem": [
+        "A governor of Kwangtung accepted a small gift from his people, Which served as a token of thanks for his just administration.",
+        "But suddenly a storm arose while on board a departing ship.",
+        "He prayed and forsook the gift in exchange for a joyous trip."
+      ],
+      "story": "Wu Yinzhi was a Jin Dynasty governor known for his unshakeable integrity. Posted to Guangdong province, he famously refused bribes and lived so simply that his own family remained poor back home.\n\nThe poem references a specific moment: when local people gave him a farewell gift of aromatic wood, he initially accepted it as genuine gratitude for his fair rule. But when his ship hit rough weather, Wu interpreted this as heaven's displeasure with his compromise.\n\nHe threw the gift overboard, and the storm calmed. This story became legendary in Chinese culture as the ultimate example of choosing principle over profit.\n\nWu's willingness to literally throw away valuable gifts to maintain his moral standing made him a symbol of incorruptible leadership.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Wu Yinzhi accepted the incense because refusing would have insulted the people who gave it."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds firm. The real test is what side money you accept without asking why."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In relationships, this sign speaks to the delicate balance between giving and receiving."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors Wu Yinzhi's dilemma — you might be accepting things that seem beneficial but could actually be creating problems."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Wu Yinzhi accepted one small gift after years of clean governance, and the storm rose almost immediately."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Wu Yinzhi's story sits awkwardly in family questions because the gift he refuses is offered with love, not as a bribe."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick asks you to examine where you might be cutting moral corners, even with good intentions."
+        }
+      }
     }
   },
   {
@@ -3026,6 +5282,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ศักยภาพที่ยังซ่อนอยู่รอเวลาเหมาะสม เหมือนดาบที่จะกลายเป็นมังกร",
         "detail": "บางทีความยิ่งใหญ่มันซ่อนอยู่ในสิ่งธรรมดาก็ได้นะ\n\nบทกลอนหว่องไทซินเล่าว่า \"安知此劍不成龍\" ใครจะไปรู้ว่าดาบไม้ท้อธรรมดาๆ จะกลายเป็นมังกรได้ แค่เจอน้ำก็บินขึ้นฟ้าไปเลย เมฆก็ตามมา ลมก็พัดหลัง นี่คือตำนานเก่าแก่เรื่องนักพรตคนหนึ่งที่พกดาบไม้ท้อธรรมดาๆ ไว้ในแขนเสื้อ คนอื่นมองก็แค่ของไล่ผีเท่านั้น แต่จริงๆ แล้วมันมีวิญญาณ รอวันที่จะได้เจอน้ำ พอเจอแล้วจะกลายร่างเป็นมังกรเทพ บินขึ้นฟ้าไปเป็นเทพเจ้า\n\nแต่เรื่องน่าสนใจคือคำว่า \"安知\" - ใครจะรู้ และ \"他日\" - วันใดวันหนึ่ง มันไม่ได้พูดถึงตอนนี้ แต่พูดถึงอนาคต ซึ่งหมายความว่าคุณมีศักยภาพที่ยังไม่ได้ถูกปลุกขึ้นมา เหมือนดาบไม้ท้อนั่นแหละ ตอนนี้อาจดูธรรมดา แต่ข้างในมีพลังที่รอแค่จังหวะที่ใช่\n\nคุณรู้สึกไหมว่าตัวเองมีอะไรที่มันใหญ่กว่านี้ แต่ยังไม่รู้ว่าคืออะไร หรือรู้แล้วแต่ยังไม่ถึงเวลา เหมือนถือดาบไม้ท้ออยู่ในมือ รู้ว่ามันไม่ธรรมดา แต่ยังไม่เจอ \"น้ำ\" ที่จะเปลี่ยนมันให้เป็นมังกร อาจจะเป็นงานที่ยังไม่ได้โอกาสโชว์ฝีมือ ความสัมพันธ์ที่ยังไม่ได้เจอคนที่ใช่ หรือความฝันที่ยังขาดจิ๊กซอว์ชิ้นสำคัญ การรอนี่ไม่ใช่การรอเฉยๆ นะ ต้องเตรียมพร้อมไว้ด้วย เหมือนดาบต้องฝึกขัดเงาไว้ ถึงจะพร้อมกลายเป็นมังกรตอนที่ได้เจอน้ำ\n\nเริ่มจากสังเกตโอกาสเล็กๆ ที่อาจจะดูไม่สำคัญ - นั่นอาจจะเป็น \"น้ำ\" ที่คุณรอ และเก็บพลังงานไว้ให้พอ อย่าไปเผาผลาญกับเรื่องที่ไม่คุ้มค่า"
+      }
+    },
+    "en": {
+      "title": "The Peach Wood Sword Transforms into a Dragon",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Your current situation mirrors that humble peach wood sword — you possess capabilities that haven't fully emerged yet.",
+      "poem": [
+        "On touching the water the hidden dagger became a dragon.",
+        "Then it sours into the clouds over thousands of miles.",
+        "Such a legend could be nothing but a good omen, For it is an ordeal and it is a trial."
+      ],
+      "story": "This sign draws from ancient Chinese legends about magical transformations, particularly the story of humble weapons becoming mighty dragons when they touch water. The peach wood sword wasn't some ornate ceremonial blade — it was likely a simple protective charm, the kind ordinary people carried to ward off evil spirits.\n\nIn Chinese folklore, dragons represent ultimate power and divine blessing, emerging from water as symbols of imperial authority and celestial favor. The transformation happens suddenly but only when conditions are right.\n\nThis wasn't about the sword's inherent magic, but about recognizing the perfect moment for change. These stories reminded people that great potential often lies hidden in the most ordinary things, waiting for the right circumstances to reveal itself.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors this ancient tale of hidden transformation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Quiet work is closer to paying off — the real test is pricing yourself honestly."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation contains far more potential than what appears on the surface right now."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors this ancient transformation story."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Think of your current studies as that peach wood sword — seemingly ordinary, maybe even frustrating at times, but containing tremendous hidden potential."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is like that peach wood sword right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your current situation mirrors that humble peach wood sword — you possess capabilities that haven't fully emerged yet."
+        }
       }
     }
   },
@@ -3081,6 +5378,48 @@ const SIAMSI_DATA = [
         "summary": "ชะลอก้าวเดินช้าๆ จะพบสิ่งดีที่คาดไม่ถึง ความรีบร้อนทำให้พลาดโอกาส",
         "detail": "ชีวิตคุณรีบไปไหนนักหนา?"
       }
+    },
+    "en": {
+      "title": "Finding Beauty in Simple Commerce",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This stick is telling you to slow down and notice the good things already around you.",
+      "poem": [
+        "Spring rain drops just ceased trickling upon the court.",
+        "On the streets pedestrians wearing clogs busily trod.",
+        "A flower hawker was found hurrying into a lane.",
+        "I bought one from her and enjoyed walking again."
+      ],
+      "story": "This stick captures a scene from classical Chinese literature about finding joy in life's simple pleasures. The flower seller represents the countless street vendors who have populated Chinese cities for centuries, carrying their wares through narrow alleys and busy streets.\n\nIn traditional Chinese culture, flowers weren't just decorative—they symbolized refinement, poetry, and the ability to appreciate beauty even in humble circumstances. The image of buying a single flower and walking contentedly speaks to a Confucian ideal: that happiness comes through modest means and mindful appreciation rather than grand pursuits.\n\nStreet vendors like this flower seller were essential to urban life, bringing beauty and commerce directly to people's doorsteps. The spring rain setting adds to the poetry—after cleansing rains, when the air is fresh and possibilities feel renewed, that's when we're most open to small moments of beauty.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career path right now mirrors that flower seller – you're in a position to offer something meaningful, but success comes through understanding timing rather than forcing outcomes."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, but speculative shortcuts get quietly blocked. Enjoy the modest gain."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In relationships, this sign is telling you to slow down and appreciate the small gestures rather than waiting for grand romantic moments."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "When it comes to your health and wellbeing, this sign suggests you're entering a period of gentle recovery and modest improvements."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now is like that gentle walk after buying a flower – steady progress with moments of unexpected delight."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now mirrors this gentle spring scene—things are settling after a period of uncertainty, and small positive changes are taking root."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick is telling you to slow down and notice the good things already around you."
+        }
+      }
     }
   },
   {
@@ -3134,6 +5473,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "จิ๋นมู่กงไม่ฟังคำเตือนจนแพ้ยับ",
         "detail": "คุณกำลังขับรถไปทางผิดด้วยความเร็วเต็มที่\n\nบทกวีจีนเล่าให้ฟังว่า \"秦師大敗在殽山 三帥皆擒盡放還\" กองทัพจิ๋นแม่งใหญ่พ่ายแพ้ยับเยินที่เขาเซี่ยว แม้กระทั่งแม่ทัพใหญ่ทั้งสามคนยังถูกจับเป็นเชลยแต่ปล่อยกลับไปได้ เรื่องนี้เกิดขึ้นเพราะจิ๋นมู่กง (秦穆公) กษัตริย์แห่งนครจิ๋นหัวดื้อไม่ฟังคำเตือนของเจี้ยนซู่ (蹇叔) แก่เฒ่าที่มีประสบการณ์\n\nตอนนั้นเจี้ยนซู่บอกตรงๆ เลยนะ \"ทางไกลเกินไป กองทัพต้องแพ้แน่\" แต่จิ๋นมู่กงคิดว่าปู่แก่นี่ระแคะระคายเกินไปแล้ว เขาเชื่อมั่นในแผนการตัวเอง มองภาพใหญ่ คิดว่าจะไปตีเมืองเจิ้งได้สำเร็จแน่นอน แต่พอไปถึงเขาเซี่ยว ก็โดนซุ่มโจมตีจนทหารต้องทิ้งดาบทิ้งเกราะหนีกลับบ้าน เพราะขนาดแค่รอดชีวิตกลับไปยังยากแล้ว\n\nเห็นมั้ย คำเตือนที่เราไม่อยากฟังมันมักจะเป็นความจริงที่เจ็บปวดที่สุด คุณตอนนี้ก็เหมือนจิ๋นมู่กงก่อนออกทัพ แค่คิดถึงผลสำเร็จที่อยากได้ แต่ไม่ยอมคิดถึงความเสี่ยงที่คนอื่นเตือน คุณอาจจะรู้สึกว่าพวกเขาทำอะไรไม่ได้ ไม่เข้าใจสถานการณ์ หรือขาดวิสัยทัศน์ แต่จริงๆ แล้ว คนที่เราคิดว่าเป็นกบในกะลาอาจจะเป็นคนเดียวที่เห็นภาพรวมชัดที่สุด\n\nเคยไหมที่รู้ตัวลึกๆ ว่าสิ่งที่กำลังทำอยู่มีปัญหา แต่ยังทำต่อไป? เพราะหยุดไม่ได้แล้ว เพราะลงทุนไปเยอะแล้ว หรือเพราะไม่อยากยอมรับว่าตัวเองตัดสินใจผิดตั้งแต่แรก นี่แหละคือกับดักที่จิ๋นมู่กงตกอยู่ และตอนนี้คุณก็เดินทางไปในเส้นทางเดียวกัน\n\nเลิกไปต่อเถอะ ไม่ใช่เพราะคุณไม่เก่ง แต่เพราะสงครามนี้ชนะไม่ได้ ถ้ายังฝืนไป คุณจะเสียมากกว่าแค่ความภาคภูมิใจ อาจจะเสียเงิน เสียคน เสียความไว้ใจ หรือเสียโอกาสดีๆ ที่จะมาภายหลัง"
+      }
+    },
+    "en": {
+      "title": "Duke Mu's Great Defeat",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Duke Mu's disaster at Xiao Mountain wasn't caused by weak soldiers or bad weather.",
+      "poem": [
+        "It was against Prime Minister's advice",
+        "The Lord of Tsun sent troops to invade the State of Chun.",
+        "Having been defeated in all fierce battles.",
+        "Three generals were captured but released back to Tsun."
+      ],
+      "story": "This sign recalls one of ancient China's most famous military disasters from around 627 BCE. Duke Mu of the State of Qin (called 'Tsun' in the poem) decided to attack the distant State of Zheng, ignoring his wise advisor Jian Shu's warnings that the campaign was foolish and doomed.\n\nThe duke's army had to pass through enemy territory at Xiao Mountain, where they were completely ambushed and destroyed. All three of Qin's top generals were captured.\n\nIronically, they were later released because one enemy leader had once been helped by Duke Mu years earlier. The duke returned home humiliated, his army scattered.\n\nThis story became a classic lesson about the consequences of ignoring good counsel and letting pride override wisdom.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 58 hands you Duke Mu of Qin at his worst moment: an ambitious ruler who had every piece of information he needed, including a senior advisor weeping as he sent his own sons toward what he knew was a doomed campaign..."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The window for expansion is closed. Someone already flagged this plan — listen before you commit."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In relationships, this sign reflects a pattern of ignoring wise counsel and pushing forward despite clear warning signs."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Duke Mu's army didn't fall because Qin lacked strength."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Duke Mu's army marched for weeks toward a target his own advisor had already mapped as a trap."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now mirrors Duke Mu's fatal mistake: someone isn't listening to the wisdom being offered."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Duke Mu's disaster at Xiao Mountain wasn't caused by weak soldiers or bad weather."
+        }
       }
     }
   },
@@ -3189,6 +5570,48 @@ const SIAMSI_DATA = [
         "summary": "เตือนอย่าเอาแบบคนอื่น กลับมาเป็นตัวเอง",
         "detail": "คุณกำลังแสดงเป็นคนอื่น แล้วเหนื่อยใจ\n\nบทกลอนพูดถึงเสี่ยวซี (西施) สาวงามที่ซักผ้าริมลำธาร ความงามไร้เทียมทานแบบนี้กษัตริย์อู๋ยังต้องหลงใหล จนสุดท้ายประเทศล่มสลาย แต่ที่น่าสมเพชกว่าคือต้งซี (東施) เห็นเสี่ยวซีขมวดคิ้วแล้วสวย เลยลองเอาแบบ ผลออกมาโซ่ย อีกาแม้จะยัดเยียดตัวเอง ก็ไม่มีทางเป็นนกฟีนิกซ์ได้หรอก\n\nเรื่องนี้มีแง่คิดลึกกว่าเรื่องนางงามทำลายประเทศ จริงๆ แล้วบทเรียนอยู่ที่ตัวต้งซี เธอไม่รู้จักตัวเอง ชอบเอาอย่างคนอื่น เสี่ยวซีขมวดคิ้วเพราะปวดใจจริงๆ ความเศร้าโศกนั่นแหละที่ทำให้เธอดูมีเสน่ห์ แต่ต้งซีไม่ได้ปวดใจอะไรมาแต่งทำขมวดคิ้วตาม คนเห็นแล้วรู้เลยว่าทำเป็น\n\nตอนนี้คุณคงรู้สึกเหมือนยืนอยู่ในตำแหน่งที่ไม่ใช่ตัวเอง แสดงเป็นคนที่ไม่ใช่ พูดจาแบบที่ไม่เคย ทำอะไรก็อึดอัดหมด ตื่นขึ้นมาทุกวันต้องบอกตัวเองก่อนว่า \"วันนี้ต้องแสดงต่อ\" พอกลับบ้านถึงจะได้ถอดหน้ากากออก หายใจเฮือกใหญ่\n\nคุณอาจกำลังเลียนแบบใครบางคนที่ดูประสบความสำเร็จ หรือทำตามสิ่งที่สังคมบอกว่า \"ควรจะเป็นแบบนี้\" แต่ยิ่งพยายามมาก ยิ่งรู้สึกเหมือนของปลอม เหมือนสวมหน้ากากที่ไม่เข้ากับใบหน้าตัวเอง แล้วทุกคนก็รู้ดีว่าคุณกำลังทำเป็น\n\nเวลาเราทำเป็นคนอื่น เราแค่เสียพลังงานฟรีๆ ไม่มีใครจะรักเราได้ถ้าเราไม่ใช่ตัวเอง อย่าไปเป็นต้งซีเลยนะ อีกาใส่ขนนกยูงเท่าไหร่ก็ไม่ได้กลายเป็นนกยูงหรอก\n\nหยุดเอาแบบ กลับมาหาตัวจริงของคุณ ถอดหน้ากากออกเสียที แล้วเริ่มใหม่ด้วยความเป็นตัวเอง"
       }
+    },
+    "en": {
+      "title": "The King of Wu's Infatuation with Xi Shi",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The figure of Xi Shi sits at the centre of this stick.",
+      "poem": [
+        "Sai Si, a washer-maid, was married to the Lord of Wu.",
+        "Her matchless beauty brought the King ruin in full.",
+        "Tung Si, though ugly, tried to imitate her bewitching smile.",
+        "How can a poor pheasant disguise in a phoenix's style?"
+      ],
+      "story": "This story comes from ancient China's Spring and Autumn period. Xi Shi was one of the legendary Four Beauties, originally a humble washerwoman by the river.\n\nThe rival state of Yue sent her as a political gift to the King of Wu, knowing his weakness for beautiful women. She was so stunning that the king became completely obsessed, neglecting his duties and kingdom.\n\nMeanwhile, Dong Shi, an ugly woman from the same village, saw how Xi Shi's frown made her even more beautiful and tried copying her expressions. The result was ridiculous rather than alluring.\n\nThe story warns about the dangers of superficial attraction and poor imitation. Wu eventually fell to Yue's armies while the king was distracted by Xi Shi's beauty.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors this ancient warning about authenticity versus imitation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "A shiny shortcut is pulling you off course. Protect the steady income doing the boring work."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse hands you two mirrors and asks which one you're standing in front of."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The figure of Xi Shi at the heart of this stick is not a warning about beauty itself, but about what happens when surface and substance pull in opposite directions."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse hands you two figures, and neither of them is flattering."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The verse sets two figures against each other: Xi Shi, whose beauty unmade a kingdom, and Dong Shi, who borrowed that beauty and only made herself absurd."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The figure of Xi Shi sits at the centre of this stick, but the verse's real attention is on Dong Shi, the village woman who watched a beauty frown and decided the frown itself was the secret."
+        }
+      }
     }
   },
   {
@@ -3242,6 +5665,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ยังไม่ถึงเวลา ควรอดทนรอจังหวะที่เหมาะสม",
         "detail": "ยังไม่ถึงเวลานะ แต่ไม่ใช่เพราะคุณไม่ดีพอ\n\nบทกลอนเล่าเรื่องหลี่ไท่ป๋อ (李太白) กวีเอกแห่งราชวงศ์ถัง ตอนที่จักรพรรดิส่งคนมาเรียกให้เขาเข้าราชสำนัก แต่เขากลับนอนเมาอยู่ในร้านสุราที่ฉางอัน เสียงเรียกเสียงใสแค่ไหนก็ไม่ขึ้นเรือหลานมู่ (木蘭船) ไปไหน เพราะเขารู้ว่าการดื่มสุราข้างแสงจันทร์ในร้านธรรมดาๆ มีค่ากว่าตำแหน่งสูงในวัง ไม่ใช่เขาขี้เกียจ แต่เขาเลือกเสรีภาพมากกว่าชื่อเสียง\n\nคุณคงรู้สึกเหมือนหลี่ไท่ป๋อตอนนี้แหละ มีโอกาสดีๆ มาเคาะประตู แต่ใจลึกๆ รู้สึกว่ายังไม่พร้อมหรือไม่อยากจริงๆ อาจเป็นงานที่เงินเดือนสูงกว่าแต่ต้องเครียดกว่าเดิม หรือความรักที่ดูดีแต่ต้องเปลี่ยนตัวเองเยอะ ใจคุณส่ายหัวเหมือนกวีเมาท่านนั้นใช่ไหม ไม่ใช่เพราะคุณไร้ความสามารถ แต่เพราะคุณรู้ว่าสิ่งที่มีอยู่ตอนนี้ก็มีค่าดี ความสงบสุขแบบธรรมดาๆ บางทีก็ประเสริฐกว่าการไล่ตามความฝันของคนอื่น\n\nหยุดกังวลว่าพลาดโอกาสแล้วกัน บอกตัวเองว่า \"ยังไม่ถึงเวลา\" แล้วกลับไปทำในสิ่งที่ทำให้คุณสบายใจดีกว่า"
+      }
+    },
+    "en": {
+      "title": "Li Bai Makes Peace with the Barbarians",
+      "fortune_level": "Average",
+      "one_line_summary": "Li Bai's stick lands in your lap at a moment when something prestigious is being offered, expected, or assumed of you.",
+      "poem": [
+        "Poet Li Pak enjoyed himself so much in drinking wine.",
+        "The more drunk he was, his poem was more refined.",
+        "A high post was offered him by the Emperor",
+        "Yet fame and wealth, he would prefer to ignore."
+      ],
+      "story": "Li Bai (also romanized as Li Pak) was China's most celebrated poet during the Tang Dynasty, around 750 CE. Think of him as the Chinese equivalent of Shakespeare, but with a legendary drinking problem and zero interest in playing politics.\n\nThe story goes that Emperor Xuanzong summoned Li Bai to the capital, offering him prestigious court positions. But Li Bai preferred wandering the countryside, getting spectacularly drunk, and writing immortal poetry by moonlight.\n\nWhen imperial messengers came calling, he'd literally be too intoxicated to board the boat to court. This wasn't disrespect—it was a conscious choice.\n\nLi Bai represents the archetypal free spirit who values artistic integrity and personal freedom over worldly success. His most famous poems were supposedly written while completely plastered, yet they remain masterpieces of Chinese literature a thousand years later.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Li Bai with his wine cup, kicking off his boots in front of the emperor's eunuch, is the figure this stick holds up to you."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income flows in and out, treasury stays level. The real question isn't more — it's enough."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In relationships, this sign suggests you're at a crossroads between what others expect and what truly fulfills you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Li Bai's verse lands on your health question in a way that probably feels familiar."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors Li Bai's choice between conformity and authenticity."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Li Bai walks into the imperial court drunk, writes verse the Emperor cannot match, and then walks back out toward the river and the wine jar."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Li Bai's stick lands in your lap at a moment when something prestigious is being offered, expected, or assumed of you."
+        }
       }
     }
   },
@@ -3297,6 +5762,48 @@ const SIAMSI_DATA = [
         "summary": "สำเร็จแล้วแต่ถูกทำลาย คนใกล้ชิดใส่ร้าย",
         "detail": "เสียเปล่าทั้งหมด! บทกลอนเล่าว่า \"十二金牌速召回\" สิบสองแผ่นทองเรียกกลับด่วน คนร้ายวางแผนไว้นานแล้ว \"可憐一旦功勞散\" น่าเศร้าที่บุญคุณทั้งหมดกลายเป็นฟองสบู่ แก่เด็กต่างก็ช่วยเหลือกันร้องไห้\n\nเรื่องนี้เล่าเรื่องหยวยเฟย (岳飛) นายทหารเก่งของซ่งที่เกือบจะขับไล่พวกจิ้นออกจากแผ่นดินจีนสำเร็จแล้ว กำลังจะบุกเข้าไปถึงใจกลางดินแดนศัตรู แต่แล้วจู่ๆ ก็มีแผ่นทองสิบสองแผ่นมาเรียกเขากลับ ทีละแผ่น แต่ละแผ่นด่วนกว่าแผ่นก่อน เหมือนใบสั่งตายที่วิ่งมาทีละใบ หยวยเฟยรู้ดีว่าถ้ากลับไปแล้วคงจบ แต่ไม่กลับก็ต้องตายคาที่ เขาเลือกกลับ พอถอนทัพ ชาวบ้านเฒ่าแก่เด็กเล็กต่างออกมาไล่ตามรถม้าของเขาร้องไห้ พวกเขารู้ว่าถ้าหยวยเฟยไป ใครจะมาปกป้องพวกเขา?\n\nคุณกำลังเจออะไรแบบนี้อยู่ใช่ไหม? งานที่ทำมาหลายเดือนกำลังจะประสบความสำเร็จ โปรเจคที่หยั่งเท เงินที่ลงทุนไป แผนการที่วางไว้ดี หรือแม้แต่ความสัมพันธ์ที่เพิ่งเริ่มดีขึ้น แล้วจู่ๆ มีอะไรมาทำลาย บางทีเป็นคนในออฟฟิศที่ไม่ชอบหน้าคุณ บางทีเป็นญาติที่มาก้าวก่าย หรือสถานการณ์ที่ไม่ใช่ความผิดของใคร แต่มันก็มา ทำลายทุกอย่างที่สร้างมา ที่น่าเจ็บใจคือคุณไม่ได้ทำอะไรผิด คุณแค่เจอคนที่ใส่ร้ายหรือเจอจังหวะร้าย\n\nยอมรับเถอะว่าครั้งนี้พ่าย อย่าไปเสียเวลาโมโหกับคนที่ทำลาย เก็บของที่เหลือได้ไว้ก่อน เริ่มใหม่ทีหลัง"
       }
+    },
+    "en": {
+      "title": "The General's Betrayal",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. Yue Fei's story is the bleakest kind: not defeat on the battlefield, but recall from it.",
+      "poem": [
+        "Like thunderstorms came the Twelve Imperial Commands",
+        "On the eve of final victory, the general had to turn around.",
+        "His enemies rejoiced, but his home was trodden down.",
+        "The hero died, not in battle, but by treacherous hounds."
+      ],
+      "story": "This sign tells the tragic story of Yue Fei, one of China's most beloved military heroes from the Song Dynasty (12th century). He was a brilliant general who nearly drove out the Jin invaders from northern China, but just as victory seemed certain, Emperor Gaozong sent twelve urgent golden tablets ordering him to return to the capital immediately.\n\nWhy? The prime minister Qin Hui, secretly collaborating with the enemy, had convinced the paranoid emperor that Yue Fei was becoming too powerful.\n\nOnce back in the capital, the 39-year-old general was imprisoned and executed on trumped-up charges of treason. The Chinese saying 'twelve golden tablets' became synonymous with being recalled at the worst possible moment by those you trusted most.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Yue Fei was winning."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money isn't being stolen by enemies — it's leaking quietly from inside your own house."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Yue Fei's tragedy is not that the Jin armies were too strong; it is that the twelve gold plaques came from his own court."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "This stick warns about betrayal from within your own circle when it comes to your health."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "This stick warns that your academic efforts face sabotage from unexpected quarters."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation echoes Yue Fei's story in uncomfortable ways."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Yue Fei's story is the bleakest kind: not defeat on the battlefield, but recall from it."
+        }
+      }
     }
   },
   {
@@ -3350,6 +5857,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ค่าของคุณเหมือนแก้วซ่อนในหีบ ยังไม่ถึงเวลาขาย",
         "detail": "ดวงอยู่ในช่วงจมน้ำ! บทกวีเล่าเรื่องเงาะสวยงามซ่อนอยู่ในหีบ \"美玉於斯韞匱藏\" เจ้าของไม่ยอมเอาออกมาขายง่ายๆ \"休求善價費商量\" ถึงจะมีคนมาถามซื้อก็รอให้เขามาสนใจเอง \"沽之亦可隨相待\" ของดีไม่ต้องเอาออกมาดูทุกวัน \"此物何須自看常\"\n\nเรื่องนี้มาจากตำนานเจ้าของร้านแก้วโบราณสมัยฮั่น เขามีแก้วแกะสลักชิ้นเอกใส่ผ้าไหมซ่อนไว้ในหีบลึก ปีแล้วปีเล่าไม่ยอมขาย ถึงแม้จะมีคนมาเสนอราคาสูงมากมาย เขาบอกว่า \"ของดีต้องรอคนที่เข้าใจค่าจริง\" วันหนึ่งมีราชวงศ์มาที่ร้าน เห็นแก้วใสแค่ 3 วินาทีก็รู้ทันทีว่าเป็นชิ้นเอก เสนอราคาที่ทำให้เจ้าของร้านร่ำรวยตลอดชีวิต\n\nคุณก็เหมือนแก้วใสในหีบนั่นแหละ มีค่าอยู่แล้ว แต่ยังไม่ถึงจังหวะ คุณอาจรู้สึกเหมือนทุกคนรอบข้างได้โอกาสไปต่อแล้ว แต่คุณยังติดอยู่ที่เดิม ยิ่งคิดว่าต้องไปแสดงความสามารถ หรือพิสูจน์ตัวเองให้คนอื่นเห็น กลับยิ่งทำให้ดูเหมือนไม่มีคลาส เหมือนของแปลกหน้าที่ต้องเสนอขายเอง ไม่ใช่สมบัติที่คนมาตามหา เดือนนี้หยุดกดดันตัวเองเถอะ อย่าไปโพสต์อะไรเกี่ยวกับผลงานบ่อยเกินไป"
+      }
+    },
+    "en": {
+      "title": "Hidden Jade and Gold",
+      "fortune_level": "Average",
+      "one_line_summary": "Right now, you're sitting on something valuable that others don't fully recognize yet.",
+      "poem": [
+        "A piece of rare jade is a real pleasure.",
+        "It should be valued as a loving treasure.",
+        "Only a high price could its beauty buy, Great things deserve great honour, that is why."
+      ],
+      "story": "This sign draws from the ancient Chinese concept that true treasures should be kept hidden until the right moment. The image of jade wrapped in cloth, stored safely away, comes from historical tales of merchants who understood timing better than greed.\n\nDuring the Han Dynasty, there's a story of a jade carver who refused to sell his masterpiece for years, despite desperate buyers. When a true connoisseur finally appeared who could appreciate its full value, the transaction made both men wealthy beyond measure.\n\nThis wasn't stubbornness - it was wisdom. The carver knew that premature exposure would cheapen what he'd created.\n\nIn Chinese philosophy, this represents the principle that valuable things - whether objects, talents, or opportunities - need proper timing and the right audience to reach their full potential.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career holds more potential than others currently see."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Flat income isn't failure — it's a signal you're undercharging for real worth."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is like that hidden jade right now."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors jade locked in a treasure chest — valuable healing is happening, but it's not yet visible on the surface."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey mirrors that hidden jade—valuable but not yet ready for display."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family's greatest strengths aren't the obvious ones everyone can see."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now, you're sitting on something valuable that others don't fully recognize yet."
+        }
       }
     }
   },
@@ -3405,6 +5953,46 @@ const SIAMSI_DATA = [
         "summary": "เซียมซี 63 กลาง เอียนหุยเลือกทางชีวิตที่ดูยากลำบาก แต่ตัวเขารู้ดีว่าคุ้มค่า",
         "detail": "อย่าดูถูกตัวเอง ที่คนอื่นเห็นว่าแย่ไม่ได้แปลว่ามันแย่จริงๆ\n\nบทกวีวาดภาพให้เห็นชายหนุ่มยากจนที่อาศัยอยู่ในซอกซอยเล็กๆ กินข้าวในตะกร้าไผ่ใบเดียว ดื่มน้ำแค่ที่ตักได้จากน้ำเต้า คนข้างบ้านมองเห็นแล้วเศร้าใจแทน แต่ไม่มีใครรู้ว่าเขามีความสุขแค่ไหนกับการศึกษาหาความรู้ จนกลายเป็นนักปราชญ์ที่โลกจำชื่อนิรันดร์ นี่คือเรื่องของเอียนหุย (顏回) นักเรียนคนโปรดของขงจื๊อ ชายผู้ที่ได้รับยกย่องว่าเป็น 'อาเซียง' คนสำคัญรองจากอาจารย์ใหญ่เพียงคนเดียว เขาอยู่ในตรอกซอกแคบๆ ใช้ชีวิตสมถะมาก กินแค่ข้าวกับผักในตะกร้าไผ่ ดื่มน้ำจากขันน้ำเต้าแห้ง ไม่มีเสื้อผ้าดีๆ ใส่ ไม่มีข้าวของราคาแพง แต่เขาไม่เคยบ่น ไม่เคยเศร้า เพราะใจเขาเต็มไปด้วยปัญญาและความรู้ที่ได้เรียนรู้ทุกวัน ขงจื๊อเองยังต้องยกย่องว่า 'เก่งจริงๆ นะ หุย!' เพราะคนอื่นอยู่แบบนี้คงเศร้าตายไปแล้ว แต่เอียนหุยกลับมีความสุขจริงๆ\n\nคุณรู้สึกคุ้นเคยไหมกับสถานการณ์แบบนี้? ตอนนี้คุณอาจกำลังเดินทางบนเส้นทางที่ดูไม่ค่อยจะโออ่าเท่าไหร่ เพื่อนๆ มองแล้วอาจคิดว่าทำไมคุณถึงเลือกทนกับสิ่งที่ดูลำบาก ไม่ว่าจะเป็นงานที่เงินเดือนไม่สูงแต่ได้เรียนรู้เยอะ ความรักกับคนที่ครอบครัวไม่ค่อยชอบ หรือการลงทุนเวลากับงานอดิเรกที่ยังไม่เห็นผลประโยชน์ชัดเจน คนรอบข้างเห็นแล้วห่วงใย คิดว่าคุณกำลังเสียเวลาไปเปล่าๆ แต่จริงๆ แล้วคุณรู้ดีว่าคุณกำลังสะสมอะไรอยู่ มันอาจไม่ใช่เงินหรือชื่อเสียงในตอนนี้ แต่เป็นทักษะ เป็นประสบการณ์ เป็นความเข้าใจในตัวเองที่ลึกซึ้งขึ้น เหมือนเอียนหุยที่เลือกใช้เวลาอ่านหนังสือมากกว่าหาเงิน เพราะเขารู้ว่าสิ่งที่เขากำลังเก็บสะสมนั้นมีค่ามากกว่าทองคำ\n\nอย่าปล่อยให้คำพูดของคนอื่นมาทำลายความมั่นใจในทางเลือกของคุณ แค่เขียนลงกระดาษสิ 3 เหตุผลว่าทำไมคุณถึงเลือกทางนี้ อ่านทุกวันเมื่อไหร่ที่เริ่มสงสัยตัวเอง"
       }
+    },
+    "en": {
+      "title": "Yan Hui Keeps to the Way",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Yan Hui in his back alley, eating from a bamboo bowl.",
+      "poem": [
+        "In a back lane a sage quietly led a simple life, Having just enough food to keep himself alive.",
+        "Poor and miserable though he might seem, Yet he felt happy and held himself in high esteem."
+      ],
+      "story": "Yan Hui was Confucius' favorite student, known for his exceptional virtue despite extreme poverty. He lived in a simple alley, ate from a bamboo bowl, and drank from a gourd dipper.\n\nWhile others would have been miserable, Yan Hui remained genuinely happy because he understood something most people miss: true contentment comes from inner cultivation, not external wealth. Confucius often praised him as the one student who truly 'got it.\n\n' Tragically, Yan Hui died young at 32, devastating his teacher. But his legacy endured as the perfect example of someone who found joy in simple living and moral development.\n\nIn Chinese culture, he represents the scholar-sage ideal — someone so committed to personal growth and wisdom that material circumstances become irrelevant.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Yan Hui in his back alley, eating plain rice and drinking water, is the figure the stick puts in front of you when you ask about your career."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income is doing its job. The leak is comparison, not cash flow."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Drawing Yan Hui's stick in matters of love suggests your relationship happiness doesn't depend on Instagram-worthy dates or expensive gestures."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Yan Hui's philosophy: less can indeed be more."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your academic journey mirrors Yan Hui's path right now."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "This sign speaks directly to families feeling financial pressure or comparing themselves to others."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Yan Hui in his back alley, eating from a bamboo bowl, drinking from a gourd, and somehow still at ease — that is the figure this stick holds up to you."
+        }
+      }
     }
   },
   {
@@ -3458,6 +6046,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เม็งจื่อฟั่นสอนให้ซ่อนความเก่งไว้อย่างฉลาด",
         "detail": "ความถ่อมตัวก็เป็นยุทธศาสตร์นะ! บทกลอนเล่าเรื่องเม็งจื่อฟั่น (孟之反) นายทหารใหญ่ของลู่กั๋วในสมัยโบราณ ตอนที่กองทัพแพ้ซ่าต้องถอยตัว เขาเป็นคนสุดท้ายที่กลับถึงประตูเมือง เพราะต้องทำหน้าที่กั้นหลัง—ตำแหน่งที่อันตรายที่สุด ต้องสู้กับข้าศึกให้เพื่อนทหารหนีไปให้ได้ก่อน แต่พอเข้าเมืองมาปลอดภัยแล้วมีคนจะชมเขาว่ากล้าหาญ เขากลับดันตีม้าตัวเองพร้อมพูดว่า \"ไม่ได้กล้าหาญอะไรหรอก แค่ม้าตัวนี้มันขี้เกียจเท่านั้น วิ่งไม่เร็ว เลยถึงได้กลับมาทีหลัง\" อะไรจะถ่อมตัวขนาดนี้! กงจื๊อฟังแล้วยังชื่นชมเขียนบันทึกไว้เลย เพราะรู้ว่าเม็งจื่อฟั่นมันฉลาดแค่ไหน กองทัพพึ่งแพ้มาใหม่ๆ ทุกคนกำลังเสียใจอยู่ ถ้าเขาไปโอ้อวดว่าตัวเองเก่งกาจสู้กับศัตรูคนเดียว คนอื่นคงอับอายกันใหญ่ แต่พอเขาบอกว่าเป็นเพราะม้าเท่านั้น ทุกคนก็โล่งอกเพราะไม่มีใครอิจฉาม้าที่วิ่งไม่เร็วหรอก\n\nเซียมซีใบนี้มาถึงมือคุณพอดีจังหวะ คุณกำลังอยู่ในช่วงที่ทำอะไรสำเร็จหรือใกล้จะได้ผลงานที่ดีใช่ไหม? หรือพึ่งจะมีคนมาชมเชยในสิ่งที่คุณทำ? หว่องไทซินอยากให้คุณเรียนรู้จากเม็งจื่อฟั่น บางครั้งการไม่ยอมรับคำชมเชยอาจจะดีกว่าการอวดให้คนอื่นฟัง โดยเฉพาะเวลาที่รอบตัวคุณยังมีคนที่กำลงเจออุปสรรคหรือยังไม่ประสบความสำเร็จเหมือนคุณ เข้าใจมั้ย? ถ้าคุณไปโอ้อวดความสำเร็จตอนนี้ อาจจะทำให้คนรอบข้างรู้สึกแปลกใจหรือเจ็บใจก็ได้\n\nในโลกทำงานก็เช่นกัน ถ้าคุณเพิ่งได้โปรโมชั่นหรือทำงานสำเร็จโครงการใหญ่ลองอย่าไปประกาศกร่องทั่วออฟฟิศ บอกไปง่ายๆ ว่า \"โชคดี\" หรือ \"ได้ความช่วยเหลือจากทีม\" คนอื่นจะรู้สึกสบายใจมากกว่า และที่สำคัญคุณจะไม่เป็นเป้าของความอิจฉาด้วย นี่ไม่ใช่การถ่อมตัวแบบหลอกตัวเองนะ แต่เป็นปัญญาสังคมแบบเม็งจื่อฟั่น\n\nปล่อยให้ผลงานพูดแทนคุณ แล้วความเก่งจริงๆ จะค่อยๆ เผยออกมาเอง"
+      }
+    },
+    "en": {
+      "title": "Mencius's Strategic Retreat",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Right now you might feel like you're falling behind or moving slower than everyone else in some area of your life.",
+      "poem": [
+        "In face of danger, Mencius was the last to run.",
+        "He was highly praised for what he had done.",
+        "Modestly smiling, he refused the honour for bravery",
+        "Said his horse wouldn't go was the true story."
+      ],
+      "story": "This stick references Mencius (Meng Zhifan), a military officer from ancient China's Spring and Autumn period. During a devastating battle where his army was routed, Mencius appeared to be the last soldier fleeing the battlefield — a seemingly cowardly act that should have brought shame.\n\nHowever, when people praised him for his 'bravery' in covering the retreat, Mencius humbly deflected the honor. He claimed he wasn't being brave at all; his horse was just too slow and stubborn to run faster.\n\nThis story became legendary because it captured the essence of true humility. Mencius could have accepted undeserved praise, but instead chose honest self-assessment over false glory.\n\nIn Confucian culture, this represents the highest form of character — knowing your true motivations and refusing to take credit where none is due.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation calls for the kind of steady, behind-the-scenes leadership that Meng Zhifan exemplified."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but you're underselling to seem modest. The leak is ego-shaped."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is getting noticed by others, but maybe not for the reasons people think."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "When it comes to your health journey right now, this stick suggests you're already doing better than you think."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Stick 64 hands you the figure of Mengzhi Fan, the soldier who held the rear of a retreating army and then waved off the praise by blaming his horse."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation calls for the quiet strength that Meng Zhifan showed."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now you might feel like you're falling behind or moving slower than everyone else in some area of your life."
+        }
       }
     }
   },
@@ -3513,6 +6143,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 65 ระดับ ล่าง เล่าเรื่องจักรพรรดิที่หลงไหลจนต้องลี้ภัย แต่ยังมีทางกลับ",
         "detail": "ดวงตกหลุมลึก แต่ยังไม่ถึงจุดจบ\n\nบทกวีเล่าเรื่องราวของเจิ่นโฮ่วจู๋ (陳後主) จักรพรรดิองค์สุดท้ายของราชวงศ์เฉิน ที่หลงใหลในความงาม จนมองไม่เห็นภัยที่กำลังคืบคลานเข้ามา \"隋滅陳時戰伐紛\" เมื่อกองทัพซุ่ยยกมาล้างบ้านล้างเมือง ทุกอย่างพังทลายในชั่วพริบตา \"都因妖媚閉明君\" ทั้งหมดเพราะเสียงหวานหู คำหลอกลวงที่ทำให้ตาบอดใจมืด \"陳奔西赴無藏息\" เขาหนีไปมาไม่มีที่ซ่อนตัว จนสุดท้าย \"井裡胭脂隱玉人\" ต้องไปซ่อนตัวอยู่ในบ่อน้ำที่พระสนมใช้ล้างเครื่องสำอางค่ะ\n\nจินตนาการดูสิ จากบัลลังก์มาเป็นก้นบ่อ จากผู้ปกครองแผ่นดินมาเป็นคนหลบซ่อน บ่อน้ำที่เคยมีแต่กลิ่นหอมของแป้งและยาทาปากกลายเป็นที่พักพิงสุดท้าย นี่คือสิ่งที่เกิดขึ้นเมื่อเราปิดตาปิดหูไม่ฟังสัญญาณเตือน ใครจะไปคิดว่าคนที่เคยสั่งการคนนับแสนจะมาลงเอยแบบนี้\n\nแต่รู้ไหม ในความมืดมิดของบ่อน้ำนั่น ยังมีแสงสว่างส่องลงมาจากด้านบนอยู่ กองทัพซุ่ยใช้เชือกดึงเขาขึ้นมาได้ หมายความว่าแม้จมลึกแค่ไหนก็ยังมีทางออกนะ เชือกเส้นนั้นคือเสียงเตือนในใจที่ยังไม่หายไป\n\nคุณตอนนี้กำลังอยู่ในสถานการณ์ที่คล้ายกันใช่ไหม มีคนพูดหวานกับคุณ ให้คำมั่น ทำให้คุณรู้สึกดี แต่ลึกๆ แล้วคุณรู้สึกไม่ค่อยสบายใจ อาจเป็นเรื่องงาน เรื่องเงิน หรือเรื่องความสัมพันธ์ที่ดูดีจากภายนอก แต่ข้างในมีอะไรบางอย่างไม่ตรง บางทีเป็นคนที่ชอบพูดแต่ไม่เห็นทำ หรือสถานการณ์ที่ดูเหมือนจะได้กำไรแต่มีกับดักแฝงอยู่\n\nใจลึกๆ ของคุณส่งสัญญาณเตือนมาตลอด แต่เสียงรอบข้างดังกว่า ทำให้คุณเลือกที่จะเชื่อสิ่งที่อยากเชื่อมากกว่าสิ่งที่ควรเชื่อ\n\nหยุดฟังเสียงหวานชั่วคราว กลับไปฟังเสียงเตือนในใจของคุณเอง เชือกที่จะดึงคุณขึ้นจากหลุมลึกนี่อยู่ในมือคุณอยู่แล้ว"
       }
+    },
+    "en": {
+      "title": "The Last Emperor's Downfall",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The image at the heart of this stick is a ruler hiding in a well while his palace burns…",
+      "poem": [
+        "Infatuated with his concubine was the Lord of Chen.",
+        "Unable was he to resist the invasion from Sui.",
+        "His country was shattered, his sumptuous palace fell.",
+        "He tried to hide but was killed in the water well."
+      ],
+      "story": "This stick tells the story of Chen Shubao, the last emperor of the Chen Dynasty (583-589 CE). Known for his obsession with poetry, wine, and beautiful women—especially his beloved concubine Zhang Lihua—he completely neglected state affairs.\n\nWhile Chen Shubao composed verses and held elaborate parties in his palace, the Sui Dynasty was mobilizing armies at his borders. When General Yang Guang finally invaded, the emperor was so unprepared that he literally hid down a well with his concubines.\n\nThe imagery of 'rouge in the well' became a famous metaphor in Chinese literature for how personal indulgence can destroy everything you're supposed to protect. This wasn't just political failure—it was a cautionary tale about losing sight of what truly matters when you're distracted by immediate pleasures.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image of Chen Shubao hiding in a well while the Sui army searched the palace is the harshest mirror this oracle holds up to working life."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your money isn't under attack, it's leaking. Spot the lifestyle spending you stopped questioning."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Chen Shubao wrote love poems while the Sui army crossed his borders."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The image at the heart of this stick is an emperor hiding in a well while his palace burns above him."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "This stick is a brutal wake-up call about academic priorities."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "This stick warns about putting personal desires before family responsibilities."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The image at the heart of this stick is a ruler hiding in a well while his palace burns above him."
+        }
+      }
     }
   },
   {
@@ -3566,6 +6238,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ดีมาก สิ่งที่ต้องการอยู่ตรงหน้าแล้ว แค่ต้องผ่อนคลาย",
         "detail": "บรรยากาศดีมากแต่ยังไม่ได้เอาเปรียบเต็มที่! บทกลอนพาเราไปสวนหลานที่ง (蘭亭) ที่หว่างซี่จื่อ (王羲之) จัดงานเลี้ยงสุดคลาสสิก กวีศิลปินมาชุมนุมกันริมลำธาร ผลัดกันดื่มสุราที่ลอยมาตามน้ำ ท้องฟ้าใส ลมเซาๆ ป่าไผ่เขียวชอุ่ม ทุกคนสนุกสนานใจดี\\n\\nเนื้อเรื่องนี้สำคัญนะ วันที่สามเดือนสาม นักปราชญ์สี่สิบคนมาเจอกันที่นี่ ไม่ใช่เพื่อธุรกิจหรือเน็ตเวิร์กกิ้ง แต่เป็นงานสังสรรค์แบบบริสุทธิ์ใจ เขาเล่นเกม แก้วลื่นลำธาร ใส่เหล้าในแก้วลอยน้ำ แก้วไปหยุดหน้าใคร คนนั้นต้องแต่งกลอนทันที แต่งไม่ออกก็ปรับดื่มสามแก้ว มันเป็นการผสมผสานระหว่างศิลปะกับความสนุกสนาน ไม่ได้ตึงเครียดแข่งขันกัน\\n\\nที่น่าสนใจคือคนที่มางานนี้ล้วนเป็นเซเลบแห่งยุค แต่มาที่นี่ไม่ได้เอาผลงานมาอวด หว่างซี่จื่อเขียนบทนำที่กลายเป็นชิ้นเอกแห่งประวัติศาสตร์ เขาบอกว่า แหงนหน้ามองความกว้างใหญ่ของจักรวาล ก้มหน้าสังเกตความหลากหลายของสิ่งมีชีวิต นี่คือการเข้าถึงสภาวะที่ฟ้าดิน คน ธรรมชาติ กลมกลืนเป็นหนึ่งเดียว\\n\\nคุณรู้สึกเหมือนยังขาดอะไรอยู่ป่าว? เหมือนต้องรอให้ทุกอย่างพร้อมสมบูรณ์ก่อน?"
+      }
+    },
+    "en": {
+      "title": "Wang Xizhi Meets Worthy Scholars",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Stick 66 places you at the edge of the Orchid Pavilion stream, watching the wine cup drift toward you.",
+      "poem": [
+        "At Orchid Garden scholars met and made their stay",
+        "With music and wine they passed the day.",
+        "From the crystal sky came the autumn breeze",
+        "In bliss and mirth the bamboo forest swayed."
+      ],
+      "story": "This fortune references one of China's most famous literary gatherings — the Orchid Pavilion Gathering of 353 CE. Wang Xizhi, considered the greatest calligrapher in Chinese history, hosted 41 scholars at his estate near Shaoxing.\n\nThey engaged in a drinking game where cups of wine floated down a stream, and whoever the cup stopped in front of had to compose a poem. The event produced 37 poems and Wang Xizhi's legendary preface, which became the most celebrated piece of calligraphy ever written.\n\nThink of it as the ultimate networking event that created lasting cultural treasures. The gathering represents the perfect blend of friendship, creativity, and scholarly achievement — when like-minded people come together, magic happens.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering a golden phase where collaboration will unlock extraordinary opportunities."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Years of quiet craft start paying out — invoices clear, referrals return, seeds sprout."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering its 'Orchid Pavilion' moment — a time when everything flows naturally and beautifully."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The Orchid Pavilion gathering is one of those scenes where everything aligns without effort: the breeze is right, the company is right, the wine finds its way down the stream and stops where it should."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Drawing stick 66 for studies points you toward the Orchid Pavilion image: forty-one scholars by a winding stream, cups of wine drifting between them, poems written in the company of equals."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your home is about to become a place of genuine connection and shared joy."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 66 places you at the edge of the Orchid Pavilion stream, watching the wine cup drift toward you."
+        }
       }
     }
   },
@@ -3621,6 +6335,47 @@ const SIAMSI_DATA = [
         "summary": "เตือนไม่ให้แข็งเกินไป ต้องรอจังหวะที่เหมาะสม",
         "detail": "แรงมากแต่ยังไม่ถึงเวลา! บทกลอนบอกว่า \"人雖勇力不能當\" คนเรามีแรงกายแค่ไหนก็มีขีดจำกัด ไม่ต้อง \"獨冠場\" คิดว่าตัวเองเจ๋งที่สุดในโลก แม้จะ \"挾泰山超北海\" แข็งแรงพอยกภูเขาข้ามทะเลได้ แต่สุดท้าย \"身心猶貴重存亡\" ชีวิตใจเจ้าเองต่างหากที่สำคัญที่สุด\n\nนี่คือเรื่องของเจ่าหวี่ (項羽) นักรบที่แกว่งดาบครั้งเดียวฆ่าคนได้เป็นร้อย ยกหม้อข้าวใหญ่เล่นได้เหมือนของเล่น แต่พอรบแพ้หลิวปาง (劉邦) กลับมาถึงแม่น้ำอูเจียง (烏江) ชาวบ้านเอาเรือมารอให้ข้ามแม่น้ำหนีไปเก็บกำลังใหม่ แต่เขาไม่ยอม เพราะ \"ไม่มีหน้าไปพบพ่อแม่พี่น้องทางบ้าน\" สุดท้ายฆ่าตัวตายตรงนั่นเลย นี่แหละคือการแข็งที่ผิดจังหวะ แรงเกินไปกลับกลายเป็นจุดอ่อน\n\nคุณตอนนี้เหมือนเจ่าหวี่ก่อนขึ้นเรือเลย รู้สึกว่าตัวเองควรจะทำได้ ควรจะเก่งกว่านี้ ทำไมถึงเจออุปสรรคขนาดนี้ อาจจะเป็นเรื่องงานที่โปรเจ็กต์ไม่ผ่าน หรือความรักที่อีกฝ่ายไม่เข้าใจ หรือเรื่องเงินทองที่พยายามแล้วยังไม่เจอทางออก ใจคิดว่า \"ด้วยความสามารถขนาดนี้ ไม่น่าจะล้มเหลวสิ\" แต่บางครั้งโลกมันไม่ได้หมุนตามความเก่งของเราคนเดียวนะ\n\nอย่าไปทำเหมือนเจ่าหวี่เลย ที่มีเรือแล้วไม่ขึ้น เก็บหน้าเก็บตาจนตัวเองทุกข์ ถอยกลับไปเก็บกำลัง รอจังหวะใหม่ดีกว่า ไม่ใช่ว่าคุณอ่อนแอ แต่เป็นการเลือกเวลาที่เหมาะสม ช่วงนี้ให้ความสำคัญกับสุขภาพใจก่อน ยอมรับว่าบางเรื่องอยู่นอกเหนือการควบคุม"
       }
+    },
+    "en": {
+      "title": "The Overlord's Last Stand",
+      "fortune_level": "Average",
+      "one_line_summary": "This sign is essentially asking you to check your approach to life's challenges.",
+      "poem": [
+        "Never unrelentingly rely on valour and vigour",
+        "For they might be the very cause of danger.",
+        "Try not to move the East Mount beyond the North Sea, But try to safeguard yourself and ever to exist."
+      ],
+      "story": "This sign references Xiang Yu, known as the Overlord of Western Chu, one of China's most legendary military leaders from around 200 BCE. After the fall of the Qin Dynasty, Xiang Yu fought for control of China against Liu Bang, who would become the first Han Emperor.\n\nDespite his incredible strength and tactical brilliance, Xiang Yu's arrogance and refusal to listen to advisors led to his downfall. The poem's reference to moving mountains and crossing seas alludes to his legendary physical power - stories claimed he could lift massive bronze cauldrons.\n\nBut when surrounded at the Battle of Gaixia, rather than surrender or negotiate, he chose to end his life by the Wu River. His story became the ultimate cautionary tale about how raw talent and force, without wisdom and humility, can destroy even the mightiest hero.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse pulls Xiang Yu onto the altar in front of you, and the reflection it offers is uncomfortable: the strength that built your reputation at work is the same strength quietly cornering you now."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income holds steady, but the heroic money move is the trap. Don't muscle it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Xiang Yu could lift a bronze cauldron, but he couldn't lower his voice at the dinner table."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Xiang Yu could lift bronze tripods and burn boats behind his own army, yet what finished him at the Wujiang was not an enemy blade but his refusal to bend."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Xiang Yu could lift a bronze cauldron and win nearly every battle, yet the verse remembers him not for his victories but for the moment he refused counsel at Gaixia."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "When it comes to your home and family, this stick is telling you to ease up on the strongarm approach."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign is essentially asking you to check your approach to life's challenges."
+        }
+      }
     }
   },
   {
@@ -3674,6 +6429,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ได้เวลาเจอคนใหญ่ที่เข้าใจคุณ",
         "detail": "ได้เวลาแล้วนะ แต่ต้องแบบที่เจ้าต้องการ!\n\nบทกลอนบอกว่า \"久抱凌雲志未舒\" ใจถึงเมฆแต่ยังไม่ได้บิน \"荷竿渭水釣遊魚\" หิ้วเบ็ดไปนั่งตกปลาริมแม่น้ำเว่ย เห็นจะขี้เกียจแต่จริงๆ กำลังรอคน \"文王千里求賢士\" พ่อหลวงวืนยอมเดินทางไกลแสวงหาคนเก่ง \"滅紂興周任意如\" ทำลายโจวแล้วสร้างวังใหม่ ได้อย่างใจนึก\n\nเจียงไท่กง (姜太公) คุณตาคนนี้แหละตัวจริง อายุ 72 ปีแล้วยังไม่ได้เป็นอะไรเลย ขายเนื้อก็ขายไม่ออก เปิดร้านเหล้าก็เจ๊ง ทำมาค้าขายก็พังไปหมด สุดท้ายเลยไปนั่งตกปลาริมแม่น้ำเว่ย แต่ดูเบ็ดสิ เบ็ดตรงไม่มีเหยื่อ แขวนห่างจากน้ำสามฟุต เขาบอกว่า \"ใครอยากติดเบ็ดก็มาเอา\" คนอื่นดูแล้วคิดว่าคุณตาบ้า\n\nแต่พระเจ้าวืน (文王) ฝันเห็นหมีบินเข้าอ้อมกอด หมอดูบอกจะเจอคนเก่ง พอออกมาเดินทางก็เจอเจียงไท่กงจริงๆ สองคนคุยกันปุ๊บ รู้เลยว่าใช่คนนี้แหละ พระเจ้าวืนยอมลากรถให้เจียงไท่กงเดิน 800 ก้าว ซึ่งกลายเป็นนิมิตว่าราชวงศ์โจวจะอยู่ได้ 800 ปี\n\nคุณรู้สึกแบบเจียงไท่กงไหม อายุเท่าไหร่แล้วยังไม่มีใครมองเห็นความสามารถ รอคนที่จะเข้าใจว่าคุณคือคนที่เขาตามหา ไม่ใช่แค่หางานใหม่นะ แต่หาคนที่จะให้คุณทำในสิ่งที่ใจใฝ่ ให้อำนาจตัดสินใจ ไว้ใจให้วางแผนใหญ่ คนแบบนี้หายากเหมือนพระเจ้าวืน\n\nเลิกยื่นใส่ทุกที่แล้วนะ เริ่มเลือกสถานที่ที่คุณอยากไปจริงๆ เตรียมตัวให้พร้อมเวลาคนใหญ่มาถาม"
+      }
+    },
+    "en": {
+      "title": "Jiang Taigong Meets King Wen",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're in your fishing-by-the-river phase right now.",
+      "poem": [
+        "The respectable hermit fished lonely by the river.",
+        "His ideals were so high that they had few followers.",
+        "The Emperor came one day from far far away, And asked the venerable man to run the state."
+      ],
+      "story": "Jiang Taigong, also known as Lu Shang, was a 72-year-old hermit who spent his days fishing by the Wei River with a straight hook — no bait, no curve. People thought he was crazy.\n\nBut he wasn't really fishing for fish. He was waiting for the right opportunity, the right person to recognize his worth.\n\nKing Wen of Zhou, while traveling, discovered this unusual old man and immediately recognized his wisdom and strategic mind. Jiang became King Wen's most trusted advisor and military strategist, helping establish the Zhou Dynasty that would rule China for 800 years.\n\nThis story has become the ultimate symbol of late-blooming success and the power of patient preparation meeting perfect timing.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Jiang Taigong's patient wait by the river."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady craft finally gets noticed. Don't rebrand now — the payoff is near."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life mirrors Jiang Taigong's patient wait by the river."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Jiang Taigong's patient wisdom."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "You've been studying hard, maybe feeling like your efforts aren't getting the recognition they deserve."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The image at the centre of this stick is Jiang Taigong fishing the Wei River with a straight hook."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in your fishing-by-the-river phase right now."
+        }
       }
     }
   },
@@ -3729,6 +6525,47 @@ const SIAMSI_DATA = [
         "summary": "เซียมซี 69 ฮันอี่วไล่จระเข้ ระดับกลาง การทำงานด้วยความซื่อสัตย์สร้างพลังป้องกัน",
         "detail": "คุณกำลังเดินทางในเขตปลอดภัย แม้รู้สึกเหมือนมีอันตรายซุ่มซ่อน\n\nบทกลอนเล่าว่า \"忠義存心官十載\" ทำงานด้วยใจซื่อสัตย์มาสิบปี \"年豐民樂惠難忘\" ปีนี้อุดมสมบูรณ์ ผลงานคุณคนอื่นจำได้ \"鱷魚毒害都能息\" แม้แต่จระเข้ร้ายยังเงียบลง \"禱告長江北海王\" ขอพรจากเทพเจ้าแม่น้ำใหญ่ แปลง่ายๆ คือ ความดีที่คุณทำมันสร้างกำแพงป้องกันให้แล้ว\n\nเรื่องของฮันอี่ว (韓愈) นักปราชญ์ราชสำนักสมัยถัง เขาไปเป็นผู้ว่าปักษ์ใต้ที่แถบชาวโจวปัจจุบัน ตอนนั้นมีจระเข้น้ำเค็มผุดขึ้นมากินคนกินสัตว์ ชาวบ้านกลัวจนไม่กล้าลงน้ำหาปลา แต่ฮันอี่วไม่ได้ส่งทหารไปฆ่าจระเข้ เขาเขียนจดหมายให้จระเข้แทน! นั่งริมฝั่งอ่านให้ฟังแบบจริงจัง บอกว่าให้ย้ายออกไปภายในเจ็ดวัน ไม่งั้นจะได้ปัญหา แล้วรู้มั้ย จระเข้พวกนั้นหายไปจริงๆ\n\nนี่ไม่ใช่นิทานปาฏิหาริย์นะ เป็นเรื่องของพลังแท้จริง ฮันอี่วไม่ได้ใช้เวทย์มนตร์ไล่จระเข้ แต่เขาทำงานหนักในปักษ์นั้น สร้างโรงเรียน ปลดปล่อยทาส ขุดคลอง ชาวบ้านรักเขา พอคนเก่งคนดีมาปกครอง แม้แต่สัตว์ร้ายยังต้องหลบ\n\nคุณช่วงนี้รู้สึกเหมือนมีอะไรซุ่มอยู่ใช่มั้ย ไม่ใช่มีคนมาทำร้ายจริงๆ แต่เป็นความไม่สบายใจแบบบอกไม่ถูก งานเรียบร้อยดี แต่ใจคุณเหมือนได้ยินเสียงฝีเท้าตามหลังตอนดึกๆ พอหันไปมองก็ไม่มีใครอยู่ หรือเวลาประชุมรู้สึกเหมือนใครบางคนไม่ค่อยชอบหน้าคุณ แต่พอคิดดูแล้วทุกคนก็ปกติดี\n\nเซียมซีใบนี้บอกว่า \"จระเข้\" ที่คุณรู้สึกได้มันมีจริง แต่คุณมีพลังมากกว่าที่คิด ไม่ต้องไปสู้กับมัน เพราะสิ่งที่คุณทำอยู่ แบบที่คุณทำงาน มันสร้างเสื้อเกราะให้คุณอยู่แล้ว เหมือนฮันอี่วไล่จระเข้ เขาไม่ได้พึ่งคาถา แต่พึ่งผลงานจริงที่ทำในปักษ์นั้น\n\nความรู้สึกไม่สบายใจที่คุณมี มันเกิดจากความใส่ใจ จากที่คุณอยากทำให้ดี ความใส่ใจนี่แหละคือเครื่องรางของคุณ คนที่ไม่แคร์จะไม่รู้สึกแบบนี้หรอก\n\nหยุดมองหาศัตรูที่อาจจะไม่มี มีเวลาไปสนใจคนที่ชื่นชมผลงานคุณแทน"
       }
+    },
+    "en": {
+      "title": "The Magistrate and the Crocodiles",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Drawing this stick suggests you're in a position where your integrity and genuine concern for others will be your…",
+      "poem": [
+        "The Magistrate was just, faithful and able.",
+        "He made the county rich, happy and stable.",
+        "His prayer moved even the god of the North Sea, Who forbade all crocodiles to hurt his people."
+      ],
+      "story": "This story comes from Tang dynasty China and tells of Han Yu, a scholar-official known for his moral integrity. When he was appointed magistrate to Chaozhou in southern China, the region was plagued by man-eating crocodiles in the Han River.\n\nThe local people lived in terror, unable to fish or farm safely near the water. Instead of sending soldiers or hiring hunters, Han Yu took an unusual approach.\n\nHe wrote a formal proclamation to the crocodiles themselves, reading it aloud at the riverbank. In this document, he politely but firmly ordered them to leave within seven days, threatening divine punishment if they refused.\n\nRemarkably, the crocodiles disappeared. Whether through coincidence, seasonal migration, or the power of sincere leadership, Han Yu's moral authority seemed to tame even nature's dangers.\n\nThis became a legendary example of how righteous governance and genuine care for people can overcome seemingly impossible challenges.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Han Yu's challenge — you're facing something that seems intractable, maybe even dangerous to your professional wellbeing."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income, trusted reputation — but check where generosity has turned into leakage."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation calls for Han Yu's approach — principled action over dramatic gestures."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors Han Yu's approach to the crocodile problem."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors Han Yu's approach to the crocodile problem — you're facing obstacles that seem bigger than they actually are."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Han Yu didn't wade into the river with spears."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Drawing this stick suggests you're in a position where your integrity and genuine concern for others will be your greatest assets."
+        }
+      }
     }
   },
   {
@@ -3782,6 +6619,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เรื่องยังไม่จบ อย่าเพิ่งตัดสินดีเลว รอดูต่อไป",
         "detail": "ยังไม่ใช่เวลาเดาดวง อีกสักพักจะรู้เอง\n\nบทกวีเล่าว่า \"可比當年一塞翁\" เทียบได้กับปู่สายวงหนั่นแหละ ผู้ชายแก่ที่อยู่ชายแดนเหนือ วันหนึ่งม้าดีที่เลี้ยงไว้หนีไปป่า เพื่อนบ้านมาปลอบใจ \"เสียดายแท้ ม้าดีๆ หายไป\" ปู่สายวงแค่ยิ้มๆ \"ใครไปรู้ล่ะ อาจเป็นเรื่องดีก็ได้นะ\" คนอื่นคิดว่าแก่แล้วสมองเสีย ผ่านไปอาทิตย์ ม้าตัวนั้นกลับมาเอง ยังพาม้าป่าสายพันธุ์ดีมาด้วยอีกตัว เพื่อนบ้านพากันมาแสดงความยินดี \"โชคดีจริงๆ\" ปู่สายวงตอบเหมือนเดิม \"ใครไปรู้ล่ะ อาจเป็นเรื่องเลวก็ได้นะ\" ลูกชายแก่อยากฝึกม้าป่า ขี่แล้วตกหัก เพื่อนบ้านมาเยี่ยมไข้ ปู่สายวงก็ยังเป็นแบบนั้น \"ใครไปรู้ล่ะ อาจจะดีก็ได้\" สุดท้ายพระราชาเกณฑ์คนหนุ่มๆ ไปสร้างกำแพงเมือง อันตรายถึงตาย ลูกชายเขาขาพิการเลยไม่ต้องไป\n\nทำไมปู่แก่เนี่ยถึงดูใจเย็นนัก ไม่ใช่เพราะแก่แล้วไม่รู้สึกอะไร แต่เพราะแกรู้ว่าเรื่องในโลกนี้มันยังไม่จบ วันนี้ดูเหมือนเป็นเรื่องดี พรุ่งนี้อาจพลิกแพลงเป็นเรื่องร้าย หรือกลับกัน ที่สำคัญไม่ใช่การเดาว่ามันจะเป็นยังไง แต่เป็นการยอมรับว่าตอนนี้ยังไม่รู้ยังไม่เห็น\n\nคุณกำลังเจออะไรที่ทำให้รู้สึกแปลกๆ ไม่แน่ใจว่ามันดีหรือเลว บางทีได้งานใหม่แต่ก็ไม่รู้ว่าเหมาะกับตัวเองหรือเปล่า หรือคนรักทิ้งไปแต่ใจลึกๆ รู้สึกโล่งอกแปลกๆ เหมือนสายวงที่ม้าหายไป ตอนแรกคิดว่าแย่แน่ๆ แต่ตอนหลังกลับพบว่ามันเป็นจุดเริ่มต้นของดวงที่ดีขึ้น บางอย่างที่ดูเหมือนโชคลาภตอนนี้ อีกไม่กี่เดือนอาจเห็นด้านมืดของมัน\n\nเซียมซีใบนี้ไม่ได้บอกให้ท้อ แต่บอกว่าเรื่องยังไม่จบ อย่าลงความเห็นเร็วเกินไป อย่าดีใจหรือเศร้าโศกแบบสุดขั้ว ให้เวลากับมันหน่อย จะได้เห็นภาพที่สมบูรณ์กว่านี้\n\nทำที่ควรทำต่อไปตามปกติ อย่ายึดติดกับการประเมินว่าดีหรือเลวเกินไป"
+      }
+    },
+    "en": {
+      "title": "The Old Man Who Lost His Horse",
+      "fortune_level": "Average",
+      "one_line_summary": "Sai Weng's horse runs off, comes back with a stallion, throws his son, saves his son from the draft.",
+      "poem": [
+        "Remember the old Shepherd who lost his horse.",
+        "How he rejoiced over what he had lost!",
+        "For something lost would mean something gained, Today's puzzle would be in future explained."
+      ],
+      "story": "This sign tells the famous story of Sai Weng, an old man living near China's northern frontier. When his prized horse ran away, neighbors came to console him.\n\nInstead of mourning, he simply said, 'Who knows? This might be a blessing.\n\n' Weeks later, the horse returned with a wild stallion. Now neighbors congratulated him on his good fortune.\n\nAgain he replied, 'Who knows? This might bring misfortune.\n\n' His son tried to tame the wild horse and broke his leg. When war broke out, all able-bodied young men were conscripted, but his injured son stayed home and survived.\n\nThe story became a cornerstone of Taoist philosophy about the unpredictable nature of fortune and the wisdom of accepting both gains and losses with equanimity.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The old man at the frontier didn't celebrate when the horse came back, and didn't grieve when it ran off."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money in, money out this season. Don't call a setback a loss yet — the wheel's still turning."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The old shepherd's calm \"how do you know?"
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The old man at the frontier didn't celebrate when the horse came back, and he didn't despair when his son broke his leg."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Sai Weng's lost horse is the figure behind this stick, and it lands on your studies for a reason."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Family situations that seem problematic right now are more complex than they appear."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Sai Weng's horse runs off, comes back with a stallion, throws his son, saves his son from the draft."
+        }
       }
     }
   },
@@ -3837,6 +6715,48 @@ const SIAMSI_DATA = [
         "summary": "ปลาในหลุมแห้งรอน้ำช่วยชีวิต แต่คนช่วยกลับสัญญาเปิดแม่น้ำ",
         "detail": "ใจเย็นๆ นะ ยังไม่ถึงเวลา บทกลอนบอกว่า \"涸轍之中鮒困之\" ปลาคาร์พติดอยู่ในรอยล้อรถที่แห้งแล้ง กำลังหายใจแทบขาด เรื่องเล่าเป็นแบบนี้ จ้วงจื่อ (莊子) นักปรัชญาเก่า เดินผ่านไปเจอปลาคาร์พขนาดกำปั้นติดอยู่ในหลุมน้ำแห้ง ปลาเห็นเขามาก็ขอร้อง \"ช่วยเอาน้ำมาสักถ้วยเถอะ ฉันจะตายแล้ว\" แต่จ้วงจื่อกลับบอก \"เดี้ยวนะ ข้าไปขอให้พระเจ้าเปิดแม่น้ำเซีย่งเจียงมาช่วยเธอ\" ปลาได้ยินแล้วโมโหเบา \"ข้าต้องการแค่น้ำหนึ่งแก้วให้รอดตาย ไม่ใช่รอแม่น้ำใหญ่! พอเธอเปิดแม่น้ำมาได้ ข้าก็เป็นปลาแห้งแล้วล่ะ!\"\n\nเห็นไหมครับ ปลาต้องการแค่น้ำหนึ่งแก้ว แต่คนช่วยกลับไปคิดยิ่งใหญ่ เหมือนคุณตอนนี้เลย ความช่วยเหลือที่คุณต้องการมันอยู่ใกล้แล้วจริงๆ แต่มันไม่มาในรูปแบบที่คาดไว้ บางทีคุณอาจกำลังรอโอกาสทำงานใหญ่ๆ แต่แค่งานเล็กๆ ที่มาถึงตอนนี้ก็พอช่วยเก็บประสบการณ์ได้แล้วนะ หรือเรื่องเงิน อย่าไปคิดแต่เรื่องลอตเตอรี่หรือโบนัสก้อนโต เงินทีละน้อยที่เข้ามาสม่ำเสมอดีกว่า คุณรู้ตัวไหมว่าตัวเองกำลังปฏิเสธ \"น้ำหนึ่งแก้ว\" เพราะคิดว่ามันเล็กไป? บางทีสิ่งที่คุณดูถูกว่าไม่พอ นั่นแหละคือสิ่งที่จะช่วยให้รอดพ้นวิกฤตได้จริงๆ\n\nอย่าไปรอแม่น้ำใหญ่แล้ว รับน้ำหนึ่งแก้วที่มีคนเสนอให้อยู่แล้วดีกว่า และถ้าไม่มีใครเสนอ ก็ออกไปขอเองเถอะ ขอจริงจัง ขอเฉพาะเจาะจง ขอแค่พอรอดวันนี้ไปก่อน"
       }
+    },
+    "en": {
+      "title": "Zhuangzi Saves the Carp",
+      "fortune_level": "Average",
+      "one_line_summary": "The carp in the wagon rut isn't asking for a river.",
+      "poem": [
+        "Miserable was the carp caught in a drying rut.",
+        "It wriggled its body and gasped in the mud.",
+        "If someday someone sends him back to his stream",
+        "Perhaps, he may become a dragon to realize his dream."
+      ],
+      "story": "This sign references Zhuangzi, the famous Taoist philosopher from 4th century BC China. The story goes that Zhuangzi encountered a dying carp trapped in a wagon rut after floodwaters receded.\n\nThe fish begged for just a bucket of water to survive. Zhuangzi promised to divert an entire river to save it, but the carp replied bitterly that by then it would be dead and dried up in the fish market.\n\nThis parable became a powerful metaphor about the gap between grand promises and immediate needs. Zhuangzi used it to criticize politicians who offered elaborate future solutions while people suffered in the present.\n\nThe story resonates deeply in Chinese culture as a reminder that sometimes small, timely help matters more than grand gestures that come too late.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The carp in Zhuangzi's cart-rut wasn't waiting for a river."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money flows through but won't pool. Check the pond before blaming yourself."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The carp in the rut is gasping now, not next month."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors that struggling carp right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your current learning situation feels like that struggling carp—stuck in circumstances that seem to be drying up around you."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The carp in Zhuangzi's rut is not waiting for a miracle; it is waiting for someone to notice that a bucket of water now matters more than a diverted river later."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The carp in the wagon rut isn't asking for a river."
+        }
+      }
     }
   },
   {
@@ -3890,6 +6810,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "หยุดรอสิ่งที่ผ่านไปแล้ว เอาเวลาไปสร้างอนาคตดีกว่า",
         "detail": "อย่าหลงอดีตแบบนี้นะ บทกลอนบอกว่า \"兔兒久待意何如\" กระต่ายรอนาน แต่รอเพื่ออะไรกัน? เรื่องนี้เล่าขานกันมาตั้งแต่สมัยโบราณ มีชาวนาคนหนึ่งใน宋國 (ซ่งกั๋ว) กำลังไถนาอย่างสบายใจ ทันใดนั้นกระต่ายป่าวิ่งมากระแทกต้นไผ่จนตายคาที่ เขาเลยได้กินเนื้อกระต่ายฟรีๆ อร่อยจนลิ้นจี่ แต่หลังจากนั้นเขากลับโยนจอบทิ้ง นั่งคอยข้างต้นไผ่นั่นทุกวัน หวังว่ากระต่ายจะมากระแทกอีก นาไม่ไถ พืชผลเหี่ยวเฉา ชาวบ้านก็เอาเป็นเรื่องขำ คุณรู้ไหมว่าทำไมเขาถึงได้ชื่อว่า \"คนโง่\" เพราะเขาไปเชื่อว่าเหตุบังเอิญจะกลายเป็นกฎธรรมชาติ\n\nดูเหมือนคุณจะกำลังทำเหมือนชาวนาคนนั้นอยู่ แหละ รอคนที่เดินออกไปกลับมา รอโอกาสที่ผ่านไปแล้วจะกลับมาอีกที รอว่าสิ่งที่เคยเกิดขึ้นครั้งหนึ่งจะเกิดซ้ำ มันเหนื่อยไหม นั่งรอแบบนี้ บางทีในใจก็รู้ว่าไม่น่าจะมีอะไรเกิดขึ้น แต่ก็ยังมีความหวังเล็กๆ ว่าเผื่อวันนี้จะเป็นวันนั้น เผื่อคราวนี้จะได้เจอ ความจริงเวลาผ่านไปขนาดนี้ คุณเอาเวลาไปทำอย่างอื่นได้กี่เรื่องแล้ว แต่คุณยังเลือกที่จะนั่งรอ ยิ่งรอนาน ยิ่งยากที่จะลุกไป\n\nหยุดรออดีตได้แล้ว เอาเวลาไปเตรียมอนาคตดีกว่า หาอะไรใหม่ๆ ทำ เรียนรู้สิ่งใหม่ หรือจะไปหาคนใหม่ก็ได้ กระต่ายที่กระแทกต้นไผ่มีแค่ตัวเดียว แต่กระต่ายในป่าใหญ่มีหลายแสนตัว"
+      }
+    },
+    "en": {
+      "title": "Waiting by the Stump",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 72 hands you the farmer at the stump.",
+      "poem": [
+        "Ones a careless hare bumped into a tree and died.",
+        "A man saw this and thought another would come by.",
+        "Day after day he sat idly under the same tree, Having ruined his life, how stubborn he could be!"
+      ],
+      "story": "This story comes from ancient Chinese philosophy, specifically from Mencius and Han Feizi around 300 BCE. A farmer working his fields witnessed a rabbit accidentally run into a tree stump and die.\n\nInstead of continuing his daily work, he abandoned his crops and sat by that same stump every day, waiting for another rabbit to meet the same fate. Of course, no other rabbits came.\n\nHis fields withered, his harvest failed, and he became the laughingstock of his village. The tale became a cautionary parable about passive thinking and false expectations.\n\nIn Chinese culture, it represents the foolishness of waiting for lightning to strike twice instead of creating your own opportunities through consistent effort.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation right now feels like you're sitting by that tree stump."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income, but you're coasting on one lucky break that won't repeat."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The farmer in this verse isn't unlucky."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors that stubborn farmer's mistake."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Here's what this sign is telling you about your learning journey: you're stuck in passive mode, waiting for knowledge to just happen to you instead of actively pursuing it."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation calls for active engagement rather than passive waiting."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 72 hands you the farmer at the stump."
+        }
       }
     }
   },
@@ -3945,6 +6906,49 @@ const SIAMSI_DATA = [
         "summary": "ความสำเร็จใหญ่กำลังจะมา หลังจากพยายามมานาน",
         "detail": "เมื่อไหร่จะได้เห็นความสามารถแกส่ายแสงแล้วล่ะ? บทกลอนเล่าว่า 夾道花香襯馬蹄 ดอกไม้ข้างทางหอมหวานเป็นคู่เสียงกีบม้า 藍袍改換錦衣歸 เสื้อสีน้ำเงินเก่าๆ ถอดทิ้งแล้วใส่ชุดปักทองกลับบ้าน 滿街紅粉皆爭羨 สาวๆ ทั้งถนนแหงนหน้าดูด้วยความอิจฉา 翹首芳名雁塔題 ชื่อเสียงจะได้จารึกไว้ในหอคอยนกห่าน\\n\\nนี่คือเรื่องของหลิ่นเหวินซวี่ (倫文叙) ลูกพ่อค้าผักจนๆ ที่เอาชนะทุกคนได้เป็นนักเรียนอันดับหนึ่งของจักรพรรดิ เขาเรียนหนังสือตั้งแต่เด็กท่ามกลางการดูถูกของคนรวย ตอนสอบเสร็จก็ไม่มีใครคิดว่าไอ้เด็กขายผักจะไปได้ไหน แต่พอประกาศผลออกมา เฮ้ย! ชื่อหลิ่นเหวินซวี่โผล่มาเป็นอันดับหนึ่งเบ้อเร่อ วันที่ขี่ม้ากลับบ้าน เสื้อผ้าเก่าๆ เปลี่ยนเป็นชุดข้าราชการสีทอง คนทั้งเมืองออกมายืนดูจนแน่นถนน\\n\\nคุณรู้สึกคุ้นเคยไหม?"
       }
+    },
+    "en": {
+      "title": "Lun Man Shu's Imperial Success",
+      "fortune_level": "The Best",
+      "one_line_summary": "You're approaching a breakthrough moment where years of effort are about to pay off spectacularly.",
+      "poem": [
+        "Horse hooves and fragrant flowers crammed the street in town.",
+        "Blue plain clothes changed into colourful brocade gown.",
+        "Pretty girls rushed to the street to welcome him home.",
+        "What glory!",
+        "He was chosen Laureate by the throne."
+      ],
+      "story": "This sign celebrates Lun Man Shu, a legendary scholar from Guangdong province who rose from humble beginnings to become the top graduate of the imperial examinations during the Ming Dynasty. Born into a poor family, he studied by candlelight while working odd jobs to survive.\n\nThe poem captures that transformative moment when he returns home victorious — trading his simple blue scholar's robes for the magnificent brocade garments of a court official. The imagery of flower-lined streets and admiring crowds reflects how a single person's success could transform their entire family's social status overnight.\n\nIn imperial China, passing the highest level of examinations was like winning the ultimate lottery — it guaranteed wealth, prestige, and political power. Lun Man Shu became a folk hero because his story proved that merit and determination could overcome any social barrier.\n\nHis victory represents the Chinese ideal that education and perseverance can elevate anyone, regardless of background.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is about to undergo a dramatic transformation."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Years of quiet work finally get paid properly — if you stop pricing yourself like a student."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In matters of love, you're experiencing a complete transformation in how others see you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey is about to take a dramatic turn for the better."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your academic journey is about to hit its stride in a major way."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is about to enter a golden period."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're approaching a breakthrough moment where years of effort are about to pay off spectacularly."
+        }
+      }
     }
   },
   {
@@ -3998,6 +7002,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เซียมซี 74 จู่ไหม่เฉินหย่าเมีย ดวงตก ความเสียดายจากการปล่อยมือเร็วไป",
         "detail": "น้ำที่หกแล้วเก็บไม่กลับ\\n\\nลองฟัง 回憶當年運蹇時 夫妻反目兩分離 ส่องกลับไปวันที่ดวงตก สามีภรรยาหันหลังให้กันจนจบ แล้ว 名題雁塔歸來候 覆水馬頭時否悲 พอได้ชื่อสักวันกลับมาดู น้ำที่เทลงดินแล้วจะเศร้าไหมนะ\\n\\nเรื่องนี้เล่าของจู่ไหม่เฉิน (朱買臣) นักเรียนสมัยฮั่นที่จนแค้น วันหลังวันเล่นขึ้นเขาแบกฟืน ลงมาขายแล้วก็หิ้วหนังสือไปอ่านในป่าใหญ่ เมียทนไม่ไหว เห็นสามีตัวเองอ่านหนังสือทั้งวันแต่ข้าวยังไม่มีกิน สุดท้ายขอหย่า แต่งงานใหม่กับคนมีเงิน หลายปีผ่านไป จู่ไหม่เฉินสอบได้ ได้เป็นข้าราชการใหญ่ พอเมียเก่าได้ข่าวก็มาขอกลับคืน แต่เขาเอาน้ำใส่ชามหกลงดิน บอกว่า \\เก็บน้ำนี้ใส่ชามให้ได้ เดี๋ยวเอาเมียคืน\\ อ๋อ เก็บไม่ได้สินะ\\n\\nคุณกำลังยืนอยู่จุดนี้เหมือนเมียของจู่ไหม่เฉิน มองสิ่งที่ตัวเองกำลังทำอยู่แล้วคิดว่า \\เฮ้อ อีกนานไหมถึงจะเห็นผล\\ อาจจะเป็นงานที่ทำหนักแต่เงินเดือนน้อย อาจจะเป็นคนรักที่ดีแต่ยังไม่พร้อมแต่งงาน หรือเป็นการลงทุนที่ยังไม่เห็นเงินคืน ทุกวันตื่นขึ้นมาคิดแต่ว่า \\ยังไงต่อดี\\ \\ถึงเวลาหรือยังที่จะหันหลังเดิน\\\\n\\nแต่ใบนี้เป็น下下签 มันไม่ได้มาบอกให้เรารีบปล่อยมือนะ มันมาเตือนแบบแปลกๆ ว่า ถ้าเราปล่อยมือตอนนี้ แล้วอีกไม่กี่เดือน ไม่กี่ปี สิ่งที่เราทิ้งมันเริ่มออกดอกออกผล เราจะรู้สึกยังไงนะ จะโกรธตัวเองไหมที่ไม่อดทนอีกแค่นิดเดียว\\n\\nเหมือนเมียจู่ไหม่เฉินที่ดูจากข้างนอก ตอนสามียังจนๆ ทุกคนจะว่าเธอทำถูก หย่าแล้วไปหาคนใหม่ดีกว่า แต่พอสามีเก่าขึ้นมาได้ เธอก็รู้ว่าตัวเองพลาดไปแล้ว แค่นิดเดียว แค่รอได้อีกปีสองปี ชีวิตคงไม่เป็นแบบนี้\\n\\nอย่างไรก็ดี ถ้ารู้สึกว่าสิ่งที่ทำอยู่มันผิดทางจริงๆ ก็หยุดได้ แต่ถ้ารู้สึกแค่ \\เหนื่อย\\ หรือ \\ช้า\\ ลองมองดูใหม่ว่าเป็นเพราะไม่เห็นผลระยะสั้น หรือเพราะทางมันผิดจริงๆ ให้ตัวเองอีกสักหนึ่งไตรมาส อีกสักหกเดือน ถ้าน้ำใสยังใส ค่อยตัดสินใจใหม่"
+      }
+    },
+    "en": {
+      "title": "Zhu Maichen's Abandoned Wife",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. You're in one of those frustrating phases where people around you don't understand your…",
+      "poem": [
+        "Once a poor scholar was so wretched and devoid of wealth.",
+        "His wife deserted him and left him by himself.",
+        "Then he became known and was honoured by the imperial throne.",
+        "Deeply regretted, his wife was too ashamed to go home."
+      ],
+      "story": "This tells the story of Zhu Maichen, a Han dynasty scholar who spent his days chopping firewood and studying ancient texts. His wife couldn't bear their poverty and constantly nagged him to give up his books for practical work.\n\nWhen he refused, she divorced him and married a wealthier man. Years later, Zhu passed the imperial examinations and became a high-ranking official.\n\nHis ex-wife, realizing her mistake, begged to return. But as the Chinese saying goes, 'spilled water cannot be gathered up' — some decisions can't be undone.\n\nThe story became a cautionary tale about loyalty, patience, and the danger of judging people by temporary circumstances. It reflects the traditional Chinese belief that education and perseverance ultimately triumph over immediate material concerns.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career feels like Zhu's wood-chopping years right now – you're putting in effort but seeing little recognition or reward."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money feels tight and doubters are loud, but this sign blocks shortcuts so slow work can pay."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Stick 74 hands you the Zhu Maichen story, and the verse is unusually direct about what it wants you to look at."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Zhu Maichen's story of abandonment during struggle."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Zhu Maichen carried firewood on his back and a scroll in his hand, and the verse you drew sits in that long stretch before any examiner ever read his name."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is hitting a rough patch where support feels conditional."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in one of those frustrating phases where people around you don't understand your vision."
+        }
       }
     }
   },
@@ -4053,6 +7099,48 @@ const SIAMSI_DATA = [
         "summary": "เตือนอย่าทิ้งคนตอนยาก และอย่ายึดคนที่กำลังทิ้งเรา ให้เวลาเป็นคนตัดสิน",
         "detail": "เซียมซีใบนี้เล่าถึงความเสียใจที่ไม่มีทางแก้ไขแล้ว\n\nบทกลอนจีนเล่าเรื่องหลุนเหวินซือ (倫文叙) กับภรรยาที่ทิ้งเขาไป \"婚姻豈可厭家貧\" ความรักไหนจะเบื่อหน่ายเพียงเพราะบ้านจน แต่เธอก็ทิ้งเขาไปเมื่อยังยากจน ไปแต่งใหม่กับคนที่มีเงิน ปีต่อมา หลุนเหวินซือสอบได้เป็นเจ้าหนูเบอร์หนึ่งของแผ่นดิน ได้ยศได้ตำแหน่งสูงส่ง ทรัพย์สินรวยล้น ภรรยาเก่าได้ยินข่าวจนได้ แทบคลั่งด้วยความเสียใจ คิดว่าทำไมตาบอดขนาดนั้น ถ้ารออีกสักหน่อยเธอจะได้เป็นนางฟ้า สุดท้ายกระโดดตึกตายด้วยความรู้สึกผิด\n\nเรื่องนี้สอนเราว่า คนที่อยู่ข้างเราตอนยากจนจึงจะเป็นคนที่รักเราจริง ส่วนคนที่ทิ้งเราไปตอนลำบาก เขาจะไม่มีวันกลับมาได้อีกแล้ว แม้เราจะประสบความสำเร็จแค่ไหนก็ตาม\n\nคุณตอนนี้กำลังมีคนสำคัญที่เริ่มหมดความอดทนใช่ไหม อาจจะเป็นคนรัก เพื่อน หรือหุ้นส่วนธุรกิจที่เริ่มบ่นว่าคุณยังไม่ประสบความสำเร็จตามที่หวัง อาจจะเป็นคุณเองที่เริ่มสงสัยว่า สิ่งที่กำลังทำอยู่มันคุ้มหรือเปล่า ถ้าได้ผลจริงทำไมต้องรอนาน\n\nแต่นี่คือช่วงเวลาแห่งการทดสอบน่ะ ใครจะอยู่ ใครจะไป ธรรมชาติจะคัดเลือกเอง อย่าพยายามไปกวนใจคนที่เริ่มหวั่นไหว ปล่อยให้เขาตัดสินใจเถอะ เพราะถ้าเขาทิ้งเราไปตอนนี้ เขาจะไม่มีสิทธิ์กลับมาแบ่งปันความสำเร็จกับเราภายหลัง\n\nจริงๆ แล้วเซียมซีใบนี้เตือนเราว่า อย่าไปเป็นฝ่ายทิ้งคนอื่น และอย่าไปยึดติดกับคนที่กำลังทิ้งเรา ให้เวลาเป็นคนตัดสิน ให้ผลงานเป็นคนตอบ\n\nใช้เวลานี้สร้างตัวเองให้แข็งแกร่ง หยุดมองหาการยอมรับจากคนที่ไม่เห็นคุณค่าเรา เมื่อถึงเวลาคนที่เหมาะสมจะเข้ามาเอง"
       }
+    },
+    "en": {
+      "title": "The Scholar's Abandoned Wife",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. This stick arrives as a sobering reminder about the relationships and opportunities you…",
+      "poem": [
+        "There was once a wise and learned man named Lun.",
+        "His wife deserted him when he was poor and unknown.",
+        "Then came the day he was chosen the Scholar Laureate.",
+        "His wife killed herself, for reunion was too late."
+      ],
+      "story": "Lun Wenshu was a brilliant scholar from Guangdong who became a legend in Chinese folklore. During the Ming Dynasty, he struggled in poverty while preparing for imperial examinations.\n\nHis wife, unable to endure their hardships, abandoned him for a wealthier man. Years later, Lun achieved the highest honor—Scholar Laureate—bringing fame and fortune.\n\nWhen his former wife learned of his success, she was overcome with regret and shame. She climbed a tower and threw herself to her death, realizing she had abandoned a diamond while chasing fool's gold.\n\nThis story became a cautionary tale about loyalty, patience, and the danger of making decisions based on temporary circumstances. In traditional Chinese culture, it represents the tragic consequences of abandoning someone during their darkest hour only to discover their true worth too late.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career journey mirrors Lun's difficult path — you're likely in a phase where others doubt your potential or have abandoned your professional circle."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The harvest is closer than it looks. A warning against cashing out one season too early."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The story of Lun Wenxu and the wife who left him is one of the heaviest verses in the cylinder, and drawing it for a relationship question rarely feels like coincidence."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Stick 75 carries the weight of Lun Wenshu's story, and pulling it for a health question is rarely comfortable."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your current academic struggles mirror Lun Wenxu's grinding poverty before his breakthrough."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors this ancient tale of testing and separation."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick arrives as a sobering reminder about the relationships and opportunities you might be abandoning too quickly."
+        }
+      }
     }
   },
   {
@@ -4106,6 +7194,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ช่วงนี้ต้องอดทนแต่ไม่ใช่เสียเวลา",
         "detail": "ยังไม่ถึงเวลา แต่นี่คือช่วงทองของการเรียนรู้ บทกลอนบอกว่า \"人能樂道自修身 疏水曲肱豈厭貧\" คนเราถ้ามีหลักในใจแล้ว กินข้าวกับน้ำเปล่า นอนเอาแขนเป็นหมอน ก็ไม่เห็นจะทุกข์เท่าไหร่ เรื่องนี้เล่าถึงขงจื๊อ (孔夫子) นักปราชญ์ชาวจีนที่เลือกใช้ชีวิตแบบเรียบง่าย แม้จะมีโอกาสไปรับใช้เจ้าเศรษฐีแลกกับเงินก้อนโต แต่เขากลับเลือกเดินทางไปทั่วแผ่นดินสอนศิษย์ กินข้าวใส่น้ำ นอนใช้แขนเป็นหมอน แต่สุขใจกว่าคนรวยที่ได้เงินมาผิดทาง เพราะเขารู้ว่า \"不義而富且貴者 我心都是作浮雲\" ความรวยที่มาผิดทางเนี่ย สำหรับเขาเหมือนเมฆลอยฟ้า มองแล้วก็หายไป\n\nสถานการณ์ตอนนี้ของคุณคล้ายกับขงจื๊อในช่วงที่ยังเดินทางหาศิษย์ รายได้อาจไม่สม่ำเสมอ ตำแหน่งงานไม่ได้อยู่ในระดับที่อยากได้ แต่อย่าไปรู้สึกว่าชีวิตจืดชืด ช่วงนี้แหละที่คุณกำลังเรียนรู้สิ่งที่สำคัญกว่าเงิน คือการรู้จักตัวเอง การอดทนกับความไม่แน่นอน การไม่หลงใหลในสิ่งที่มาง่ายไปง่าย คุณเคยรู้สึกไหมว่าคนรอบข้างที่ได้เงินเร็ว ได้ตำแหน่งสูงเร็ว แต่ชีวิตกลับดูไม่มั่นคง? พวกเขาอาจจะต้องแลกมาด้วยอะไรบางอย่างที่คุณไม่อยากเสีย\n\nอย่าไปเปรียบเทียบตัวเองกับคนอื่นแล้วรู้สึกด้อย ให้มองช่วงนี้เป็นการลงทุนระยะยาว คุณกำลังสร้างพื้นฐานที่แข็งแกร่ง ไม่ใช่แค่ในเรื่องเงินทอง แต่ในเรื่องจิตใจและความคิด ช่วงนี้คือช่วงที่คุณจะเข้าใจว่าอะไรคือสิ่งที่คุณต้องการจริงๆ ไม่ใช่แค่อยากได้เพราะคนอื่นมี"
+      }
+    },
+    "en": {
+      "title": "Confucius Stays True to His Path",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 76 sits you next to Confucius with his bent arm for a pillow and brown rice in his bowl.",
+      "poem": [
+        "Brown rice is my food, whereas water is my drink, My elbow being my pillow, yet my heart is like in spring, Wealth and fame tempt me not, only virtue makes me proud.",
+        "For riches to Confucius are merely floating cloud."
+      ],
+      "story": "This sign references Confucius (551-479 BCE), China's most influential philosopher who lived during a chaotic period when warlords fought for power. Despite having opportunities to serve wealthy rulers and gain riches, Confucius chose to wander from state to state teaching his philosophy of ethical governance and personal virtue.\n\nThe story goes that he often went hungry, sleeping rough with nothing but his bent arm as a pillow. When disciples complained about their poverty, he reminded them that material wealth meant nothing compared to moral integrity.\n\nThis wasn't just philosophy for him — it was lived experience. Even when offered high positions that would have made him rich, he refused if it meant compromising his principles.\n\nHis dedication to 'the Way' (dao) over worldly success became legendary, inspiring generations of scholars who saw wisdom as more valuable than gold.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Drawing 孔夫子守道 in a career question puts you in the company of a man who chose brown rice and a bent arm for a pillow over a comfortable post that would have asked him to bend his thinking instead."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your steady income holds. The leak isn't bad luck, it's the side bets you keep chasing."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In love, this sign challenges everything modern dating teaches you."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Confucius's philosophy of finding contentment in simplicity."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Stick 76 places Confucius at his desk with brown rice, water, and his own elbow for a pillow."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Drawing this stick on a question about home places you inside the Analects image: Confucius with brown rice, plain water, a bent elbow for a pillow, and a heart still at ease."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 76 sits you next to Confucius with his bent arm for a pillow and brown rice in his bowl, and the verse insists his heart is still like spring."
+        }
       }
     }
   },
@@ -4161,6 +7289,48 @@ const SIAMSI_DATA = [
         "summary": "ปัญหาทั่วไป ต้องหยุดแก้ตัวรอเวลาที่ความจริงจะปรากฏเอง",
         "detail": "ถูกตั้งข้อหาผิดๆ แต่ยังไม่ใช่เวลาที่จะแก้ตัว\n\nเซียมซีใบนี้เล่าเรื่องกงเยฉางช์ (公冶長) นักปราชญ์ผู้ฟังภาษานกได้ วันหนึ่งเขาได้ยินเสียงนกป่าบอกว่า \"ที่เนินใต้มีเสือฆ่าแกะทิ้งไว้\" กงเยฉางช์จึงไปเก็บซากแกะมาประทัง แต่ชาวบ้านเห็นเขาแบกซากแกะก็ใส่ความว่าขโมยสัตว์เลี้ยง ทั้งที่เขาเลี้ยงไม่ได้สักตัว บทกวีบอก \"其身雖在於縲絏\" ตัวติดอยู่ในคุกนั่นแหละ แต่ \"到底非關自己殃\" สุดท้ายแล้วเรื่องเหี้ยนี้ก็ไม่ใช่ความผิดของเขาจริงๆ\n\nที่น่าสนใจคือกงเยฉางช์ออกจากคุกได้ยังไงนะ ไม่ใช่เพราะเขาแก้ตัวเก่ง แต่เพราะมีนกตัวอื่นมาเป็นพยาน บอกความจริงให้คนฟัง นี่คือเซียมซีระดับกลางๆ ที่บอกว่าคุณต้องรอ แต่ไม่ใช่รอด้วยอาการหดหู่ เพราะสิ่งที่พิสูจน์ความบริสุทธิ์ของคุณยังไม่มาถึงเท่านั้นเอง\n\nตอนนี้คุณกำลังโดนใส่ร้ายใส่ป่าวอะไรบางอย่างใช่ไหม หรือมีคนมองว่าคุณทำผิด ทั้งที่คุณรู้ดีว่าตัวเองไม่ได้ทำ อาจเป็นเรื่องงาน เป็นเรื่องครอบครัว หรือเป็นความรักที่อีกฝ่ายเข้าใจผิดคุณ การแก้ตัวในจังหวะนี้กลับทำให้ดูผิดมากกว่าเดิม คนไม่อยากฟัง ยิ่งพูดยิ่งเหมือนกบอ้วกเสียงดัง\n\nหยุดพยายามพิสูจน์ตัวเองสักเดือนเถอะ ให้เวลาแก่สถานการณ์ เหมือนกงเยฉางช์ที่ไม่ได้วิ่งไปหานกมาเป็นพยาน แต่มันมาเอง"
       }
+    },
+    "en": {
+      "title": "Gong Yechang's False Accusation",
+      "fortune_level": "Average",
+      "one_line_summary": "Gong Yechang carried the dead lamb home because the bird told him where it lay.",
+      "poem": [
+        "Gong ye was the man who could the birds' language understand",
+        "A bird from the Southern Hill said a tiger had killed a lamb.",
+        "He took the dead lamb home but was accused of burglary.",
+        "Shamefully he was put to jail though he was not guilty."
+      ],
+      "story": "Gong Yechang was a scholar from Confucius's era, famous for understanding bird language. The story goes that a bird told him about a dead sheep on Southern Hill, killed by a tiger.\n\nBeing honest, Gong retrieved the carcass to prevent waste. But when villagers saw him with the dead animal, they assumed he'd stolen it and had him arrested.\n\nEven his special ability became a liability—people thought his 'bird language' claims were just elaborate lies to cover theft. Confucius himself believed in Gong's innocence and even arranged for his daughter to marry him after his release.\n\nThe tale became a classic example of how good intentions can be twisted by suspicious minds, and how being different or gifted sometimes makes you an easy target for blame.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors Gong Yechang's predicament perfectly."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income holds steady, but watch what you co-sign — someone else's mess can look like yours."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Gong Yechang understood the language of birds and was jailed for it."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Gong Yechang understood what the birds were saying."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Gong Yechang understood the birds, and that gift sent him to jail."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Gong Yechang heard the bird, walked up the hill, carried the lamb home, and ended up in a cell."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Gong Yechang carried the dead lamb home because the bird told him where it lay, and he was honest enough to think waste was the worse sin."
+        }
+      }
     }
   },
   {
@@ -4214,6 +7384,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เซียมซีที่ 78 เซิงเตี้ยนแสดงเจตนารมณ์ ระดับปลาบปลื้ม เรื่องทั่วไป",
         "detail": "ได้แล้ว! แต่ช้าไปนิดนะ บทกลอนเล่าเรื่องเสียงพิณที่ยังก้องอยู่ในอากาศ ใส่เสื้อใหม่ตอนฤดูใบไม้ผลิจะหมดแล้ว นำเด็กหนุ่มสาวไปเที่ยวที่ลานเต้นรำ กลับมาแล้วก็ร้องเพลงด้วยอารมณ์ดีเป็นล้นพ้น นี่คือเรื่องราวของเซิงเตี้ยน (曾點) นักปราชญ์สมัยขงจื้อที่ทำให้ทุกคนงง เพื่อนๆ พูดถึงการเป็นนายกรัฐมนตรี การรบ การปกครองเมือง แต่เซิงเตี้ยนกลับบอกขงจื้อว่า \"อยากแค่ใส่เสื้อใหม่ พาเด็กๆ ไปเล่นน้ำที่ลำธาร แล้วร้องเพลงเดินกลับบ้าน\" ขงจื้อฟังแล้วพยักหน้า \"ข้าเห็นด้วยกับเซิงเตี้ยน\" เพราะเขาเข้าใจแล้วว่าอะไรคือความสุขที่แท้จริง คุณกำลังรู้สึกแบบนี้ใช่ไหม?"
+      }
+    },
+    "en": {
+      "title": "Zeng Dian's Simple Aspirations",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Your life is entering a harmonious phase where everything feels naturally aligned.",
+      "poem": [
+        "Beautiful is the music from our flute and zither.",
+        "Our spring gowns are full of joyful colour.",
+        "Hand in hand we go hiking in this charming season.",
+        "We sing, we dance, and enjoy our witty conversation."
+      ],
+      "story": "This sign honors Zeng Dian, a lesser-known figure from Confucius's circle around 500 BCE. While other disciples debated grand political ambitions and military conquests, Zeng Dian offered a startlingly humble vision when asked about his life goals.\n\nHe simply wanted to enjoy a spring afternoon by the river with friends — swimming, playing music, and returning home content. Confucius, to everyone's surprise, said this was the wisest answer of all.\n\nZeng Dian understood something the ambitious ones missed: true fulfillment comes from appreciating life's simple pleasures and genuine human connection. His story became a cornerstone of Chinese philosophy about finding joy in the present moment rather than chasing distant achievements.\n\nToday, when Hong Kong moves at breakneck speed, his wisdom feels remarkably relevant — sometimes the best life plan is knowing when to slow down and enjoy what you already have.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering a golden phase where success comes naturally, almost like a beautiful melody you don't have to force."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Years of patient work are ripening into steady income — trust the slow channel."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Zeng Dian's answer landed differently because everyone else was performing."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Zengdian's wisdom about finding joy in simple, natural rhythms."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey is entering a golden phase where everything clicks into place."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your home situation is entering a particularly harmonious phase where simple pleasures will bring the deepest satisfaction."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your life is entering a harmonious phase where everything feels naturally aligned."
+        }
       }
     }
   },
@@ -4269,6 +7481,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 79 สู่ฉินได้รับแต่งตั้ง ระดับกลาง เตือนไม่ให้ไล่ตามสิ่งไร้ตัวตน",
         "detail": "ลมใส แต่ยังไม่ถึงฤกษ์\n\nบทกลอนสี่บรรทัดนี้วาดภาพชัดเจน: \"富貴有如春夢熟\" ความร่ำรวยเหมือนฝันดีกลางฤดูใบไม้ผลิ ฝันแสนหวานแต่ตื่นมาก็จางหายไป \"世人何苦力爭求\" คนเราทำไมถึงต้องแย่งชิงกันจนตัวสั่น \"任他秉笏當朝立\" ให้เขาถือไม้เท้าทองยืนในหอประชุมเถอะ \"到死惟留土一坏\" สุดท้ายตายแล้วก็เหลือแค่ดินกองเดียว\n\nเรื่องราวของสู่ฉิน (蘇秦) นักการทูตโบราณที่เริ่มต้นจากขอทาน เวลาไปขอให้ใครว่าจ้างงานก็โดนไล่ กลับบ้านแม้แต่เมียยังเอาตาปิด แต่เขาไม่ยอมแพ้ นั่งอ่านหนังสือจนดึกดื่น เทียนไหม้หมดก็ใช้เข็มแทงขาตัวเองให้ตื่น อ่านต่อไปจนกว่าจะเห็นแสงแรกของวัน ในที่สุดเขาก็ไต่เต้าขึ้นมาได้ พกตราประจำตัวของหกเมืองใหญ่ กลายเป็นคนทรงอิทธิพลที่สุดในยุคนั้น แต่แล้วไง? ถูกมือสังหารแทงตายตอนอายุแค่สี่สิบกว่า อำนาจที่สะสมมาทั้งชีวิตไม่ได้ช่วยอะไรเขาเลย\n\nคุณตอนนี้รู้สึกเหมือนกำลังไล่ตามเงาตัวเองไหม? ยิ่งวิ่งเร็วเท่าไหร่ เงาก็ยิ่งวิ่งเร็วเท่านั้น หรือคล้ายคนใช้วงเล็บจับเมฆ จับได้ก็แค่ลมผ่าน ชีวิตมันเหมือนขับรถไปบนถนนวนซ้ำ เห็นป้ายเดิมผ่านไปผ่านมา แต่ไม่รู้ว่ากำลังไปไหน คุณอาจกำลังคิดว่าสิ่งที่ตัวเองไขว่คว้าอยู่นี่จะทำให้ชีวิตเปลี่ยนไป แต่จริงๆ แล้วมันคือฝันกลางวันแสงแดด ชัดตอนฝัน แต่ตื่นแล้วไม่เหลืออะไร อย่าเข้าใจผิดนะ ไม่ใช่ให้คุณนิ่งเฉยเหมือนต้นไผ่ แต่อย่าไปเอาความสุขภายในแลกกับความระส่ำภายนอก\n\nหยุดไล่ตามสิ่งที่ไร้ตัวตนสักเดือน ลองนั่งฟังเสียงในใจตัวเองแทน บางทีคำตอบอยู่ตรงนั้น ไม่ใช่ตรงที่คุณกำลังวิ่งไล่"
       }
+    },
+    "en": {
+      "title": "Su Qin's Rise to Prime Minister",
+      "fortune_level": "Average",
+      "one_line_summary": "Here's the thing about this sign — it's asking you to step back from the hustle.",
+      "poem": [
+        "Wealth and fame are but dreams of illusive pleasure.",
+        "Why waste one's fleeting life seeking unreal treasure?",
+        "For even the prime minister in the Emperor's Court.",
+        "Will eventually turn into dust and come to naught."
+      ],
+      "story": "Su Qin was one of ancient China's most famous diplomatic strategists during the Warring States period (around 3rd century BCE). Born into poverty, he studied political theory obsessively, often staying awake all night with only an oil lamp.\n\nAfter years of rejection, he finally convinced six kingdoms to form an alliance against the powerful Qin state. His success was meteoric — from a poor scholar to wearing the seals of six different kingdoms simultaneously, essentially becoming the most powerful diplomat of his era.\n\nBut his triumph was short-lived. Political winds shifted, alliances crumbled, and Su Qin was eventually assassinated in a palace conspiracy.\n\nHis story became a cautionary tale about ambition's fleeting nature. Even someone who reached the absolute pinnacle of political power ended up as just another name in history books, his grand plans ultimately meaningless.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career ambitions are getting a reality check right now."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income comes and goes, but the real question is whose face you picture when chasing more."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Su Qin's story sits behind this stick like a long shadow."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Su Qin wore the seals of six prime ministers, and the verse still calls his glory a dream that ends in dust."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Su Qin wore the seals of six kingdoms at once, and the verse still calls his glory a dream."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Drawing this stick suggests your family is caught up in external pressures about success, status, or material achievement."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Here's the thing about this sign — it's asking you to step back from the hustle."
+        }
+      }
     }
   },
   {
@@ -4322,6 +7576,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "เซียมซีที่ 80 ถ้วยสะท้อนธนู ระดับกลางดี เตือนเรื่องคิดมากจนกลายเป็นปัญหา",
         "detail": "คิดมากไปแล้วครับ! บทกลอนเล่าว่า \"飛觴對舞幾時賒 弓影橫杯悞食蛇\" ดื้อๆ ก็แปลว่า กำลังดื่มไวน์เต้นรำสนุกสนาน แต่เงาธนูที่แขวนผนังกลับส่ายในแก้ว ทำให้ตกใจคิดว่าเป็นงู นี่แหละ \"ถ้วยสะท้อนธนู\" หรือจีนเรียก \"杯弓蛇影\" เรื่องราวโบราณเล่าถึงเล่อกวง (樂廣) คนสมัยราชวงศ์จิ้นที่เชิญเพื่อนมาดื่มไวน์ เพื่อนเห็นเงาธนูในแก้วแล้วนึกว่าเป็นงู กลับบ้านไปก็ป่วยหนัก กว่าจะรู้ความจริงว่าแค่เงาธนูที่แขวนผนัง พอมาดูอีกครั้งโรคก็หายเป็นปกติ\n\nคุณกำลังเป็นแบบเพื่อนคนนั้นไหม? เห็นอะไรก็คิดว่ามีปัญหา นอนไม่หลับเพราะกลัวเรื่องที่ยังไม่เกิด เพื่อนส่งข้อความสั้นๆ คุณก็กลัวว่าเขาเซ็ง เจ้านายพูดน้ำเสียงธรรมดา แต่คุณไปคิดว่าจะโดนไล่ออก หรือคนรักไม่ค่อยพูดเยอะวันไหน คุณก็คิดไปเองว่าเขาเบื่อแล้ว บางทีสิ่งที่ทำให้คุณเหนื่อยใจไม่ใช่ปัญหาจริงๆ แต่เป็นเงาปัญหาที่คุณสร้างขึ้นเอง\n\nบทกลอนท้ายบอกว่า \"猜透詩中元妙訣 泰來否極事無差\" ถ้าเข้าใจเคล็ดลับในบทกวี ก็จะรู้ว่าเมื่อความทุกข์ถึงขีดสุดแล้ว ความสุขก็จะมาแทนที่ นี่แหละธรรมชาติของชีวิต ไม่มีอะไรแย่ตลอดไป\n\nหยุดคิดมากซักเดือนสิครับ พอเจอสิ่งที่น่าสงสัยให้หาข้อเท็จจริงก่อน อย่าไปสร้างเรื่องราวในหัวเอง"
+      }
+    },
+    "en": {
+      "title": "The Bow's Reflection in the Cup",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Your mind is playing tricks on you right now.",
+      "poem": [
+        "While drinking with his friend he was alarmed, Because in his cup a small snake he found.",
+        "In truth it was but the shadow of a hung-up bow, Fear leads nowhere, for good luck will come through."
+      ],
+      "story": "This story comes from the Jin Dynasty, about a general named Yue Guang who invited his friend Le Guang to drink wine. Le Guang suddenly stopped mid-sip, convinced he saw a snake in his cup.\n\nThough he forced himself to finish the wine out of politeness, he became violently ill afterward, tormented by the thought of having swallowed a serpent. Yue Guang investigated and discovered that a decorative bow hanging on his wall had cast its shadow into the wine cup, creating the illusion of a snake.\n\nWhen he showed his friend the truth, Le Guang recovered instantly. This tale became a classic metaphor in Chinese culture about how our fears can literally make us sick, and how confronting reality often dissolves our anxieties completely.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career concerns might be based more on perception than reality."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The money is quietly growing, but fear makes you underprice and underspend."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The bow on the wall never moved."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health concerns right now might be more shadow than substance."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Du Xuan drank the bow's shadow and made himself sick from a reflection."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The image at the heart of this stick is a bow's shadow falling across a wine cup, mistaken for a snake."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your mind is playing tricks on you right now."
+        }
       }
     }
   },
@@ -4377,6 +7671,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซี 81 จื่อลู่ยิงนกไก่ป่า ระดับกลาง เตือนให้เชื่อสัญชาตญาณและรู้จักถอนตัวเมื่อรู้สึกไม่ปลอดภัย",
         "detail": "สัญชาตญาณแปลกๆ นี่ไว้ใจได้นะ\n\nบทกลอนเล่าภาพที่ชัดเจน นกไก่ป่าบินไปมาบนสันเขา ตอนแรกสนุกสนาน ร่าเริง แต่พอรู้ตัวว่ามีคนสนใจขนสีสันแสนสวย มันก็รีบบินหนี ร้องเสียงดัง 3 ครั้ง บินข้ามไปอีกฟากหนึ่ง เรื่องนี้มาจากตำนานจื่อลู่ (子路) ลูกศิษย์ของขงจื๊อ ที่เห็นนกไก่ป่าเมื่อกำลังจะถูกล่า นกตัวนั้นไม่ได้หนีเพราะขี้ขลาด แต่เพราะฉลาดรู้ว่าขนสวยของมันเป็นทั้งของขวัญและของภัย\n\nจื่อลู่เป็นคนใจร้อน กล้าหาญแต่มักใจเร็ว แต่เรื่องนกไก่ป่าทำให้เขาเรียนรู้ว่าบางทีการหยุดคิดก่อนทำอาจจะดีกว่า นกไก่ป่าไม่ได้รออยู่บนต้นไผ่จนนายพรานเล็งปืนใส่หัว มันบินทันทีที่สังหรณ์ใจบอก \"เป็นอันตราย\" นี่แห�ะคือสิ่งที่จื่อลู่ต้องเรียนรู้\n\nคุณก็เหมือนนกไก่ป่าตัวนั้นแหละ รู้สึกไหมว่าช่วงนี้มีคนจ้องมองมากกว่าปกติ? มีคนสนใจผลงาน ตำแหน่ง หรือสิ่งที่คุณมี แต่ความสนใจนั้นไม่ใช่เรื่องดีเสมอไป บางทีมันคือสายตาของคนที่อยากได้สิ่งเดียวกับคุณ หรือคิดจะใช้ประโยชน์จากตัวคุณ\n\nความรู้สึกไม่สบายใจที่คุณมีอยู่ ไม่ใช่ความหวาดระแวง นั่นคือสัญชาตญาณเตือนภัย เหมือนนกไก่ป่าที่รู้ว่าเวลาไหนควรบิน คุณก็รู้เหมือนกันว่าเวลาไหนควรเก็บตัว หรือควรถอนตัว อย่าบังคับตัวเองให้ทนอยู่ในสถานการณ์ที่รู้สึกไม่ปลอดภัย\n\nเสียงร้องสามครั้งของนกไก่ป่า คือการเตือนพวกพ้อง คุณก็ควรส่งสัญญาณบ้าง ไม่ต้องตะโกนใส่หน้าใคร แค่ให้คนที่เป็นห่วงคุณรู้ว่าคุณกำลังเตรียมตัวเปลี่ยนแปลงอะไรบางอย่าง\n\nพอรู้สึกแปลกๆ ครั้งที่สาม อย่าลังเลแล้วนะ ขยับตัวไปหาที่ที่ปลอดภัยกว่า ไม่ว่าจะเป็นงาน ความสัมพันธ์ หรือสถานการณ์ใดก็ตาม"
       }
+    },
+    "en": {
+      "title": "The Wise Pheasant's Dance",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "The pheasant on the mountain bridge is doing well.",
+      "poem": [
+        "By the mountain bridge the pheasant spreads her wings.",
+        "Flying high, flying low, she dances and she sings.",
+        "Yet in joy and mirth she forgets not to look around.",
+        "In time she quits just to avoid the danger of being found."
+      ],
+      "story": "This stick tells the story of Zilu (子路), one of Confucius's most devoted disciples, known for his courage but also his impulsiveness. The reference to 'shooting the female pheasant' comes from an ancient hunting tale where Zilu learned the importance of timing and awareness.\n\nIn Chinese culture, the pheasant represents both beauty and wisdom—it knows when to display its magnificent plumage and when to retreat to safety. The mountain bridge setting is significant too, representing a crossing point where careful navigation matters most.\n\nThis story became a metaphor for understanding that even in our moments of greatest joy and success, we must remain alert to changing circumstances. It's about finding the balance between celebrating life's good moments and staying grounded in practical awareness.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The pheasant on the mountain bridge isn't punished for her joy."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, but small joyful spends are quietly draining the well."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life is entering a phase where timing becomes everything."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The pheasant on the mountain bridge is the image to sit with."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now resembles this clever pheasant."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is in a season of relative happiness and stability, much like the pheasant dancing on her mountain perch."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The pheasant on the mountain bridge is doing well."
+        }
+      }
     }
   },
   {
@@ -4430,6 +7766,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ขงจื๊อเคาะพิณหินรอจังหวะ คุณก็เหมือนกัน ยังไม่ถึงเวลา",
         "detail": "ยังไม่ถึงเวลา แต่ไม่ใช่ว่าไม่ได้เลย บทกลอนเล่าเรื่องขงจื๊อ (孔子) ตอนแก่แล้วยังไปเมืองเวย (衛) เอาไม้เคาะพิณหินคลายเศร้า \"聖人擊磬在於衛\" นักปราชญ์ใหญ่กลับต้องมานั่งเคาะหินเล่น เพราะไม่มีกษัตริย์ไหนเอาหลักการปกครองของท่านไปใช้ \"誰料過門有荷簣\" ใครจะรู้ว่าชาวนาแบกฟางเดินผ่านไป ได้ยินเสียงพิณหินแล้วเข้าใจใจท่านเสียงาม \"嗟嘆有心挽道窮\" คนแบกฟางถอนใจ รู้ว่านักปราชญ์คนนี้อยากช่วยชาติช่วยแผ่นดิน แต่โชคช่วยไม่ได้ \"可憐日月今將逝\" น่าเวทนาที่เวลาไม่รอใคร ผมขาวหงอกแล้วยังทำอะไรไม่สำเร็จ\n\nขงจื๊อเคาะพิณหินไม่ใช่เพื่อใครฟัง แต่เคาะให้ตัวเองฟัง เหมือนคนที่ร้องเพลงตอนเศร้าๆ เพื่อปลอบใจตัวเอง ท่านรู้ดีว่ายุคสมัยไม่เอื้อ แต่ยังไม่ยอมแพ้ ยังคิดว่าถ้ามีโอกาสอีกครั้งคงจะทำได้ ชาวนาที่เดินผ่านไปนั่นแหละคือคนที่เข้าใจคุณจริงๆ ไม่ต้องอธิบายยาวๆ แค่ได้ยินเสียงก็รู้แล้วว่าคุณกำลังคิดอะไรอยู่\n\nคุณเคยรู้สึกแบบขงจื๊อไหม? มีความฝันอะไรสักอย่างที่ยังไม่สำเร็จ พอคนถามก็บอกว่า \"ปล่อยไปแล้ว\" แต่จริงๆ ยังคิดอยู่ใช่ไหม บางคืนนอนไม่หลับก็เพราะเรื่องนั้นแหละ เหมือนมีเสียงพิณหินในหัว เคาะๆ อยู่เรื่อยๆ อาจจะเป็นเรื่องธุรกิจที่อยากทำ อาจจะเป็นคนที่อยากคุยด้วย หรือเป็นเป้าหมายที่วางไว้แล้วยังไม่กล้าเริ่ม ตอนนี้คุณก็เหมือนขงจื๊อ มีความรู้ความสามารถแต่รู้สึกว่าโลกยังไม่พร้อมรับ หรือตัวเองยังไม่พร้อมเสนอ\n\nแต่รู้ไหมว่าทำไมชาวนาถึงเข้าใจขงจื๊อได้? เพราะเขาเดินทางมากพอ ได้ยินเสียงคนมากพอ แยกได้ว่าเสียงไหนเป็นเสียงคนมีเรื่องในใจ คุณก็เหมือนกัน รอบๆ ตัวคุณต้องมีคนที่เข้าใจ บางทีไม่ต้องเป็นคนใหญ่คนโต อาจจะเป็นเพื่อนธรรมดาที่บอกว่า \"เห้ย ลองดูสิ\" เขาเห็นบางอย่างที่คุณเองไม่ได้สังเกต\n\nอย่าเก็บเรื่องไว้ในใจคนเดียว ไปคุยกับคนที่เข้าใจคุณจริงๆ สักสองสามคน ถามตรงๆ ว่าเขาคิดยังไงกับไอเดียที่คุณยังไม่กล้าทำ"
+      }
+    },
+    "en": {
+      "title": "Confucius in Wei",
+      "fortune_level": "Average",
+      "one_line_summary": "The stick places you in the room with Confucius at Wei.",
+      "poem": [
+        "Unemployed and idle, Confucius played at home his chime stone.",
+        "A woodcutter passed by and exclaimed with a saddening tone, \"This is the very man who can this drowsing world save, Yet he is disabled by age, time's invincible wave.\""
+      ],
+      "story": "This sign references a difficult period in Confucius's life when he lived in the state of Wei around 500 BCE. Despite being China's greatest philosopher, Confucius spent years unemployed and politically sidelined.\n\nThe poem depicts him playing his chime stones at home while a passing woodcutter recognizes his wisdom but laments that age and circumstances prevent him from saving the world. Wei was ruled by Duke Ling, whose court was plagued by scandal and corruption.\n\nConfucius hoped to advise the ruler but was largely ignored, reduced to teaching a small circle of disciples while watching his ideals go unrealized. The woodcutter represents the common people who could see Confucius's value even when those in power couldn't.\n\nThis story embodies the frustration of having wisdom or skills that remain unrecognized or unused due to circumstances beyond your control.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image at the heart of this stick is Confucius in Wei, sitting at home, striking his chime stone while a woodcutter walks past and sighs that the one person who could steady the age is the one the age has set aside."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Skill outpaces payoff this year. Don't spend to feel visible — the treasury fills slowly."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Stick 82 places you beside Confucius at Wei, sixty-something and politically shelved, choosing to play the chime stone in a courtyard while the rulers outside sharpen swords."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors Confucius playing his stone chimes — you have knowledge and good intentions, but results aren't matching your efforts right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your current study situation mirrors Confucius in Wei — you have knowledge and capability, but external circumstances aren't aligning perfectly with your efforts."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors Confucius's predicament — you have good intentions and valuable insights, but you're hitting walls when trying to implement change or solve problems."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The stick places you in the room with Confucius at Wei, striking his chime stones at home while the court ignores him and a passing woodcutter, of all people, hears the music for what it is."
+        }
       }
     }
   },
@@ -4485,6 +7861,49 @@ const SIAMSI_DATA = [
         "summary": "ใจคนไม่รู้จักพอ กำลังติดอยู่กับปัญหาที่คิดมาหลายเดือน",
         "detail": "ใจคนเราไม่มีวันพอ กบเหลือบมองนางฟ้าแล้วคิดว่าตัวเองควรบินได้\n\nบทกลอนใบนี้ว่า \"凡麈身歷幾時閒\" ชีวิตคนเรานี่ไม่มีวันสงบ มีแต่ความคิดพันวนอยู่เรื่อยเปื่อย \"世事渾如叠叠山\" เหตุการณ์ต่างๆ มันเหมือนภูเขาซ้อนทับกัน เดินผ่านแล้วก็มีลูกใหม่รออยู่ \"既富尚憂無貴子\" รวยแล้วยังเศร้าที่ไม่มีลูกเก่ง \"不知花放又花殘\" ไม่สนใจแม้แต่ดอกไม้ที่บานแล้วร่วง เพราะใจยุ่งกับเรื่องอื่น\n\nเซียมซีใบนี้เล่าเรื่องคนที่มีใจไม่รู้จักพอ คล้ายนิทานงูกับชาวนาที่เราคุ้นๆ ชาวนาช่วยงูตาย งูขอบคุณถึงกับจะให้ทองคำ ทีแรกชาวนาขอนิดหน่อย ได้แล้วขออีก พอได้แล้วก็ขอเป็นเจ้าของเมือง สุดท้ายขอเป็นกษัตริย์เลย งูเลยรำคาญ ถอนคำสัญญา ทิ้งชาวนาไว้กับความว่างเปล่า ใจคนเราก็เป็นอย่างนี้แหละ ได้อันหนึ่งแล้วอยากได้อีกอัน ไม่เคยหยุดขอบคุณกับสิ่งที่มีอยู่\n\nคุณกำลังติดอยู่กับเรื่องที่คิดมาหลายเดือนแล้วใช่ไหม บางทีอาจเป็นงานใหม่ที่ยังไม่มา หรือความสัมพันธ์ที่ยังไม่ชัด หรือเงินที่ยังไม่พอ แต่ระหว่างที่คุณจ้องมองสิ่งที่ยังไม่ได้ คุณลืมชื่นชมสิ่งดีๆ ที่มีอยู่ใกล้ตัว เหมือนคนขับรถไปทำงานทุกวัน แต่ไม่เคยสังเกตว่าดอกบัวหลวงข้างทางมันบานสวยจัง เพราะใจยุ่งกับการประชุมที่จะมีช่วงบ่าย เรื่องที่คุณกำลังถามนี้เป็นเรื่องปกติ ไม่ได้โชคร้ายแต่ก็ไม่ใช่แจ็คพอต มันจะเป็นไปตามธรรมดา แบบที่ชีวิตส่วนใหญ่มักจะเป็น\n\nหยุดคิดมากเถอะ ให้เวลากับมันสักหน่อย ช่วงนี้ไปสังเกตดูดอกไม้บ้าง ฟังเสียงฝนบ้าง ขอบคุณสิ่งเล็กๆ ที่มีแล้ว"
       }
+    },
+    "en": {
+      "title": "The Heart That's Never Satisfied",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 83 carries the old proverb of the snake and the elephant.",
+      "poem": [
+        "In this busy world, hard we have to strive.",
+        "Our problems pile like mountains in this miserable life.",
+        "Even the wealthiest may suffer for having no son.",
+        "So behold!",
+        "Flowers bloom, flowers fall, why worry at all?"
+      ],
+      "story": "This sign takes its name from an ancient Chinese saying: 'The human heart is never satisfied' (人心不足蛇吞象 - literally 'an unsatisfied heart is like a snake trying to swallow an elephant'). The proverb comes from a folk tale about a greedy farmer who saved a magical snake.\n\nIn gratitude, the snake offered to grant him wishes. The farmer asked for gold, then more gold, then a mansion, then power.\n\nEach gift only made him want more. Finally, he demanded to become emperor.\n\nThe snake, disgusted by his endless greed, devoured him instead. The story became a cornerstone of Chinese philosophy about contentment.\n\nDuring the Song Dynasty, scholars often quoted this tale when advising emperors against excessive expansion or citizens against chasing status. It's not about having no ambition — it's about recognizing when enough is enough.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse opens on a busy world where problems pile like mountains, then closes with flowers blooming and falling."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your income is fine, but the gap between having enough and feeling enough is widening."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The snake trying to swallow the elephant is the image sitting underneath this stick, and in matters of love it lands differently than most people expect."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The stick called 人心不足 carries one of the oldest cautions in Chinese folk wisdom: the heart that cannot stop reaching, the snake that tried to swallow the elephant."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "You're caught in the achievement trap that plagues so many students today."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The classical figure here is the wealthy man who has everything except a son, and so has nothing."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 83 carries the old proverb of the snake and the elephant, the farmer who kept asking until his benefactor swallowed him whole."
+        }
+      }
     }
   },
   {
@@ -4538,6 +7957,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ฮันซินเข้าร่วมทัพ: ความสามารถเต็มตัวแต่ยังไม่ได้โชว์ ต้องหาสนามรบที่ใช่",
         "detail": "มีของ แต่ยังไม่ได้โชว์! บทกลอนเล่าว่า \"滿腹奇才志未沖\" หน้าอกเต็มไปด้วยความสามารถแต่ยังไม่ได้ระเบิดออกมา เหมือน \"鐵雞難舉\" ไก่เหล็กที่แม้จะมีปีกแต่บินไม่ขึ้น แต่พอ \"張良指示身投漢\" จางหลาง (張良) ชี้ทางให้หันไปหาหลิวปัง ชีวิตถึงได้เปลี่ยน ขณะที่เซียงอวี่ (項羽) ยังดึงดันกับวิธีเก่าจนต้องมาจบชีวิตที่แม่น้ำอูเจียง\n\nฮันซิน (韓信) ตัวจริงเนี่ยเป็นคนที่มีชื่อเสียงเรื่องความอดกลั้น เด็กหนุ่มสมัยนั้นถูกอันธพาลท้าให้คลานผ่านขาไปมา เขาเลือกคลาน ไม่ใช่เพราะขี้ขลาด แต่เพราะรู้ว่าการใช้กำลังตอนนั้นไม่ได้เรื่อง ช่วงที่อยู่กับเซียงอวี่ เขาเป็นแค่ทหารยามถือหอกประจำค่าย เสนอแผนการรบก็ไม่มีใครฟัง จนซิ่วเฮ่อ (蕭何) เห็นความสามารถ ขี่ม้าไล่ตามมาชวนกลางคืน \"ซิ่วเฮ่อไล่ฮันซินใต้แสงจันทร์\" เป็นเรื่องที่คนจีนทุกคนรู้จัก พอไปอยู่กับหลิวปัง จากทหารธรรมดากลายเป็นแม่ทัพใหญ่ที่โลกจำได้\n\nคุณกำลังเป็นฮันซินในช่วงก่อนจะเจอซิ่วเฮ่อ ความสามารถที่มีอยู่ในตัวไม่ใช่ปัญหา ปัญหาคือสถานที่กับคนรอบข้างที่ยังไม่เห็นคุณค่า บางทีคุณอาจรู้สึกว่าตัวเองโดนมองข้าม งานที่ทำไม่ตรงกับศักยภาพ หรือเจ้านายไม่เข้าใจวิสัยทัศน์ที่คุณมี เหมือนฮันซินที่เอาแผนการรบไปเสนอเซียงอวี่ แต่กลับถูกมองเป็นเด็กเหลือขอ คำว่า \"鐵雞難舉\" นี่แหละ มีปีกแต่บินไม่ขึ้น ไม่ใช่เพราะขาดความสามารถ แต่เพราะสภาพแวดล้อมไม่เอื้อ\n\nแต่เซียมซีใบนี้ไม่ได้บอกให้นั่งรอนะ จางหลางชี้ทางให้ฮันซินไป \"ลงทุน\" กับหลิวปัง ไม่ใช่นั่งคิดอยู่กับเซียงอวี่ต่อ เปลี่ยนสนามรบ หาคนที่เห็นคุณค่าในสิ่งที่คุณทำได้ บางครั้งไม่ใช่เราต้องเก่งขึ้น แต่เราต้องไปอยู่ที่ที่ความเก่งของเราใช้ได้\n\nเริ่มจากการสำรวจตัวเลือกรอบตัวก่อน มีตำแหน่งไหนหรือบริษัทไหนที่ต้องการคนแบบคุณบ้าง ขยับไปคุยกับคนในวงการที่อยู่ในองค์กรที่ให้โอกาส อย่านั่งรอให้โอกาสมาหาเอง"
+      }
+    },
+    "en": {
+      "title": "Han Xin Joins the Army",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This sign speaks to the frustration of feeling undervalued or stuck in circumstances that don't showcase your true…",
+      "poem": [
+        "The famous general had once seemed weak and tame.",
+        "Though clever, he never had a far-reaching fame.",
+        "Not till he joined the army of the good lord, Could he show his talent, and his title for bravery claim."
+      ],
+      "story": "Han Xin is one of China's most celebrated military strategists, but his early life was marked by humiliation and poverty. The most famous story tells of a local bully forcing young Han Xin to crawl between his legs in public, testing whether he'd fight back or swallow his pride.\n\nHan Xin chose dignity over violence, enduring the shame. Later, when Liu Bang was fighting for control of China against the mighty Xiang Yu, Han Xin finally found his calling.\n\nUnder Liu Bang's banner, his brilliant tactical mind transformed him from a nobody into the architect of an empire. His strategies were so effective that Liu Bang eventually grew suspicious and had him executed — a cautionary tale about talent finding its moment, then facing new challenges.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career mirrors Han Xin's journey perfectly."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your earning power is real, but you're being paid at a discount to what you're worth."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic potential mirrors Han Xin's hidden brilliance waiting for recognition."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Han Xin's hidden potential — you possess more resilience and healing capacity than currently shows."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Han Xin's story sits behind this stick like a quiet rebuke to anyone judging themselves by the wrong yardstick."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Han Xin spent years being underestimated, walking past markets where nobody saw the strategist inside the quiet man."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This sign speaks to the frustration of feeling undervalued or stuck in circumstances that don't showcase your true capabilities."
+        }
       }
     }
   },
@@ -4593,6 +8053,47 @@ const SIAMSI_DATA = [
         "summary": "ความอดทนจะได้รับผล เทพช่วยส่องทาง ความสำเร็จใกล้แล้ว",
         "detail": "ฟ้าส่องธรรมแล้วนะ! บทกลอนบอกว่า \"太乙燃藜照讀書\" เทพเทพีธุลีมาถือคบเพลิงให้อ่านหนังสือ แปลว่าใครจริงจังขนาดไหน ฟ้าดินก็มาช่วย ทศวรรษแห่งการหลับดึกตื่นเช้าจะมีค่าแล้ว เจ้าของเซียมซีคือหลิวเซียง (劉向) นักปราชญ์ตระกูลหลิว เขานั่งอ่านหนังสือในพระราชวัง เอาจริงเอาจังจนแสงตะเกียงดับไปแล้วยังไม่รู้ตัว พอดีเทพไท่อี้ (太乙神) เลยจุดไม้ไผ่ให้ส่องหนังสือต่อ นี่ไม่ใช่แค่ขยัน แต่เขาหลงใหลจริงๆ อ่านจนลืมโลก กว่าจะประสบความสำเร็จได้ใส่ชุดไหมทองคำ นั่งรถม้าแสนสง่า มีคนมากมายยกย่องนับถือ\n\nสำหรับคุณแล้วเนี่ย เรื่องที่ทำอยู่ตอนนี้กำลังจะเบ่งบาน ไม่ว่าจะเป็นงาน ธุรกิจ หรือโครงการส่วนตัว ความอดทนที่ผ่านมานั่นแหละจะกลายเป็นจุดแข็งที่ใครเอาไม่อยู่ ตอนนี้อาจยังรู้สึกว่าทำไปทำไป ไม่มีใครเห็นคุณค่า แต่เดี๋ยวก่อนนะ ช่วงนี้คนสำคัญกำลังจับตามองอยู่แล้ว เหมือนเทพไท่อี้ที่มองหลิวเซียงอยู่นั่นแหละ รู้ไหมว่าทำไมเทพถึงมาช่วย? เพราะเห็นความจริงใจ ไม่ได้อ่านเพื่อโชว์คนอื่น แต่อ่านเพราะรัก งานของคุณด้วยเหตุผลเดียวกัน ถ้าทำด้วยใจรักจริงๆ ไม่ใช่แค่เพื่อเงินหรือชื่อเสียง ความสำเร็จจะมาหาเอง\n\nอย่าเปลี่ยนวิธีการตอนนี้เลย เดินหน้าต่อไปแบบเดิม แล้วเพิ่มการเรียนรู้สิ่งใหม่ๆ เข้าไปอีก 20% ความสำเร็จที่รออยู่ไม่ใช่แค่เงินเดือนขึ้น แต่เป็นการยอมรับในสิ่งที่คุณทำ ทั้งจากคนในวงการและคนรอบข้าง"
       }
+    },
+    "en": {
+      "title": "Liu Xiang's Imperial Success",
+      "fortune_level": "Very Good",
+      "one_line_summary": "Liu Xiang's image is not the four-horse coach at the end.",
+      "poem": [
+        "For ten years he studied hard under the light of the star.",
+        "The scholar read piles of books, but his dreams were far.",
+        "There came the glorious moment when he returned to his town, On a four-horse coach, and in his gorgeous brocade gown."
+      ],
+      "story": "Liu Xiang represents the archetypal scholar who achieved the highest honor in imperial China — passing the palace examinations to become a high-ranking official. In ancient China, the imperial examination system was the only path to social mobility, regardless of birth.\n\nScholars would spend decades memorizing classical texts, often studying by candlelight or under the stars because they couldn't afford proper oil lamps. Success meant not just personal glory, but lifting your entire family from poverty to prestige.\n\nThe \"four-horse coach\" and \"brocade gown\" weren't just luxury items — they were symbols that this person had transcended their humble origins through pure determination and intellect. This story resonated deeply because it promised that talent and persistence could overcome any disadvantage.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering its harvest phase."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Years of quiet work are about to get paid — if you finally name your price."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic life is about to reward the patience and effort you've been investing."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Liu Xiang studied a decade by lamplight before the four-horse coach came for him, and the verse lingers on that gap between effort and recognition."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey is entering a breakthrough phase."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is entering a season of earned rewards after a long period of investment and patience."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Liu Xiang's image is not the four-horse coach at the end."
+        }
+      }
     }
   },
   {
@@ -4646,6 +8147,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "โชคเก่าเป็นทองแท้ ต้องเสียสละเพื่อได้โอกาส เหมือนแม่เถาข่านตัดผมแลกเงินเลี้ยงแขก",
         "detail": "โชคเก่าเป็นทองแท้! บทกลอนเล่าว่า \"截髮迎賓否也貧\" ตัดผมต้อนรับแขก ยังจนก็จน ฟังแล้วเศร้าใช่ไหม แต่ \"古今只有陶侃母 所以名留萬代聞\" ตั้งแต่โบราณจนทุกวันนี้ มีแม่เถาข่านคนเดียวเท่านั้น ที่ชื่อเสียงเลื่องลือไปพันปี\n\nเรื่องเล่าสนุกอ่ะ แม่เถาข่าน (陶侃母) ยากจนมาก บ้านไม่มีข้าวไม่มีปลา แต่คืนหนึ่งเพื่อนลูกชายมาเยี่ยม เธอดูรอบบ้าน ตู้ข้าวว่างเปล่า จะเอาอะไรไปต้อนรับ? เธอเดินไปหน้ากระจก หยิบกรรไกรขึ้นมา กรรเจียบ! ตัดผมยาวสวยของตัวเองทิ้ง เอาไปขายแลกเงินซื้อเหล้าเลี้ยงแขก ผู้คนเห็นเหตุการณ์นี้แล้วซาบซึ้ง เล่าต่อไปจนกระทั่งเถาข่านมีชื่อเสียง ได้เป็นนายทหารใหญ่\n\nคุณรู้ไหม ทำไมเรื่องนี้ถึงได้เล่าสืบต่อกันมาพันปี? เพราะแม่เถาข่านเธอมองเห็นภาพใหญ่ เธอรู้ว่าการให้เกียรติคนอื่นคือการลงทุนในอนาคตลูกชาย ไม่ใช่แค่ความอดอยาก นี่คือปัญญาแท้ๆ ตอนนี้คุณอาจกำลังเจอสถานการณ์คล้ายๆ กัน ต้องเสียสละอะไรบางอย่าง อาจจะเงิน อาจจะเวลา อาจจะความสบายใจ แต่ถ้าทำด้วยใจจริง ด้วยความคิดที่อยากให้คนอื่นดี ผลที่ได้กลับจะมหาศาลกว่าที่เสียไป\n\nอย่างเช่น คุณอาจต้องใช้เงินออมช่วยเหลือครอบครัว หรือเสียเวลาสอนงานเพื่อนร่วมงาน หรือลงทุนเรียนอะไรใหม่ทั้งที่ตอนนี้เงินไม่เหลือฟือ แต่จำไว้นะ สิ่งที่คุณให้ออกไปจากใจจริง จะกลับมาเป็นโอกาสใหม่ๆ ในรูปแบบที่คิดไม่ถึง ไม่เชื่อลองดู\n\nหาโอกาสให้คนที่คุณสนใจดูสิ ไม่ต้องใหญ่โต เชิญกินข้าวเย็น ช่วยงานฟรี หรือแนะนำคนที่เขาควรรู้จัก แค่นั้นแหละ"
+      }
+    },
+    "en": {
+      "title": "Mother Tao's Eternal Legacy",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "Stick 86 sets Tao Kan's mother in front of you — the woman who cut off her hair.",
+      "poem": [
+        "Tao the famous courtier had once been very poor.",
+        "To entertain his quests his mother sold her hair.",
+        "This lady was highly praised for what she had done",
+        "The best of all mothers was the title she had won."
+      ],
+      "story": "This stick honors the mother of Tao Kan, a famous general and statesman during China's Jin Dynasty (4th century). When Tao Kan was young and struggling, his family was desperately poor.\n\nOne winter night, unexpected guests arrived at their humble home. They had no money for proper hospitality, no food to offer, no bedding for the visitors.\n\nIn a moment that became legendary, Tao's mother cut off her long, beautiful hair and sold it to buy wine, food, and blankets for their guests. In Chinese culture, a woman's hair represented her dignity and beauty — selling it was an act of profound sacrifice.\n\nThe guests turned out to be important officials who later helped launch Tao Kan's career. His mother's selfless act didn't just save face that night; it changed their family's destiny.\n\nShe became the archetypal example of a mother who sacrifices everything for her child's future, earning eternal praise in Chinese literature.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Drawing this stick suggests your career breakthrough might come through unexpected support or sacrifice—either your own or from someone who believes in you."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income holds, but spending for reassurance is quietly draining the treasury."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Tao Kan's mother cut her hair and shredded the sleeping mats so unexpected guests could be fed properly."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Tao Kan's mother's situation — you're dealing with limited resources but have the wisdom to make smart investments."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "For your studies, this sign points to a profound truth about learning: sometimes the greatest educational investments require sacrifice, and they often come from unexpected sources."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is being tested right now, and this stick suggests someone in your household — maybe you — is about to make meaningful sacrifices for everyone else's benefit."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 86 sets Tao Kan's mother in front of you — the woman who cut off her hair, the one thing she still owned that was hers, to feed strangers at the door."
+        }
       }
     }
   },
@@ -4701,6 +8244,46 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 87 เรื่องสองหุ้นส่วนปะทะกัน ระดับปานกลาง เรื่องทั่วไป",
         "detail": "หนักใจแน่นอน! สองเสือคำรามอยู่ข้างๆ คุณ บทกลอนว่า \"會談華座逞英雄\" เห็นภาพไหม นั่งโต๊ะเดียวกัน แต่ละคนก็อยากเป็นฮีโร่ แต่ใครล่ะที่พูดจริงใจ? เรื่องราวเล่าถึงซวินหมิงเฮ่อ (荀鳴鶴) กับลู่ซือหลง (陸士龍) สองนักเขียนเก่งของสมัยโบราณ ทั้งคู่เป็นที่ยอมรับว่าเก่งมาก แต่พอมานั่งคุยกันแล้วก็กลายเป็นแต่ละคนยืนกรานว่าตัวเองถูก ตัวเองดี ตัวเองคิดเพื่อส่วนรวม จริงๆ แล้วเรื่องตลกตรงที่พวกเขาไม่ได้อยู่สมัยเดียวกันด้วยซ้ำ แต่ในเซียมซีใบนี้ถูกเอามาเจอกัน หมายความว่าอะไรรู้ไหม? บางทีปัญหาที่คุณเจอมันอาจไม่ได้อยู่ในระดับเดียวกันเลย คนหนึ่งพูดเรื่องฟ้า อีกคนพูดเรื่องดิน แต่ทั้งคู่คิดว่าตัวเองพูดถูก\n\nคุณรู้สึกเหมือนติดอยู่กลางสนามรบไหม มีคนมาหาบอกแบบหนึ่ง อีกคนมาบอกอีกแบบ ทั้งคู่ก็ฟังดูมีเหตุผลดีนะ แต่ลึกๆ แล้วรู้สึกได้ว่าแต่ละคนก็มีผลประโยชน์ซ่อนอยู่ คุณอาจกำลังเจอสถานการณ์ที่ต้องเลือกข้าง หรือมีคนพยายามดึงคุณไปทางนั้นทางนี้ บางทีอาจเป็นเรื่องงาน มีคนในออฟฟิศมาบอกว่าทำแบบนี้ดี อีกคนบอกว่าทำแบบโน้นดี หรือเรื่องความสัมพันธ์ มีคนมาบอกว่าควรตัดสินใจอย่างนั้น อีกคนมาแนะนำอีกอย่าง ที่หนักใจที่สุดคือทั้งคู่ก็ดูเหมือนจริงใจนะ แต่พอฟังลึกๆ ก็รู้สึกว่าแต่ละคนก็มีวาระซ่อนเร้นของตัวเอง เคยรู้สึกเป็นสนามรบของคนอื่นไหม?\n\nอย่าเพิ่งตัดสินใจอะไรสำคัญในช่วงนี้เลย ให้เวลาผ่านไปสักพักก่อน คนที่พูดจริงใจกับคนที่มีวาระซ่อนเร้น เวลาจะเป็นตัวคัดกรองให้เอง"
       }
+    },
+    "en": {
+      "title": "When Two Heroes Meet",
+      "fortune_level": "Average",
+      "one_line_summary": "The stick lands on the image of two dragons at court, neither able to win the room.",
+      "poem": [
+        "It happens one day when two great debaters meet, But who can say which one has gained the lead.",
+        "For surely, the one's points are sound and strong, Yet, the other's argument is by no means wrong."
+      ],
+      "story": "This sign references a famous literary debate from the Jin Dynasty (266-420 AD) between two brilliant scholars known as the 'Two Dragons. ' Lu Ji (the 'Dragon in the Clouds') and his younger brother Lu Yun were celebrated poets and officials, while their contemporary Xun Ming was equally renowned for his eloquence.\n\nWhen these intellectual giants met at court gatherings, their verbal sparring matches became legendary. Picture a roomful of courtiers watching these masters of language trade philosophical barbs, each demonstrating perfect logic and poetic flourish.\n\nNeither could definitively defeat the other because both possessed genuine wisdom and skill. The story became a metaphor for situations where multiple valid perspectives exist, and victory isn't about being 'right' but about understanding the complexity of truth itself.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse stages two formidable debaters meeting head-on, both articulate, both substantive, neither clearly ahead."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Two sound arguments cancel out. Protect the water source; the standoff is leaking cash."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In your relationship situation, you're dealing with a classic standoff where both parties have legitimate points."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The stick draws on the image of the Lu brothers locked in court debate, two equally brilliant arguments meeting in the middle of the room with no clear winner."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Lu Ji and Xun Ming kept meeting at court, and the record never settles which of them won."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Two scholars at the Jin court, both brilliant, neither consistently winning — that's the picture this stick holds up to your household right now."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The stick lands on the image of two dragons at court, neither able to win the room."
+        }
+      }
     }
   },
   {
@@ -4754,6 +8337,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ฮวามู่หลานจากราชวงศ์เหนือเตือนว่าคุณแบกภาระหนักเพราะคนอื่นไว้ใจ",
         "detail": "คุณกำลังแบกภาระที่ไม่ใช่ของคุณคนเดียว หว่องไทซินส่งเซียมซีฮวามู่หลาน (花木蘭) มาเล่าให้ฟังแล้วนะ บทกลอนบอกว่า 'ทดแทนพ่อไปทำทหารด้วยใจกล้า กี่คนที่ผู้หญิงเหมือนผู้ชาย เอาตัวรายงานประเทศด้วยความจงรักภักดีและกตัญญู ทำให้คนใหญ่ในยุคนั้นต้องหัวเราะเสียงดัง' เด็กสาวคนนี้เห็นพ่อแก่ป่วย เจ้าเกณฑ์ทหารมาถึงบ้าน น้องชายยังเล็ก ไม่คิดอะไรมาก แค่ตัดผมสั้น ใส่เสื้อผ้าผู้ชาย แล้วก็ไปแทนพ่อ ทำทหารไป 12 ปีเต็ม ไม่ใช่เพราะอยากพิสูจน์ตัวเอง แต่เพราะรู้ว่าต้องมีคนไปแล้วในบ้านนี้มีแต่เธอ\n\nคุณก็เหมือนฮวามู่หลานนี่แหละ กำลังแบกเรื่องที่จริงๆ แล้วไม่ใช่หน้าที่เฉพาะตัว แต่มองไปรอบๆ ใครจะไปทำได้บ้าง? ในออฟฟิศ โปรเจ็กต์ใหญ่ล่มมา มีคนขาดหาย คุณก็ต้องเก็บท้ายให้ ที่บ้าน พ่อแม่ป่วย พี่น้องไปทำงานต่างจังหวัด คุณที่อยู่ใกล้ก็ต้องรับหน้าที่ดูแล หรือแม้แต่เรื่องความรัก อีกฝ่ายมีปัญหา คุณก็เป็นคนปรับตัว เปลี่ยนแปลง เพื่อให้ความสัมพันธ์อยู่รอด เคยคิดเหนื่อยไหม? เคยอยากจะทิ้งให้คนอื่นจัดการบ้างไหม? แต่ก็รู้ใจตัวเองว่า ถ้าไม่ใช่คุณแล้วจะเป็นใคร\n\nสิ่งที่หว่องไทซินอยากบอกคือ คนที่แบกภาระหนักไม่ใช่เพราะเขาแข็งแกร่งที่สุด แต่เพราะเขาเชื่อถือได้ที่สุด ฮวามู่หลานไม่ใช่นักรบที่เก่งที่สุดในจีน แต่เธอเป็นคนที่ยอมสู้เพื่อสิ่งที่รัก ตอนท้ายเรื่อง เมื่อจักรพรรดิอยากให้เธออยู่รับราชการต่อ เธอขอกลับบ้านแทน เพราะเธอไม่ได้ทำเพื่อความรุ่งโรจน์ เธอทำเพราะรัก ความรับผิดชอบที่ตกอยู่กับคุณตอนนี้ มันหนักจริง แต่มันก็แสดงให้เห็นว่าคนรอบข้างไว้ใจคุณขนาดไหน\n\nเลิกบ่นกับตัวเองเรื่อง 'ทำไมต้องเป็นฉัน' แล้วเปลี่ยนไปถามว่า 'ฉันจะทำยังไงให้เสร็จ' แทน ตั้งเดดไลน์ชัดๆ ให้งานที่รับผิดชอบ แล้วเริ่มหาคนช่วยอย่างจริงจัง"
+      }
+    },
+    "en": {
+      "title": "Mulan Joins the Army",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "This stick speaks to people facing situations where they must step up beyond their usual role or comfort zone.",
+      "poem": [
+        "Filial and patriotic, Lady Hua was a legendary figure.",
+        "Disguised as a man, she fought in battles for her aged father.",
+        "Devoting herself to the country, she spent her youth in battlefield, While many a man hid themselves behind their unused shield."
+      ],
+      "story": "This sign references Hua Mulan, China's most famous female warrior whose story dates back over 1,500 years. When the emperor issued conscription orders, Mulan's elderly father was called to serve despite his age and frailty.\n\nRather than let him die in battle, Mulan disguised herself as a man and took his place for twelve years. She fought with such skill that no one suspected her true identity.\n\nAfter the wars ended and she was offered high military rank, Mulan declined and simply returned home to care for her family. The story became a symbol of filial piety—the Confucian virtue of devotion to one's parents—and showed how someone could honor both family and country simultaneously.\n\nWhat makes Mulan's tale endure is that she succeeded through courage and sacrifice, not magic or special powers.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation calls for the same courage Mulan showed when she stepped into her father's boots."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Mulan's quiet grind is finally paying off. Skip the shortcuts — guard your harvest."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your love life mirrors Mulan's challenge of balancing competing loyalties and expectations."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "This stick speaks to taking charge of your health when others might be avoiding difficult truths."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Mulan didn't go to war because she was the strongest soldier in the village."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "In your family situation, this stick suggests you're being called to step up in ways that might feel uncomfortable or unfamiliar."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick speaks to people facing situations where they must step up beyond their usual role or comfort zone."
+        }
       }
     }
   },
@@ -4809,6 +8433,47 @@ const SIAMSI_DATA = [
         "summary": "เรื่องทั่วไป: ต้องทำสิ่งที่รู้ว่าไร้ผล แต่ต้องทำเพื่อใจตัวเอง",
         "detail": "โครตเศร้าแต่โครตสง่าด้วย เรื่องนี้เล่าให้ฟังนะ อู๋จี่จื่อ (吳季子) ขุนนางสมัยโบราณเอาดาบมีค่าไปเที่ยวต่างแดน พอไปถึงประเทศซวี่ เจอกษัตริย์ซวี่จวิน (徐君) มองดาบเขาด้วยสายตาปรารถนาจนเห็นได้ชัด อู๋จี่จื่อไม่ได้พูดอะไรออกมา แต่ในใจคิดไว้เลยว่า 'รอนะ พอเสร็จธุระแล้วกลับมาใหม่ ดาบเล่มนี้จะให้เธอ' ใครจะไปคิดล่ะว่าพอกลับมา กษัตริย์ซวี่จวินตายไปแล้ว เหลือแต่หลุมฝังศพริมถนน อู๋จี่จื่อยังคิดอยู่ว่าคำในใจก็คือคำ เลยเอาดาบไปแขวนที่ต้นไม้ข้างหลุมฝังศพ ปล่อยให้ลมเป่าใส่เสียงใส เฮ้อ เศร้าจนปวดอก\n\nบทกวีบอกว่า '既返願為相贈答' ตอนกลับมาแล้วยังอยากให้ของขวัญตอบแทน '且懸樹下表情長' เลยแขวนไว้ใต้ต้นไม้แสดงใจ นี่แหละคือความทุกข์ใจที่ลึกที่สุด ไม่ใช่ทำไม่ได้ แต่ทำได้แล้วก็ไร้ความหมาย ดาบแขวนอยู่ที่นั่นจนเป็นสนิม ไม่มีใครมาเอา เพราะคนที่ต้องการได้กลายเป็นผงธุลีไปแล้ว แต่อู๋จี่จื่อก็ยังต้องทำ เพราะนี่คือการทำคำให้กับตัวเอง ไม่ใช่กับคนอื่น\n\nคุณกำลังติดอยู่ในสถานการณ์แบบนี้ใช่ไหม สิ่งที่คุณต้องการให้ ต้องการทำ ต้องการชดเชยใครบางคน เขาอาจจะไม่อยู่ตรงนั้นแล้ว หรือไม่ต้องการแล้ว หรือเปลี่ยนใจไปแล้ว แต่ในหัวคุณยังมีเสียงบอกว่า 'ต้องทำให้ได้' ไม่ว่าจะเป็นการขอโทษคนที่ไม่ยอมฟังอีกแล้ว การคืนความดีให้คนที่ลืมไปแล้ว หรือการทำตามคำพูดที่เอาไว้กับคนที่ไม่สนใจแล้ว รู้ไหม ความรู้สึกแบบนี้มันโครตบีบคอ คิดไปคิดมาก็ยังต้องทำอยู่ดี เพราะไม่ทำแล้วจะหลับไม่หลับ กินไม่ได้\n\nทำเถอะ แต่ทำเพื่อใจตัวเอง อย่าไปหวังว่าจะได้อะไรกลับมา เหมือนดาบที่แขวนอยู่บนต้นไม้ ลมเป่าก็มีเสียง แต่จะไม่มีใครมาเอา ทำเพราะใจตัวเองสั่งให้ทำ ไม่ใช่เพราะคาดหวังผลลัพธ์"
       }
+    },
+    "en": {
+      "title": "Wu Jizi Hangs His Sword",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. This stick reflects a time when your best intentions might not align with reality's…",
+      "poem": [
+        "A traveller promised to give the Lord of Hai his precious sword.",
+        "One day he came back and intended to offer it to the Lord, Sadly he found the Lord had died during the long long wait",
+        "Hanging it on a tree by his tomb, he regretted for having been late."
+      ],
+      "story": "Wu Jizi was a nobleman from the Spring and Autumn period who valued honor above all else. While traveling through the state of Xu, he met Lord Xu Jun, who greatly admired Wu's precious sword.\n\nThough Wu didn't offer it then, he silently promised himself he would return and gift it to the lord. When Wu came back, he discovered Lord Xu had died.\n\nDespite no one knowing about his private promise, Wu hung the sword on a tree by the tomb anyway. This story became legendary in Chinese culture as the ultimate example of keeping faith even when circumstances change.\n\nIt represents integrity that exists purely for its own sake, not for recognition or reward.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image at the heart of this stick is a sword left hanging on a tree beside a tomb."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Hesitation dressed as patience is draining your treasury. Collect what's owed before the door closes."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "This stick speaks to relationships where timing has become your enemy."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation reflects Wu Jizi's dilemma — timing and circumstances beyond your control."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Wu Jizi hung his sword on a dead lord's tomb because the promise mattered more than the recipient."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation carries the weight of unfulfilled promises and missed opportunities."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "This stick reflects a time when your best intentions might not align with reality's timeline."
+        }
+      }
     }
   },
   {
@@ -4862,6 +8527,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ยังไม่ใช่เวลา ต้องอดทนและกลั้นใจรอจังหวะที่เหมาะสม",
         "detail": "ยังไม่ใช่เวลา ไม่ว่าจะโกรธแค่ไหนก็ต้องกลั้น\n\nบทกวีบอกว่า \"細整殘粧夜欲奔\" หญิงงามแต่งหน้าตกแต่งกายดึกดื่น กำลังจะหนีตามชายหนุ่ม แต่แล้วมีคนมาขัดจังหวะ เธอต้องนั่งเฉยๆ ดูสถานการณ์ แม้ใจจะอยากไปแล้วก็เถอะ เรื่องนี้เล่าถึงหงฟู่นึ่ว (紅拂女) หญิงสาวเก่งกาจที่ถือแปรงแดงสีสัน ได้พบกับหลี่จิง (李靖) นักยุทธศาสตร์หนุ่มที่ยังไม่มีชื่อเสียง เธอตัดสินใจจะหนีตามเขาไป แต่พอดีมีผู้ชายอีกคนมาเข้าร่วม คือจางฉิ่วหรัน (張虬髯) นักสู้หนวดดกที่เป็นเพื่อนกับหลี่จิง เขาก็หลงใหลในตัวหงฟู่นึ่วเหมือนกัน หลี่จิงเห็นแล้วโมโหจัด ควักดาบออกมาจะฟันกันตั้ง 3 ครั้ง แต่ทุกครั้งก็กลั้นใจไว้ได้ เพราะรู้ว่าถ้าไปฟันเพื่อนตาย ก็จบเรื่องชีวิตตัวเอง\n\nสถานการณ์ของคุณก็คล้ายๆ กัน มีเรื่องที่อยากจะแสดงพลัง แต่พอมาคิดดูก็รู้ว่ายังไม่ถึงเวลา อาจจะเป็นที่ทำงานที่คุณเห็นเพื่อนร่วมงานคนนึงทำผิดแล้วเอาความผิดมาปั่นให้คุณรับ หรือเรื่องครอบครัวที่มีคนมาแย่งสิทธิ์ที่ควรจะเป็นของคุณ คุณมีข้อมูล มีหลักฐาน มีกำลังจะตอบโต้ แต่หลังๆ ก็คิดได้ว่าถ้าออกหน้าไปเดี้ยวนี้ อาจจะเสียผลประโยชน์ใหญ่กว่า เหมือนหลี่จิงที่ต้องกลั้นใจ 3 ครั้ง เพราะถ้าฟันเพื่อนตาย ก็จะไม่ได้เป็นแม่ทัพใหญ่\n\nอย่าเพิ่งทำอะไร รออีกซัก 2-3 สัปดาห์ ให้คนที่ล่วงล้ำได้เผยแผนการจริงๆ ออกมาก่อน"
+      }
+    },
+    "en": {
+      "title": "The Red Whisk Lady's Elopement",
+      "fortune_level": "Average",
+      "one_line_summary": "Your life is at one of those crossroads where everything feels dramatic and high-stakes.",
+      "poem": [
+        "The lady dressed herself at midnight getting ready to elope.",
+        "Her love waited eagerly for her, overjoyed with hope.",
+        "Suddenly appeared an unexpected guest with a big red beard.",
+        "Thrice he drew his sword and thrice he withdrew to win her heart."
+      ],
+      "story": "This sign tells one of China's most famous love triangles from the early Tang Dynasty. Hong Fu Nu was a courtesan known for her beauty and intelligence, who wielded a red whisk (hence her name).\n\nShe fell for Li Jing, a brilliant military strategist down on his luck. They planned to elope, but their secret was discovered by Zhang Qiu Ran, a powerful bearded warrior who also loved her.\n\nRather than fight over her, Zhang tested Li Jing's character three times by drawing his sword threateningly, then sheathing it. Impressed by Li Jing's composure and seeing their genuine love, Zhang blessed their union and even helped establish Li Jing's career.\n\nThe story became legendary because it showed how true nobility means stepping aside when you recognize real love—and how the right person will always choose you freely, not from force or manipulation.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is at a crossroads moment, much like Hong Fu Nu preparing to leave her comfortable but limiting position."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money flows in and out evenly — the real drain is spending to feel certain."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation mirrors this ancient drama more than you might expect."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors this midnight drama - you're trying to make important changes, but unexpected complications keep showing up."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your study journey feels like it's heading in one clear direction, but prepare for some major plot twists."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The image at the heart of this stick is Lady Red Whisk dressing in the dark, ready to slip away with the man she has chosen, when a stranger with a red beard appears at exactly the wrong moment."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Your life is at one of those crossroads where everything feels dramatic and high-stakes, but the real test isn't about winning or losing—it's about how you handle yourself when the pressure's on."
+        }
       }
     }
   },
@@ -4917,6 +8624,48 @@ const SIAMSI_DATA = [
         "summary": "ดีเยี่ยม (ทั่วไป) - ความสำเร็จกำลังมารวมตัว เหมือนแสงเดือนเพ็ญส่องทาง",
         "detail": "ดวงเด่นจัดกันอยู่นะ!"
       }
+    },
+    "en": {
+      "title": "Cai Zhongxing Achieves Success",
+      "fortune_level": "The Best",
+      "one_line_summary": "The image at the heart of this stick is the moon over the Lunar Palace.",
+      "poem": [
+        "In heaven hangs the Lunar Palace, scented by cassia flower",
+        "Like a jade box it lights up the earth over thousands of miles.",
+        "Mountains and water shine as if captured in a clear mirror",
+        "Crystal and flawless, the moon glows in the sky with flare."
+      ],
+      "story": "This sign references Cai Zhongxing, a scholar from ancient China who exemplified the ideal of perseverance through hardship. After years of poverty and failed attempts at the imperial examinations, Cai continued studying by moonlight, too poor to afford oil for lamps.\n\nHis dedication finally paid off when he achieved the highest honors and became a respected official. The story became legendary because it showed how someone from humble beginnings could reach the pinnacle of success through pure determination.\n\nIn Chinese culture, the moon represents clarity of mind and spiritual illumination - it's no accident that Cai studied by its light. The cassia flower mentioned in the poem grows in the mythical lunar palace and symbolizes scholarly achievement.\n\nThis sign celebrates the moment when all that patient effort finally crystallizes into recognition and success.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Cai Zhongxing's stick arrives with the moon already full."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Quiet years of work are about to pay — don't panic and chase something faster."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your romantic life is about to reach a pinnacle moment."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health situation mirrors Cai Zhongxing's moment of breakthrough — after a period of struggle or concern, clarity and healing are emerging."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "You're entering a period of exceptional mental clarity and academic achievement."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The Lunar Palace verse hands you the brightest possible image: a moon so clear it turns mountains and rivers into a mirror, light reaching thousands of miles."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The image at the heart of this stick is the moon over the Lunar Palace, the same moonlight Cai Zhongxing once read his books by because he could not afford lamp oil."
+        }
+      }
     }
   },
   {
@@ -4970,6 +8719,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ขงจื๊อฟังเพลงจนลืมรสชาติอาหาร บอกใบ้ให้จมดิ่งกับสิ่งที่ชอบ",
         "detail": "อยู่ดีๆ หลงใหลเข้าแล้ว ซึมซับจนลืมโลก\n\nบทกลอนเล่าว่า \"至聖周遊列國行\" ขงจื๊อ (孔夫子) ท่านปราชญ์ใหญ่เดินทางไปตามเมืองต่างๆ หาผู้ปกครองที่เข้าใจหลักธรรม พอไปถึงเมืองฉี ได้ยินเสียงดนตรีเส่าว (韶聲) — เพลงโบราณสมัยจักรพรรดิสั่วน์ องค์ปฐมมหากษัตริย์ที่ครองแผ่นดินด้วยคุณธรรม เสียงดนตรีนั้นทำให้ขงจื๊อหลงใหลมาก \"三月不知嘉肉味\" สามเดือนเต็มที่เรียนรู้เพลงนี้ กินข้าวก็ไม่รู้รสชาติเนื้อ ใจจดจ่ออยู่กับทำนองและความหมายลึกซึ้งจนลืมความอร่อยอื่นๆ ไปหมด สุดท้ายท่านอุทานว่า \"善哉\" — ดีจริงๆ เพราะในดนตรีมีหลักมหาวิถี (大道) ที่สามารถทำให้งานสำเร็จได้\n\nเคยมีช่วงที่หลงใหลอะไรสักอย่างจนลืมตัวไหม? นั่นแหละคือสถานะที่คุณต้องการตอนนี้ ไม่ใช่การบังคับตัวเองให้ทำงาน แต่เป็นการจมดิ่งลงไปในสิ่งที่ทำจนรู้สึกว่าเวลาผ่านไปโดยไม่รู้ตัว คุณอาจกำลังเจออะไรบางอย่างที่ดึงดูดใจอย่างแรงกล้า อาจเป็นงานใหม่ที่ท้าทาย หัวข้อที่อยากศึกษาลึก หรือโปรเจกต์ที่มีโอกาสเติบโตได้มาก อย่าต่อต้านความรู้สึกนี้เลย เพราะเหมือนขงจื๊อที่เจอดนตรีเส่าว — บางครั้งสิ่งที่ทำให้เราลืมโลกกลับเป็นสิ่งที่พาเราไปถึงจุดหมาย\n\nอย่ากลัวที่จะจมลึก ให้เวลากับสิ่งที่ดึงดูดคุณอย่างเต็มที่ แม้คนอื่นจะว่าคุณหมกมุ่น หรือใช้เวลามากเกินไป ช่วงนี้คือช่วงที่คุณค้นพบ \"มหาวิถี\" ของตัวเองแล้ว"
+      }
+    },
+    "en": {
+      "title": "Confucius Travels Among the States",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're entering a period where something meaningful is going to capture your complete attention—and that's exactly…",
+      "poem": [
+        "Once Confucius travelled to the State of Chai in a distant land",
+        "There he found the music elegant, splendid, enchanting and grand.",
+        "For three months without a taste of meat, he worked day and night",
+        "With the magic power of music he turned the wrong back to right."
+      ],
+      "story": "This sign references one of the most famous episodes in Confucius's life. Around 500 BCE, the great philosopher was traveling between Chinese kingdoms, seeking a ruler who would implement his ideas about good government and social harmony.\n\nWhen he reached the state of Qi, he heard the ancient Shao music—considered the pinnacle of artistic and moral perfection. The music moved him so deeply that for three months, he couldn't taste meat.\n\nEverything else became irrelevant. This wasn't just aesthetic appreciation; Confucius believed music could transform society by cultivating virtue in both rulers and subjects.\n\nThe story became a symbol of how truly meaningful experiences can completely reorient our priorities and help us focus on what actually matters. It's about finding something so profound that it changes how you see everything else.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The image at the heart of this stick is Confucius at 55, exiled from his own ideas, hearing the Shao music in Qi and forgetting meat for three months."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Income is steady, but a quiet leak you're ignoring is the real work."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship situation mirrors Confucius discovering that transformative music — you're about to encounter something that will completely shift your perspective on love."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Confucius's dedication to harmony and balance."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey right now mirrors Confucius discovering the Shao music — you're about to encounter something that will completely absorb your attention in the best possible way."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation mirrors Confucius's transformative encounter with harmony."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're entering a period where something meaningful is going to capture your complete attention—and that's exactly what needs to happen."
+        }
       }
     }
   },
@@ -5025,6 +8816,48 @@ const SIAMSI_DATA = [
         "summary": "เซียมซีที่ 93 เจิ้งวังเสียตำแหน่ง ระดับแย่ที่สุด เตือนอย่าหลงเชื่อเสียงหวานที่อาจนำไปสู่ทางผิด",
         "detail": "อันตรายแล้วนะ คุณกำลังฟังเสียงที่ผิด\n\nบทกลอนเล่าว่า \"鄭衛之音不忍聽\" — เสียงดนตรีจากเมืองเจิ้ง (鄭) กับเว่ย (衛) ฟังแล้วหูแสบใจ เพราะมันไม่ใช่ดนตรีที่ควรฟัง แต่เป็นเสียงเพลงที่ทำให้คนหลงทาง ทำลายศีลธรรม แถมยังทำให้ประเทศล่มจม เรื่องราวนี้มาจากสมัยจารีตโบราณ ตอนที่กษัตริย์เจิ้งวังหลงใหลเสียงเพลงราวะ ฟังทั้งวันทั้งคืน ไม่สนใจราชการ ไม่สนใจประชาชน สุดท้ายก็เสียราชบัลลังก์ไป เสียงเพลงเหล่านั้นไม่ได้แค่เพราะไพเราะ แต่มันเย้ายวนใจ ทำให้คนที่ฟังลืมตัว ลืมหน้าที่ ลืมสิ่งที่ถูกต้อง\n\nตอนนี้คุณก็เหมือนกษัตริย์เจิ้งนั่นแหละ มีเสียงบางเสียงที่ดังอยู่รอบตัว บอกให้ทำสิ่งที่ฟังดูยั่วใจ หรือว่าคุณกำลังตกหลุมพรางของคำหวานๆ ที่ใครบางคนกระซิบมาใส่หู? อาจจะเป็นข้อเสนอที่ดูน่าสนใจ หรือผู้คนที่พูดจาไพเราะจนคุณเริ่มลืมสิ่งที่เคยเชื่อมั่น ปัญหาคือเวลาเราอยู่ในสถานการณ์แบบนี้ เรามักจะหาเหตุผลมาโน้มน้าวตัวเอง ว่า \"ครั้งนี้ต่างจากเดิม\" หรือ \"ลองดูก็ได้\" แต่จริงๆ แล้วใจลึกๆ รู้ว่าบางอย่างผิดปกติ แค่เราไม่อยากยอมรับ\n\nที่น่ากลัวที่สุดคือคำว่า \"令人深入迷津路\" — เสียงพวกนี้จะพาคุณเข้าไปในเส้นทางหลงทาง ไม่ใช่หลงทางแบบไปผิดซอย แต่หลงทางแบบไม่รู้ว่าตัวเองกำลังไปทางไหน ยิ่งเดินยิ่งลึก ยิ่งฟังยิ่งติด จนกลับไม่ได้ เหมือนไปถึงท่าข้ามแม้น้ำในหมอกหนา ไม่เห็นทาง ไม่เห็นฝั่ง\n\nหยุดฟังซะ ถอยออกมาจากเสียงรบกวนพวกนั้นก่อน หาที่เงียบๆ นั่งคิดใหม่ดูว่าอะไรคือสิ่งที่คุณเชื่อจริงๆ"
       }
+    },
+    "en": {
+      "title": "The Fall of King Zheng",
+      "fortune_level": "Poor",
+      "one_line_summary": "Pause before you decide. The verse drags up the courts of Zheng and Wei.",
+      "poem": [
+        "The music of the State of Cheng and Wai was harsh to the ear",
+        "Its melodies filthy, obscene like poisonous spear.",
+        "So different were they from the tunes of the old days",
+        "Many men were lost, many town fell in its morbid ways."
+      ],
+      "story": "This fortune stick references the ancient states of Zheng and Wei during China's Spring and Autumn period (8th-5th centuries BCE). These kingdoms became notorious for their corrupt court culture and degenerate entertainment.\n\nThe rulers prioritized shallow pleasures — crude music, vulgar performances, and moral decay — over good governance. The poem specifically mentions their music because in ancient Chinese thought, music reflected a society's moral health.\n\nWhen court music became harsh and obscene, it signaled deeper corruption. Both states eventually collapsed, their territories absorbed by stronger neighbors.\n\nThe reference to 'ancient melodies' points to the ideal of classical Chinese music that promoted virtue and harmony. This isn't just about literal music — it's about how societies lose their way when they abandon timeless principles for trendy but ultimately destructive pursuits.\n\nThe story serves as a warning about following popular culture when it contradicts enduring values.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation mirrors those ancient kingdoms — things might look exciting on the surface, but there's rot underneath."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The shortcut glittering in front of you is the noise this sign is trying to block."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse points to the music of Zheng and Wei, melodies that started as novelty and slowly hollowed out a kingdom from the inside."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse describes the music of Zheng and Wei: melodies that pleased the ear in the moment but rotted the kingdom from inside."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse points to the courts of Zheng and Wei, where the old ceremonial music was traded in for something easier on the ear and harder on the mind."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family is experiencing the effects of letting standards slip."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse drags up the courts of Zheng and Wei, where the music had gone sour and nobody at the banquet could quite admit it."
+        }
+      }
     }
   },
   {
@@ -5078,6 +8911,47 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ถึงเวลาแยกตัวหาพื้นที่ใหม่ที่เหมาะสม",
         "detail": "ห้องเดียวใส่เสือสองตัวไม่ได้ บทกลอนบอกว่า \"一窟難藏兩虎兒\" โพรงเดียวไม่มีทางซ่อนเสือสองตัว ต้องแยกไปคนละเขา หาภูเขาใหญ่ๆ ทำรังของตัวเอง ไม่งั้นตอนท้ายเจ็บตัวแล้วจะเสียใจ เสียงลมมาถึงแล้ว ได้เวลาย้าย\n\nเรื่องเสือสองตัวนี้เป็นนิทานจีนโบราณที่เล่าขานกันมาช้านาน เสือทั้งสองเป็นราชาป่าด้วยกันทั้งคู่ ปกติอยู่คนละดง ไม่มีใครมายุ่งใคร แต่พอมาเจอกันในถ้ำใบเดียว เกิดปัญหาใหญ่ทันที เสือทุกตัวต้องการพื้นที่เป็นของตัวเอง ไม่ยอมให้ใครมาแย่งดินแดน แต่ถ้ำใบนั้นมันเล็กเกินไป ไม่พอให้สองตัวอยู่ด้วยกันแบบสงบ ถ้ายืนยันจะอยู่ด้วยกัน ไม่วันใดก็วันหนึ่งต้องสู้กัน จนขาดแขนขาขาเป็นไม่ได้ เพราะงั้นฉลาดที่สุดคือแยกกันไปเสีย ไปหาภูเขาใหม่ ทำรังใหม่ ให้แต่ละตัวได้อยู่อย่างสุขสบาย\n\nคุณกำลังอยู่ในสถานการณ์แบบเสือสองตัวเป็นไหม มีคนที่เก่งพอๆ กับคุณอยู่ในพื้นที่เดียวกัน ที่ทำงาน ในครอบครัว หรือแม้แต่ในความสัมพันธ์ ทุกอย่างดูตึงเครียด แม้จะไม่ได้ทะเลาะกันโดยตรง แต่อากาศมันไม่ค่อยดีเท่าไหร่ คุณรู้สึกว่าต้องระมัดระวังคำพูดตลอดเวลา เดินไปมาก็ต้องคิดว่าจะไปกระทบเขาไหม ไม่ใช่เพราะคุณทำอะไรผิด หรือเขาแย่ แต่เพราะพื้นที่มันเล็กเกินไป ไม่พอให้คนสองคนที่แกร่งๆ อยู่ด้วยกันอย่างสบายใจ บางทีคุณอาจคิดในใจว่า \"ทำไมต้องเป็นฉันที่ต้องไป\" \"ฉันไม่ได้ทำอะไรผิดนี่\" แต่จริงๆ แล้วมันไม่ใช่เรื่องของใครผิดใครถูกเลย\n\nเวลามันมาถึงแล้วที่จะแยกตัว ไม่ใช่เพราะแพ้ แต่เพราะฉลาด หาพื้นที่ใหม่ที่เหมาะกับคุณมากกว่า ที่คุณจะได้เป็นตัวของตัวเองโดยไม่ต้องกังวลว่าจะไปกระทบใคร หยุดพยายามแก้ปัญหาในพื้นที่เดิม เพราะบางทีปัญหาไม่ได้อยู่ที่ตัวคุณหรือตัวเขา แต่อยู่ที่พื้นที่มันไม่เหมาะ"
+      }
+    },
+    "en": {
+      "title": "Two Tigers Clash",
+      "fortune_level": "Average",
+      "one_line_summary": "Right now, you're likely facing a situation where you and someone else want the same thing — maybe a promotion.",
+      "poem": [
+        "Two tigers should never be put in each other's way.",
+        "Better in separate jungles they live, hunt and stay.",
+        "To avoid deadly conflicts arising from selfish desires, Let them build on different mountains their own empires."
+      ],
+      "story": "This sign draws from an ancient Chinese idiom about territorial conflict. The story goes that two powerful tigers cannot share the same mountain — their natural dominance means inevitable, destructive conflict.\n\nIn Chinese military strategy and philosophy, this became a metaphor for any situation where two strong forces compete for the same limited resource or territory. Historical accounts often reference warring generals or rival merchants whose refusal to compromise led to mutual destruction.\n\nThe wisdom here isn't about weakness versus strength, but about recognizing when competition becomes counterproductive. Ancient Chinese strategists understood that sometimes the smartest warriors avoid battles altogether, finding different paths to their goals rather than engaging in costly head-to-head conflicts.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Stick 94 sets two tigers on the same ridge and asks why."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Two drives inside you are chasing the same prize, and the friction is draining your wallet."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "In your relationship situation, this sign points to a fundamental power struggle brewing."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The image of two tigers circling the same mountain is unusually direct for a health question."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The stick shows two tigers circling the same ridge, neither willing to yield, both certain the territory is theirs."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now has two strong personalities operating in the same territory, and the tension is real."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Right now, you're likely facing a situation where you and someone else want the same thing — maybe a promotion, recognition, or influence in your social circle."
+        }
       }
     }
   },
@@ -5133,6 +9007,47 @@ const SIAMSI_DATA = [
         "summary": "ยังไม่ถึงเวลา ต้องอดทนสะสมผลงานทีละนิด",
         "detail": "ยังไม่ถึงเวลา แต่ไม่ได้แปลว่าไม่มีหวัง บทกลอนบอกว่า \"功勤一簣可成山\" หิ้วดินครั้งละกำเป็นๆ สุดท้ายก็สร้างภูเขาได้ \"由少而多莫憚煩\" จากน้อยไปมาก ไม่ต้องกลัวว่าจะเหนื่อย เรื่องนี้ฟังดูคุ้นไหม? เป็นเรื่องของเนื่องว่า (女媧氏) เทพธิดาที่ชื่อดังเรื่องปั้นคนจากดินแล้วเป่าลมให้มีชีวิต แต่งานใหญ่กว่านั้นคือตอนฟ้าแตกรู โลกกำลังจะแตกสลาย น้ำท่วม ไฟไหม้ สัตว์ร้ายระบาด ใครๆ ก็หนีกันหมด แต่เนื่องว่าไม่ได้หนี เธอเก็บหินห้าสีมาหลอม คิดดูสิ หินธรรมดาๆ ต้องเผาให้ร้อนพอ ผสมให้เหมาะ แล้วค่อยนำไปอุดรูบนฟ้า ทำแบบนี้เป็นหมื่นๆ ก้อน แต่เธอทำได้ เพราะไม่ได้มองว่า \"ทำไมรูมันใหญ่จัง\" แต่มองว่า \"ก้อนต่อไปเอาหินอะไรดี\"\n\nตรงนี้แหละที่คุณติดอยู่ มองเห็นแต่ภูเขาที่ต้องปีน เลยลืมไปว่าเดินก็ได้ คุณไม่ใช่ขาดความสามารถ แต่ขาดความอดทนกับเรื่องเล็กๆ น้อยๆ ที่ต้องทำซ้ำๆ ถ้าเป็นโครงการที่ทำแล้วผลออกทันที คุณทำได้ดี แต่พอเป็นเรื่องที่ต้องสะสม ต้องรอ ใจก็เริ่มหวั่น \"ทำแล้วได้อะไร\" \"นานแค่ไหนจะเสร็จ\" จิตใจเหนื่อยก่อนตัวเหนื่อย ที่จริงคุณรู้อยู่แก่ใจว่าต้องทำยังไง เหมือนที่เนื่องว่ารู้ว่าต้องหลอมหิน แต่สิ่งที่ทำให้หยุดไม่ใช่เพราะงานยาก แต่เพราะกลัวว่ามันจะยาก\n\nเลิกนับว่าเหลืออีกกี่ขั้นตอน เริ่มนับว่าวันนี้ทำได้กี่ขั้นตอนแทน หินก้อนเดียวยังไม่อุดรูบนฟ้าได้หรอก แต่ถ้าไม่เริ่มหลอมก้อนแรก รูบนฟ้าก็จะอุดไม่ได้เลย"
       }
+    },
+    "en": {
+      "title": "Nüwa, The Sky Mender",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 95 hands you Nüwa with mud on her hands.",
+      "poem": [
+        "It takes diligence and hard work to build a mountain.",
+        "Success is achieved through strong will and patience.",
+        "Never in idleness and lassitude should your life spend, For diligence and perseverance can a broken sky amend."
+      ],
+      "story": "Nüwa is one of China's most revered creator goddesses, known for two monumental acts. First, she created humanity by molding figures from yellow clay along a riverbank.\n\nWhen she grew tired of individual craftsmanship, she dipped a rope in mud and flung it around, with each droplet becoming a person. Her second great deed came when the sky cracked open after a cosmic battle, threatening to destroy the world.\n\nWhile other deities despaired, Nüwa gathered stones of five colors, melted them down, and painstakingly patched the broken heavens. This wasn't magic—it was backbreaking work that took immense dedication.\n\nHer story teaches that even divine beings must roll up their sleeves when faced with monumental challenges. In Chinese culture, she represents the belief that persistence and hard work can fix anything, even a broken sky.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Nüwa's myth lands on this stick for a reason."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Money flows in and out this season. No windfall rescue — build slowly, stone by stone."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Nüwa drew this stick for you, and the verse refuses the romantic shortcut."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors Nüwa's patient repair work."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Nüwa's story sits behind this stick like a quiet rebuke to anyone hoping for a shortcut."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Nüwa's patching of the sky is the image to sit with here."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 95 hands you Nüwa with mud on her hands."
+        }
+      }
     }
   },
   {
@@ -5186,6 +9101,48 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ติดอยู่ในสถานการณ์ที่ไม่ใช่ที่ๆ ใจต้องการ",
         "detail": "ใจคิดถึงบ้าน แต่กลับไม่ได้ง่ายๆ\n\nบทกวีใบนี้เล่าเรื่องขุ่นข้นใจ 'เจียงตี้' (羌笛) เสียงปี่ของชาวเขาเป่าไปทั่วทุ่งหญ้า ฟังแล้วหดหู่อกจะพัง เพราะไม่รู้จะกลับบ้านเมื่อไหร่ เหมือนนกห่านโดดเดี่ยวที่บินฝ่ากระแสลมเซาะเซิง อยากฝากจดหมายให้มันบินไปส่งบ้าน ขอให้เขาไปบอกคนที่บ้านว่ายังไม่ตาย ยังคิดถึงอยู่\n\nเรื่องนี้มาจากไช่เหวินจี (蔡文姬) หญิงสาวปราดเปรื่องที่เก่งทั้งดนตรีและบทกวี วันดีคืนดีกบฏมาปล้นบ้าน ลากเธอไปอยู่ที่แดนตะวันตก 12 ปีเต็มๆ แต่งงานกับหัวหน้าเผ่าชาวฮั่นหนู มีลูกมีเมีย ชีวิตก็ไม่ได้ลำบาก แต่ทุกเวลาที่ฟังเสียงปี่ในยามอ่อนไหว ใจก็บิดไปที่บ้านเก่า อยากกลับไปเจอพ่อแม่พี่น้อง อยากไปดูมุมบ้านมุมเรือนที่เธอเติบโตมา บางทีอยากกลับบ้านไม่ใช่เพราะที่นั่นดีกว่า แต่เพราะที่นั่นคือ 'ที่ของเรา'\n\nคุณตอนนี้รู้สึกเหมือนเหวินจีไหม ติดอยู่ในสถานการณ์ที่ไม่ได้แย่ขนาดนั้น แต่ก็ไม่ใช่ที่ๆ ใจต้องการจะอยู่ อาจเป็นงานที่ทำไปทำมาไม่มีไฟ หรือความสัมพันธ์ที่รู้สึกว่าไม่ตรงจุด หรือสถานที่ที่อยู่แล้วไม่ฟิต คุณมองไปรอบๆ แล้วรู้ว่าคนอื่นก็ไม่ได้เข้าใจคุณขนาดนั้น เหมือนเหวินจีที่ต้องฝากนกห่านแทนที่จะคุยตรงๆ กับคนรอบข้าง บางทีสิ่งที่คุณอยากได้ไม่ใช่เรื่องใหญ่โต แค่อยากให้คนที่สำคัญรู้ว่าคุณยังคิดถึงเขา หรือแค่อยากได้สิ่งที่คุ้นเคยกลับคืนมา\n\nเซียมซีใบนี้บอกว่าการรอคอยจะยาวกว่าที่คิดนะ แต่ไม่ได้หมายความว่าจะไม่มีทางออก เหมือนเหวินจีที่สุดท้ายก็มีคนมาไถ่ตัวเธอกลับจีน แต่การรอนี่ต้องรอแบบไม่หมดไฟ ต้องหาทางส่งสัญญาณให้คนที่ต้องรู้ได้รู้ เหมือนการฝากนกห่านนั่นแหละ\n\nอย่าเก็บคำพูดไว้ในใจมากเกินไป ลองส่งข้อความไปหาคนที่คิดถึงดูสิ แม้จะรู้ว่าอาจไม่ได้คำตอบที่อยากได้ก็ตาม"
+      }
+    },
+    "en": {
+      "title": "Cai Wenji's Longing for Home",
+      "fortune_level": "Average",
+      "one_line_summary": "You're in a season of feeling disconnected from where you truly belong.",
+      "poem": [
+        "My heart is lonesome and sad, so is the music from my flute.",
+        "Far away from home, I am lonely and low in mood.",
+        "Wild swan from the south, give me a helping hand!",
+        "Take my feelings home, and to me their messages send."
+      ],
+      "story": "This sign tells the story of Cai Wenji, one of ancient China's most gifted poets and musicians. Born around 177 CE, she was the daughter of a famous scholar and grew up surrounded by books and music.\n\nHer peaceful life shattered when northern tribes invaded. She was captured and forced to live among the nomads for twelve years, marrying a chieftain and bearing two children.\n\nEventually, a friend of her father's paid an enormous ransom to bring her home. The twist?\n\nShe had to leave her children behind forever. Her poetry captures this impossible choice—the joy of freedom mixed with the agony of separation.\n\nShe spent her remaining years writing some of China's most moving verses about displacement, loss, and the complex meaning of home. Her story resonates because it's about more than war or captivity.\n\nIt's about what happens when life forces you into situations where every choice involves loss.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Cai Wenji's flute song carries across the steppe because she has nowhere else to put what she feels."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The treasury isn't empty, but earnings feel misaligned — money flows in and straight back out."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Cai Wenji's flute carries across the steppe because there is no other way home."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Drawing this stick suggests your health journey mirrors Cai Wenji's exile experience."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your learning journey feels like Wenji's exile right now."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Cai Wenji's flute carries across the steppe because she cannot choose between two homes without grieving one of them."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're in a season of feeling disconnected from where you truly belong."
+        }
       }
     }
   },
@@ -5241,6 +9198,48 @@ const SIAMSI_DATA = [
         "summary": "รออย่างอดทน เพราะผลลัพธ์ยังไม่แน่นอน",
         "detail": "หนักใจกับการรอนะเนี่ย ภาพที่หว่องไทซินให้มาใบนี้คือ \"憑欄晚眺倚南樓\" คนนึงพิงราวระเบียงอาคารสูงๆ เวลาเย็นแล้วมองไปไกลๆ แล้วเห็นอะไร? \"滿目風光景色幽\" ทิวทัศน์งามสุดลูกหูลูกตา แต่สายตาไปจับที่ \"一葉小舟頻下餌 漁翁釣得有魚無\" เรือใบเล็กๆ ลอยเหมือนใบไผ่ มีชาวประมงคนหนึงนั่งอยู่ โยนเหยื่อลงไปเรื่อยๆ แต่ได้ปลาหรือเปล่าไม่รู้ เรื่องเล่าของคั่งชุน (康順) นักตกปลาที่มีชื่อเสียง แต่เซียมซีใบนี้ไม่ได้เน้นที่ฝีมือเขา เน้นที่ความจริงข้อหนึ่ง: การตกปลาใช้แค่ความอดทนไม่พอ ต้องมีโชคด้วย ไม่ใช่คุณขยันโยนเหยื่อเท่าไหร่ ปลาก็จะมากัดมากขึ้นเป็นเท่าตัว เรื่องบางอย่างมีจังหวะของมัน คุณตอนนี้เหมือนคนที่ยืนอยู่บนอาคารสูงนั่นแหละ มองเห็นภาพใหญ่ แต่ไม่ได้อยู่ในเหตุการณ์ กำลังเฝ้าดูคนอื่นพยายามทำในสิ่งที่คุณก็อยากได้ แล้วสงสัยว่าเขาจะสำเร็จไหม หรือกำลังคิดว่าถ้าเป็นเรา เราจะทำได้ดีกว่าไหม? เคยรู้สึกแบบนี้ไหมเวลาเห็นคนอื่นได้โอกาสที่เราอยากได้ อยากลงไปแข่งกันแต่ยังไม่ได้ลงจริงๆ เซียมซีใบนี้บอกว่าสถานการณ์ของคุณคล้ายชาวประมงคนนั้น พยายามอยู่แต่ผลที่ได้ไม่แน่นอน ไม่ใช่เพราะคุณทำไม่ดีพอ แต่เพราะบางอย่างไม่อยู่ในการควบคุมของเรา เหมือนปลาที่จะกินเหยื่อหรือไม่ก็แล้วแต่มัน สถานการณ์ตอนนี้\"ลอยกลางน้ำ\"อยู่ ไม่ดีไม่เลว ไม่ได้ไม่เสีย\n\nหยุดคิดว่าต้องเปลี่ยนกลยุทธหรือลองอย่างอื่นแล้ว ตอนนี้ที่ต้องทำคือ รอให้ถึงจังหวะที่เหมาะสม"
       }
+    },
+    "en": {
+      "title": "The Contemplative Fisherman",
+      "fortune_level": "Average",
+      "one_line_summary": "The verse sets you on a southern balcony at sunset, watching a small boat drift on a shining stream.",
+      "poem": [
+        "At sunset I learned on the southern railing of my mansion.",
+        "The world filled my eyes with a peaceful and charming vision.",
+        "A little boat paddled in the middle of the shining stream.",
+        "Tell me, fisherman, how much would fulfill thy dream?"
+      ],
+      "story": "This sign draws from the archetypal image of the scholar-fisherman in Chinese literature — someone who has stepped back from worldly ambitions to find perspective. Unlike famous historical fishermen like Jiang Taigong who fished with a straight hook waiting for destiny, this figure represents the everyday contemplator.\n\nThe scene depicts a wealthy person (with a mansion and southern balcony) watching a simple fisherman and questioning what truly brings fulfillment. It's a meditation on the gap between material success and genuine satisfaction.\n\nIn traditional Chinese thought, the fisherman often symbolizes the sage who understands that life's greatest catches aren't always the ones you chase most aggressively. The sunset setting reinforces themes of reflection and life's transitions — moments when we naturally pause to assess what we've gained versus what we truly need.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "The verse places you in two positions at once: the wealthy figure leaning on the southern railing watching the river, and the small fisherman drifting in the shining stream."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady income, flat balance. The leak isn't what you earn — it's how you hold it."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse places you on the southern railing at sunset, watching a small boat drift on water that catches the last light."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey right now mirrors Kangshun's fishing — you're in a phase where patience matters more than pushing hard."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Kangshun setting down his court robes to fish at sunset is the image this stick hands you, and it is asking a quieter question than it first appears."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation right now feels like watching that fisherman from the safety of solid ground."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "The verse sets you on a southern balcony at sunset, watching a small boat drift on a shining stream."
+        }
+      }
     }
   },
   {
@@ -5294,6 +9293,46 @@ const SIAMSI_DATA = [
         "name": "ภาพรวม",
         "summary": "ขุดหาทองแต่ไม่เจอ ความพยายามไปผิดทาง",
         "detail": "ความพยายามของคุณกำลังไปผิดทิศ! บทกลอนเล่าเรื่องคนโบราณที่มุ่งหวังเก็บผลไผ่กับแร่ทองจนลืมคิดว่าที่ดินมีจำกัด คนแบ่งแย่งก็เยอะ ท้ายที่สุดรวยจนฟ้าลิขิต วิ่งเหน่อไปทำไม\n\nเซียมซีใบนี้เล่าถึงนักขุดทองโบราณ เขาได้ยินใครบอกว่าใต้ดินมีเหมืองทองคำ เลยขุดหาจนมือแตก เอวขุดจนงอไม่ได้ ขุดไปขุดมาก็เจอแต่ดิน ครู่หนึ่งมีตาแก่คนหนึ่งเดินผ่านมาบอกว่า \"แกขุดที่นี่ไม่มีทองหรอก มีก็ไม่ใช่ของแก\" คนขุดทองยืนอึ้งไปเลย เพิ่งรู้ตัวว่าทำอะไรอยู่ตั้งหลายปี\n\nแล้วก็มีอีกคนที่มุ่งหวังจะปลูกข้าวโพดแต่บ่นว่าที่ดินแคบ คิดจะทำธุรกิขายของแต่ว่าคนเข้าแย่งเยอะ นี่คือปัญหาหลักของเซียมซีใบนี้ - ไม่ใช่ว่าเราไม่ได้ลองทำอะไร แต่เราทำแล้วก็เอาแต่บ่น ทำอันนี้ก็ว่าไม่พอ ทำอันนั้นก็ว่าไม่ยุติธรรม\n\nช่วงนี้คุณรู้สึกมั่วนิ่มใช่ไหม? เหมือนทำอะไรก็ไม่ใช่สิ่งที่อยากทำจริงๆ ตื่นมาก็ทำงาน ทำไปก็คิดว่า \"ทำไมต้องมาใช้ชีวิตแบบนี้?\" แต่คิดจบก็ยังต้องตื่นไปทำงานต่อวันต่อไป เรารู้ว่าไม่มีความสุข แต่ก็ไม่รู้ว่าจะหยุดแล้วไปทำอะไร ที่แปลกคือเราไม่ชอบสถานการณ์ปัจจุบัน แต่พอคิดจะเปลี่ยนก็เหนื่อย เลยต้องวนเวียนอยู่ในวงกลมเดิมๆ\n\nปัญหาไม่ได้อยู่ที่สิ่งที่คุณกำลังทำ แต่อยู่ที่ความคาดหวังของคุณเอง หยุดมองหาทองคำใต้ดินเถอะ หยุดบ่นว่าที่ดินแคบคนเยอะ เริ่มทำความรู้จักกับสิ่งที่อยู่ตรงหน้าดูสิ"
+      }
+    },
+    "en": {
+      "title": "Digging the Earth for Gold",
+      "fortune_level": "Average",
+      "one_line_summary": "You're probably pushing too hard right now.",
+      "poem": [
+        "Do not complain about the jade field being too small, Or grumble in the goldmine that you cannot claim all.",
+        "For wealth and poverty are always destined in one's life, How unwise it is to work too hard and endlessly strive!"
+      ],
+      "story": "This sign references the ancient Chinese practice of jade cultivation and gold mining, activities that consumed entire lifetimes yet often yielded little. In traditional China, farmers would plant jade seeds believing they would grow into precious stones, while miners would spend decades tunneling through mountains chasing veins of gold.\n\nThese pursuits became metaphors for human ambition run amok. The sign draws from Daoist philosophy, which emphasized wu wei — effortless action rather than forceful striving.\n\nZhuangzi, the famous Daoist sage, told stories of skilled craftsmen who achieved mastery not through brute force but by working with natural rhythms. The jade field and goldmine represent any endeavor where we exhaust ourselves chasing diminishing returns, forgetting that contentment often comes from appreciating what we already have rather than endlessly pursuing more.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career situation calls for serious recalibration of expectations and effort."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Your income is steady enough — it's the restless comparing that makes it feel small."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The verse sets you in a jade field with a shovel in your hand, frustrated that the plot is small and the goldmine refuses to yield."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "The verse hands you the image of a miner who keeps eyeing the next jade field, the next claim, the next vein, while his own modest plot already yields what his family needs."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Stick 98 sits with the image of someone digging the earth for gold, surrounded by a small jade field they keep dismissing as too modest."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "The figure in this verse is the digger who keeps breaking ground in a jade field that already yields enough, convinced the real seam is one shovel deeper."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're probably pushing too hard right now."
+        }
       }
     }
   },
@@ -5349,6 +9388,47 @@ const SIAMSI_DATA = [
         "summary": "ติดขัดกลางทาง ต้องรอเวลาที่เหมาะสม อย่าบังคับ",
         "detail": "ติดแบบนี้แหละคือความทุกข์ระดับกลาง หนีไม่ได้ แต่ก็ยังไม่ถึงขั้นจบชีวิต\n\nบทกลอนนี้เล่าเรื่องฮั่นอี้ว์ (韓愈) นักปราชญ์ยุคถังที่เล่ห์เลียนจักรพรรดิเรื่องบูชาพระธาตุ แล้วโดนเนรเทศไปจังหวัดชาววัง พอเดินทางไปถึงด่านหลานกวน ฝนหิมะตกหนัก ม้าไม่ยอมเดิน ชาวเรือปฏิเสธพาข้ามฟาก เพราะลมแรงเกินไป เขาติดอยู่กลางหิมะเป็นวันๆ ไม่มีทางไป ไม่มีทางกลับ แค่นั่งดูหิมะปลิว ดูลมหอบ คิดในใจว่า \"ทำไมวันนี้ต้องมาเจอแบบนี้\" แต่สุดท้ายฮั่นอี้ว์ก็ไปถึงจุดหมายได้ ที่ชาววังเขากลายเป็นข้าราชการดีเด่นที่คนจำได้จนทุกวันนี้\n\nคุณรู้สึกเหมือนฮั่นอี้ว์มั้ย ติดอยู่กลางทางแบบนี้? ถนนหน้าปิดด้วยหิมะหนา แต่ถนนหลังก็ไม่มีแล้ว งานที่คิดว่าจะไปได้ดีๆ ตอนนี้ไปไหนไม่ได้เลย เหมือนม้าที่ไม่ยอมเดิน ไม่ใช่เพราะมันแข็งขืน แต่เพราะมันรู้ว่าถ้าเดินไปตอนนี้จะไถลล้ม เพื่อนฝูงบางคนอาจจะใจร้อน บอกให้ลองทำอะไรดูบ้าง \"ไปกันเถอะ อย่าได้นั่งรอ\" แต่คุณรู้ลึกๆ ว่าการบังคับตอนนี้จะได้ผลตรงข้าม บทกลอนบอกว่า \"หิมะกองบนสะพาน ม้าไม่ยอมข้าม ลมโหมกระหน่ำ ชาวเรือไม่เปิดใบ\" นี่ไม่ใช่เรื่องขี้ขลาด นี่คือเรื่องของจังหวะที่ไม่เอื้ออำนวย\n\nที่ลำบากใจจริงๆ คือคนรอบข้างไม่เข้าใจว่าทำไมคุณถึงไม่ขยับ พวกเขาไม่เห็นหิมะที่คุณเห็น ไม่รู้สึกลมหนาวที่คุณรู้สึก อาจมีคนซุบซิบว่า \"มีปัญหาอะไรหรือเปล่า\" \"คนอื่นก็ทำได้\" นี่แหละที่บทกลอนเตือนเรื่องลมปากคนที่จะมาทำให้ใจเสียได้ง่ายๆ แต่อย่าไปใส่ใจเลย คนที่พูดไม่ใช่คนที่ต้องเดินทางไปทางนั้น\n\nตอนนี้ทำแค่สองอย่าง หนึ่ง จับตาดูสัญญาณว่าเมื่อไหร่สถานการณ์จะดีขึ้น ไม่ใช่รออย่างตายตัว แต่รอแบบตื่นตัว สอง อย่าเปลี่ยนแปลงอะไรใหญ่ๆ ในช่วงนี้ เดินหน้าเหมือนเดิม รักษาเส้นทางเดิม พอหิมะละลาย คุณจะไปได้ไวกว่าคนที่เปลี่ยนทิศทางไปเรื่อย"
       }
+    },
+    "en": {
+      "title": "Han Yu Encounters Snow",
+      "fortune_level": "Average",
+      "one_line_summary": "Stick 99 hands you the image of Han Yu at the frozen bridge.",
+      "poem": [
+        "By the bridge my horse is impeded by snow.",
+        "On the bank the ferryman refuses to go.",
+        "Like fallen petals I ponder on my fate, Yet adversity can never change my way."
+      ],
+      "story": "This sign references Han Yu (768-824 CE), one of China's most celebrated poets and philosophers during the Tang Dynasty. Known for his bold political stances, Han Yu was exiled multiple times for criticizing the emperor's policies.\n\nThe 'snow encounter' refers to a famous incident when Han Yu was traveling to his place of exile in the harsh southern mountains. Caught in a fierce snowstorm, he found himself stranded—his horse couldn't move forward, and even the experienced ferryman refused to cross the treacherous waters.\n\nThis moment became a metaphor for life's unexpected obstacles that can halt even the most determined journey. Han Yu's response wasn't to rage against the weather or abandon his principles, but to accept the delay while staying true to his path.\n\nHis story resonates because it shows how even great minds must sometimes wait for conditions to improve.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career feels stuck right now, like you're standing at a bridge with nowhere to go."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "The shortcut is snowed in, not your treasury — stop bleeding on small waits."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "Your relationship is hitting a rough patch that feels completely out of your control."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Han Yu's snowed-in bridge is the figure to sit with here."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "Your academic journey hits a significant obstacle right now."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Han Yu's horse stuck at the bridge, the ferryman refusing to cross — the verse hands you a very specific picture for a family question."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "Stick 99 hands you the image of Han Yu at the frozen bridge: the horse won't move, the ferryman won't cross, and a man who has built his life on principle is suddenly forced to sit in the snow."
+        }
+      }
     }
   },
   {
@@ -5403,11 +9483,52 @@ const SIAMSI_DATA = [
         "summary": "ถึงจุดสุดท้าย แต่คือการเริ่มใหม่ ดอกไม้บานหลังหน้าหนาว",
         "detail": "ถึงขั้นสุดท้ายแล้ว แต่นี่คือจุดเริ่มใหม่! บทกลอนว่า \"百花競放賀陽春\" (ไป่ฮวาจิ่งฟางเหอหยางชุน) ดอกไม้ร้อยดวงแข่งกันบานสะพรั่งต้อนรับฤดูใบไผ่ เหมือนหลังฝนตกหนักทั้งคืน พอรุ่งเช้าดอกไม้ทุกดวงในสวนผลิบานพร้อมกัน สีสันสดใสจนตาแปลก เซียมซีใบนี้เป็นใบที่ 100 ใบสุดท้ายของหว่องไทซิน ฟังดูเหมือนจบแล้วใช่ไหม? แต่หว่องไทซินไม่ใช่คนคิดแบบนั้นหรอก ท่านเลือกใส่เรื่อง \"บั่วฮวาไค่ฟาง\" (百花開放) ไว้ใบสุดท้าย เพราะรู้ว่าผู้คนที่มาหาจะคิดว่าเลข 100 คือจุดจบ แต่จริงๆ แล้วมันคือจุดเริ่มใหม่ เหมือนเด็กจบป.6 แล้วได้เข้า ม.1 หรือจบมหาลัยแล้วเริ่มทำงาน\n\nคุณกำลังรู้สึกเหมือนติดกับผนัง หมดไฟ หมดแรงใจใช่ไหม? อาจจะเป็นงานที่ทำไปแล้วไม่เห็นความก้าวหน้า ความรักที่พยายามไปแล้วไม่มีอะไรเปลี่ยน หรือเรื่องเงินทองที่ดูเหมือนจะไม่มีทางออก คุณมองไปข้างหน้าแล้วรู้สึกเหมือนเดินมาถึงทางตัน แต่บทกลอนบอกว่า \"萬物從今盡轉新\" ทุกสิ่งจะเปลี่ยนใหม่หมดตั้งแต่วันนี้ ไม่ใช่พรุ่งนี้ ไม่ใช่อาทิตย์หน้า แต่เป็นตั้งแต่วันนี้เลย ประเด็นคือคุณพร้อมจะปล่อยวางสิ่งเก่าๆ ที่ไม่ได้ผลแล้วรึยัง?\n\nเริ่มจากเปลี่ยนมุมมองก่อน หยุดมองว่าตัวเองติดอยู่ แล้วเริ่มมองหาโอกาสใหม่ๆ ที่อาจจะอยู่ในจุดที่คุณไม่เคยคิดมาก่อน ลองทำอะไรที่ไม่เคยทำ หรือคุยกับคนที่ไม่เคยคุย"
       }
+    },
+    "en": {
+      "title": "Hundred Flowers Bloom",
+      "fortune_level": "Moderately Good",
+      "one_line_summary": "You're entering a phase where multiple areas of your life are ready to flourish simultaneously.",
+      "poem": [
+        "Flowers bloom to welcome spring's clear blue sky.",
+        "All things rejuvenate, flourish and thrive.",
+        "Don't feel disappointed should your dreams be not fulfilled: Fortune and luck are approaching according to heaven's will."
+      ],
+      "story": "This sign draws from the Chinese cultural concept of spring renewal and the 'Hundred Flowers' — a poetic reference to the natural world awakening after winter's dormancy. In Chinese philosophy, this imagery represents the cyclical nature of life where periods of stagnation give way to growth and opportunity.\n\nThe concept became politically significant during Mao's 'Hundred Flowers Campaign' of 1956, but its roots run much deeper in classical poetry and seasonal wisdom. Traditional Chinese medicine and philosophy view spring as the time when yang energy rises, bringing new life force after winter's yin dominance.\n\nThe blooming of a hundred different flowers represents diversity, abundance, and the idea that success comes in many forms. For Hong Kong residents, this sign often appeared during economic transitions, reminding people that after difficult periods, renewal and prosperity naturally follow.\n\nThe imagery speaks to patience and trust in natural timing.",
+      "aspects": {
+        "career": {
+          "label": "Career",
+          "summary": "Your career is entering a spring season after what might have felt like a long winter."
+        },
+        "wealth": {
+          "label": "Wealth",
+          "summary": "Steady work finally paying out. Don't disturb it, let the harvest arrive."
+        },
+        "love": {
+          "label": "Love",
+          "summary": "The image of a hundred flowers opening at once is unusual in the Wong Tai Sin canon — most stick imagery is sparse, restrained, a single plum branch or a lone traveller."
+        },
+        "health": {
+          "label": "Health",
+          "summary": "Your health journey mirrors nature's renewal cycle right now."
+        },
+        "study": {
+          "label": "Study",
+          "summary": "The verse of a hundred flowers opening toward a clear spring sky lands in your study life as a very specific kind of mirror."
+        },
+        "home": {
+          "label": "Family",
+          "summary": "Your family situation is entering a phase of gradual renewal, much like how spring doesn't arrive overnight but builds momentum day by day."
+        },
+        "general": {
+          "label": "The whole situation",
+          "summary": "You're entering a phase where multiple areas of your life are ready to flourish simultaneously."
+        }
+      }
     }
   }
 ];
 
-// Helper dictionary keyed by number '00' to '99' and id 1 to 100
+// Helper dictionary keyed by number "00" to "99" and id 1 to 100
 const SIAMSI_BY_NUMBER = {};
 const SIAMSI_BY_ID = {};
 
@@ -5440,7 +9561,17 @@ const SIAMSI_LEVEL_CONFIG = {
     color: "#ffd700",
     bg: "rgba(255, 215, 0, 0.15)",
     border: "rgba(255, 215, 0, 0.5)",
-    en: "Supreme Fortune"
+    th: "ดีที่สุด",
+    en: "The Best"
+  },
+  "The Best": {
+    badgeClass: "fortune-level-supreme",
+    icon: "🌟",
+    color: "#ffd700",
+    bg: "rgba(255, 215, 0, 0.15)",
+    border: "rgba(255, 215, 0, 0.5)",
+    th: "ดีที่สุด",
+    en: "The Best"
   },
   "ดีมาก": {
     badgeClass: "fortune-level-great",
@@ -5448,7 +9579,17 @@ const SIAMSI_LEVEL_CONFIG = {
     color: "#4ade80",
     bg: "rgba(74, 222, 128, 0.15)",
     border: "rgba(74, 222, 128, 0.5)",
-    en: "Great Fortune"
+    th: "ดีมาก",
+    en: "Very Good"
+  },
+  "Very Good": {
+    badgeClass: "fortune-level-great",
+    icon: "✨",
+    color: "#4ade80",
+    bg: "rgba(74, 222, 128, 0.15)",
+    border: "rgba(74, 222, 128, 0.5)",
+    th: "ดีมาก",
+    en: "Very Good"
   },
   "ค่อนข้างดี": {
     badgeClass: "fortune-level-good",
@@ -5456,7 +9597,17 @@ const SIAMSI_LEVEL_CONFIG = {
     color: "#38bdf8",
     bg: "rgba(56, 189, 248, 0.15)",
     border: "rgba(56, 189, 248, 0.5)",
-    en: "Good Fortune"
+    th: "ค่อนข้างดี",
+    en: "Good"
+  },
+  "Good": {
+    badgeClass: "fortune-level-good",
+    icon: "🌸",
+    color: "#38bdf8",
+    bg: "rgba(56, 189, 248, 0.15)",
+    border: "rgba(56, 189, 248, 0.5)",
+    th: "ค่อนข้างดี",
+    en: "Good"
   },
   "ปานกลาง": {
     badgeClass: "fortune-level-neutral",
@@ -5464,7 +9615,17 @@ const SIAMSI_LEVEL_CONFIG = {
     color: "#fb923c",
     bg: "rgba(251, 146, 60, 0.15)",
     border: "rgba(251, 146, 60, 0.5)",
-    en: "Neutral / Balanced"
+    th: "ปานกลาง",
+    en: "Neutral"
+  },
+  "Neutral": {
+    badgeClass: "fortune-level-neutral",
+    icon: "⚖️",
+    color: "#fb923c",
+    bg: "rgba(251, 146, 60, 0.15)",
+    border: "rgba(251, 146, 60, 0.5)",
+    th: "ปานกลาง",
+    en: "Neutral"
   },
   "ไม่ดี": {
     badgeClass: "fortune-level-caution",
@@ -5472,7 +9633,17 @@ const SIAMSI_LEVEL_CONFIG = {
     color: "#f87171",
     bg: "rgba(248, 113, 113, 0.15)",
     border: "rgba(248, 113, 113, 0.5)",
-    en: "Cautionary / Challenging"
+    th: "ไม่ดี",
+    en: "Caution"
+  },
+  "Caution": {
+    badgeClass: "fortune-level-caution",
+    icon: "⚠️",
+    color: "#f87171",
+    bg: "rgba(248, 113, 113, 0.15)",
+    border: "rgba(248, 113, 113, 0.5)",
+    th: "ไม่ดี",
+    en: "Caution"
   }
 };
 
@@ -5487,4 +9658,3 @@ if (typeof window !== "undefined") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { SIAMSI_DATA, SIAMSI_BY_NUMBER, SIAMSI_BY_ID, SIAMSI_LEVEL_CONFIG };
 }
-

@@ -469,8 +469,8 @@
                 <div class="witch-icon">🎋</div>
               </div>
             </div>
-            <h2>แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน</h2>
-            <p class="hero-subtitle">
+            <h2 data-i18n="siamsi_altar_title">แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน</h2>
+            <p class="hero-subtitle" data-i18n="siamsi_altar_subtitle">
               "ตั้งจิตสงบนิ่ง รวบรวมสมาธิถึงเรื่องที่ปรารถนาจะล่วงรู้ แล้วเขย่ากระบอกไม้ไผ่เพื่อเปิดม่านลิขิตแห่งฟ้า..."
             </p>
 
@@ -479,7 +479,7 @@
               <div class="form-group seeker-name-group">
                 <label class="form-label" for="siamsi-seeker-name">
                   <span>👤</span>
-                  <span>ชื่อผู้ขอคำทำนายเซียมซี</span>
+                  <span data-i18n="siamsi_seeker_label">ชื่อผู้ขอคำทำนายเซียมซี</span>
                 </label>
                 <div class="seeker-input-wrapper">
                   <input 
@@ -487,6 +487,7 @@
                     id="siamsi-seeker-name" 
                     class="mystic-text-input" 
                     placeholder="เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกคำทำนายเฉพาะคุณ)"
+                    data-i18n-placeholder="siamsi_seeker_placeholder"
                     maxlength="50"
                     autocomplete="name"
                   />
@@ -554,7 +555,7 @@
                   <div class="siamsi-shake-progress-track">
                     <div class="siamsi-shake-progress-fill" id="siamsi-shake-progress-fill"></div>
                   </div>
-                  <p class="siamsi-shake-hint" id="siamsi-shake-hint">
+                  <p class="siamsi-shake-hint" id="siamsi-shake-hint" data-i18n="siamsi_shake_hint_default">
                     📱 เขย่ามือถือของคุณ หรือ 🖱️ คลิกค้างแล้วสะบัดเมาส์เขย่ากระบอก
                   </p>
                 </div>
@@ -564,9 +565,9 @@
               <div class="siamsi-dropped-stick-container" id="siamsi-dropped-stick-container">
                 <!-- Prominent Number Announcement Banner -->
                 <div class="siamsi-revelation-banner" id="siamsi-revelation-banner">
-                  <div class="rev-banner-tag">🎋 ไม้เซียมซีหล่นลงมาแล้ว!</div>
+                  <div class="rev-banner-tag" data-i18n="siamsi_rev_tag">🎋 ไม้เซียมซีหล่นลงมาแล้ว!</div>
                   <div class="rev-banner-number-row">
-                    <span class="rev-lead">ท่านได้เซียมซี</span>
+                    <span class="rev-lead" data-i18n="siamsi_rev_lead">ท่านได้เซียมซี</span>
                     <span class="rev-number-highlight" id="rev-number-highlight">เบอร์ 01</span>
                     <span class="rev-stick-id" id="rev-stick-id">(ใบที่ 1)</span>
                   </div>
@@ -596,11 +597,11 @@
                   </div>
                 </div>
 
-                <p class="mat-click-hint">👆 คลิกที่ไม้เซียมซีหรือกดปุ่มด้านล่างเพื่อเปิดอ่านคำทำนายฉบับเต็ม</p>
+                <p class="mat-click-hint" data-i18n="siamsi_click_hint">👆 คลิกที่ไม้เซียมซีหรือกดปุ่มด้านล่างเพื่อเปิดอ่านคำทำนายฉบับเต็ม</p>
 
                 <button type="button" id="btn-siamsi-open-reveal" class="btn-mystic-primary pulse-btn btn-lg">
                   <span>📜</span>
-                  <span id="btn-open-reveal-label">เปิดอ่านคำทำนายเซียมซี เบอร์ 01 (ครบ 7 ด้าน)</span>
+                  <span id="btn-open-reveal-label" data-i18n="btn_siamsi_open_reveal">เปิดอ่านคำทำนายเซียมซี เบอร์ 01 (ครบ 7 ด้าน)</span>
                 </button>
               </div>
 
@@ -608,15 +609,19 @@
               <div class="siamsi-actions-toolbar">
                 <button type="button" id="btn-siamsi-auto-shake" class="btn-mystic-primary">
                   <span>🙏</span>
-                  <span>ตั้งจิตอธิษฐาน & เขย่าเซียมซี</span>
+                  <span data-i18n="btn_siamsi_auto_shake">ตั้งจิตอธิษฐาน & เขย่าเซียมซี</span>
+                </button>
+                <button type="button" id="btn-siamsi-reset-shake" class="btn-mystic-secondary">
+                  <span>🔄</span>
+                  <span data-i18n="btn_siamsi_reset_shake">เขย่าใหม่</span>
                 </button>
                 <button type="button" id="btn-open-direct-number-modal" class="btn-mystic-secondary">
                   <span>🔢</span>
-                  <span>ระบุเบอร์ 00 - 99 โดยตรง</span>
+                  <span data-i18n="btn_siamsi_direct_num">ระบุเบอร์ 00 - 99 โดยตรง</span>
                 </button>
                 <button type="button" id="btn-open-siamsi-directory" class="btn-mystic-secondary">
                   <span>📖</span>
-                  <span>สารบัญ 100 ใบ</span>
+                  <span data-i18n="btn_siamsi_directory">สารบัญ 100 ใบ</span>
                 </button>
               </div>
             </div>
@@ -653,13 +658,13 @@
             <div class="siamsi-scroll-card">
               <div class="scroll-ornament-header">
                 <span class="scroll-ornament-icon">📜</span>
-                <h4>บทกลอนประจำใบเซียมซี</h4>
+                <h4 data-i18n="siamsi_poem_header">บทกลอนประจำใบเซียมซี</h4>
               </div>
               <div class="siamsi-poem-thai-box" id="siamsi-result-poem-th">
                 <!-- Injected lines -->
               </div>
               <div class="siamsi-poem-chinese-box">
-                <span class="poem-cn-label">บทกลอนดั้งเดิม:</span>
+                <span class="poem-cn-label" data-i18n="siamsi_poem_cn_label">บทกลอนดั้งเดิม:</span>
                 <p class="poem-cn-text" id="siamsi-result-poem-cn"></p>
               </div>
             </div>
@@ -668,7 +673,7 @@
             <div class="siamsi-story-card">
               <div class="story-header">
                 <span class="story-icon">🏮</span>
-                <h4>เรื่องราวความเป็นมาในอดีต</h4>
+                <h4 data-i18n="siamsi_story_header">เรื่องราวความเป็นมาในอดีต</h4>
               </div>
               <div class="story-content" id="siamsi-result-story-text">
                 <!-- Injected story -->
@@ -678,20 +683,20 @@
             <!-- 7 Aspects Comprehensive Section -->
             <div class="siamsi-aspects-section">
               <div class="aspects-section-header">
-                <h3>สรุปคำทำนายเจาะลึก 7 ด้าน</h3>
-                <p>คลิกที่การ์ดเพื่ออ่านบทวิเคราะห์เชิงลึก หรือเลือกกรองเฉพาะด้านที่ท่านต้องการ</p>
+                <h3 data-i18n="siamsi_aspects_title">สรุปคำทำนายเจาะลึก 7 ด้าน</h3>
+                <p data-i18n="siamsi_aspects_subtitle">คลิกที่การ์ดเพื่ออ่านบทวิเคราะห์เชิงลึก หรือเลือกกรองเฉพาะด้านที่ท่านต้องการ</p>
               </div>
 
               <!-- Filter tabs -->
               <div class="siamsi-aspect-filter-row">
-                <button type="button" class="siamsi-aspect-filter-chip active" data-aspect="all">ทั้งหมด (7 ด้าน)</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="career">💼 อาชีพ</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="wealth">💰 โชคลาภ</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="love">❤️ ความรัก</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="health">🌿 สุขภาพ</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="study">🎓 การเรียน</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="home">🏡 ครอบครัว</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general">🔮 ภาพรวม</button>
+                <button type="button" class="siamsi-aspect-filter-chip active" data-aspect="all" data-i18n="siamsi_tab_all">ทั้งหมด (7 ด้าน)</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="career" data-i18n="siamsi_tab_career">💼 อาชีพ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="wealth" data-i18n="siamsi_tab_wealth">💰 โชคลาภ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="love" data-i18n="siamsi_tab_love">❤️ ความรัก</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="health" data-i18n="siamsi_tab_health">🌿 สุขภาพ</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="study" data-i18n="siamsi_tab_study">🎓 การเรียน</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="home" data-i18n="siamsi_tab_home">🏡 ครอบครัว</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general" data-i18n="siamsi_tab_general">🔮 ภาพรวม</button>
               </div>
 
               <!-- Cards container -->
@@ -704,19 +709,19 @@
             <div class="results-action-row siamsi-actions-footer">
               <button type="button" id="btn-siamsi-reshake" class="btn-mystic-primary pulse-btn">
                 <span>🎋</span>
-                <span>เสี่ยงเซียมซีใหม่อีกครั้ง</span>
+                <span data-i18n="btn_siamsi_reshake">เสี่ยงเซียมซีใหม่อีกครั้ง</span>
               </button>
               <button type="button" id="btn-siamsi-copy-result" class="btn-mystic-secondary">
                 <span>📋</span>
-                <span>คัดลอกคำทำนาย</span>
+                <span data-i18n="btn_siamsi_copy_result">คัดลอกคำทำนาย</span>
               </button>
               <button type="button" id="btn-siamsi-share-result" class="btn-mystic-secondary">
                 <span>📤</span>
-                <span>แชร์ผลเซียมซี</span>
+                <span data-i18n="btn_siamsi_share_result">แชร์ผลเซียมซี</span>
               </button>
               <button type="button" id="btn-siamsi-view-directory" class="btn-mystic-secondary">
                 <span>📖</span>
-                <span>สารบัญ 100 ใบ</span>
+                <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
               </button>
             </div>
 
@@ -731,11 +736,11 @@
             <div class="directory-top-bar">
               <button type="button" id="btn-back-from-directory" class="btn-mystic-secondary btn-sm">
                 <span>←</span>
-                <span>ย้อนกลับ</span>
+                <span data-i18n="btn_back">ย้อนกลับ</span>
               </button>
-              <h2>สารบัญเซียมซีหว่องไทซิน 100 ใบ</h2>
+              <h2 data-i18n="siamsi_dir_title">สารบัญเซียมซีหว่องไทซิน 100 ใบ</h2>
             </div>
-            <p class="directory-subtitle">ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai</p>
+            <p class="directory-subtitle" data-i18n="siamsi_dir_subtitle">ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai</p>
 
             <!-- Search & Filter Controls -->
             <div class="directory-controls">
@@ -744,6 +749,7 @@
                 id="siamsi-directory-search" 
                 class="mystic-text-input directory-search-input" 
                 placeholder="🔍 พิมพ์เบอร์ (เช่น 28, 00) หรือค้นหาชื่อเรื่อง..." 
+                data-i18n-placeholder="siamsi_dir_search_ph"
               />
               <div class="directory-level-filters">
                 <button type="button" class="siamsi-dir-filter-chip active" data-level="all">ทั้งหมด (100 ใบ)</button>

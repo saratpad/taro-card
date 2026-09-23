@@ -111,7 +111,41 @@ const I18N = {
     love_single_badge: "👤 คนโสด",
     love_couple_badge: "💑 คนมีคู่",
     mode_tarot: "ไพ่ทาโรต์",
-    mode_siamsi: "เสี่ยงเซียมซี"
+    mode_siamsi: "เสี่ยงเซียมซี",
+    btn_siamsi_reset_shake: "เขย่าใหม่",
+    siamsi_altar_title: "แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน",
+    siamsi_altar_subtitle: "“ตั้งจิตสงบนิ่ง รวบรวมสมาธิถึงเรื่องที่ปรารถนาจะล่วงรู้ แล้วเขย่ากระบอกไม้ไผ่เพื่อเปิดม่านลิขิตแห่งฟ้า...”",
+    siamsi_seeker_label: "ชื่อผู้ขอคำทำนายเซียมซี",
+    siamsi_seeker_placeholder: "เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกคำทำนายเฉพาะคุณ)",
+    siamsi_shake_hint_default: "📱 เขย่ามือถือของคุณ หรือ 🖱️ คลิกค้างแล้วสะบัดเมาส์เขย่ากระบอก (ประมาณ 30 วิ)",
+    siamsi_rev_tag: "🎋 ไม้เซียมซีหล่นลงมาแล้ว!",
+    siamsi_rev_lead: "ท่านได้เซียมซี",
+    siamsi_click_hint: "👆 คลิกที่ไม้เซียมซีหรือกดปุ่มด้านล่างเพื่อเปิดอ่านคำทำนายฉบับเต็ม",
+    btn_siamsi_open_reveal: "เปิดอ่านคำทำนายเซียมซี (ครบ 7 ด้าน)",
+    btn_siamsi_auto_shake: "ตั้งจิตอธิษฐาน & เขย่าเซียมซี",
+    btn_siamsi_direct_num: "ระบุเบอร์ 00 - 99 โดยตรง",
+    btn_siamsi_directory: "สารบัญ 100 ใบ",
+    siamsi_poem_header: "บทกลอนประจำใบเซียมซี",
+    siamsi_poem_cn_label: "บทกลอนดั้งเดิม:",
+    siamsi_story_header: "เรื่องราวความเป็นมาในอดีต",
+    siamsi_aspects_title: "สรุปคำทำนายเจาะลึก 7 ด้าน",
+    siamsi_aspects_subtitle: "คลิกที่การ์ดเพื่ออ่านบทวิเคราะห์เชิงลึก หรือเลือกกรองเฉพาะด้านที่ท่านต้องการ",
+    siamsi_tab_all: "ทั้งหมด (7 ด้าน)",
+    siamsi_tab_career: "💼 อาชีพ",
+    siamsi_tab_wealth: "💰 โชคลาภ",
+    siamsi_tab_love: "❤️ ความรัก",
+    siamsi_tab_health: "🌿 สุขภาพ",
+    siamsi_tab_study: "🎓 การเรียน",
+    siamsi_tab_home: "🏡 ครอบครัว",
+    siamsi_tab_general: "🔮 ภาพรวม",
+    btn_siamsi_reshake: "เสี่ยงเซียมซีใหม่อีกครั้ง",
+    btn_siamsi_copy_result: "คัดลอกคำทำนาย",
+    btn_siamsi_share_result: "แชร์ผลเซียมซี",
+    btn_siamsi_view_directory: "สารบัญ 100 ใบ",
+    siamsi_dir_title: "สารบัญเซียมซีหว่องไทซิน 100 ใบ",
+    siamsi_dir_subtitle: "ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai",
+    siamsi_dir_search_ph: "🔍 พิมพ์เบอร์ (เช่น 28, 00) หรือค้นหาชื่อเรื่อง...",
+    btn_back: "ย้อนกลับ"
   },
   en: {
     brand_title: "MYSTIC WITCH",
@@ -216,7 +250,41 @@ const I18N = {
     love_single_badge: "👤 Singles",
     love_couple_badge: "💑 Couples",
     mode_tarot: "Tarot Cards",
-    mode_siamsi: "Siamsi Oracle"
+    mode_siamsi: "Siamsi Oracle",
+    btn_siamsi_reset_shake: "Shake Again",
+    siamsi_altar_title: "Wong Tai Sin Siamsi Divination Altar",
+    siamsi_altar_subtitle: "“Calm your mind, focus your intent on what you seek to know, and shake the sacred bamboo cylinder to unveil destiny...”",
+    siamsi_seeker_label: "Seeker's Name",
+    siamsi_seeker_placeholder: "e.g., Alex or Surawut (optional, for personalized oracle)",
+    siamsi_shake_hint_default: "📱 Shake your phone or 🖱️ Click & hold while shaking your mouse (~30s)",
+    siamsi_rev_tag: "🎋 A Sacred Bamboo Stick Has Fallen!",
+    siamsi_rev_lead: "You Drew Siamsi",
+    siamsi_click_hint: "👆 Click the bamboo stick or tap below to reveal the full reading",
+    btn_siamsi_open_reveal: "Reveal Full Siamsi Fortune (7 Aspects)",
+    btn_siamsi_auto_shake: "Pray with Intent & Shake",
+    btn_siamsi_direct_num: "Direct Number 00 - 99",
+    btn_siamsi_directory: "100 Signs Directory",
+    siamsi_poem_header: "Sacred Oracle Poem",
+    siamsi_poem_cn_label: "Original Chinese Poem:",
+    siamsi_story_header: "Historical Legend & Lore",
+    siamsi_aspects_title: "Comprehensive Guidance in 7 Aspects",
+    siamsi_aspects_subtitle: "Click any card to read deep analysis or filter by life domain",
+    siamsi_tab_all: "All (7 Aspects)",
+    siamsi_tab_career: "💼 Career",
+    siamsi_tab_wealth: "💰 Wealth",
+    siamsi_tab_love: "❤️ Love",
+    siamsi_tab_health: "🌿 Health",
+    siamsi_tab_study: "🎓 Academics",
+    siamsi_tab_home: "🏡 Family",
+    siamsi_tab_general: "🔮 The Whole Situation",
+    btn_siamsi_reshake: "Shake the Oracle Again",
+    btn_siamsi_copy_result: "Copy Reading",
+    btn_siamsi_share_result: "Share Result",
+    btn_siamsi_view_directory: "100 Signs Directory",
+    siamsi_dir_title: "Wong Tai Sin 100 Siamsi Directory",
+    siamsi_dir_subtitle: "Browse fortunes #00 - 99 or Sign 1 - 100 according to kaucim.ai",
+    siamsi_dir_search_ph: "🔍 Type number (e.g. 28, 00) or title keyword...",
+    btn_back: "Back"
   }
 };
 
@@ -579,11 +647,8 @@ class TarotApp {
         : (this.lang === "th" ? `🔮 ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม` : `🔮 Shared Tarot Divination`);
     }
 
-    if (this.siamsiApp && this.siamsiApp.currentSign) {
-      const resultEl = document.getElementById("screen-siamsi-result");
-      if (resultEl && resultEl.classList.contains("active")) {
-        this.siamsiApp.showResultScreen(this.siamsiApp.currentSign);
-      }
+    if (this.siamsiApp) {
+      this.siamsiApp.applyLanguage(this.lang);
     }
 
     this.updateAudioButton(window.mysticAudio.isMuted);
