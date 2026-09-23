@@ -84,7 +84,12 @@ const I18N = {
     category_meaning: "คำทำนายเฉพาะด้าน",
     general_meaning: "ความหมายโดยรวม",
     keywords: "คีย์เวิร์ดสำคัญ",
-    empty_question: "คำถามเรื่องทั่วไปและทิศทางโชคชะตา"
+    empty_question: "คำถามเรื่องทั่วไปและทิศทางโชคชะตา",
+    positions_section_title: "ความหมายของไพ่แต่ละตำแหน่ง (เฉพาะด้าน{domain})",
+    positions_section_sub: "คำทำนายเจาะลึกเฉพาะเรื่องที่คุณดู เพื่อให้อ่านและเข้าใจง่ายที่สุด",
+    card_drawn_label: "ได้ไพ่:",
+    domain_prediction_label: "ด้าน{domain} — คำทำนาย:",
+    card_advice_label: "สารเตือนใจจากไพ่:"
   },
   en: {
     brand_title: "MYSTIC WITCH",
@@ -162,7 +167,12 @@ const I18N = {
     category_meaning: "Domain Reading",
     general_meaning: "General Archetype",
     keywords: "Core Keywords",
-    empty_question: "General Life Guidance & Destiny"
+    empty_question: "General Life Guidance & Destiny",
+    positions_section_title: "Card Interpretations by Position ({domain})",
+    positions_section_sub: "In-depth interpretation tailored specifically to your chosen domain for maximum clarity",
+    card_drawn_label: "Drawn Card:",
+    domain_prediction_label: "{domain} — Interpretation:",
+    card_advice_label: "Card Guidance:"
   }
 };
 
@@ -172,62 +182,62 @@ const I18N = {
 const SPREAD_DEFINITIONS = {
   1: [
     {
-      th: "คำตอบและแก่นแท้ของสถานการณ์",
-      en: "The Core Oracle & Situation Essence"
+      th: "1. คำตอบและแก่นแท้ของดวงชะตา",
+      en: "1. Core Oracle & Situation Essence"
     }
   ],
   3: [
     {
-      th: "1. อดีต / รากเหง้าของเรื่องราว",
-      en: "1. Past / The Root of Matter"
+      th: "1. อดีต (Past) — รากเหง้าของเรื่องราว",
+      en: "1. Past — The Root of Matter"
     },
     {
-      th: "2. ปัจจุบัน / สถานการณ์ที่เป็นอยู่",
-      en: "2. Present / Current Dynamics"
+      th: "2. ปัจจุบัน (Present) — สถานการณ์ที่เป็นอยู่",
+      en: "2. Present — Current Dynamics"
     },
     {
-      th: "3. อนาคต / แนวโน้มผลลัพธ์ที่จะเกิดขึ้น",
-      en: "3. Future / Likely Manifestation"
+      th: "3. อนาคต (Future) — แนวโน้มผลลัพธ์ที่จะเกิดขึ้น",
+      en: "3. Future — Likely Manifestation"
     }
   ],
   4: [
     {
-      th: "1. จุดเริ่มต้นและสาเหตุของปัญหา",
-      en: "1. Origin & Root of Problem"
+      th: "1. จุดเริ่มต้น — สาเหตุของปัญหา",
+      en: "1. Origin — Root of Problem"
     },
     {
-      th: "2. อุปสรรคและสิ่งที่ขัดขวางในปัจจุบัน",
-      en: "2. Current Obstacle & Challenge"
+      th: "2. ปัจจุบัน — อุปสรรคและสิ่งขัดขวาง",
+      en: "2. Present — Current Obstacle"
     },
     {
-      th: "3. ปัจจัยภายนอกหรือสิ่งที่คาดไม่ถึง",
-      en: "3. Hidden or External Influences"
+      th: "3. สิ่งที่คาดไม่ถึง — ปัจจัยภายนอก",
+      en: "3. Hidden Factors — External Influences"
     },
     {
-      th: "4. ทางออก บทสรุป และคำแนะนำแก้ไข",
-      en: "4. Resolution & Actionable Solution"
+      th: "4. ทางออก — บทสรุปและคำแนะนำแก้ไข",
+      en: "4. Resolution — Solution & Outcome"
     }
   ],
   5: [
     {
-      th: "1. ตัวตนและพลังงานของคุณในตอนนี้",
-      en: "1. Your Core State & Mindset"
+      th: "1. ตัวตนของคุณ — พลังงานและสภาพจิตใจ",
+      en: "1. Your Core — State & Mindset"
     },
     {
-      th: "2. สถานการณ์แวดล้อมที่ส่งผลกระทบ",
-      en: "2. Surrounding Energies"
+      th: "2. สถานการณ์แวดล้อม — ปัจจัยภายนอก",
+      en: "2. Environment — Surrounding Factors"
     },
     {
-      th: "3. ความกลัว ความหวัง หรือสิ่งที่ซ่อนอยู่ในใจ",
-      en: "3. Inner Hopes & Subconscious Fears"
+      th: "3. สิ่งที่ซ่อนอยู่ในใจ — ความกลัวหรือความหวัง",
+      en: "3. Subconscious — Inner Hopes & Fears"
     },
     {
-      th: "4. อุปสรรคสำคัญ หรือปัจจัยชี้ขาด",
-      en: "4. The Decisive Factor / Challenge"
+      th: "4. อุปสรรคสำคัญ — จุดชี้ขาดสถานการณ์",
+      en: "4. Key Obstacle — Decisive Factor"
     },
     {
-      th: "5. บทสรุปปลายทางและคำแนะนำแห่งโชคชะตา",
-      en: "5. Ultimate Outcome & Destiny"
+      th: "5. บทสรุปปลายทาง — ทิศทางแห่งโชคชะตา",
+      en: "5. Destiny — Ultimate Outcome"
     }
   ]
 };
@@ -287,6 +297,8 @@ class TarotApp {
     this.resultsQuestionRecap = document.getElementById("results-question-recap");
     this.revealedCardsContainer = document.getElementById("revealed-cards-container");
     this.grandSynthesisText = document.getElementById("grand-synthesis-text");
+    this.positionsSectionTitle = document.getElementById("positions-section-title");
+    this.positionsSectionSubtitle = document.getElementById("positions-section-subtitle");
     this.interpretationsFeed = document.getElementById("interpretations-feed");
     this.btnAskAgain = document.getElementById("btn-ask-again");
     this.btnShareReading = document.getElementById("btn-share-reading");
@@ -682,10 +694,23 @@ class TarotApp {
     // 3. Render Gemini Prompt for easy AI follow-up
     this.renderGeminiPrompt();
 
-    // 2. Generate Grand Synthesis
-    this.grandSynthesisText.innerHTML = this.generateWitchSynthesis();
+    // 2. Generate Grand Synthesis (shown inside overview summary)
+    if (this.grandSynthesisText) {
+      this.grandSynthesisText.innerHTML = this.generateWitchSynthesis();
+    }
 
-    // 3. Render Detailed Interpretations Feed
+    // 3. Render Positions Section Header & Clean Feed
+    const domainIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿", general: "🔮" };
+    const domainIcon = domainIcons[this.category] || "🔮";
+    const predictionHeader = dict.domain_prediction_label.replace("{domain}", domainName);
+
+    if (this.positionsSectionTitle) {
+      this.positionsSectionTitle.textContent = dict.positions_section_title.replace("{domain}", domainName);
+    }
+    if (this.positionsSectionSubtitle) {
+      this.positionsSectionSubtitle.textContent = dict.positions_section_sub;
+    }
+
     this.interpretationsFeed.innerHTML = "";
     this.drawnCards.forEach((item, index) => {
       const card = item.card;
@@ -694,7 +719,7 @@ class TarotApp {
       const orientTag = item.isReversed ? dict.card_reversed : dict.card_upright;
       const orientClass = item.isReversed ? "reversed" : "upright";
       const posLabel = positions[index][this.lang];
-      const quote = card.quote[this.lang];
+      const safeImg = encodeURI(card.image);
 
       // Domain-specific interpretation
       let categoryContent = "";
@@ -704,58 +729,51 @@ class TarotApp {
       else if (this.category === "health") categoryContent = aspect.health[this.lang];
       else categoryContent = aspect.general[this.lang];
 
-      const connectionText = this.generateCardQuestionConnection(item, index);
-
       const cardCard = document.createElement("div");
-      cardCard.className = "interpretation-card";
+      cardCard.className = "pos-reading-card";
       cardCard.innerHTML = `
-        <div class="interp-header">
-          <div class="interp-title-group">
-            <span class="card-slot-badge" style="margin-bottom:0.4rem; display:inline-block;">${posLabel}</span>
-            <h4>${cardName}</h4>
-            <p>${card.element[this.lang]}</p>
+        <div class="pos-reading-header">
+          <div class="pos-number-badge">${index + 1}</div>
+          <div class="pos-title-wrap">
+            <h4 class="pos-title">${posLabel}</h4>
+            <span class="pos-domain-pill">${this.lang === "th" ? "หมวด" : "Domain: "}${domainName}</span>
           </div>
-          <span class="card-orientation-tag ${orientClass}">[ ${orientTag} ]</span>
         </div>
 
-        <div class="interp-quote-box">
-          "${quote}"
-        </div>
-
-        <!-- Connection to User's Specific Question -->
-        <div class="interp-question-connection-box">
-          <div class="connection-box-title">
-            <span>🔮</span>
-            <span>${dict.card_question_connection}</span>
+        <!-- 1. ได้ไพ่ ... -->
+        <div class="pos-card-drawn-box">
+          <img src="${safeImg}" alt="${cardName}" class="pos-card-drawn-thumb" loading="lazy" />
+          <div class="pos-card-drawn-info">
+            <div class="pos-card-drawn-label">${dict.card_drawn_label}</div>
+            <div class="pos-card-drawn-name">
+              <span class="card-name-main">${cardName}</span>
+              <span class="card-name-en">(${card.name_en})</span>
+              <span class="card-orient-pill ${orientClass}">[ ${orientTag} ]</span>
+            </div>
+            <div class="pos-card-keywords-row">
+              <span class="element-tag">${this.lang === "th" ? "ธาตุ/ดวงดาว" : "Element"}: ${card.element[this.lang]}</span>
+              ${aspect.keywords[this.lang].slice(0, 3).map(kw => `<span class="kw-pill"># ${kw}</span>`).join(" ")}
+            </div>
           </div>
-          <p class="connection-box-text">${connectionText}</p>
         </div>
 
-        <div class="interp-keywords-cloud">
-          ${aspect.keywords[this.lang].map(kw => `<span class="kw-badge"># ${kw}</span>`).join("")}
+        <!-- 2. ด้าน[ความรัก/การงาน/...] คำทำนาย ... -->
+        <div class="pos-domain-prediction-block">
+          <div class="prediction-block-header">
+            <span class="prediction-icon">${domainIcon}</span>
+            <h5 class="prediction-title">${predictionHeader}</h5>
+          </div>
+          <div class="prediction-text-content">
+            ${categoryContent}
+          </div>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-          <h5 style="color:var(--gold-primary); font-size:1.05rem; margin-bottom:0.4rem;">
-            ✦ ${dict.category_meaning} (${I18N[this.lang]["cat_" + this.category]}):
-          </h5>
-          <p class="interp-body-text">${categoryContent}</p>
-        </div>
-
-        <div style="margin-bottom: 1.2rem;">
-          <h5 style="color:var(--text-muted); font-size:0.95rem; margin-bottom:0.3rem;">
-            ✦ ${dict.general_meaning}:
-          </h5>
-          <p class="interp-body-text" style="color:var(--text-dim); font-size:0.92rem;">
-            ${aspect.general[this.lang]}
-          </p>
-        </div>
-
-        <div class="witch-advice-box">
-          <div class="witch-icon-small">🔮</div>
-          <div>
-            <h5>${dict.witch_advice}</h5>
-            <p>${aspect.advice[this.lang]}</p>
+        <!-- 3. สารเตือนใจจากไพ่ -->
+        <div class="pos-advice-block">
+          <div class="advice-icon">🔮</div>
+          <div class="advice-content">
+            <div class="advice-label">${dict.card_advice_label}</div>
+            <div class="advice-text">"${aspect.advice[this.lang]}"</div>
           </div>
         </div>
       `;
@@ -801,20 +819,31 @@ class TarotApp {
 
   copyReadingToClipboard() {
     const dict = I18N[this.lang];
-    const questionText = this.userQuestion || dict.empty_question;
-    const cardsSummary = this.drawnCards.map((item, idx) => {
-      const pos = SPREAD_DEFINITIONS[this.spreadCount][idx][this.lang];
+    const domainName = I18N[this.lang]["cat_" + this.category];
+    const spreadName = I18N[this.lang][`spread_${this.spreadCount}_name`];
+    const positions = SPREAD_DEFINITIONS[this.spreadCount];
+
+    const cardsDetails = this.drawnCards.map((item, idx) => {
+      const pos = positions[idx][this.lang];
       const name = this.lang === "th" ? item.card.name_th : item.card.name_en;
       const orient = item.isReversed ? dict.card_reversed : dict.card_upright;
-      return `• ${pos}: ${name} [${orient}]`;
-    }).join("\n");
+      const aspect = item.isReversed ? item.card.reversed : item.card.upright;
+      let categoryContent = "";
+      if (this.category === "love") categoryContent = aspect.love[this.lang];
+      else if (this.category === "career") categoryContent = aspect.career[this.lang];
+      else if (this.category === "finance") categoryContent = aspect.finance[this.lang];
+      else if (this.category === "health") categoryContent = aspect.health[this.lang];
+      else categoryContent = aspect.general[this.lang];
+
+      return `${pos}\n• ได้ไพ่: ${name} [${orient}]\n• ด้าน${domainName} คำทำนาย: ${categoryContent}\n• คำแนะนำ: "${aspect.advice[this.lang]}"`;
+    }).join("\n\n");
 
     const textToCopy = `🔮 MYSTIC WITCH TAROT READING 🔮\n\n` +
-      `✦ Question: ${questionText}\n` +
-      `✦ Domain: ${I18N[this.lang]["cat_" + this.category]}\n\n` +
-      `✦ Direct Verdict:\n${this.verdictContent ? this.verdictContent.innerText : ""}\n\n` +
-      `✦ Cards Drawn:\n${cardsSummary}\n\n` +
-      `✦ Witch's Synthesis:\n${this.grandSynthesisText.innerText}\n\n` +
+      `✦ หมวดหมู่: ${domainName}\n` +
+      `✦ รูปแบบการเปิดไพ่: ${spreadName}\n\n` +
+      `✦ บทสรุปภาพรวมดวงชะตาตามตำรา:\n${this.verdictContent ? this.verdictContent.innerText.trim() : ""}\n\n` +
+      `✦ ความหมายของไพ่แต่ละตำแหน่ง (เฉพาะด้าน${domainName}):\n\n${cardsDetails}\n\n` +
+      `✦ บทสังเคราะห์แม่มด:\n${this.grandSynthesisText ? this.grandSynthesisText.innerText.trim() : ""}\n\n` +
       `Mystic Witch Tarot Sanctuary`;
 
     navigator.clipboard.writeText(textToCopy).then(() => {

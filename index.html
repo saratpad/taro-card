@@ -205,6 +205,9 @@
         </div>
 
         <!-- Direct Answer to Question Box -->
+        <!-- ========================================================= -->
+        <!-- 1. ตอนแรก: บทสรุปภาพรวมดวงชะตาตามตำรา (Overview Verdict) -->
+        <!-- ========================================================= -->
         <div class="direct-verdict-box" id="direct-verdict-box">
           <div class="verdict-header">
             <span class="verdict-badge" id="verdict-badge">🌟 แนวโน้มเป็นบวกมาก</span>
@@ -213,28 +216,49 @@
           <p class="verdict-content" id="verdict-content">
             <!-- Plain, easy-to-understand direct answer -->
           </p>
+          
+          <!-- Witch Synthesis Note integrated into summary -->
+          <div class="witch-synthesis-note" id="witch-synthesis-note">
+            <div class="synthesis-note-header">
+              <span>🔮</span>
+              <span data-i18n="synthesis_title">บทสังเคราะห์พลังงานชะตาจากแม่มด</span>
+            </div>
+            <p class="grand-summary-text" id="grand-synthesis-text">
+              <!-- Dynamically synthesized reading based on cards and question -->
+            </p>
+          </div>
+
           <div class="verdict-actions-summary" id="verdict-actions-summary">
             <!-- Actionable Do & Don't -->
           </div>
         </div>
 
-        <!-- 3D Revealed Cards Row -->
+        <!-- แถวแสดงไพ่ 3D Revealed Cards Row -->
         <div class="revealed-cards-flex" id="revealed-cards-container">
           <!-- Dynamically populated 3D Flipping Cards -->
         </div>
 
-        <!-- Grand Summary / Synthesis -->
-        <div class="grand-summary-card" id="grand-synthesis-card">
-          <h3 data-i18n="synthesis_title">บทสังเคราะห์พลังงานชะตาจากแม่มด</h3>
-          <p class="grand-summary-text" id="grand-synthesis-text">
-            <!-- Dynamically synthesized reading based on cards and question -->
+        <!-- ==================================================================== -->
+        <!-- 2. ต่อมา: การบอกความหมายของไพ่แต่ละตำแหน่ง เฉพาะด้านที่ถาม (อ่านง่าย) -->
+        <!-- ==================================================================== -->
+        <div class="positions-feed-header" id="positions-feed-header">
+          <div class="positions-badge-tag">✦ ความหมายของไพ่แต่ละตำแหน่ง</div>
+          <h3 class="positions-section-title" id="positions-section-title">
+            คำทำนายเจาะลึกเฉพาะด้าน
+          </h3>
+          <p class="positions-section-subtitle" id="positions-section-subtitle">
+            ความหมายของไพ่แต่ละตำแหน่ง เฉพาะด้านที่ท่านเลือกพยากรณ์ เพื่อให้อ่านและเข้าใจง่ายที่สุด
           </p>
         </div>
 
-        <!-- Individual Card Detailed Interpretations Feed (Connected directly to question) -->
+        <!-- Feed ไพ่แต่ละตำแหน่ง (เช่น 1 อดีต ได้ไพ่... ด้านความรัก คำทำนาย...) -->
         <div class="interpretations-section" id="interpretations-feed">
-          <!-- Dynamically generated interpretation cards -->
+          <!-- Dynamically generated position cards -->
         </div>
+
+        <!-- ========================================================= -->
+        <!-- 3. ส่วนท้าย: คำถามเพื่อส่งต่อ AI (Gemini AI Consultation) -->
+        <!-- ========================================================= -->
 
         <!-- Gemini AI Assistant Bridge Card (Placed at the end as requested) -->
         <div class="gemini-ai-card" id="gemini-ai-card">
