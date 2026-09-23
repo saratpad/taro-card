@@ -1956,7 +1956,10 @@ ${this.category === "love" ? "6. Specially for Love: Analyze distinct guidance f
 // Initialize on DOM load
 window.addEventListener("DOMContentLoaded", () => {
   window.tarotApp = new TarotApp();
-  if (typeof SiamsiApp !== "undefined") {
+  if (window.siamsiApp) {
+    window.siamsiApp.app = window.tarotApp;
+    window.tarotApp.siamsiApp = window.siamsiApp;
+  } else if (typeof SiamsiApp !== "undefined") {
     window.siamsiApp = new SiamsiApp(window.tarotApp);
     window.tarotApp.siamsiApp = window.siamsiApp;
   }

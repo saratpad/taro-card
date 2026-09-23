@@ -499,8 +499,10 @@
               <!-- Bamboo Cylinder Interactive Arena -->
               <div class="siamsi-cylinder-arena" id="siamsi-cylinder-wrapper" title="คลิกค้างแล้วสะบัดเมาส์ หรือเขย่ามือถือเพื่อเสี่ยงทาย">
                 <div class="siamsi-cylinder-glow"></div>
+
+                <!-- 3D Realistic Bamboo Cylinder -->
                 <div class="siamsi-cylinder-container" id="siamsi-bamboo-cylinder">
-                  <!-- Top sticks protruding -->
+                  <!-- Protruding sticks bundle (vibrate dynamically) -->
                   <div class="siamsi-sticks-bundle" id="siamsi-stick-bundle">
                     <span class="bamboo-stick s1"></span>
                     <span class="bamboo-stick s2"></span>
@@ -511,11 +513,15 @@
                     <span class="bamboo-stick s7"></span>
                     <span class="bamboo-stick s8"></span>
                     <span class="bamboo-stick s9"></span>
+                    <span class="bamboo-stick s10"></span>
+                    <span class="bamboo-stick s11"></span>
+                    <span class="bamboo-stick s12"></span>
                   </div>
 
-                  <!-- Emerging single stick -->
-                  <div class="siamsi-emerging-stick" id="siamsi-emerging-stick">
-                    <span class="emerging-stick-tip"></span>
+                  <!-- The one stick gradually rising higher as you shake -->
+                  <div class="siamsi-rising-stick" id="siamsi-rising-stick">
+                    <span class="rising-stick-red-tip"></span>
+                    <span class="rising-stick-carving">籤</span>
                   </div>
 
                   <!-- Cylinder Body -->
@@ -530,6 +536,19 @@
                   </div>
                 </div>
 
+                <!-- Realistic Flying & Bouncing Stick Stage (appears when dropping) -->
+                <div class="siamsi-flying-stick-stage" id="siamsi-flying-stick-stage">
+                  <div class="siamsi-projectile-shadow" id="siamsi-projectile-shadow"></div>
+                  <div class="siamsi-projectile-stick" id="siamsi-projectile-stick">
+                    <span class="projectile-red-tip"></span>
+                    <span class="projectile-body">
+                      <span class="projectile-chinese" id="projectile-chinese">靈籤</span>
+                      <span class="projectile-number" id="projectile-number">00</span>
+                    </span>
+                  </div>
+                  <div class="siamsi-impact-sparkles" id="siamsi-impact-sparkles"></div>
+                </div>
+
                 <!-- Shake Progress Bar & Gauge -->
                 <div class="siamsi-shake-gauge-container">
                   <div class="siamsi-shake-progress-track">
@@ -541,17 +560,47 @@
                 </div>
               </div>
 
-              <!-- Fallen Stick Mat Display (appears when stick drops) -->
+              <!-- Fallen Stick Mat Display (appears when stick settles on mat) -->
               <div class="siamsi-dropped-stick-container" id="siamsi-dropped-stick-container">
-                <div class="altar-red-mat">
-                  <div class="siamsi-fallen-stick" id="siamsi-dropped-stick">
-                    <span class="fallen-stick-red-tip"></span>
-                    <span class="fallen-stick-number" id="siamsi-dropped-stick-label">เบอร์ 00</span>
+                <!-- Prominent Number Announcement Banner -->
+                <div class="siamsi-revelation-banner" id="siamsi-revelation-banner">
+                  <div class="rev-banner-tag">🎋 ไม้เซียมซีหล่นลงมาแล้ว!</div>
+                  <div class="rev-banner-number-row">
+                    <span class="rev-lead">ท่านได้เซียมซี</span>
+                    <span class="rev-number-highlight" id="rev-number-highlight">เบอร์ 01</span>
+                    <span class="rev-stick-id" id="rev-stick-id">(ใบที่ 1)</span>
+                  </div>
+                  <div class="rev-banner-meta">
+                    <span class="siamsi-level-badge" id="rev-level-badge">
+                      <span class="level-icon">✨</span> <span>ดีมาก</span>
+                    </span>
+                    <span class="rev-titles" id="rev-titles">姜公封相 • เจียงไท่กงได้รับแต่งตั้ง</span>
                   </div>
                 </div>
+
+                <!-- Altar Red Velvet Mat with Fallen Bamboo Stick -->
+                <div class="altar-red-mat" id="altar-red-mat" title="คลิกที่ไม้เซียมซีเพื่อเปิดอ่านคำทำนาย">
+                  <div class="mat-corner-ornament tl"></div>
+                  <div class="mat-corner-ornament tr"></div>
+                  <div class="mat-corner-ornament bl"></div>
+                  <div class="mat-corner-ornament br"></div>
+                  <div class="siamsi-fallen-stick" id="siamsi-dropped-stick">
+                    <span class="fallen-stick-red-tip"></span>
+                    <div class="fallen-stick-wood-texture">
+                      <div class="fallen-stick-details">
+                        <span class="fallen-stick-chinese-tag" id="fallen-stick-chinese-tag">黃大仙靈籤</span>
+                        <div class="fallen-stick-main-number" id="siamsi-dropped-stick-label">เบอร์ 01</div>
+                        <span class="fallen-stick-thai-title" id="fallen-stick-thai-title">เจียงไท่กงได้รับแต่งตั้ง</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="mat-click-hint">👆 คลิกที่ไม้เซียมซีหรือกดปุ่มด้านล่างเพื่อเปิดอ่านคำทำนายฉบับเต็ม</p>
+
                 <button type="button" id="btn-siamsi-open-reveal" class="btn-mystic-primary pulse-btn btn-lg">
                   <span>📜</span>
-                  <span>เปิดอ่านคำทำนายเซียมซี</span>
+                  <span id="btn-open-reveal-label">เปิดอ่านคำทำนายเซียมซี เบอร์ 01 (ครบ 7 ด้าน)</span>
                 </button>
               </div>
 
@@ -777,8 +826,8 @@
   <script src="js/siamsi-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/app.js"></script>
   <script src="js/siamsi.js"></script>
+  <script src="js/app.js"></script>
 
 </body>
 </html>

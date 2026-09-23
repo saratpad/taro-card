@@ -1,11 +1,12 @@
 /**
  * SIAMSI (เซียมซีหว่องไทซิน 100 ใบ เบอร์ 00 - 99)
  * ระบบเสี่ยงเซียมซีจำลองเสมือนจริง:
+ * - อนิเมชันไม้ติ้วกระเด้งลอยละลิ่วหล่นลงมากระทบแท่นบูชาสมจริง (3D Physics Flight & Multi-stage Bounce)
+ * - แสดงเลขเซียมซีที่ได้ชัดเจน ทั้งบนไม้ติ้วและป้ายประกาศมงคล
+ * - คำนวณและแสดงผลคำทำนายครบถ้วน 7 ด้านตามตำรา kaucim.ai (อาชีพ, โชคลาภ, ความรัก, สุขภาพ, การเรียน, ครอบครัว, ภาพรวม)
  * - รองรับเซนเซอร์ตรวจจับการเขย่าบนมือถือ (DeviceMotionEvent / Accelerometer)
  * - รองรับการใช้เมาส์คลิกค้างแล้วสะบัดเขย่าบนคอมพิวเตอร์ (Mouse Drag & Shake)
- * - รองรับปุ่มเขย่าอัตโนมัติ พร้อมเสียงไม้ไผ่กระทบกัน (Web Audio API)
- * - อนิเมชันไม้ติ้วค่อยๆ โผล่และหล่นลงบนแท่น
- * - แสดงผลคำทำนายครบถ้วน 7 ด้าน (อาชีพ, โชคลาภ, ความรัก, สุขภาพ, การเรียน, ครอบครัว, ภาพรวม)
+ * - รองรับปุ่มเขย่าอัตโนมัติพร้อมเสียงไม้ไผ่กระทบกัน (Web Audio API)
  * - สารบัญค้นหาเบอร์ 00 - 99 หรือระบุเบอร์ที่ต้องการได้โดยตรง
  */
 
@@ -15,8 +16,6 @@ class SiamsiApp {
     this.currentSign = null;
     this.isShaking = false;
     this.shakeProgress = 0; // 0 to 100%
-    this.shakeRequirement = 100;
-    this.droppedStickNum = null;
     this.selectedAspect = "all";
 
     // Motion Sensor state (Mobile)
@@ -32,7 +31,6 @@ class SiamsiApp {
     this.lastMouseX = 0;
     this.lastMouseY = 0;
     this.lastMouseTime = 0;
-    this.mouseVelocity = 0;
     this.lastDirection = 0;
 
     this.initDOM();
@@ -43,6 +41,56 @@ class SiamsiApp {
 
   get lang() {
     return this.app ? this.app.lang : (localStorage.getItem("mystic_lang") || "th");
+  }
+
+  getData() {
+    if (typeof window !== "undefined" && window.SIAMSI_DATA && window.SIAMSI_DATA.length > 0) {
+      return window.SIAMSI_DATA;
+    }
+    if (typeof SIAMSI_DATA !== "undefined" && SIAMSI_DATA && SIAMSI_DATA.length > 0) {
+      return SIAMSI_DATA;
+    }
+    return [];
+  }
+
+  getSignByNumberOrId(query) {
+    if (!query && query !== 0) return null;
+    const str = String(query).trim();
+    const pad = str.padStart(2, "0");
+
+    const byNum = (typeof window !== "undefined" && window.SIAMSI_BY_NUMBER) 
+      ? window.SIAMSI_BY_NUMBER 
+      : (typeof SIAMSI_BY_NUMBER !== "undefined" ? SIAMSI_BY_NUMBER : null);
+
+    const byId = (typeof window !== "undefined" && window.SIAMSI_BY_ID) 
+      ? window.SIAMSI_BY_ID 
+      : (typeof SIAMSI_BY_ID !== "undefined" ? SIAMSI_BY_ID : null);
+
+    if (byNum && byNum[pad]) return byNum[pad];
+    if (byNum && byNum[str]) return byNum[str];
+    const intVal = parseInt(str, 10);
+    if (byId && byId[intVal]) return byId[intVal];
+
+    // Direct linear search fallback
+    const all = this.getData();
+    return all.find(s => s.number === pad || s.number === str || s.id === intVal || s.stick_num === intVal) || null;
+  }
+
+  getLevelConfig(levelName) {
+    const defaultConf = {
+      badgeClass: "fortune-level-good",
+      icon: "✨",
+      color: "#ffd700",
+      bg: "rgba(255, 215, 0, 0.15)",
+      border: "rgba(255, 215, 0, 0.5)",
+      en: "Fortune"
+    };
+
+    const configs = (typeof window !== "undefined" && window.SIAMSI_LEVEL_CONFIG)
+      ? window.SIAMSI_LEVEL_CONFIG
+      : (typeof SIAMSI_LEVEL_CONFIG !== "undefined" ? SIAMSI_LEVEL_CONFIG : {});
+
+    return configs[levelName] || defaultConf;
   }
 
   initDOM() {
@@ -64,16 +112,36 @@ class SiamsiApp {
     this.bambooCupWrapper = document.getElementById("siamsi-cylinder-wrapper");
     this.bambooCup = document.getElementById("siamsi-bamboo-cylinder");
     this.stickBundle = document.getElementById("siamsi-stick-bundle");
-    this.emergingStick = document.getElementById("siamsi-emerging-stick");
+    this.risingStick = document.getElementById("siamsi-rising-stick");
+
+    // Flying Projectile Stick Stage
+    this.flyingStage = document.getElementById("siamsi-flying-stick-stage");
+    this.projectileStick = document.getElementById("siamsi-projectile-stick");
+    this.projectileNumber = document.getElementById("projectile-number");
+    this.projectileChinese = document.getElementById("projectile-chinese");
+    this.projectileShadow = document.getElementById("siamsi-projectile-shadow");
+    this.impactSparkles = document.getElementById("siamsi-impact-sparkles");
+
+    // Fallen Stick Mat Display & Revelation Banner
     this.droppedStickContainer = document.getElementById("siamsi-dropped-stick-container");
+    this.revelationBanner = document.getElementById("siamsi-revelation-banner");
+    this.revNumberHighlight = document.getElementById("rev-number-highlight");
+    this.revStickId = document.getElementById("rev-stick-id");
+    this.revLevelBadge = document.getElementById("rev-level-badge");
+    this.revTitles = document.getElementById("rev-titles");
+
+    this.altarRedMat = document.getElementById("altar-red-mat");
     this.droppedStick = document.getElementById("siamsi-dropped-stick");
     this.droppedStickLabel = document.getElementById("siamsi-dropped-stick-label");
+    this.fallenStickThaiTitle = document.getElementById("fallen-stick-thai-title");
+    this.fallenStickChineseTag = document.getElementById("fallen-stick-chinese-tag");
 
-    // Shake progress meter
+    // Shake progress meter & Action Buttons
     this.shakeProgressBar = document.getElementById("siamsi-shake-progress-fill");
     this.shakeHintText = document.getElementById("siamsi-shake-hint");
     this.btnAutoShake = document.getElementById("btn-siamsi-auto-shake");
     this.btnOpenReveal = document.getElementById("btn-siamsi-open-reveal");
+    this.btnOpenRevealLabel = document.getElementById("btn-open-reveal-label");
     this.btnDirectNumber = document.getElementById("btn-open-direct-number-modal");
     this.btnOpenDirectory = document.getElementById("btn-open-siamsi-directory");
 
@@ -126,6 +194,15 @@ class SiamsiApp {
     // Open Reveal Button (when stick drops)
     if (this.btnOpenReveal) {
       this.btnOpenReveal.addEventListener("click", () => {
+        if (this.currentSign) {
+          this.showResultScreen(this.currentSign);
+        }
+      });
+    }
+
+    // Direct click on Altar Mat or Fallen Stick ALSO opens result immediately
+    if (this.altarRedMat) {
+      this.altarRedMat.addEventListener("click", () => {
         if (this.currentSign) {
           this.showResultScreen(this.currentSign);
         }
@@ -229,7 +306,6 @@ class SiamsiApp {
         this.lastMouseX = pt.clientX;
         this.lastMouseY = pt.clientY;
         this.lastMouseTime = performance.now();
-        if (this.bambooCup) this.bambooCup.classList.add("mouse-dragging");
       };
 
       const doDrag = (e) => {
@@ -242,16 +318,16 @@ class SiamsiApp {
         const dist = Math.hypot(dx, dy);
         const speed = dist / dt; // pixels per ms
 
-        // Visual tilt following mouse
-        const tiltX = Math.max(-25, Math.min(25, dx * 0.4));
-        const tiltY = Math.max(-15, Math.min(15, -dy * 0.3));
+        // Visual tilt following mouse motion
+        const tiltX = Math.max(-28, Math.min(28, dx * 0.45));
+        const tiltY = Math.max(-18, Math.min(22, -dy * 0.35 + 10));
         if (this.bambooCup) {
-          this.bambooCup.style.transform = `perspective(800px) rotateY(${tiltX}deg) rotateX(${tiltY}deg) scale(1.03)`;
+          this.bambooCup.style.transform = `perspective(900px) rotateY(${tiltX}deg) rotateX(${tiltY}deg) scale(1.03)`;
         }
 
         // Detect direction change with sufficient velocity -> counts as shake stroke
         const currentDirection = Math.sign(dy || dx);
-        if (speed > 0.45 && currentDirection !== 0 && currentDirection !== this.lastDirection) {
+        if (speed > 0.42 && currentDirection !== 0 && currentDirection !== this.lastDirection) {
           this.registerShakeBurst(Math.min(1.8, speed));
           this.lastDirection = currentDirection;
         }
@@ -265,7 +341,6 @@ class SiamsiApp {
         if (!this.isMouseDown) return;
         this.isMouseDown = false;
         if (this.bambooCup) {
-          this.bambooCup.classList.remove("mouse-dragging");
           this.bambooCup.style.transform = "";
         }
       };
@@ -297,7 +372,7 @@ class SiamsiApp {
       if (!acc) return;
 
       const now = performance.now();
-      if ((now - this.lastMotionTime) < 80) return; // limit sampling rate to ~12 Hz
+      if ((now - this.lastMotionTime) < 70) return; // limit sampling rate
 
       const x = acc.x || 0;
       const y = acc.y || 0;
@@ -309,9 +384,9 @@ class SiamsiApp {
         const deltaZ = Math.abs(z - this.lastZ);
         const totalDelta = deltaX + deltaY + deltaZ;
 
-        // Mobile shake threshold (typically > 14 - 18)
-        if (totalDelta > 15) {
-          const intensity = Math.min(2.0, totalDelta / 15);
+        // Mobile shake threshold
+        if (totalDelta > 14) {
+          const intensity = Math.min(2.0, totalDelta / 14);
           this.registerShakeBurst(intensity);
         }
       }
@@ -353,15 +428,15 @@ class SiamsiApp {
     if (this.shakeProgress >= 100) return;
 
     // Increment progress
-    const gain = Math.floor(12 * intensity);
+    const gain = Math.floor(13 * intensity);
     this.shakeProgress = Math.min(100, this.shakeProgress + gain);
 
     // Audio & Haptic Feedback
-    if (window.mysticAudio) {
+    if (window.mysticAudio && window.mysticAudio.playBambooRattle) {
       window.mysticAudio.playBambooRattle(intensity);
     }
     if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(Math.min(50, Math.floor(20 * intensity)));
+      navigator.vibrate(Math.min(50, Math.floor(22 * intensity)));
     }
 
     // Physical cylinder rattle animation
@@ -370,13 +445,13 @@ class SiamsiApp {
       clearTimeout(this._rattleTimeout);
       this._rattleTimeout = setTimeout(() => {
         if (this.bambooCup) this.bambooCup.classList.remove("rattling");
-      }, 180);
+      }, 190);
     }
 
-    // Animate stick bundle vibrating upward
-    if (this.stickBundle) {
-      const riseOffset = (this.shakeProgress / 100) * 28;
-      this.stickBundle.style.transform = `translateY(-${riseOffset}px)`;
+    // Rising stick slides higher proportionally
+    if (this.risingStick) {
+      const riseOffset = (this.shakeProgress / 100) * 44;
+      this.risingStick.style.transform = `translateX(-50%) translateY(-${riseOffset}px)`;
     }
 
     // Update progress meter
@@ -393,18 +468,18 @@ class SiamsiApp {
       this.shakeProgressBar.style.width = `${this.shakeProgress}%`;
     }
     if (this.shakeHintText) {
-      if (this.shakeProgress < 30) {
+      if (this.shakeProgress < 25) {
         this.shakeHintText.textContent = this.lang === "th" 
           ? "🎋 เขย่ากระบอกเซียมซีต่อไปเรื่อยๆ..." 
           : "🎋 Keep shaking the bamboo cylinder...";
-      } else if (this.shakeProgress < 75) {
+      } else if (this.shakeProgress < 65) {
         this.shakeHintText.textContent = this.lang === "th" 
-          ? "✨ ไม้เซียมซีกำลังจะเลื่อนหลุดออกมาแล้ว!" 
-          : "✨ A stick is about to slide out!";
-      } else if (this.shakeProgress < 100) {
+          ? "✨ แท่งไม้กำลังสั่นไหวและเลื่อนโผล่ขึ้นมา!" 
+          : "✨ Sticks are rattling and sliding upward!";
+      } else if (this.shakeProgress < 99) {
         this.shakeHintText.textContent = this.lang === "th" 
-          ? "🌟 สมาธิตั้งมั่น อีกนิดเดียว..." 
-          : "🌟 Hold your intention, almost there...";
+          ? "🌟 สมาธิตั้งมั่น อีกนิดเดียวไม้จะกระเด้งหล่นแล้ว..." 
+          : "🌟 Hold your intention, stick is about to leap out...";
       } else {
         this.shakeHintText.textContent = this.lang === "th" 
           ? "🎉 ไม้เซียมซีหล่นลงมาแล้ว!" 
@@ -427,12 +502,12 @@ class SiamsiApp {
       this.bambooCup.classList.add("auto-shaking-loop");
     }
 
-    // Simulate rhythmic shaking over 2.2 seconds
+    // Simulate rhythmic shaking over ~2.4 seconds
     let elapsed = 0;
     const interval = 220; // ms
     const timer = setInterval(() => {
       elapsed += interval;
-      this.registerShakeBurst(1.1);
+      this.registerShakeBurst(1.15);
 
       if (this.shakeProgress >= 100 || elapsed >= 2400) {
         clearInterval(timer);
@@ -449,59 +524,160 @@ class SiamsiApp {
     }, interval);
   }
 
+  // =========================================================================
+  // REALISTIC PHYSICS STICK DROP (EJECTION & MULTI-BOUNCE SEQUENCE)
+  // =========================================================================
+
   finalizeStickDrop() {
     this.stopListeningMotion();
 
-    // Select random sign from SIAMSI_DATA
-    if (!window.SIAMSI_DATA || window.SIAMSI_DATA.length === 0) {
+    const data = this.getData();
+    if (!data || data.length === 0) {
       console.error("SIAMSI_DATA is missing or empty!");
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * window.SIAMSI_DATA.length);
-    const sign = window.SIAMSI_DATA[randomIndex];
+    // Select random sign from 100 items (00 - 99)
+    const randomIndex = Math.floor(Math.random() * data.length);
+    const sign = data[randomIndex];
     this.currentSign = sign;
 
-    // Emergence animation
-    if (this.emergingStick) {
-      this.emergingStick.classList.add("emerging");
+    // Reset any previous drop display state
+    if (this.droppedStickContainer) {
+      this.droppedStickContainer.classList.remove("visible");
+    }
+    if (this.impactSparkles) {
+      this.impactSparkles.classList.remove("burst");
     }
 
-    // After 600ms, stick falls to mat
+    // Configure the flying projectile stick appearance
+    if (this.projectileNumber) {
+      this.projectileNumber.textContent = sign.number;
+    }
+    if (this.projectileChinese) {
+      this.projectileChinese.textContent = (sign.chinese_title && sign.chinese_title.slice(0, 2)) || "靈籤";
+    }
+
+    // Play ejection whoosh sound
+    if (window.mysticAudio && window.mysticAudio.playStickEject) {
+      window.mysticAudio.playStickEject();
+    }
+
+    // Cylinder thrust animation (tip forward violently to spit stick out)
+    if (this.bambooCup) {
+      this.bambooCup.classList.add("cylinder-eject-thrust");
+      setTimeout(() => {
+        if (this.bambooCup) this.bambooCup.classList.remove("cylinder-eject-thrust");
+      }, 700);
+    }
+
+    // Start 3D Physics Flight Animation (Parabolic arc + 3D spin + shadow)
+    if (this.flyingStage) {
+      this.flyingStage.classList.add("active", "animating");
+    }
+
+    // -------------------------------------------------------------
+    // Synchronized Sound & Haptic Events during Flight:
+    // -------------------------------------------------------------
+
+    // Impact 1: First hard landing strike onto the altar at t = 480ms
     setTimeout(() => {
-      if (window.mysticAudio) {
-        window.mysticAudio.playStickDrop();
+      if (window.mysticAudio && window.mysticAudio.playStickDrop) {
+        window.mysticAudio.playStickDrop(1.0);
+      }
+      if (this.impactSparkles) {
+        this.impactSparkles.classList.add("burst");
+      }
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate(40);
+      }
+    }, 480);
+
+    // Impact 2: Second rebound bounce at t = 750ms
+    setTimeout(() => {
+      if (window.mysticAudio && window.mysticAudio.playStickDrop) {
+        window.mysticAudio.playStickDrop(0.5);
+      }
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate(25);
+      }
+    }, 750);
+
+    // Final Settle: Stick comes to a rest flat on the red velvet mat at t = 1100ms
+    setTimeout(() => {
+      // Deactivate projectile animation
+      if (this.flyingStage) {
+        this.flyingStage.classList.remove("animating");
+        this.flyingStage.classList.remove("active");
       }
 
-      if (this.emergingStick) {
-        this.emergingStick.classList.remove("emerging");
+      // Populate Revelation Banner with prominent details
+      if (this.revNumberHighlight) {
+        this.revNumberHighlight.textContent = `เบอร์ ${sign.number}`;
+      }
+      if (this.revStickId) {
+        this.revStickId.textContent = `(ใบที่ ${sign.stick_num || sign.id})`;
+      }
+      if (this.revTitles) {
+        this.revTitles.textContent = `${sign.chinese_title} • ${sign.thai_title}`;
       }
 
-      if (this.droppedStickContainer && this.droppedStickLabel) {
-        this.droppedStickContainer.classList.add("visible");
+      // Populate Level Badge on Banner
+      const levelConf = this.getLevelConfig(sign.fortune_level);
+      if (this.revLevelBadge) {
+        this.revLevelBadge.className = `siamsi-level-badge ${levelConf.badgeClass}`;
+        this.revLevelBadge.innerHTML = `<span class="level-icon">${levelConf.icon}</span> <span>${sign.fortune_level}</span>`;
+        this.revLevelBadge.style.borderColor = levelConf.border;
+        this.revLevelBadge.style.backgroundColor = levelConf.bg;
+        this.revLevelBadge.style.color = levelConf.color;
+      }
+
+      // Populate details on the physical fallen stick on the red mat
+      if (this.droppedStickLabel) {
         this.droppedStickLabel.textContent = `เบอร์ ${sign.number}`;
       }
+      if (this.fallenStickThaiTitle) {
+        this.fallenStickThaiTitle.textContent = sign.thai_title;
+      }
+      if (this.fallenStickChineseTag) {
+        this.fallenStickChineseTag.textContent = sign.chinese_title;
+      }
 
-      // Gong chime after stick settles
+      // Update button label
+      if (this.btnOpenRevealLabel) {
+        this.btnOpenRevealLabel.textContent = `เปิดอ่านคำทำนายเซียมซี เบอร์ ${sign.number} (ครบ 7 ด้าน)`;
+      }
+
+      // Show Dropped Stick Container on the altar
+      if (this.droppedStickContainer) {
+        this.droppedStickContainer.classList.add("visible");
+      }
+
+      // Play sacred gong chime
+      if (window.mysticAudio && window.mysticAudio.playGongChime) {
+        window.mysticAudio.playGongChime(260, 2.5);
+      }
+
+      // Smooth scroll down to highlight the fallen stick and revelation banner
       setTimeout(() => {
-        if (window.mysticAudio) {
-          window.mysticAudio.playGongChime(260, 2.5);
+        if (this.droppedStickContainer) {
+          this.droppedStickContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
-        if (this.btnOpenReveal) {
-          this.btnOpenReveal.classList.add("active");
-          this.btnOpenReveal.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 500);
+      }, 150);
 
-    }, 600);
+    }, 1100);
   }
 
   // =========================================================================
-  // RESULT SCREEN DISPLAY
+  // RESULT SCREEN DISPLAY (ครบถ้วนทุกด้านตามตำรา kaucim.ai)
   // =========================================================================
 
-  showResultScreen(sign) {
-    if (!sign) return;
+  showResultScreen(targetSign) {
+    const sign = targetSign || this.currentSign;
+    if (!sign) {
+      console.warn("No sign to display!");
+      return;
+    }
     this.currentSign = sign;
 
     // Switch views
@@ -509,7 +685,7 @@ class SiamsiApp {
     if (this.screenDirectory) this.screenDirectory.classList.remove("active");
     if (this.screenResult) this.screenResult.classList.add("active");
 
-    // Scroll to top of results
+    // Scroll to top of results smoothly
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Seeker Name greeting
@@ -528,14 +704,7 @@ class SiamsiApp {
     }
 
     // Fortune level badge
-    const levelConf = (window.SIAMSI_LEVEL_CONFIG && window.SIAMSI_LEVEL_CONFIG[sign.fortune_level]) || {
-      badgeClass: "fortune-level-good",
-      icon: "✨",
-      color: "#ffd700",
-      bg: "rgba(255, 215, 0, 0.15)",
-      border: "rgba(255, 215, 0, 0.5)"
-    };
-
+    const levelConf = this.getLevelConfig(sign.fortune_level);
     if (this.resultBadgeLevel) {
       this.resultBadgeLevel.className = `siamsi-level-badge ${levelConf.badgeClass}`;
       this.resultBadgeLevel.innerHTML = `<span class="level-icon">${levelConf.icon}</span> <span>${sign.fortune_level}</span>`;
@@ -552,12 +721,12 @@ class SiamsiApp {
       this.resultThaiTitle.textContent = sign.thai_title || "";
     }
 
-    // One line summary
+    // One line summary wisdom quote
     if (this.resultOneLine) {
       this.resultOneLine.textContent = sign.one_line_summary ? `"${sign.one_line_summary}"` : "";
     }
 
-    // Thai poem lines
+    // Thai poem verses
     if (this.resultPoemTh) {
       this.resultPoemTh.innerHTML = "";
       if (Array.isArray(sign.poem_th)) {
@@ -575,7 +744,7 @@ class SiamsiApp {
       this.resultPoemCn.textContent = sign.poem_cn || "";
     }
 
-    // Story / Legend
+    // Historical Legend & Origin Story
     if (this.resultStoryText) {
       this.resultStoryText.innerHTML = "";
       if (sign.story) {
@@ -590,7 +759,7 @@ class SiamsiApp {
       }
     }
 
-    // Render 7 Aspects Cards
+    // Render 7 Aspects Comprehensive Cards
     this.renderAspectCards(sign);
 
     // Update URL hash for sharing / bookmarking
@@ -624,6 +793,8 @@ class SiamsiApp {
       card.className = "siamsi-aspect-card";
       card.setAttribute("data-aspect-type", key);
 
+      const hasDetail = data.detail && data.detail.trim() && data.detail.trim() !== (data.summary || "").trim();
+
       card.innerHTML = `
         <div class="aspect-card-header">
           <div class="aspect-header-title">
@@ -636,9 +807,9 @@ class SiamsiApp {
           <div class="aspect-summary-callout">
             <p>${data.summary || data.name || ""}</p>
           </div>
-          ${data.detail && data.detail !== data.summary ? `
+          ${hasDetail ? `
             <div class="aspect-deep-detail">
-              ${data.detail.split("\n\n").map(p => `<p>${p}</p>`).join("")}
+              ${data.detail.split("\n\n").map(p => `<p>${p.trim()}</p>`).join("")}
             </div>
           ` : ""}
         </div>
@@ -672,24 +843,26 @@ class SiamsiApp {
   resetToShakingScreen() {
     this.isShaking = false;
     this.shakeProgress = 0;
-    this.droppedStickNum = null;
     this.updateShakeMeter();
 
     if (this.bambooCup) {
       this.bambooCup.style.transform = "";
-      this.bambooCup.classList.remove("rattling", "auto-shaking-loop");
+      this.bambooCup.classList.remove("rattling", "auto-shaking-loop", "cylinder-eject-thrust");
     }
     if (this.stickBundle) {
       this.stickBundle.style.transform = "";
     }
-    if (this.emergingStick) {
-      this.emergingStick.classList.remove("emerging");
+    if (this.risingStick) {
+      this.risingStick.style.transform = "";
+    }
+    if (this.flyingStage) {
+      this.flyingStage.classList.remove("active", "animating");
+    }
+    if (this.impactSparkles) {
+      this.impactSparkles.classList.remove("burst");
     }
     if (this.droppedStickContainer) {
       this.droppedStickContainer.classList.remove("visible");
-    }
-    if (this.btnOpenReveal) {
-      this.btnOpenReveal.classList.remove("active");
     }
 
     if (this.screenResult) this.screenResult.classList.remove("active");
@@ -709,14 +882,7 @@ class SiamsiApp {
     const rawVal = this.directNumberInput.value.trim();
     if (!rawVal) return;
 
-    let targetSign = null;
-    const num = parseInt(rawVal, 10);
-
-    // Try finding by number ("00" to "99") or by id (1 to 100)
-    if (window.SIAMSI_BY_NUMBER) {
-      const padNum = rawVal.length === 1 ? `0${rawVal}` : rawVal;
-      targetSign = window.SIAMSI_BY_NUMBER[padNum] || window.SIAMSI_BY_ID[num];
-    }
+    const targetSign = this.getSignByNumberOrId(rawVal);
 
     if (targetSign) {
       if (this.directNumberModal) this.directNumberModal.classList.remove("active");
@@ -740,7 +906,10 @@ class SiamsiApp {
   }
 
   renderDirectoryGrid() {
-    if (!this.directoryGrid || !window.SIAMSI_DATA) return;
+    if (!this.directoryGrid) return;
+    const data = this.getData();
+    if (!data || data.length === 0) return;
+
     this.directoryGrid.innerHTML = "";
 
     const query = this.directorySearchInput ? this.directorySearchInput.value.trim().toLowerCase() : "";
@@ -750,7 +919,7 @@ class SiamsiApp {
       if (activeChip) activeLevel = activeChip.getAttribute("data-level") || "all";
     }
 
-    const filtered = window.SIAMSI_DATA.filter(sign => {
+    const filtered = data.filter(sign => {
       const matchLevel = (activeLevel === "all") || (sign.fortune_level === activeLevel);
       if (!matchLevel) return false;
 
@@ -772,11 +941,7 @@ class SiamsiApp {
       const card = document.createElement("div");
       card.className = "siamsi-dir-card";
       
-      const levelConf = (window.SIAMSI_LEVEL_CONFIG && window.SIAMSI_LEVEL_CONFIG[sign.fortune_level]) || {
-        badgeClass: "fortune-level-good",
-        icon: "✨",
-        color: "#ffd700"
-      };
+      const levelConf = this.getLevelConfig(sign.fortune_level);
 
       card.innerHTML = `
         <div class="dir-card-num-badge">เบอร์ ${sign.number}</div>
@@ -810,15 +975,15 @@ class SiamsiApp {
 เบอร์ ${sign.number} (ใบที่ ${sign.stick_num || sign.id})
 ✨ ระดับ: ${sign.fortune_level}
 📜 ${sign.chinese_title} (${sign.thai_title})
-💡 สรุป: ${sign.one_line_summary}
+💡 สรุป: "${sign.one_line_summary}"
 
 บทกลอน:
 ${poem}
 
-💼 อาชีพ: ${sign.aspects.career ? sign.aspects.career.summary : "-"}
-💰 โชคลาภ: ${sign.aspects.wealth ? sign.aspects.wealth.summary : "-"}
-❤️ ความรัก: ${sign.aspects.love ? sign.aspects.love.summary : "-"}
-🌿 สุขภาพ: ${sign.aspects.health ? sign.aspects.health.summary : "-"}
+💼 อาชีพ: ${sign.aspects && sign.aspects.career ? sign.aspects.career.summary : "-"}
+💰 โชคลาภ: ${sign.aspects && sign.aspects.wealth ? sign.aspects.wealth.summary : "-"}
+❤️ ความรัก: ${sign.aspects && sign.aspects.love ? sign.aspects.love.summary : "-"}
+🌿 สุขภาพ: ${sign.aspects && sign.aspects.health ? sign.aspects.health.summary : "-"}
 
 เสี่ยงเซียมซีออนไลน์ได้ที่: ${window.location.origin}${window.location.pathname}#siamsi=${sign.number}`;
 
@@ -860,14 +1025,13 @@ ${poem}
     const hash = window.location.hash;
     if (hash && hash.includes("siamsi=")) {
       const match = hash.match(/siamsi=([0-9a-zA-Z]+)/);
-      if (match && match[1] && window.SIAMSI_BY_NUMBER) {
-        const signNum = match[1].padStart(2, "0");
-        const sign = window.SIAMSI_BY_NUMBER[signNum] || window.SIAMSI_BY_ID[parseInt(signNum, 10)];
+      if (match && match[1]) {
+        const sign = this.getSignByNumberOrId(match[1]);
         if (sign) {
           setTimeout(() => {
             this.switchToSiamsiMode();
             this.showResultScreen(sign);
-          }, 300);
+          }, 350);
         }
       }
     }
@@ -910,4 +1074,21 @@ ${poem}
   }
 }
 
+// Global Export
 window.SiamsiApp = SiamsiApp;
+
+// Auto-initialization check to guarantee activation
+function initSiamsiIfReady() {
+  if (!window.siamsiApp && typeof SiamsiApp !== "undefined") {
+    window.siamsiApp = new SiamsiApp(window.tarotApp || null);
+    if (window.tarotApp) {
+      window.tarotApp.siamsiApp = window.siamsiApp;
+    }
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSiamsiIfReady);
+} else {
+  initSiamsiIfReady();
+}

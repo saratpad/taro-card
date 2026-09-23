@@ -2393,113 +2393,159 @@ body {
   100% { transform: scale(1.2); opacity: 0.9; }
 }
 
-/* 3D Bamboo Cylinder Body */
+/* 3D Bamboo Cylinder Body & Physical Shaking */
 .siamsi-cylinder-container {
   position: relative;
-  width: 130px;
-  height: 210px;
-  margin-top: 25px;
-  perspective: 800px;
+  width: 140px;
+  height: 220px;
+  margin-top: 20px;
+  perspective: 900px;
   transform-origin: bottom center;
-  transition: transform 0.1s ease-out;
-  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.65));
+  transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.75));
+  cursor: grab;
 }
 
+.siamsi-cylinder-container:active {
+  cursor: grabbing;
+}
+
+/* Realistic Manual and Sensor Shake Animation */
 .siamsi-cylinder-container.rattling {
-  animation: cylinderRattle 0.18s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  animation: cylinderPhysicalRattle 0.16s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
 }
 
 .siamsi-cylinder-container.auto-shaking-loop {
-  animation: cylinderAutoShake 0.4s ease-in-out infinite alternate;
+  animation: cylinderRealisticAutoShake 0.42s ease-in-out infinite alternate;
 }
 
-@keyframes cylinderRattle {
-  0%, 100% { transform: rotate(0deg) translate(0, 0); }
-  25% { transform: rotate(-5deg) translate(-4px, -3px); }
-  50% { transform: rotate(4deg) translate(3px, 2px); }
-  75% { transform: rotate(-3deg) translate(-2px, 3px); }
+/* Decisive thrust when stick is ejected */
+.siamsi-cylinder-container.cylinder-eject-thrust {
+  animation: cylinderEjectThrust 0.65s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
 }
 
-@keyframes cylinderAutoShake {
-  0% { transform: rotate(-8deg) translateY(-8px); }
-  50% { transform: rotate(0deg) translateY(6px); }
-  100% { transform: rotate(8deg) translateY(-8px); }
+@keyframes cylinderPhysicalRattle {
+  0% { transform: rotateY(0deg) rotateX(12deg) rotateZ(0deg) translateY(0); }
+  25% { transform: rotateY(-6deg) rotateX(15deg) rotateZ(-4deg) translateY(-5px); }
+  50% { transform: rotateY(5deg) rotateX(9deg) rotateZ(3deg) translateY(4px); }
+  75% { transform: rotateY(-3deg) rotateX(14deg) rotateZ(-2deg) translateY(-3px); }
+  100% { transform: rotateY(0deg) rotateX(12deg) rotateZ(0deg) translateY(0); }
 }
 
-/* Protruding Bamboo Sticks inside cylinder */
+@keyframes cylinderRealisticAutoShake {
+  0% { transform: rotateX(10deg) rotateZ(-9deg) translateY(-10px); }
+  50% { transform: rotateX(24deg) rotateZ(0deg) translateY(8px); }
+  100% { transform: rotateX(12deg) rotateZ(9deg) translateY(-10px); }
+}
+
+@keyframes cylinderEjectThrust {
+  0% { transform: rotateX(12deg) translateY(0); }
+  25% { transform: rotateX(28deg) translateY(-16px) scale(1.04); }
+  50% { transform: rotateX(38deg) translateY(14px); }
+  100% { transform: rotateX(0deg) translateY(0); }
+}
+
+/* Dynamic Protruding Bamboo Sticks inside cylinder */
 .siamsi-sticks-bundle {
   position: absolute;
-  top: -30px;
+  top: -36px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100px;
-  height: 60px;
+  width: 110px;
+  height: 65px;
   display: flex;
   justify-content: center;
-  transition: transform 0.25s ease-out;
+  transition: transform 0.2s ease-out;
   z-index: 1;
 }
 
 .bamboo-stick {
   position: absolute;
-  width: 7px;
-  height: 75px;
-  background: linear-gradient(180deg, #d32f2f 0%, #d32f2f 14px, #f2c792 15px, #c69358 100%);
+  width: 7.5px;
+  height: 80px;
+  background: linear-gradient(180deg, #d32f2f 0%, #d32f2f 16px, #f5d09b 17px, #c8955a 100%);
   border-radius: 3px 3px 1px 1px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease-out;
 }
 
-.bamboo-stick.s1 { left: 18px; transform: rotate(-14deg) translateY(4px); height: 72px; }
-.bamboo-stick.s2 { left: 28px; transform: rotate(-8deg) translateY(0px); height: 78px; }
-.bamboo-stick.s3 { left: 38px; transform: rotate(-3deg) translateY(2px); height: 82px; }
-.bamboo-stick.s4 { left: 47px; transform: rotate(1deg) translateY(-2px); height: 85px; }
-.bamboo-stick.s5 { left: 56px; transform: rotate(5deg) translateY(1px); height: 80px; }
-.bamboo-stick.s6 { left: 66px; transform: rotate(10deg) translateY(5px); height: 76px; }
-.bamboo-stick.s7 { left: 75px; transform: rotate(15deg) translateY(8px); height: 70px; }
-.bamboo-stick.s8 { left: 34px; transform: rotate(-5deg) translateY(6px); height: 68px; opacity: 0.85; }
-.bamboo-stick.s9 { left: 60px; transform: rotate(7deg) translateY(6px); height: 69px; opacity: 0.85; }
+.bamboo-stick.s1  { left: 12px; transform: rotate(-16deg) translateY(6px); height: 74px; }
+.bamboo-stick.s2  { left: 20px; transform: rotate(-10deg) translateY(2px); height: 78px; }
+.bamboo-stick.s3  { left: 28px; transform: rotate(-5deg) translateY(-1px); height: 82px; }
+.bamboo-stick.s4  { left: 37px; transform: rotate(-2deg) translateY(1px); height: 84px; }
+.bamboo-stick.s5  { left: 45px; transform: rotate(1deg) translateY(-3px); height: 86px; }
+.bamboo-stick.s6  { left: 54px; transform: rotate(4deg) translateY(0px); height: 85px; }
+.bamboo-stick.s7  { left: 63px; transform: rotate(7deg) translateY(2px); height: 81px; }
+.bamboo-stick.s8  { left: 72px; transform: rotate(12deg) translateY(5px); height: 76px; }
+.bamboo-stick.s9  { left: 81px; transform: rotate(18deg) translateY(8px); height: 72px; }
+.bamboo-stick.s10 { left: 30px; transform: rotate(-8deg) translateY(8px); height: 70px; opacity: 0.85; }
+.bamboo-stick.s11 { left: 50px; transform: rotate(3deg) translateY(7px); height: 71px; opacity: 0.85; }
+.bamboo-stick.s12 { left: 68px; transform: rotate(10deg) translateY(9px); height: 69px; opacity: 0.85; }
 
-/* Emerging Stick */
-.siamsi-emerging-stick {
+/* Dynamic bundle jitter when shaking */
+.siamsi-cylinder-container.rattling .siamsi-sticks-bundle span:nth-child(odd) {
+  transform: translateY(-5px);
+}
+.siamsi-cylinder-container.rattling .siamsi-sticks-bundle span:nth-child(even) {
+  transform: translateY(4px);
+}
+
+/* The single stick that progressively climbs out of the bundle */
+.siamsi-rising-stick {
   position: absolute;
-  top: -30px;
+  top: -38px;
   left: 50%;
   transform: translateX(-50%) translateY(0);
-  width: 9px;
-  height: 85px;
-  background: linear-gradient(180deg, #ff1744 0%, #ff1744 18px, #ffe082 19px, #d4a373 100%);
-  border-radius: 4px;
-  box-shadow: 0 0 14px rgba(255, 215, 0, 0.8);
-  opacity: 0;
+  width: 9.5px;
+  height: 88px;
+  background: linear-gradient(180deg, #ff1744 0%, #ff1744 20px, #ffe082 21px, #d4a373 100%);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 1px 2px 5px rgba(0, 0, 0, 0.5);
   z-index: 3;
-  transition: transform 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.3s ease;
+  transition: transform 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.siamsi-emerging-stick.emerging {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-65px) rotate(6deg);
+.rising-stick-red-tip {
+  width: 100%;
+  height: 18px;
+  background: #d50000;
+  border-radius: 3px 3px 0 0;
 }
 
-/* Bamboo Cylinder Exterior */
+.rising-stick-carving {
+  font-size: 8px;
+  color: #5d4037;
+  font-weight: 700;
+  margin-top: 6px;
+  writing-mode: vertical-rl;
+}
+
+/* Bamboo Cylinder Body */
 .bamboo-cylinder-body {
   position: relative;
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, 
-    #3b220c 0%, 
-    #7a471c 18%, 
-    #b87a38 45%, 
-    #d99b52 55%, 
-    #8c5220 82%, 
-    #331d0a 100%
+    #301b08 0%, 
+    #693d18 16%, 
+    #a86f33 42%, 
+    #c9914c 54%, 
+    #7a461b 82%, 
+    #2b1807 100%
   );
   border-radius: 8px 8px 18px 18px;
-  box-shadow: inset 0 6px 12px rgba(255, 235, 175, 0.35), inset 0 -8px 16px rgba(0, 0, 0, 0.65);
+  box-shadow: 
+    inset 0 6px 14px rgba(255, 235, 175, 0.4), 
+    inset 0 -10px 20px rgba(0, 0, 0, 0.7),
+    0 12px 24px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(245, 197, 66, 0.35);
+  border: 1px solid rgba(245, 197, 66, 0.4);
   z-index: 2;
   overflow: hidden;
 }
@@ -2508,10 +2554,10 @@ body {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 10px;
-  background: linear-gradient(90deg, #ffd700, #ffec8b 50%, #b8860b);
+  height: 11px;
+  background: linear-gradient(90deg, #b8860b, #ffd700 40%, #fff3b0 50%, #ffd700 60%, #8b6508);
   border-top: 1px solid #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
 .cylinder-rim.top-rim { top: 0; }
 .cylinder-rim.bottom-rim { bottom: 0; }
@@ -2525,36 +2571,240 @@ body {
 
 .carving-seal {
   font-family: var(--font-cinzel), serif;
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: 4px;
-  color: #ffda66;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 215, 0, 0.6);
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: #ffe082;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 12px rgba(255, 215, 0, 0.7);
   writing-mode: vertical-rl;
   text-orientation: upright;
 }
 
 .carving-sub {
-  font-size: 0.68rem;
-  color: #f7d088;
+  font-size: 0.72rem;
+  color: #ffecb3;
   letter-spacing: 2px;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .cylinder-ribbon {
   position: absolute;
-  bottom: 30px;
+  bottom: 28px;
   width: 100%;
-  height: 14px;
-  background: linear-gradient(90deg, #8b0000 0%, #d32f2f 50%, #8b0000 100%);
-  border-top: 1px solid rgba(255, 215, 0, 0.6);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.6);
+  height: 16px;
+  background: linear-gradient(90deg, #8b0000 0%, #c62828 50%, #8b0000 100%);
+  border-top: 1px solid rgba(255, 215, 0, 0.7);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.7);
+}
+
+/* =========================================================================
+ * REALISTIC FLYING & BOUNCING STICK STAGE (ANIMATION DECK)
+ * ========================================================================= */
+.siamsi-flying-stick-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+}
+
+.siamsi-flying-stick-stage.active {
+  display: block;
+}
+
+/* The Projectile Flying Stick */
+.siamsi-projectile-stick {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 230px;
+  height: 32px;
+  margin-left: -115px;
+  margin-top: -16px;
+  background: linear-gradient(90deg, #d50000 0%, #d50000 32px, #fce4bc 33px, #e0a96d 100%);
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.75), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  transform-origin: center center;
+  opacity: 0;
+}
+
+.projectile-red-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  background: #c62828;
+  border-radius: 6px 0 0 6px;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.projectile-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px 0 42px;
+  font-family: var(--font-thai);
+  color: #3e2723;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.projectile-chinese {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: #5d4037;
+}
+
+.projectile-number {
+  font-size: 1.05rem;
+  color: #2e1c14;
+  font-weight: 800;
+}
+
+/* Floor Shadow during bounce */
+.siamsi-projectile-shadow {
+  position: absolute;
+  top: 76%;
+  left: 50%;
+  width: 180px;
+  height: 18px;
+  margin-left: -90px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transform-origin: center center;
+}
+
+/* Keyframe for Authentic Physics: Launch -> High Arc -> Impact 1 -> Rebound -> Impact 2 -> Settle */
+.siamsi-flying-stick-stage.animating .siamsi-projectile-stick {
+  animation: realisticStickFlightPhysics 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.siamsi-flying-stick-stage.animating .siamsi-projectile-shadow {
+  animation: realisticShadowPhysics 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes realisticStickFlightPhysics {
+  /* 0%: Leaps up from the mouth of cylinder */
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -90px, 0) rotateZ(-38deg) rotateX(15deg) scale(0.68);
+  }
+  /* 22%: Arcs highest into the air with 3D spin */
+  22% {
+    opacity: 1;
+    transform: translate3d(25px, -170px, 50px) rotateZ(55deg) rotateX(45deg) scale(1.02);
+  }
+  /* 45%: FIRST IMPACT onto the altar floor/mat (BAM!) */
+  45% {
+    opacity: 1;
+    transform: translate3d(30px, 72px, 0) rotateZ(14deg) rotateX(0deg) scale(1);
+  }
+  /* 54%: First Rebound Bounce up */
+  54% {
+    opacity: 1;
+    transform: translate3d(36px, 18px, 20px) rotateZ(-8deg) rotateX(15deg) scale(1.01);
+  }
+  /* 70%: SECOND IMPACT (Clack!) */
+  70% {
+    opacity: 1;
+    transform: translate3d(40px, 75px, 0) rotateZ(5deg) rotateX(0deg) scale(1);
+  }
+  /* 80%: Tiny third micro-hop */
+  80% {
+    opacity: 1;
+    transform: translate3d(42px, 66px, 5px) rotateZ(-2deg) rotateX(5deg) scale(1);
+  }
+  /* 92%: Final slide and settle */
+  92% {
+    opacity: 1;
+    transform: translate3d(44px, 76px, 0) rotateZ(1deg) rotateX(0deg) scale(1);
+  }
+  /* 100%: Rest completely flat facing user */
+  100% {
+    opacity: 1;
+    transform: translate3d(45px, 76px, 0) rotateZ(0deg) rotateX(0deg) scale(1);
+  }
+}
+
+@keyframes realisticShadowPhysics {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.5);
+  }
+  22% {
+    opacity: 0.15;
+    transform: scale(0.35) translateY(10px);
+    filter: blur(8px);
+  }
+  45% {
+    opacity: 0.85;
+    transform: scale(1.15) translateY(0);
+    filter: blur(2px);
+  }
+  54% {
+    opacity: 0.35;
+    transform: scale(0.65) translateY(5px);
+    filter: blur(5px);
+  }
+  70% {
+    opacity: 0.8;
+    transform: scale(1.05) translateY(0);
+    filter: blur(2px);
+  }
+  80% {
+    opacity: 0.55;
+    transform: scale(0.9) translateY(2px);
+  }
+  100% {
+    opacity: 0.85;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Impact Sparkles */
+.siamsi-impact-sparkles {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  margin-left: -70px;
+  margin-top: -70px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.siamsi-impact-sparkles.burst {
+  animation: sparkleBurst 0.6s ease-out forwards;
+}
+
+@keyframes sparkleBurst {
+  0% {
+    opacity: 1;
+    transform: scale(0.2);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+    box-shadow: 0 0 0 10px rgba(255, 215, 0, 0), 0 0 45px rgba(255, 215, 0, 0);
+  }
 }
 
 /* Shake Gauge */
 .siamsi-shake-gauge-container {
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
   margin-top: 1.8rem;
   display: flex;
   flex-direction: column;
@@ -2564,81 +2814,183 @@ body {
 
 .siamsi-shake-progress-track {
   width: 100%;
-  height: 10px;
-  background: rgba(15, 8, 30, 0.8);
-  border: 1px solid rgba(245, 197, 66, 0.3);
+  height: 12px;
+  background: rgba(15, 8, 30, 0.85);
+  border: 1px solid rgba(245, 197, 66, 0.35);
   border-radius: 9999px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7);
 }
 
 .siamsi-shake-progress-fill {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, #ff8f00 0%, #ffd54f 70%, #fff9c4 100%);
-  box-shadow: 0 0 12px rgba(255, 213, 79, 0.8);
+  background: linear-gradient(90deg, #ff6f00 0%, #ffb300 45%, #ffd54f 80%, #fff9c4 100%);
+  box-shadow: 0 0 14px rgba(255, 213, 79, 0.9);
   border-radius: 9999px;
-  transition: width 0.15s ease-out;
+  transition: width 0.12s ease-out;
 }
 
 .siamsi-shake-hint {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   text-align: center;
-  min-height: 1.4rem;
+  min-height: 1.5rem;
   transition: color var(--transition-fast);
 }
 
-/* Fallen Stick Display Container */
+/* =========================================================================
+ * PROMINENT FALLEN STICK & REVELATION CARD DISPLAY
+ * ========================================================================= */
 .siamsi-dropped-stick-container {
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
+  gap: 1.4rem;
   width: 100%;
-  animation: fadeInDown 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  margin-top: 1rem;
+  animation: revealFadeIn 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
 }
 
 .siamsi-dropped-stick-container.visible {
   display: flex;
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes revealFadeIn {
+  from { opacity: 0; transform: translateY(25px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.altar-red-mat {
+/* Prominent Revelation Header Banner */
+.siamsi-revelation-banner {
   width: 100%;
-  max-width: 380px;
-  padding: 1.8rem 1.2rem;
-  background: radial-gradient(circle, #800000 0%, #4a0000 70%, #2b0000 100%);
+  max-width: 480px;
+  background: radial-gradient(circle at 50% 30%, rgba(45, 20, 80, 0.95), rgba(18, 8, 36, 0.98));
+  border: 2px solid var(--gold-primary);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.6rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 197, 66, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rev-banner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 197, 66, 0.15);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  color: var(--gold-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+}
+
+.rev-banner-number-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rev-lead {
+  font-size: 1.15rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.rev-number-highlight {
+  font-size: 1.95rem;
+  font-weight: 900;
+  color: #ffda66;
+  text-shadow: 0 0 16px rgba(255, 215, 0, 0.65), 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+}
+
+.rev-stick-id {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.rev-banner-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.rev-titles {
+  font-size: 0.95rem;
+  color: #fce4bc;
+  font-weight: 600;
+}
+
+/* Altar Red Velvet Mat */
+.altar-red-mat {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.2rem 1.6rem;
+  background: radial-gradient(ellipse at 50% 50%, #8b0000 0%, #520000 65%, #2a0000 100%);
   border: 2px solid #ffd700;
   border-radius: var(--radius-md);
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.6);
+  box-shadow: 
+    0 0 35px rgba(255, 215, 0, 0.35), 
+    inset 0 0 20px rgba(0, 0, 0, 0.75),
+    0 12px 28px rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.altar-red-mat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 45px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.75);
+}
+
+/* Mat Corner Gold Filigrees */
+.mat-corner-ornament {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ffd700;
+}
+.mat-corner-ornament.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.mat-corner-ornament.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.mat-corner-ornament.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.mat-corner-ornament.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+/* The Fallen Stick Resting on Altar */
 .siamsi-fallen-stick {
   position: relative;
-  width: 260px;
-  height: 38px;
-  background: linear-gradient(90deg, #d32f2f 0%, #d32f2f 32px, #f7d299 33px, #e8b672 100%);
-  border-radius: 6px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  width: 320px;
+  max-width: 100%;
+  height: 48px;
+  background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 38px, #fce4bc 39px, #e8b877 75%, #d19b55 100%);
+  border-radius: 8px;
+  box-shadow: 
+    0 8px 22px rgba(0, 0, 0, 0.75), 
+    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(255, 215, 0, 0.35);
   display: flex;
   align-items: center;
-  padding-left: 45px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  animation: stickWobble 0.5s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@keyframes stickWobble {
-  0% { transform: scale(0.85) rotate(-6deg); }
-  50% { transform: scale(1.05) rotate(3deg); }
-  100% { transform: scale(1) rotate(0deg); }
+.siamsi-fallen-stick:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.85), 0 0 25px rgba(255, 215, 0, 0.6);
 }
 
 .fallen-stick-red-tip {
@@ -2646,17 +2998,62 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 32px;
-  background: #c62828;
-  border-radius: 6px 0 0 6px;
+  width: 38px;
+  background: linear-gradient(180deg, #d32f2f 0%, #b71c1c 100%);
+  border-radius: 8px 0 0 8px;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.fallen-stick-number {
-  font-family: var(--font-thai);
-  font-size: 1.15rem;
+.fallen-stick-wood-texture {
+  width: 100%;
+  height: 100%;
+  padding-left: 48px;
+  padding-right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.fallen-stick-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.fallen-stick-chinese-tag {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  color: #6d4c41;
   font-weight: 700;
-  color: #3e2723;
+  white-space: nowrap;
+}
+
+.fallen-stick-main-number {
+  font-family: var(--font-thai);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #2b170c;
   letter-spacing: 1px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.fallen-stick-thai-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4e342e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 110px;
+}
+
+.mat-click-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: -4px 0 2px;
 }
 
 /* Toolbar Buttons */
@@ -2666,6 +3063,7 @@ body {
   justify-content: center;
   gap: 12px;
   width: 100%;
+  margin-top: 1.5rem;
 }
 
 /* -------------------------------------------------------------------------

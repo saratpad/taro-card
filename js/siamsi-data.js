@@ -5407,14 +5407,30 @@ const SIAMSI_DATA = [
   }
 ];
 
-// Helper helper dictionary keyed by number '00' to '99' and id 1 to 100
+// Helper dictionary keyed by number '00' to '99' and id 1 to 100
 const SIAMSI_BY_NUMBER = {};
 const SIAMSI_BY_ID = {};
 
 SIAMSI_DATA.forEach(sign => {
   SIAMSI_BY_NUMBER[sign.number] = sign;
   SIAMSI_BY_ID[sign.id] = sign;
+  
+  // Also add integer string lookup and padded lookups
+  const intStr = String(parseInt(sign.number, 10));
+  SIAMSI_BY_NUMBER[intStr] = sign;
+  
+  // Also add stick_num lookup
+  if (sign.stick_num) {
+    SIAMSI_BY_ID[sign.stick_num] = sign;
+    SIAMSI_BY_NUMBER[String(sign.stick_num)] = sign;
+  }
 });
+
+// Special alias for 00 / 100 (ใบที่ 100 คือเบอร์ 00)
+if (SIAMSI_BY_NUMBER["00"]) {
+  SIAMSI_BY_NUMBER["100"] = SIAMSI_BY_NUMBER["00"];
+  SIAMSI_BY_NUMBER["0"] = SIAMSI_BY_NUMBER["00"];
+}
 
 // Fortune level configurations & badges
 const SIAMSI_LEVEL_CONFIG = {
@@ -5460,6 +5476,15 @@ const SIAMSI_LEVEL_CONFIG = {
   }
 };
 
+// Global Browser Exports (Crucial for browser scripts)
+if (typeof window !== "undefined") {
+  window.SIAMSI_DATA = SIAMSI_DATA;
+  window.SIAMSI_BY_NUMBER = SIAMSI_BY_NUMBER;
+  window.SIAMSI_BY_ID = SIAMSI_BY_ID;
+  window.SIAMSI_LEVEL_CONFIG = SIAMSI_LEVEL_CONFIG;
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { SIAMSI_DATA, SIAMSI_BY_NUMBER, SIAMSI_BY_ID, SIAMSI_LEVEL_CONFIG };
 }
+

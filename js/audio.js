@@ -262,9 +262,9 @@ class MysticAudio {
   }
 
   /**
-   * Sound of a single bamboo stick sliding out and dropping onto the altar mat
+   * Sound of a bamboo stick shooting out from the cylinder mouth
    */
-  playStickDrop() {
+  playStickEject() {
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
@@ -272,36 +272,106 @@ class MysticAudio {
 
     const now = this.ctx.currentTime;
 
-    // 1. Initial wooden click/tap
-    const osc1 = this.ctx.createOscillator();
-    const gain1 = this.ctx.createGain();
-    osc1.type = "triangle";
-    osc1.frequency.setValueAtTime(980, now);
-    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.07);
+    // Fast wood friction whoosh + scrape sound
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
 
-    gain1.gain.setValueAtTime(0.18, now);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(450, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.16);
 
-    osc1.connect(gain1);
-    gain1.connect(this.ctx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.08);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(900, now);
+    filter.Q.setValueAtTime(3.0, now);
 
-    // 2. Secondary rebound bounce
-    const bounceTime = now + 0.09;
-    const osc2 = this.ctx.createOscillator();
-    const gain2 = this.ctx.createGain();
-    osc2.type = "sine";
-    osc2.frequency.setValueAtTime(680, bounceTime);
-    osc2.frequency.exponentialRampToValueAtTime(240, bounceTime + 0.05);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.14, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
 
-    gain2.gain.setValueAtTime(0.09, bounceTime);
-    gain2.gain.exponentialRampToValueAtTime(0.001, bounceTime + 0.05);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
 
-    osc2.connect(gain2);
-    gain2.connect(this.ctx.destination);
-    osc2.start(bounceTime);
-    osc2.stop(bounceTime + 0.06);
+    osc.start(now);
+    osc.stop(now + 0.2);
+  }
+
+  /**
+   * Realistic multi-stage wood bounce:
+   * 1st impact (loud strike) -> 2nd rebound bounce -> 3rd tiny settle clatter
+   */
+  playStickDrop(intensity = 1.0) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+
+    // --- Bounce 1: Hard Primary Impact (t = 0) ---
+    this._playWoodImpact(now, 1150, 0.28 * intensity, 0.06);
+    this._playWoodBodyThud(now, 280, 0.22 * intensity, 0.09);
+
+    // --- Bounce 2: Rebound Tap (t = 140ms) ---
+    const t2 = now + 0.14;
+    this._playWoodImpact(t2, 1380, 0.14 * intensity, 0.045);
+    this._playWoodBodyThud(t2, 340, 0.10 * intensity, 0.07);
+
+    // --- Bounce 3: Settle Click / Rattle (t = 240ms) ---
+    const t3 = now + 0.24;
+    this._playWoodImpact(t3, 1620, 0.08 * intensity, 0.035);
+
+    // --- Subtle Velvet Mat Thud (t = 310ms) ---
+    const t4 = now + 0.31;
+    this._playWoodImpact(t4, 920, 0.04 * intensity, 0.03);
+  }
+
+  _playWoodImpact(time, freq, volume, duration) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, time);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.45, time + duration);
+
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(freq, time);
+    filter.Q.setValueAtTime(5.0, time);
+
+    gain.gain.setValueAtTime(0.001, time);
+    gain.gain.linearRampToValueAtTime(volume, time + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(time);
+    osc.stop(time + duration + 0.01);
+  }
+
+  _playWoodBodyThud(time, freq, volume, duration) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, time);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.6, time + duration);
+
+    gain.gain.setValueAtTime(0.001, time);
+    gain.gain.linearRampToValueAtTime(volume, time + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(time);
+    osc.stop(time + duration + 0.01);
   }
 
   /**
