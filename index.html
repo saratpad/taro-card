@@ -93,8 +93,8 @@
           <!-- Ritual Setup Card Box -->
           <div class="ritual-card-box">
 
-            <!-- Seeker Name Input (ชื่อผู้รับคำทำนาย) -->
-            <div class="form-group seeker-name-group">
+            <!-- Seeker Name Input (Hidden per user request: ไม่ต้องใส่ชื่อก่อนดูดวงแล้ว) -->
+            <div class="form-group seeker-name-group" style="display: none;">
               <label class="form-label" for="seeker-name-input">
                 <span>👤</span>
                 <span data-i18n="label_seeker_name">ชื่อผู้รับคำทำนาย</span>
@@ -474,25 +474,33 @@
               "ตั้งจิตสงบนิ่ง รวบรวมสมาธิถึงเรื่องที่ปรารถนาจะล่วงรู้ แล้วเขย่ากระบอกไม้ไผ่เพื่อเปิดม่านลิขิตแห่งฟ้า..."
             </p>
 
-            <!-- Seeker Setup Card -->
-            <div class="ritual-card-box siamsi-setup-box">
-              <div class="form-group seeker-name-group">
-                <label class="form-label" for="siamsi-seeker-name">
-                  <span>👤</span>
-                  <span data-i18n="siamsi_seeker_label">ชื่อผู้ขอคำทำนายเซียมซี</span>
+            <!-- Textbook Selector Card (เลือกตำราเซียมซี) -->
+            <div class="ritual-card-box siamsi-deck-box" id="siamsi-deck-selector-box">
+              <div class="form-group">
+                <label class="form-label">
+                  <span>📜</span>
+                  <span data-i18n="label_siamsi_deck">เลือกตำราเซียมซี</span>
                 </label>
-                <div class="seeker-input-wrapper">
-                  <input 
-                    type="text" 
-                    id="siamsi-seeker-name" 
-                    class="mystic-text-input" 
-                    placeholder="เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกคำทำนายเฉพาะคุณ)"
-                    data-i18n-placeholder="siamsi_seeker_placeholder"
-                    maxlength="50"
-                    autocomplete="name"
-                  />
+                <div class="siamsi-deck-grid" id="siamsi-deck-options">
+                  <button type="button" class="deck-option-card active" data-deck="wongtaisin" id="deck-opt-wongtaisin">
+                    <div class="deck-card-top">
+                      <span class="deck-icon">🏛️</span>
+                      <span class="deck-badge" data-i18n="deck_badge_100">100 ใบ</span>
+                    </div>
+                    <div class="deck-name" data-i18n="deck_name_wongtaisin">เซียมซีหว่องไทซิน</div>
+                    <div class="deck-desc" data-i18n="deck_desc_wongtaisin">พยากรณ์ละเอียดครบ 7 ด้าน พร้อมบทกลอนดั้งเดิม</div>
+                  </button>
+                  <button type="button" class="deck-option-card" data-deck="tanjai" id="deck-opt-tanjai">
+                    <div class="deck-card-top">
+                      <span class="deck-icon">🪷</span>
+                      <span class="deck-badge" data-i18n="deck_badge_100">100 ใบ</span>
+                    </div>
+                    <div class="deck-name" data-i18n="deck_name_tanjai">เซียมซีหลวงพ่อทันใจ</div>
+                    <div class="deck-desc" data-i18n="deck_desc_tanjai">คำทำนายศักดิ์สิทธิ์ต้นฉบับ ชัดเจนตรงประเด็นทุกเรื่องราว</div>
+                  </button>
                 </div>
               </div>
+              <input type="text" id="siamsi-seeker-name" style="display: none;" />
             </div>
 
             <!-- Interactive Shaking Altar Area -->
@@ -558,6 +566,13 @@
                   <p class="siamsi-shake-hint" id="siamsi-shake-hint" data-i18n="siamsi_shake_hint_default">
                     📱 เขย่ามือถือของคุณ หรือ 🖱️ คลิกค้างแล้วสะบัดเมาส์เขย่ากระบอก
                   </p>
+                  <!-- iOS Motion Sensor Permission Helper Banner -->
+                  <div class="ios-motion-helper" id="ios-motion-helper" style="display: none;">
+                    <button type="button" class="btn-ios-motion-permit" id="btn-ios-motion-permit">
+                      <span class="ios-btn-icon">📱</span>
+                      <span class="ios-btn-text">แตะที่นี่เพื่ออนุญาตระบบเขย่าบน iPhone / iPad</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -642,6 +657,8 @@
             <!-- Plaque Header Card -->
             <div class="siamsi-plaque-card">
               <div class="plaque-top-meta">
+                <span class="siamsi-deck-badge" id="siamsi-result-deck-badge">🏛️ ตำรา: เซียมซีหว่องไทซิน</span>
+                <button type="button" class="btn-switch-result-deck" id="btn-switch-result-deck" title="สลับตำราเพื่อดูคำทำนายอีกตำรา">สลับตำรา ⇄</button>
                 <span class="siamsi-number-pill" id="siamsi-result-number-badge">เบอร์ 01 (ใบที่ 1)</span>
                 <span class="siamsi-level-badge" id="siamsi-result-level-badge">
                   <span class="level-icon">✨</span> <span>ดีที่สุด</span>
@@ -738,9 +755,19 @@
                 <span>←</span>
                 <span data-i18n="btn_back">ย้อนกลับ</span>
               </button>
-              <h2 data-i18n="siamsi_dir_title">สารบัญเซียมซีหว่องไทซิน 100 ใบ</h2>
+              <h2 data-i18n="siamsi_dir_title" id="siamsi-dir-main-title">สารบัญคำทำนายเซียมซี 100 ใบ</h2>
             </div>
-            <p class="directory-subtitle" data-i18n="siamsi_dir_subtitle">ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai</p>
+            <p class="directory-subtitle" data-i18n="siamsi_dir_subtitle">ค้นหาคำทำนายตามหมายเลข หรือค้นหาตามเนื้อหาคำทำนาย</p>
+
+            <!-- Directory Deck Filter Tabs -->
+            <div class="siamsi-dir-deck-tabs" id="siamsi-dir-deck-tabs">
+              <button type="button" class="dir-deck-tab active" data-deck="wongtaisin" id="dir-deck-tab-wongtaisin">
+                <span>🏛️</span> เซียมซีหว่องไทซิน (100 ใบ)
+              </button>
+              <button type="button" class="dir-deck-tab" data-deck="tanjai" id="dir-deck-tab-tanjai">
+                <span>🪷</span> เซียมซีหลวงพ่อทันใจ (100 ใบ)
+              </button>
+            </div>
 
             <!-- Search & Filter Controls -->
             <div class="directory-controls">
@@ -778,7 +805,7 @@
         Mystic Witch Tarot • พัฒนาด้วยความเคารพในศาสตร์แห่งไพ่ทาโรต์และจิตวิทยาเชิงสัญลักษณ์
       </p>
       <p style="margin-top: 0.4rem; font-size: 0.78rem;">
-        Tarot System: Rider-Waite & <a href="https://www.shitsuren-tarot.com/tarot/" target="_blank" rel="noopener">Shitsuren Tarot</a> • เซียมซีหว่องไทซิน 100 ใบ: อ้างอิงคำทำนายครบทุกด้านจาก <a href="https://www.kaucim.ai/th/sign" target="_blank" rel="noopener">kaucim.ai</a>
+        Tarot System: Rider-Waite • เซียมซี 100 ใบ: เซียมซีหว่องไทซิน &amp; เซียมซีหลวงพ่อทันใจ
       </p>
     </footer>
 
@@ -830,6 +857,7 @@
   <script src="js/tarot-minor-data.js"></script>
   <script src="js/tarot-love-data.js"></script>
   <script src="js/siamsi-data.js"></script>
+  <script src="js/siamsi-tanjai-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/siamsi.js"></script>

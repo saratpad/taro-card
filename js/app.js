@@ -141,9 +141,8 @@ const I18N = {
     btn_siamsi_reshake: "เสี่ยงเซียมซีใหม่อีกครั้ง",
     btn_siamsi_copy_result: "คัดลอกคำทำนาย",
     btn_siamsi_share_result: "แชร์ผลเซียมซี",
-    btn_siamsi_view_directory: "สารบัญ 100 ใบ",
-    siamsi_dir_title: "สารบัญเซียมซีหว่องไทซิน 100 ใบ",
-    siamsi_dir_subtitle: "ค้นหาคำทำนายตามเบอร์ 00 - 99 หรือใบที่ 1 - 100 จากตำราแท้ kaucim.ai",
+    siamsi_dir_title: "สารบัญคำทำนายเซียมซี 100 ใบ",
+    siamsi_dir_subtitle: "ค้นหาคำทำนายตามหมายเลข หรือค้นหาตามเนื้อหาคำทำนาย",
     siamsi_dir_search_ph: "🔍 พิมพ์เบอร์ (เช่น 28, 00) หรือค้นหาชื่อเรื่อง...",
     btn_back: "ย้อนกลับ"
   },
@@ -281,8 +280,8 @@ const I18N = {
     btn_siamsi_copy_result: "Copy Reading",
     btn_siamsi_share_result: "Share Result",
     btn_siamsi_view_directory: "100 Signs Directory",
-    siamsi_dir_title: "Wong Tai Sin 100 Siamsi Directory",
-    siamsi_dir_subtitle: "Browse fortunes #00 - 99 or Sign 1 - 100 according to kaucim.ai",
+    siamsi_dir_title: "100 Signs Oracle Directory",
+    siamsi_dir_subtitle: "Browse fortunes by number or keyword",
     siamsi_dir_search_ph: "🔍 Type number (e.g. 28, 00) or title keyword...",
     btn_back: "Back"
   }

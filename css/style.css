@@ -3575,3 +3575,186 @@ body {
   font-weight: 700;
   letter-spacing: 2px;
 }
+
+/* -------------------------------------------------------------------------
+ * SIAMSI TEXTBOOK / DECK SELECTOR
+ * ------------------------------------------------------------------------- */
+.siamsi-deck-box {
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.siamsi-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.deck-option-card {
+  background: rgba(26, 17, 43, 0.75);
+  border: 1.5px solid rgba(245, 197, 66, 0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.deck-option-card:hover {
+  border-color: rgba(245, 197, 66, 0.6);
+  background: rgba(38, 26, 61, 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.deck-option-card.active {
+  border-color: var(--gold-primary);
+  background: linear-gradient(135deg, rgba(245, 197, 66, 0.2), rgba(120, 60, 20, 0.3));
+  box-shadow: 0 0 16px rgba(245, 197, 66, 0.35), inset 0 0 12px rgba(245, 197, 66, 0.12);
+}
+
+.deck-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.deck-icon {
+  font-size: 1.6rem;
+}
+
+.deck-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(245, 197, 66, 0.15);
+  color: var(--gold-primary);
+  border: 1px solid rgba(245, 197, 66, 0.4);
+}
+
+.deck-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold-primary);
+}
+
+.deck-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------------------------------
+ * iOS MOTION SENSOR PERMISSION HELPER
+ * ------------------------------------------------------------------------- */
+.ios-motion-helper {
+  margin: 12px auto 0;
+  max-width: 380px;
+  text-align: center;
+}
+
+.btn-ios-motion-permit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45);
+  transition: all 0.2s ease;
+  animation: pulsePermit 2s infinite ease-in-out;
+}
+
+@keyframes pulsePermit {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45); }
+  50% { transform: scale(1.02); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.65); }
+}
+
+.btn-ios-motion-permit:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+}
+
+/* -------------------------------------------------------------------------
+ * DIRECTORY DECK SWITCHER TABS
+ * ------------------------------------------------------------------------- */
+.siamsi-dir-deck-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dir-deck-tab {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(245, 197, 66, 0.3);
+  background: rgba(26, 17, 43, 0.7);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dir-deck-tab:hover {
+  border-color: rgba(245, 197, 66, 0.6);
+  color: #fff;
+}
+
+.dir-deck-tab.active {
+  background: var(--gold-primary);
+  color: #12091f;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 14px rgba(245, 197, 66, 0.4);
+}
+
+/* -------------------------------------------------------------------------
+ * RESULT SCREEN DECK BADGE & SWITCHER
+ * ------------------------------------------------------------------------- */
+.siamsi-deck-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  color: var(--gold-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.btn-switch-result-deck {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  color: var(--gold-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-switch-result-deck:hover {
+  background: rgba(245, 197, 66, 0.2);
+  border-color: var(--gold-primary);
+}
+

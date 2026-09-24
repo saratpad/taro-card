@@ -3,7 +3,7 @@
  * ระบบเสี่ยงเซียมซีจำลองเสมือนจริง:
  * - อนิเมชันไม้ติ้วกระเด้งลอยละลิ่วหล่นลงมากระทบแท่นบูชาสมจริง (3D Physics Flight & Multi-stage Bounce)
  * - แสดงเลขเซียมซีที่ได้ชัดเจน ทั้งบนไม้ติ้วและป้ายประกาศมงคล
- * - คำนวณและแสดงผลคำทำนายครบถ้วน 7 ด้านตามตำรา kaucim.ai (อาชีพ, โชคลาภ, ความรัก, สุขภาพ, การเรียน, ครอบครัว, ภาพรวม)
+ * - คำนวณและแสดงผลคำทำนายครบถ้วน 7 ด้าน (อาชีพ, โชคลาภ, ความรัก, สุขภาพ, การเรียน, ครอบครัว, ภาพรวม)
  * - รองรับ 2 ภาษาอย่างสมบูรณ์ (TH / EN) สลับภาษาคำทำนายได้ทันทีตามที่ผู้ใช้เลือก
  * - เพิ่มความยากในการเขย่าให้เต็มหลอดนานขึ้น (~30 วินาที)
  * - กลไก Decay Loop: หากหยุดเขย่า หลอดพลังจะค่อยๆ ลดลงอัตโนมัติ
@@ -26,6 +26,14 @@ class SiamsiApp {
     this._decayInterval = null;
     this.selectedAspect = "all";
 
+    // Textbook Deck state: "wongtaisin" (default) or "tanjai"
+    try {
+      this.currentDeck = localStorage.getItem("mystic_siamsi_deck") || "wongtaisin";
+    } catch (e) {
+      this.currentDeck = "wongtaisin";
+    }
+    this.iosMotionPermissionGranted = false;
+
     // Motion Sensor state (Mobile)
     this.lastMotionTime = 0;
     this.lastX = null;
@@ -43,6 +51,7 @@ class SiamsiApp {
 
     this.initDOM();
     this.bindEvents();
+    this.applyDeck(this.currentDeck);
     this.setupShakeSensors();
     this.startDecayLoop();
     this.checkUrlForSign();
@@ -53,6 +62,14 @@ class SiamsiApp {
   }
 
   getData() {
+    if (this.currentDeck === "tanjai") {
+      if (typeof window !== "undefined" && window.SIAMSI_TANJAI_DATA && window.SIAMSI_TANJAI_DATA.length > 0) {
+        return window.SIAMSI_TANJAI_DATA;
+      }
+      if (typeof SIAMSI_TANJAI_DATA !== "undefined" && SIAMSI_TANJAI_DATA && SIAMSI_TANJAI_DATA.length > 0) {
+        return SIAMSI_TANJAI_DATA;
+      }
+    }
     if (typeof window !== "undefined" && window.SIAMSI_DATA && window.SIAMSI_DATA.length > 0) {
       return window.SIAMSI_DATA;
     }
@@ -66,23 +83,106 @@ class SiamsiApp {
     if (!query && query !== 0) return null;
     const str = String(query).trim();
     const pad = str.padStart(2, "0");
-
-    const byNum = (typeof window !== "undefined" && window.SIAMSI_BY_NUMBER) 
-      ? window.SIAMSI_BY_NUMBER 
-      : (typeof SIAMSI_BY_NUMBER !== "undefined" ? SIAMSI_BY_NUMBER : null);
-
-    const byId = (typeof window !== "undefined" && window.SIAMSI_BY_ID) 
-      ? window.SIAMSI_BY_ID 
-      : (typeof SIAMSI_BY_ID !== "undefined" ? SIAMSI_BY_ID : null);
-
-    if (byNum && byNum[pad]) return byNum[pad];
-    if (byNum && byNum[str]) return byNum[str];
     const intVal = parseInt(str, 10);
-    if (byId && byId[intVal]) return byId[intVal];
 
-    // Direct linear search fallback
+    if (this.currentDeck === "tanjai") {
+      const byNumT = (typeof window !== "undefined" && window.SIAMSI_TANJAI_BY_NUMBER) ? window.SIAMSI_TANJAI_BY_NUMBER : null;
+      const byIdT = (typeof window !== "undefined" && window.SIAMSI_TANJAI_BY_ID) ? window.SIAMSI_TANJAI_BY_ID : null;
+      if (byNumT && byNumT[pad]) return byNumT[pad];
+      if (byNumT && byNumT[str]) return byNumT[str];
+      if (byIdT && byIdT[intVal]) return byIdT[intVal];
+    } else {
+      const byNum = (typeof window !== "undefined" && window.SIAMSI_BY_NUMBER) 
+        ? window.SIAMSI_BY_NUMBER 
+        : (typeof SIAMSI_BY_NUMBER !== "undefined" ? SIAMSI_BY_NUMBER : null);
+
+      const byId = (typeof window !== "undefined" && window.SIAMSI_BY_ID) 
+        ? window.SIAMSI_BY_ID 
+        : (typeof SIAMSI_BY_ID !== "undefined" ? SIAMSI_BY_ID : null);
+
+      if (byNum && byNum[pad]) return byNum[pad];
+      if (byNum && byNum[str]) return byNum[str];
+      if (byId && byId[intVal]) return byId[intVal];
+    }
+
+    // Direct search fallback
     const all = this.getData();
     return all.find(s => s.number === pad || s.number === str || s.id === intVal || s.stick_num === intVal) || null;
+  }
+
+  setDeck(deckName) {
+    if (deckName !== "wongtaisin" && deckName !== "tanjai") deckName = "wongtaisin";
+    this.currentDeck = deckName;
+    try {
+      localStorage.setItem("mystic_siamsi_deck", deckName);
+    } catch (e) {}
+
+    this.applyDeck(deckName);
+
+    // If currently displaying result, switch sign to matching stick in the newly selected deck
+    if (this.screenResult && this.screenResult.classList.contains("active") && this.currentSign) {
+      const targetNum = this.currentSign.number;
+      const targetId = this.currentSign.stick_num || this.currentSign.id;
+      const newSign = this.getSignByNumberOrId(targetNum) || this.getSignByNumberOrId(targetId);
+      if (newSign) {
+        this.showResultScreen(newSign);
+      }
+    }
+
+    // If directory screen is active, re-render
+    if (this.screenDirectory && this.screenDirectory.classList.contains("active")) {
+      this.renderDirectoryGrid();
+    }
+
+    // If a stick was dropped on altar, update revelation banner
+    if (this.currentSign && this.droppedStickContainer && this.droppedStickContainer.classList.contains("visible")) {
+      const targetNum = this.currentSign.number;
+      const targetId = this.currentSign.stick_num || this.currentSign.id;
+      const newSign = this.getSignByNumberOrId(targetNum) || this.getSignByNumberOrId(targetId);
+      if (newSign) {
+        this.currentSign = newSign;
+        this.updateRevelationBanner(newSign);
+      }
+    }
+  }
+
+  applyDeck(deckName) {
+    // Altar Deck Option Cards
+    if (this.deckBtnWong) this.deckBtnWong.classList.toggle("active", deckName === "wongtaisin");
+    if (this.deckBtnTanjai) this.deckBtnTanjai.classList.toggle("active", deckName === "tanjai");
+
+    // Directory Tabs
+    if (this.dirDeckTabWong) this.dirDeckTabWong.classList.toggle("active", deckName === "wongtaisin");
+    if (this.dirDeckTabTanjai) this.dirDeckTabTanjai.classList.toggle("active", deckName === "tanjai");
+
+    // Altar Main Title
+    const altarTitle = document.querySelector('[data-i18n="siamsi_altar_title"]');
+    if (altarTitle) {
+      altarTitle.textContent = deckName === "tanjai"
+        ? (this.lang === "en" ? "Luang Por Tanjai Sacred Fortune Altar" : "แท่นบูชาเสี่ยงเซียมซีหลวงพ่อทันใจ")
+        : (this.lang === "en" ? "Wong Tai Sin Heavenly Fortune Altar" : "แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน");
+    }
+
+    // Directory Main Title
+    const dirMainTitle = document.getElementById("siamsi-dir-main-title");
+    if (dirMainTitle) {
+      dirMainTitle.textContent = deckName === "tanjai"
+        ? (this.lang === "en" ? "Luang Por Tanjai 100 Signs Directory" : "สารบัญเซียมซีหลวงพ่อทันใจ 100 ใบ")
+        : (this.lang === "en" ? "Wong Tai Sin 100 Signs Directory" : "สารบัญเซียมซีหว่องไทซิน 100 ใบ");
+    }
+
+    // Cylinder Engraving Carving
+    const carvingSeal = document.querySelector(".carving-seal");
+    const carvingSub = document.querySelector(".carving-sub");
+    if (carvingSeal && carvingSub) {
+      if (deckName === "tanjai") {
+        carvingSeal.textContent = "หลวงพ่อ";
+        carvingSub.textContent = "ทันใจ ๑๐๐";
+      } else {
+        carvingSeal.textContent = "黃大仙";
+        carvingSub.textContent = "靈籤百首";
+      }
+    }
   }
 
   getLevelConfig(levelName) {
@@ -186,15 +286,63 @@ class SiamsiApp {
     this.directNumberInput = document.getElementById("siamsi-direct-num-input");
     this.btnConfirmDirectNum = document.getElementById("btn-confirm-direct-num");
     this.btnCloseDirectModal = document.getElementById("btn-close-direct-modal");
+
+    // Textbook / Deck selection elements
+    this.deckBtnWong = document.getElementById("deck-opt-wongtaisin");
+    this.deckBtnTanjai = document.getElementById("deck-opt-tanjai");
+    this.dirDeckTabWong = document.getElementById("dir-deck-tab-wongtaisin");
+    this.dirDeckTabTanjai = document.getElementById("dir-deck-tab-tanjai");
+    this.resultDeckBadge = document.getElementById("siamsi-result-deck-badge");
+    this.btnSwitchResultDeck = document.getElementById("btn-switch-result-deck");
+
+    // iOS Motion Permission Helper
+    this.iosMotionHelper = document.getElementById("ios-motion-helper");
+    this.btnIosMotionPermit = document.getElementById("btn-ios-motion-permit");
   }
 
   bindEvents() {
     // Mode Switching
     if (this.modeSiamsiBtn) {
-      this.modeSiamsiBtn.addEventListener("click", () => this.switchToSiamsiMode());
+      this.modeSiamsiBtn.addEventListener("click", () => {
+        this.switchToSiamsiMode();
+        this.requestMotionPermissionIfNeeded(true);
+      });
     }
     if (this.modeTarotBtn) {
       this.modeTarotBtn.addEventListener("click", () => this.switchToTarotMode());
+    }
+
+    // Deck Selection on Altar
+    if (this.deckBtnWong) {
+      this.deckBtnWong.addEventListener("click", () => this.setDeck("wongtaisin"));
+    }
+    if (this.deckBtnTanjai) {
+      this.deckBtnTanjai.addEventListener("click", () => this.setDeck("tanjai"));
+    }
+
+    // Deck Selection in Directory
+    if (this.dirDeckTabWong) {
+      this.dirDeckTabWong.addEventListener("click", () => this.setDeck("wongtaisin"));
+    }
+    if (this.dirDeckTabTanjai) {
+      this.dirDeckTabTanjai.addEventListener("click", () => this.setDeck("tanjai"));
+    }
+
+    // Switch Deck from Result Screen
+    if (this.btnSwitchResultDeck) {
+      this.btnSwitchResultDeck.addEventListener("click", () => {
+        this.setDeck(this.currentDeck === "wongtaisin" ? "tanjai" : "wongtaisin");
+      });
+    }
+
+    // iOS Motion Sensor Permission Banner Button
+    if (this.btnIosMotionPermit) {
+      const grantMotion = (e) => {
+        if (e) e.preventDefault();
+        this.requestMotionPermissionIfNeeded(true);
+      };
+      this.btnIosMotionPermit.addEventListener("click", grantMotion);
+      this.btnIosMotionPermit.addEventListener("touchend", grantMotion);
     }
 
     // Auto Shake Button (ritual prayer loop ~30s)
@@ -321,6 +469,7 @@ class SiamsiApp {
         if (window.mysticAudio && window.mysticAudio.init) {
           window.mysticAudio.init();
         }
+        this.requestMotionPermissionIfNeeded(true);
         this.isMouseDown = true;
         const pt = e.touches ? e.touches[0] : e;
         this.lastMouseX = pt.clientX;
@@ -388,45 +537,92 @@ class SiamsiApp {
         return;
       }
 
-      const acc = event.accelerationIncludingGravity || event.acceleration;
-      if (!acc) return;
-
       const now = performance.now();
-      if ((now - this.lastMotionTime) < 90) return; // rate limit sample window
+      if ((now - this.lastMotionTime) < 60) return; // 60ms rate limit for smooth motion peak detection
 
-      const x = acc.x || 0;
-      const y = acc.y || 0;
-      const z = acc.z || 0;
+      let shakeIntensity = 0;
 
-      if (this.lastX !== null) {
-        const deltaX = Math.abs(x - this.lastX);
-        const deltaY = Math.abs(y - this.lastY);
-        const deltaZ = Math.abs(z - this.lastZ);
-        const totalDelta = deltaX + deltaY + deltaZ;
-
-        // Mobile shake threshold
-        if (totalDelta > 13) {
-          const intensity = Math.min(1.8, totalDelta / 14);
-          this.registerShakeBurst(intensity);
+      // Method A: Check linear acceleration without gravity (optimal for iOS devices)
+      if (event.acceleration && (event.acceleration.x !== null || event.acceleration.y !== null || event.acceleration.z !== null)) {
+        const ax = event.acceleration.x || 0;
+        const ay = event.acceleration.y || 0;
+        const az = event.acceleration.z || 0;
+        const magnitude = Math.sqrt(ax * ax + ay * ay + az * az);
+        if (magnitude > 4.2) {
+          shakeIntensity = Math.min(2.0, magnitude / 6.5);
         }
       }
 
-      this.lastX = x;
-      this.lastY = y;
-      this.lastZ = z;
+      // Method B: Acceleration including gravity (delta difference across consecutive samples)
+      const acc = event.accelerationIncludingGravity || event.acceleration;
+      if (shakeIntensity === 0 && acc) {
+        const x = acc.x || 0;
+        const y = acc.y || 0;
+        const z = acc.z || 0;
+
+        if (this.lastX !== null) {
+          const deltaX = Math.abs(x - this.lastX);
+          const deltaY = Math.abs(y - this.lastY);
+          const deltaZ = Math.abs(z - this.lastZ);
+          const totalDelta = deltaX + deltaY + deltaZ;
+
+          // Responsive shake threshold calibrated for phones and tablets
+          if (totalDelta > 5.5) {
+            shakeIntensity = Math.min(2.0, totalDelta / 8.0);
+          }
+        }
+
+        this.lastX = x;
+        this.lastY = y;
+        this.lastZ = z;
+      }
+
       this.lastMotionTime = now;
+
+      if (shakeIntensity > 0) {
+        this.registerShakeBurst(shakeIntensity);
+      }
     };
   }
 
-  requestMotionPermissionIfNeeded() {
+  checkIosMotionBanner() {
     if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
-      DeviceMotionEvent.requestPermission()
-        .then(response => {
-          if (response === "granted") {
-            this.startListeningMotion();
-          }
-        })
-        .catch(console.warn);
+      if (!this.iosMotionPermissionGranted && this.iosMotionHelper) {
+        this.iosMotionHelper.style.display = "block";
+      }
+    }
+  }
+
+  requestMotionPermissionIfNeeded(userInitiated = false) {
+    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
+      if (this.iosMotionPermissionGranted) {
+        this.startListeningMotion();
+        if (this.iosMotionHelper) this.iosMotionHelper.style.display = "none";
+        return;
+      }
+      if (userInitiated) {
+        DeviceMotionEvent.requestPermission()
+          .then(response => {
+            if (response === "granted") {
+              this.iosMotionPermissionGranted = true;
+              if (this.iosMotionHelper) this.iosMotionHelper.style.display = "none";
+              this.startListeningMotion();
+              if (this.shakeHintText) {
+                this.shakeHintText.textContent = this.lang === "en"
+                  ? "✅ Shake sensor ready! Shake your device to divine."
+                  : "✅ เซนเซอร์พร้อมแล้ว! เขย่ามือถือเพื่อเสี่ยงเซียมซี";
+              }
+            } else {
+              if (this.iosMotionHelper) this.iosMotionHelper.style.display = "block";
+            }
+          })
+          .catch(err => {
+            console.warn("DeviceMotionEvent permission error:", err);
+            if (this.iosMotionHelper) this.iosMotionHelper.style.display = "block";
+          });
+      } else {
+        if (this.iosMotionHelper) this.iosMotionHelper.style.display = "block";
+      }
     } else {
       this.startListeningMotion();
     }
@@ -445,14 +641,14 @@ class SiamsiApp {
   }
 
   // =========================================================================
-  // SHAKE BURST, SOUND & DECAY SYSTEM (~30 SECONDS TO FILL)
+  // SHAKE BURST, SOUND & DECAY SYSTEM
   // =========================================================================
 
   registerShakeBurst(intensity = 1.0) {
     if (this.shakeProgress >= 100 || this.isStickDropped) return;
 
-    // Calibrated progress gain: requires ~75-80 continuous shakes (~30s of shaking)
-    const gain = Math.max(0.65, Math.min(1.85, 1.25 * intensity));
+    // Calibrated progress gain: ~25-35 natural handheld shakes (~10-15s) fills the gauge
+    const gain = Math.max(1.8, Math.min(4.5, 2.4 * intensity));
     this.shakeProgress = Math.min(100, this.shakeProgress + gain);
     this.lastShakeActionTime = Date.now();
 
@@ -492,7 +688,7 @@ class SiamsiApp {
 
   /**
    * Continuous Decay Loop:
-   * If the user stops shaking for > 650ms, energy drains slowly (~3.6% per second)
+   * If the user stops shaking for > 1300ms, energy drains slowly (~2.5% per second)
    * Lowering the stick and draining the gauge until shaken again.
    */
   startDecayLoop() {
@@ -502,9 +698,9 @@ class SiamsiApp {
       if (this.isAutoShaking || this.isStickDropped || this.shakeProgress <= 0 || this.shakeProgress >= 100) return;
 
       const idleMs = Date.now() - (this.lastShakeActionTime || 0);
-      if (idleMs > 650) {
-        // Decay by 0.36% every 100ms (~3.6% per second)
-        this.shakeProgress = Math.max(0, this.shakeProgress - 0.36);
+      if (idleMs > 1300) {
+        // Decay by 0.25% every 100ms (~2.5% per second)
+        this.shakeProgress = Math.max(0, this.shakeProgress - 0.25);
 
         if (this.shakeProgressBar) {
           this.shakeProgressBar.style.width = `${this.shakeProgress.toFixed(1)}%`;
@@ -815,7 +1011,7 @@ class SiamsiApp {
       this.revStickId.textContent = isEn ? `(Stick #${sign.stick_num || sign.id})` : `(ใบที่ ${sign.stick_num || sign.id})`;
     }
     if (this.revTitles) {
-      this.revTitles.textContent = `${sign.chinese_title} • ${title}`;
+      this.revTitles.textContent = sign.chinese_title ? `${sign.chinese_title} • ${title}` : title;
     }
 
     if (this.revLevelBadge) {
@@ -833,7 +1029,8 @@ class SiamsiApp {
       this.fallenStickThaiTitle.textContent = title;
     }
     if (this.fallenStickChineseTag) {
-      this.fallenStickChineseTag.textContent = sign.chinese_title;
+      this.fallenStickChineseTag.textContent = sign.chinese_title || "";
+      this.fallenStickChineseTag.style.display = sign.chinese_title ? "" : "none";
     }
 
     if (this.btnOpenRevealLabel) {
@@ -844,7 +1041,7 @@ class SiamsiApp {
   }
 
   // =========================================================================
-  // RESULT SCREEN DISPLAY (ครบถ้วนทุกด้านตามตำรา kaucim.ai ทั้ง TH และ EN)
+  // RESULT SCREEN DISPLAY (ครบถ้วนทุกด้าน ทั้ง TH และ EN)
   // =========================================================================
 
   showResultScreen(targetSign) {
@@ -886,6 +1083,13 @@ class SiamsiApp {
         : `เบอร์ ${sign.number} (ใบที่ ${sign.stick_num || sign.id})`;
     }
 
+    // Deck Badge
+    if (this.resultDeckBadge) {
+      this.resultDeckBadge.textContent = this.currentDeck === "tanjai"
+        ? (isEn ? "🪷 Tradition: Luang Por Tanjai" : "🪷 ตำรา: เซียมซีหลวงพ่อทันใจ")
+        : (isEn ? "🏛️ Tradition: Wong Tai Sin" : "🏛️ ตำรา: เซียมซีหว่องไทซิน");
+    }
+
     // Fortune level badge
     const fortuneLevelText = (isEn && sign.en && sign.en.fortune_level) ? sign.en.fortune_level : sign.fortune_level;
     const levelConf = this.getLevelConfig(fortuneLevelText);
@@ -900,6 +1104,7 @@ class SiamsiApp {
     // Titles
     if (this.resultChineseTitle) {
       this.resultChineseTitle.textContent = sign.chinese_title || "";
+      this.resultChineseTitle.style.display = sign.chinese_title ? "" : "none";
     }
     if (this.resultThaiTitle) {
       this.resultThaiTitle.textContent = (isEn && sign.en && sign.en.title) ? sign.en.title : (sign.thai_title || "");
@@ -924,11 +1129,16 @@ class SiamsiApp {
     }
 
     // Chinese original poem
+    const poemCnBox = document.querySelector(".siamsi-poem-chinese-box");
     if (this.resultPoemCn) {
       this.resultPoemCn.textContent = sign.poem_cn || "";
     }
+    if (poemCnBox) {
+      poemCnBox.style.display = sign.poem_cn ? "" : "none";
+    }
 
     // Historical Legend & Origin Story (TH or EN)
+    const storyCard = document.querySelector(".siamsi-story-card");
     if (this.resultStoryText) {
       this.resultStoryText.innerHTML = "";
       const storyText = (isEn && sign.en && sign.en.story) ? sign.en.story : (sign.story || "");
@@ -942,6 +1152,9 @@ class SiamsiApp {
           }
         });
       }
+    }
+    if (storyCard) {
+      storyCard.style.display = (sign.story || (isEn && sign.en && sign.en.story)) ? "" : "none";
     }
 
     // Render 7 Aspects Comprehensive Cards (TH or EN)
@@ -1148,7 +1361,9 @@ class SiamsiApp {
       if (!query) return true;
       const enTitle = (sign.en && sign.en.title) || "";
       const enSummary = (sign.en && sign.en.one_line_summary) || "";
-      const textToSearch = `${sign.number} ${sign.id} ${sign.stick_num} ${sign.thai_title} ${enTitle} ${sign.chinese_title} ${sign.fortune_level} ${sign.one_line_summary} ${enSummary}`.toLowerCase();
+      const cnTitle = sign.chinese_title || "";
+      const summaryText = sign.one_line_summary || "";
+      const textToSearch = `${sign.number} ${sign.id} ${sign.stick_num} ${sign.thai_title} ${enTitle} ${cnTitle} ${sign.fortune_level} ${summaryText} ${enSummary}`.toLowerCase();
       return textToSearch.includes(query);
     });
 
@@ -1176,7 +1391,7 @@ class SiamsiApp {
           <span>${levelConf.icon}</span> <span>${levelText}</span>
         </div>
         <div class="dir-card-titles">
-          <h4 class="dir-chinese">${sign.chinese_title}</h4>
+          ${sign.chinese_title ? `<h4 class="dir-chinese">${sign.chinese_title}</h4>` : ""}
           <p class="dir-thai">${title}</p>
         </div>
         <p class="dir-summary">${summary}</p>
@@ -1198,16 +1413,19 @@ class SiamsiApp {
     if (!this.currentSign) return;
     const sign = this.currentSign;
     const isEn = this.lang === "en";
+    const isTanjai = this.currentDeck === "tanjai";
 
     let text = "";
     if (isEn && sign.en) {
       const poem = Array.isArray(sign.en.poem) ? sign.en.poem.join("\n") : "";
       const aspects = sign.en.aspects || {};
-      text = `🎋 Wong Tai Sin Sacred Siamsi Oracle
+      const deckHeader = isTanjai ? "🎋 Luang Por Tanjai Sacred Siamsi Oracle" : "🎋 Wong Tai Sin Sacred Siamsi Oracle";
+      const titleLine = sign.chinese_title ? `📜 ${sign.chinese_title} (${sign.en.title || sign.thai_title})` : `📜 ${sign.en.title || sign.thai_title}`;
+      text = `${deckHeader}
 Sign ${sign.number} (Stick #${sign.stick_num || sign.id})
 ✨ Fortune Level: ${sign.en.fortune_level || sign.fortune_level}
-📜 ${sign.chinese_title} (${sign.en.title || sign.thai_title})
-💡 Essence: "${sign.en.one_line_summary || sign.one_line_summary}"
+${titleLine}
+💡 Essence: "${sign.en.one_line_summary || sign.one_line_summary || ""}"
 
 Sacred Verse:
 ${poem}
@@ -1220,11 +1438,13 @@ ${poem}
 Divinate online at: ${window.location.origin}${window.location.pathname}#siamsi=${sign.number}`;
     } else {
       const poem = Array.isArray(sign.poem_th) ? sign.poem_th.join("\n") : "";
-      text = `🎋 ผลการเสี่ยงเซียมซีหว่องไทซิน
+      const deckHeader = isTanjai ? "🎋 ผลการเสี่ยงเซียมซีหลวงพ่อทันใจ" : "🎋 ผลการเสี่ยงเซียมซีหว่องไทซิน";
+      const titleLine = sign.chinese_title ? `📜 ${sign.chinese_title} (${sign.thai_title})` : `📜 ${sign.thai_title}`;
+      text = `${deckHeader}
 เบอร์ ${sign.number} (ใบที่ ${sign.stick_num || sign.id})
 ✨ ระดับ: ${sign.fortune_level}
-📜 ${sign.chinese_title} (${sign.thai_title})
-💡 สรุป: "${sign.one_line_summary}"
+${titleLine}
+💡 สรุป: "${sign.one_line_summary || ""}"
 
 บทกลอน:
 ${poem}
@@ -1309,6 +1529,7 @@ ${poem}
       this.seekerNameInput.value = this.app.seekerName;
     }
 
+    this.checkIosMotionBanner();
     this.startListeningMotion();
   }
 
