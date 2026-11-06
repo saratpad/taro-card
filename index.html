@@ -2,466 +2,486 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mystic Witch Tarot | ดูดวงไพ่ยิปซี ไพ่ทาโรต์ แม่มดพยากรณ์</title>
-  <meta name="description" content="เว็บแอปดูดวงไพ่ยิปซี ไพ่ทาโรต์ 78 ใบ ธีมหมอดูแม่มดโบราณ พิมพ์ถามคำถามเรื่องความรัก การงาน การเงิน สุขภาพ พร้อมคำทำนายแม่นยำตามหลักศาสตร์ไพ่ทาโรต์">
-  <meta name="keywords" content="ดูดวง, ไพ่ยิปซี, ไพ่ทาโรต์, หมอดูแม่มด, Tarot Reading, ดูดวงความรัก, ดูดวงการงาน, ดูดวงการเงิน">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>เซียมซีทาโรต์ (SiamSi Tarot) | พยากรณ์ไพ่ทาโรต์ 3 ใบ & เสี่ยงเซียมซีศักดิ์สิทธิ์</title>
+  <meta name="description" content="เซียมซีทาโรต์ ระบบพยากรณ์ไพ่ทาโรต์ 3 ใบและเสี่ยงเซียมซีศักดิ์สิทธิ์ วิเคราะห์เจาะลึกเฉพาะด้าน ความรัก การงาน การเงิน สุขภาพ พร้อมดาวน์โหลดใบคำทำนาย PDF และแชร์ Info Card">
+  <meta name="keywords" content="เซียมซีทาโรต์, ดูดวงไพ่ทาโรต์, ไพ่ยิปซี 3 ใบ, เสี่ยงเซียมซี, Fastwork ดูดวง, Tarot Reading">
+
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="Mystic Witch Tarot | ดูดวงไพ่ยิปซี ไพ่ทาโรต์ แม่มดพยากรณ์">
-  <meta property="og:description" content="ดูดวงไพ่ยิปซี 78 ใบแบบเจาะลึก พร้อมระบบตั้งจิตอธิษฐานถามคำถาม">
+  <meta property="og:title" content="เซียมซีทาโรต์ (SiamSi Tarot) | พยากรณ์ไพ่ทาโรต์ & เสี่ยงเซียมซี">
+  <meta property="og:description" content="เปิดม่านชะตาด้วยไพ่ทาโรต์ 3 ใบ และเซียมซีศักดิ์สิทธิ์ แม่นยำ ชัดเจน พร้อมใบรับรองคำทำนาย PDF">
   <meta property="og:type" content="website">
-  
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
-  <!-- Stardust & Constellations Dynamic Canvas -->
+  <!-- พื้นหลังเคลื่อนไหว: วงเวทย์จักรวาล + ไพ่ทาโรต์ & ไม้เซียมซีลอยเคลื่อนไหว + ละอองดาวทองคำ -->
   <canvas id="stardust-canvas"></canvas>
 
+  <!-- เอฟเฟกต์ Climax ตอนเลือกไพ่ครบ 3 ใบก่อนเปิดคำทำนาย -->
+  <div id="ritual-climax-overlay" class="ritual-climax-overlay" aria-hidden="true">
+    <div class="climax-magic-seal">
+      <div class="climax-ring ring-outer"></div>
+      <div class="climax-ring ring-middle"></div>
+      <div class="climax-core-icon">🔮</div>
+    </div>
+    <h3 class="climax-title" id="climax-title-text">พลังงานไพ่ทั้ง 3 ใบประสานสมบูรณ์</h3>
+    <p class="climax-sub" id="climax-sub-text">กำลังเปิดม่านคำทำนายแห่งโชคชะตา...</p>
+  </div>
+
   <div class="app-viewport">
-    
+
     <!-- Top Navigation Header -->
     <header class="mystic-header">
-      <a href="#" class="brand-logo" id="nav-brand" title="Home">
+      <a href="#" class="brand-logo" id="nav-brand" title="เซียมซีทาโรต์">
         <div class="brand-sigil">🔮</div>
         <div class="brand-text">
-          <h1 data-i18n="brand_title">MYSTIC WITCH</h1>
-          <p data-i18n="brand_sub">Tarot Sanctuary</p>
+          <h1 data-i18n="brand_title">เซียมซีทาโรต์</h1>
+          <p data-i18n="brand_sub">SIAMSI TAROT ORACLE</p>
         </div>
       </a>
 
-      <!-- Sanctuary Mode Navigation (Tarot vs Siamsi) -->
-      <div class="sanctuary-mode-nav">
-        <button type="button" class="mode-nav-btn active" id="mode-switch-tarot" title="ดูดวงไพ่ทาโรต์ 78 ใบ">
-          <span>🔮</span>
-          <span data-i18n="mode_tarot">ไพ่ทาโรต์</span>
+      <!-- แถบแสดงสถานะโค้ดของลูกค้า (แสดงเฉพาะเมื่อเข้าด้วยโค้ด) -->
+      <div id="active-code-banner" class="active-code-banner" style="display: none;">
+        <span class="code-pill-icon" id="active-code-mode-icon">🔮</span>
+        <div class="code-pill-info">
+          <span class="code-pill-id" id="active-code-text">CODE: ----</span>
+          <span class="code-pill-Sub" id="active-code-expiry">เหลือเวลา 24 ชม.</span>
+        </div>
+        <button type="button" id="btn-back-to-combo" class="btn-combo-switch" style="display: none;" title="สลับบริการในแพ็กเกจคู่">
+          🌟 เลือกบริการแพ็กคู่
         </button>
-        <button type="button" class="mode-nav-btn" id="mode-switch-siamsi" title="เสี่ยงเซียมซี 100 ใบ (เบอร์ 00 - 99)">
+        <button type="button" id="btn-change-code" class="btn-change-code" title="เปลี่ยนรหัสโค้ด">
+          เปลี่ยนโค้ด
+        </button>
+      </div>
+
+      <!-- ปุ่มสลับโหมด (ซ่อนไว้เมื่อลูกค้าเข้าใช้งานด้วยโค้ด เพื่อไม่ให้แสดงเมนูที่ไม่เกี่ยวข้อง) -->
+      <div class="sanctuary-mode-nav" id="sanctuary-mode-nav" style="display: none;">
+        <button type="button" class="mode-nav-btn active" id="mode-switch-tarot">
+          <span>🔮</span>
+          <span data-i18n="mode_tarot">ไพ่ทาโรต์ 3 ใบ</span>
+        </button>
+        <button type="button" class="mode-nav-btn" id="mode-switch-siamsi">
           <span>🎋</span>
           <span data-i18n="mode_siamsi">เสี่ยงเซียมซี</span>
-          <span class="mode-badge-new">100 ใบ</span>
         </button>
       </div>
 
       <div class="nav-actions">
-        <!-- Grimoire / Encyclopedia -->
-        <button class="btn-icon" id="btn-open-grimoire" title="Tarot Grimoire">
+        <!-- ซ่อนปุ่มคัมภีร์ไพ่ในโหมดลูกค้า -->
+        <button class="btn-icon" id="btn-open-grimoire" title="Tarot Grimoire" style="display: none;">
           <span>📜</span>
           <span class="btn-label" data-i18n="btn_grimoire">คัมภีร์ 78 ใบ</span>
         </button>
 
         <!-- Audio Mute/Unmute Toggle -->
-        <button class="btn-icon" id="btn-toggle-audio" title="Toggle Sound">
+        <button class="btn-icon" id="btn-toggle-audio" title="เปิด/ปิดเสียง">
           <span id="audio-icon">🔔</span>
           <span class="btn-label" id="audio-label" data-i18n="sound_on">เสียง</span>
         </button>
 
         <!-- Language Switcher -->
-        <button class="btn-icon" id="btn-toggle-lang" title="Switch Language">
+        <button class="btn-icon" id="btn-toggle-lang" title="เปลี่ยนภาษา TH/EN">
           <span>🌐</span>
           <span class="btn-label" id="lang-label">TH / EN</span>
         </button>
       </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Stage Container -->
     <main class="main-stage-container">
 
       <!-- =================================================================== -->
-      <!-- TAROT MODE CONTAINER (โหมดไพ่ทาโรต์ 78 ใบ) -->
+      <!-- SCREEN 0: ACCESS CODE GATE (หน้ากรอกโค้ดเข้าดูดวง สำหรับลูกค้า Fastwork) -->
       <!-- =================================================================== -->
-      <div id="tarot-mode-container">
+      <section id="access-gate-screen" class="view-screen active">
+        <div class="access-gate-card">
+          <div class="gate-sacred-emblem">
+            <div class="gate-emblem-ring"></div>
+            <div class="gate-emblem-icons">
+              <span class="emblem-tarot">🃏</span>
+              <span class="emblem-center">🔮</span>
+              <span class="emblem-siamsi">🎋</span>
+            </div>
+          </div>
+
+          <div class="gate-badge">✦ SACRED ORACLE SANCTUARY ✦</div>
+          <h2 class="gate-title">เซียมซีทาโรต์</h2>
+          <p class="gate-subtitle">
+            ระบบพยากรณ์ดวงชะตาไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซีศักดิ์สิทธิ์<br>
+            กรุณากรอก <strong>รหัสโค้ดดูดวง</strong> ที่ท่านได้รับเพื่อเข้าสู่พิธีกรรมเปิดดวงชะตา
+          </p>
+
+          <form id="access-code-form" class="access-code-form" autocomplete="off">
+            <div class="code-input-group">
+              <input
+                type="text"
+                id="access-code-input"
+                class="access-code-input"
+                placeholder="กรอกรหัสโค้ด เช่น TR-XXXX หรือ TAROT99"
+                maxlength="24"
+                required
+              />
+              <button type="submit" id="btn-submit-code" class="btn-mystic-primary btn-unlock-oracle">
+                <span>✨</span>
+                <span>เข้าสู่ระบบดูดวง</span>
+                <span>✨</span>
+              </button>
+            </div>
+            <div id="access-code-error" class="access-code-error" style="display: none;"></div>
+          </form>
+
+          <div class="gate-rules-grid">
+            <div class="gate-rule-item">
+              <span class="rule-icon">🎯</span>
+              <div>
+                <strong>สิทธิ์เปิดดวง 1 ครั้ง / โค้ด</strong>
+                <p>ตั้งจิตอธิษฐานให้พร้อมก่อนเริ่มสุ่ม ระบบจะบันทึกผลคำทำนายแรกของท่านไว้ทันที</p>
+              </div>
+            </div>
+            <div class="gate-rule-item">
+              <span class="rule-icon">⏳</span>
+              <div>
+                <strong>อายุโค้ด 24 ชั่วโมง (1 วัน)</strong>
+                <p>สามารถกลับเข้ามาดูผลคำทำนายเดิม แชร์โซเชียล หรือดาวน์โหลดไฟล์ PDF ได้ตลอด 24 ชม.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ปุ่มทดสอบด่วนสำหรับเจ้าของระบบ -->
+          <div class="gate-quick-demo">
+            <span class="demo-label">รหัสทดสอบด่วน (3 แพ็กเกจ):</span>
+            <button type="button" class="demo-code-chip" data-demo-code="TAROT99">🔮 แพ็ก 1: ดูดวงไพ่ทาโรต์ (TAROT99)</button>
+            <button type="button" class="demo-code-chip" data-demo-code="SIAMSI99">🎋 แพ็ก 2: เสี่ยงเซียมซี (SIAMSI99)</button>
+            <button type="button" class="demo-code-chip demo-chip-combo" data-demo-code="COMBO99">🌟 แพ็ก 3: ดูดวง + เซียมซี (COMBO99)</button>
+            <a href="admin.html" class="demo-admin-link">⚙️ จัดการโค้ดหลังบ้าน (Admin)</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SCREEN 0.5: COMBO PACKAGE SELECTOR (สำหรับแพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี) -->
+      <!-- =================================================================== -->
+      <section id="combo-selector-screen" class="view-screen">
+        <div class="access-gate-card combo-selector-card">
+          <div class="gate-badge">🌟 SPECIAL VIP COMBO PACKAGE 🌟</div>
+          <h2 class="gate-title" id="combo-welcome-title">แพ็กเกจคู่: ดูดวงไพ่ทาโรต์ & เสี่ยงเซียมซี</h2>
+          <p class="gate-subtitle" id="combo-welcome-sub">
+            รหัสโค้ดพิเศษของท่านสามารถใช้บริการได้ครบทั้ง <strong>2 รูปแบบ (อย่างละ 1 ครั้ง)</strong><br>
+            โปรดเลือกบริการที่ท่านต้องการเปิดคำทำนายก่อน
+          </p>
+
+          <div class="combo-services-grid">
+            <!-- บริการที่ 1: ดูดวงไพ่ทาโรต์ 3 ใบ -->
+            <div class="combo-service-option" id="combo-choose-tarot">
+              <div class="combo-service-status" id="combo-tarot-status">🎯 สิทธิ์คงเหลือ: 1 / 1 ครั้ง</div>
+              <div class="combo-service-icon">🔮</div>
+              <h3>ดูดวงไพ่ทาโรต์ 3 ใบ</h3>
+              <p>เลือกหมวดหมู่เฉพาะด้าน (ความรัก การงาน การเงิน สุขภาพ) แล้วหยิบไพ่ด้วยตนเอง 3 ใบ</p>
+              <div class="combo-service-result-mini" id="combo-tarot-mini-result" style="display: none;"></div>
+              <button type="button" class="btn-mystic-primary btn-full-width" id="btn-combo-enter-tarot">
+                <span>🔮</span>
+                <span id="btn-combo-tarot-label">เข้าสู่แท่นดูดวงไพ่ทาโรต์ 3 ใบ</span>
+              </button>
+            </div>
+
+            <!-- บริการที่ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ -->
+            <div class="combo-service-option" id="combo-choose-siamsi">
+              <div class="combo-service-status" id="combo-siamsi-status">🎯 สิทธิ์คงเหลือ: 1 / 1 ครั้ง</div>
+              <div class="combo-service-icon">🎋</div>
+              <h3>เสี่ยงเซียมซีศักดิ์สิทธิ์</h3>
+              <p>เลือกตำราหว่องไทซิน หรือ หลวงพ่อทันใจ แล้วเขย่ากระบอกเซียมซีด้วยตนเองเพื่อรับคำทำนายครบ 7 ด้าน</p>
+              <div class="combo-service-result-mini" id="combo-siamsi-mini-result" style="display: none;"></div>
+              <button type="button" class="btn-mystic-primary btn-full-width" id="btn-combo-enter-siamsi">
+                <span>🎋</span>
+                <span id="btn-combo-siamsi-label">เข้าสู่แท่นเสี่ยงเซียมซี</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAROT MODE CONTAINER (โหมดไพ่ทาโรต์ 3 ใบ - ซ่อนเมนูเซียมซีทั้งหมด) -->
+      <!-- =================================================================== -->
+      <div id="tarot-mode-container" style="display: none;">
 
         <!-- =================================================================== -->
-        <!-- SCREEN 1: INTENTION & QUESTION (หน้าตั้งจิตอธิษฐานและเลือกรูปแบบ) -->
+        <!-- SCREEN 1: INTENTION & CATEGORY (เลือกหมวดหมู่เฉพาะด้าน 4 หมวด & ไพ่ 3 ใบ) -->
         <!-- =================================================================== -->
         <section id="screen-intention" class="view-screen active">
-        <div class="altar-hero">
-          <div class="altar-seal-wrapper">
-            <div class="mystic-circle">
-              <div class="witch-icon">🧙‍♀️</div>
+          <div class="altar-hero">
+            <div class="altar-seal-wrapper">
+              <div class="mystic-circle">
+                <div class="witch-icon">🔮</div>
+              </div>
+            </div>
+            <h2 data-i18n="hero_title">แท่นพยากรณ์ไพ่ทาโรต์ 3 ใบ</h2>
+            <p class="hero-subtitle" data-i18n="hero_desc">
+              "จงสงบจิตใจ รวบรวมสมาธิ เลือกหมวดหมู่ที่ท่านปรารถนาจะล่วงรู้ แล้วก้าวเข้าสู่พิธีกรรมสับไพ่..."
+            </p>
+
+            <!-- Ritual Setup Card Box -->
+            <div class="ritual-card-box">
+              <input type="hidden" id="seeker-name-input" value="" />
+
+              <!-- 1. เลือกหมวดหมู่ที่ต้องการดู (4 หมวดหมู่หลัก ตัดหมวดทั่วไปออก) -->
+              <div class="form-group">
+                <label class="form-label">
+                  <span>✦</span>
+                  <span data-i18n="label_category">เลือกหมวดหมู่ที่ต้องการพยากรณ์ (เฉพาะด้าน)</span>
+                </label>
+                <div class="category-chips-grid four-cats-grid">
+                  <button type="button" class="cat-chip active" data-cat="love">
+                    <span class="chip-icon">💖</span>
+                    <span class="chip-title" data-i18n="cat_love">ความรัก</span>
+                    <span class="chip-sub">คนโสด • คนมีคู่ • ความสัมพันธ์</span>
+                  </button>
+                  <button type="button" class="cat-chip" data-cat="career">
+                    <span class="chip-icon">💼</span>
+                    <span class="chip-title" data-i18n="cat_career">การงาน</span>
+                    <span class="chip-sub">ความก้าวหน้า • โอกาส • ธุรกิจ</span>
+                  </button>
+                  <button type="button" class="cat-chip" data-cat="finance">
+                    <span class="chip-icon">💰</span>
+                    <span class="chip-title" data-i18n="cat_finance">การเงิน</span>
+                    <span class="chip-sub">สภาพคล่อง • รายได้ • โชคลาภ</span>
+                  </button>
+                  <button type="button" class="cat-chip" data-cat="health">
+                    <span class="chip-icon">🌿</span>
+                    <span class="chip-title" data-i18n="cat_health">สุขภาพ</span>
+                    <span class="chip-sub">ร่างกาย • จิตใจ • การฟื้นฟู</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 1.5 เฉพาะหมวดความรัก: ถามก่อนว่า "โสดมั้ย?" เพื่อจัดเรียงไพ่ 3 ใบตามตำราและแปลผลตรงสถานะ -->
+              <div class="form-group love-status-group" id="love-status-group">
+                <label class="form-label">
+                  <span>💘</span>
+                  <span data-i18n="label_love_status">สถานะหัวใจของคุณในตอนนี้ (โสดมั้ย?)</span>
+                </label>
+                <div class="love-status-selector-grid">
+                  <button type="button" class="love-status-chip" data-love-status="single" id="btn-love-single">
+                    <span class="status-chip-icon">💫</span>
+                    <div class="status-chip-info">
+                      <strong>โสด (Single)</strong>
+                      <span>โสดสนิท • รอรักใหม่ • อยากรู้แนวโน้มความรัก</span>
+                    </div>
+                  </button>
+                  <button type="button" class="love-status-chip active" data-love-status="couple" id="btn-love-couple">
+                    <span class="status-chip-icon">💑</span>
+                    <div class="status-chip-info">
+                      <strong>ไม่โสด / มีคนในใจ (In Relationship / Talking)</strong>
+                      <span>มีคนคุย • มีคนที่แอบชอบ • มีแฟน / คู่ครอง</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2. แสดงรูปแบบการเรียงไพ่ 3 ใบตามตำราของด้านที่เลือก -->
+              <div class="three-card-ritual-banner" id="three-card-ritual-banner">
+                <div class="ritual-banner-badge" id="ritual-banner-badge">🎴 ตำราเรียงไพ่ 3 ใบ (ความรัก — มีคนในใจ/มีคู่): ความรู้สึกเรา ➔ ความรู้สึกอีกฝ่าย ➔ แนวโน้มในอนาคต</div>
+                <div class="ritual-positions-preview" id="ritual-positions-preview">
+                  <span class="pos-step-pill">ใบที่ 1: ความรู้สึกเรา</span>
+                  <span class="pos-step-arrow">➔</span>
+                  <span class="pos-step-pill">ใบที่ 2: ความรู้สึกอีกฝ่าย</span>
+                  <span class="pos-step-arrow">➔</span>
+                  <span class="pos-step-pill">ใบที่ 3: แนวโน้มในอนาคต</span>
+                </div>
+              </div>
+
+              <!-- Hidden spread card for compatibility -->
+              <div style="display: none;">
+                <div class="spread-card active" data-spread="3"></div>
+              </div>
+
+              <!-- Begin Button -->
+              <button id="btn-begin-ritual" class="btn-mystic-primary btn-begin-grand">
+                <span>✨</span>
+                <span data-i18n="btn_begin">ตั้งจิตอธิษฐาน & เริ่มพิธีกรรมสับไพ่ 3 ใบ</span>
+                <span>✨</span>
+              </button>
             </div>
           </div>
-          <h2 data-i18n="hero_title">แท่นบูชาแม่มดพยากรณ์</h2>
-          <p class="hero-subtitle" data-i18n="hero_desc">
-            "จงสงบจิตใจ รวบรวมสมาธิ และเอ่ยวาจาถึงเรื่องที่ท่านปรารถนาจะล่วงรู้ผ่านม่านแห่งชะตากรรม..."
-          </p>
+        </section>
 
-          <!-- Ritual Setup Card Box -->
-          <div class="ritual-card-box">
+        <!-- =================================================================== -->
+        <!-- SCREEN 2: SHUFFLE & CARD FAN DRAWING (หน้าสับไพ่และหยิบไพ่ 3 ใบสุดขลัง) -->
+        <!-- =================================================================== -->
+        <section id="screen-drawing" class="view-screen">
+          <div class="altar-table">
+            <!-- วงเวทย์มนตราพื้นหลังโต๊ะหยิบไพ่ -->
+            <div class="altar-sacred-magic-circle" id="altar-sacred-magic-circle" aria-hidden="true"></div>
 
-            <!-- Seeker Name Input (Hidden per user request: ไม่ต้องใส่ชื่อก่อนดูดวงแล้ว) -->
-            <div class="form-group seeker-name-group" style="display: none;">
-              <label class="form-label" for="seeker-name-input">
-                <span>👤</span>
-                <span data-i18n="label_seeker_name">ชื่อผู้รับคำทำนาย</span>
-              </label>
-              <div class="seeker-input-wrapper">
-                <input 
-                  type="text" 
-                  id="seeker-name-input" 
-                  class="mystic-text-input" 
-                  placeholder="เช่น สุรวุฒิ หรือ คุณมินทร์ (ระบุเพื่อบันทึกดวงชะตาเฉพาะคุณ)"
-                  data-i18n-placeholder="placeholder_seeker_name"
-                  maxlength="50"
-                  autocomplete="name"
-                />
-              </div>
-            </div>
-            
-            <!-- Category Chips -->
-            <div class="form-group">
-              <label class="form-label">
-                <span>✦</span>
-                <span data-i18n="label_category">เลือกเรื่องที่ต้องการพยากรณ์</span>
-              </label>
-              <div class="category-chips-grid">
-                <div class="cat-chip active" data-cat="love">
-                  <span class="chip-icon">💖</span>
-                  <span class="chip-title" data-i18n="cat_love">ความรัก</span>
-                </div>
-                <div class="cat-chip" data-cat="career">
-                  <span class="chip-icon">💼</span>
-                  <span class="chip-title" data-i18n="cat_career">การงาน</span>
-                </div>
-                <div class="cat-chip" data-cat="finance">
-                  <span class="chip-icon">💰</span>
-                  <span class="chip-title" data-i18n="cat_finance">การเงิน</span>
-                </div>
-                <div class="cat-chip" data-cat="health">
-                  <span class="chip-icon">🌿</span>
-                  <span class="chip-title" data-i18n="cat_health">สุขภาพ</span>
-                </div>
-                <div class="cat-chip" data-cat="general">
-                  <span class="chip-icon">🔮</span>
-                  <span class="chip-title" data-i18n="cat_general">ทั่วไป/ตัดสินใจ</span>
-                </div>
-              </div>
+            <div class="altar-table-header">
+              <div class="drawing-domain-pill" id="drawing-domain-pill">💖 หมวดความรัก • เปิดไพ่ทาโรต์ 3 ใบ</div>
+              <h3 data-i18n="drawing_title">ตั้งจิตอธิษฐานและหยิบไพ่ 3 ใบ</h3>
+              <p id="drawing-instructions" data-i18n="drawing_sub">
+                แตะเลือกไพ่ทีละใบตามสัญชาตญาณของท่าน (เลือกแล้ว 0 จาก 3 ใบ)
+              </p>
             </div>
 
-            <!-- Spread Type Selector -->
-            <div class="form-group">
-              <label class="form-label">
-                <span>✦</span>
-                <span data-i18n="label_spread">รูปแบบการวางไพ่ทาโรต์</span>
-              </label>
-              <div class="spread-cards-grid">
-                <!-- 1 Card - The Single Spread -->
-                <div class="spread-card" data-spread="1">
-                  <div class="spread-count">1</div>
-                  <div class="spread-name" data-i18n="spread_1_name">ไพ่ 1 ใบ</div>
-                  <div class="spread-desc" data-i18n="spread_1_desc">คำตอบเร่งด่วน หรือไพ่ประจำวัน</div>
-                </div>
-
-                <!-- 3 Cards - Three Card Spread -->
-                <div class="spread-card active" data-spread="3">
-                  <div class="spread-count">3</div>
-                  <div class="spread-name" data-i18n="spread_3_name">ไพ่ 3 ใบ</div>
-                  <div class="spread-desc" data-i18n="spread_3_desc">อดีต • ปัจจุบัน • อนาคต</div>
-                </div>
-
-                <!-- 5 Cards - Five Card Spread -->
-                <div class="spread-card" data-spread="5">
-                  <div class="spread-count">5</div>
-                  <div class="spread-name" data-i18n="spread_5_name">ไพ่ 5 ใบ</div>
-                  <div class="spread-desc" data-i18n="spread_5_desc">วิเคราะห์ปัญหาและทิศทางชีวิต</div>
-                </div>
-
-                <!-- 7 Cards - The Horseshoe Spread -->
-                <div class="spread-card" data-spread="7">
-                  <div class="spread-count">7</div>
-                  <div class="spread-name" data-i18n="spread_7_name">ไพ่ 7 ใบ</div>
-                  <div class="spread-desc" data-i18n="spread_7_desc">แบบเกือกม้า เจาะลึกรอบด้าน</div>
-                </div>
-
-                <!-- 10 Cards - Celtic Cross Spread -->
-                <div class="spread-card" data-spread="10">
-                  <div class="spread-count">10</div>
-                  <div class="spread-name" data-i18n="spread_10_name">ไพ่ 10 ใบ</div>
-                  <div class="spread-desc" data-i18n="spread_10_desc">กางเขนเซลติก พยากรณ์ชะตาชีวิต</div>
-                </div>
-              </div>
+            <!-- Target Slots Rack (3 Slots) -->
+            <div id="target-slots-rack" class="selected-slots-rack three-slots-rack">
+              <!-- Dynamically populated 3 slots -->
             </div>
 
-            <!-- Begin Button -->
-            <button id="btn-begin-ritual" class="btn-mystic-primary">
-              <span>✨</span>
-              <span data-i18n="btn_begin">เริ่มพิธีกรรมสับไพ่และเปิดดวงชะตา</span>
-              <span>✨</span>
-            </button>
+            <!-- Real-Time Shuffle Feedback Banner -->
+            <div id="altar-shuffle-status" class="altar-shuffle-status" aria-live="polite">
+              <span class="shuffle-status-icon">✨</span>
+              <span class="shuffle-status-text" id="shuffle-status-text">สำรับไพ่ 78 ใบพร้อมรับกระแสจิตของท่าน</span>
+            </div>
 
+            <!-- The Deck Ribbon Fan (78 Cards) -->
+            <div class="deck-spread-ribbon" id="deck-ribbon-container">
+              <!-- Dynamically populated 78 card backs -->
+            </div>
+
+            <!-- Actions -->
+            <div class="deck-action-buttons">
+              <button id="btn-witch-intuition" class="btn-secondary-mystic">
+                <span>🔮</span>
+                <span data-i18n="btn_intuition">ให้ญาณทัศน์สุ่มเลือกไพ่ให้ครบ 3 ใบ</span>
+              </button>
+
+              <button id="btn-re-shuffle" class="btn-secondary-mystic btn-shuffle-deck">
+                <span class="shuffle-btn-icon">🌀</span>
+                <span id="btn-re-shuffle-text" data-i18n="btn_reshuffle">สับไพ่อีกครั้ง</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- =================================================================== -->
-      <!-- SCREEN 2: SHUFFLE & CARD FAN DRAWING (หน้าสับไพ่และเลือกไพ่) -->
-      <!-- =================================================================== -->
-      <section id="screen-drawing" class="view-screen">
-        <div class="altar-table">
-          
-          <div class="altar-table-header">
-            <h3 data-i18n="drawing_title">เลือกไพ่ทาโรต์ของท่าน</h3>
-            <p id="drawing-instructions" data-i18n="drawing_sub">
-              กรุณาเลือกไพ่ทีละใบจากสำรับ หรือใช้ญาณทัศน์ของแม่มดเลือกให้อัตโนมัติ
+        <!-- =================================================================== -->
+        <!-- SCREEN 3: RESULTS & INTERPRETATION (หน้าเปิดไพ่ 3 ใบและคำทำนายกระชับชัดเจน) -->
+        <!-- =================================================================== -->
+        <section id="screen-results" class="view-screen">
+
+          <div class="results-header-banner">
+            <!-- Print-Only Certificate Header -->
+            <div class="print-certificate-header" id="print-certificate-header">
+              <div class="print-brand-title">🔮 เซียมซีทาโรต์ (SIAMSI TAROT)</div>
+              <div class="print-doc-title">ใบรับรองคำทำนายดวงชะตาไพ่ทาโรต์ 3 ใบ</div>
+              <div class="print-seeker-line" id="print-seeker-line"></div>
+              <div class="print-meta-line" id="print-meta-line"></div>
+            </div>
+
+            <!-- Notice when viewing a shared reading -->
+            <div id="shared-reading-notice" class="shared-reading-notice" style="display: none;">
+              <div class="shared-notice-content">
+                <span class="shared-notice-icon">🔮</span>
+                <div class="shared-notice-text">
+                  <strong id="shared-notice-title">ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม</strong>
+                  <p id="shared-notice-desc">ท่านกำลังชมผลคำทำนายไพ่ทาโรต์ 3 ใบจากเซียมซีทาโรต์</p>
+                </div>
+              </div>
+              <button id="btn-start-own-reading" class="btn-mystic-primary btn-sm">
+                <span>✨</span>
+                <span>เข้าสู่หน้าหลัก</span>
+              </button>
+            </div>
+
+            <div class="results-seeker-greeting" id="results-seeker-greeting"></div>
+            <h2 data-i18n="results_title">ผลการพยากรณ์ไพ่ทาโรต์ 3 ใบ</h2>
+            <div class="user-question-recap" id="results-question-recap"></div>
+          </div>
+
+          <!-- 1. แถวแสดงไพ่ 3 ใบที่เปิดได้ (3D Grand Card Reveal) -->
+          <div class="revealed-cards-flex three-cards-reveal-stage" id="revealed-cards-container">
+            <!-- Dynamically populated 3D Flipping Cards -->
+          </div>
+
+          <!-- 2. คำทำนายเจาะลึกทั้ง 3 ตำแหน่ง (ตรงตามหมวดหมู่ที่เลือก เข้าใจง่าย ไม่ซ้ำซ้อน) -->
+          <div class="positions-feed-header" id="positions-feed-header">
+            <div class="positions-badge-tag">✦ คำทำนายไพ่ทั้ง 3 ใบตามลำดับตำแหน่ง</div>
+            <h3 class="positions-section-title" id="positions-section-title">
+              คำทำนายเฉพาะด้าน
+            </h3>
+            <p class="positions-section-subtitle" id="positions-section-subtitle">
+              วิเคราะห์หน้าไพ่ทั้ง 3 ใบตรงตามหมวดหมู่ที่ท่านเลือกอย่างชัดเจนและเข้าใจง่าย
             </p>
           </div>
 
-          <!-- Target Slots Rack -->
-          <div id="target-slots-rack" class="selected-slots-rack">
-            <!-- Dynamically populated slots -->
+          <div class="interpretations-section" id="interpretations-feed">
+            <!-- Dynamically generated 3 position cards -->
           </div>
 
-          <!-- Real-Time Shuffle Feedback Banner -->
-          <div id="altar-shuffle-status" class="altar-shuffle-status" aria-live="polite">
-            <span class="shuffle-status-icon">✨</span>
-            <span class="shuffle-status-text" id="shuffle-status-text">สำรับไพ่ 78 ใบพร้อมเปิดรับพลังงานของท่าน</span>
-          </div>
-
-          <!-- The Deck Ribbon Fan (78 Cards) -->
-          <div class="deck-spread-ribbon" id="deck-ribbon-container">
-            <!-- Dynamically populated 78 card backs -->
-          </div>
-
-          <!-- Actions -->
-          <div class="deck-action-buttons">
-            <button id="btn-witch-intuition" class="btn-secondary-mystic">
-              <span>🔮</span>
-              <span data-i18n="btn_intuition">พลังญาณทัศน์แม่มด (สุ่มเลือกให้)</span>
-            </button>
-
-            <button id="btn-re-shuffle" class="btn-secondary-mystic btn-shuffle-deck">
-              <span class="shuffle-btn-icon">🌀</span>
-              <span id="btn-re-shuffle-text" data-i18n="btn_reshuffle">สับไพ่อีกครั้ง</span>
-            </button>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- =================================================================== -->
-      <!-- SCREEN 3: RESULTS & INTERPRETATION (หน้าเปิดไพ่และคำทำนาย) -->
-      <!-- =================================================================== -->
-      <section id="screen-results" class="view-screen">
-        
-        <div class="results-header-banner">
-          <!-- Print-Only Certificate Header -->
-          <div class="print-certificate-header" id="print-certificate-header">
-            <div class="print-brand-title">🔮 MYSTIC WITCH TAROT SANCTUARY</div>
-            <div class="print-doc-title">ใบทำนายดวงชะตาไพ่ทาโรต์ (Tarot Reading Certificate)</div>
-            <div class="print-seeker-line" id="print-seeker-line"></div>
-            <div class="print-meta-line" id="print-meta-line"></div>
-          </div>
-
-          <!-- Notice when viewing a shared reading from someone else -->
-          <div id="shared-reading-notice" class="shared-reading-notice" style="display: none;">
-            <div class="shared-notice-content">
-              <span class="shared-notice-icon">🔮</span>
-              <div class="shared-notice-text">
-                <strong id="shared-notice-title" data-i18n="shared_notice_title">ผลคำทำนายดวงชะตาที่แชร์มาให้ท่านชม</strong>
-                <p id="shared-notice-desc" data-i18n="shared_notice_desc">ท่านกำลังอ่านคำทำนายฉบับเต็มของเพื่อน สามารถกดปุ่มเพื่อเริ่มดูดวงของคุณเองได้ทุกเมื่อ</p>
-              </div>
+          <!-- 3. บทสรุปฟันธงและแนวทางปฏิบัติ (จบในกล่องเดียว ไม่วนซ้ำ) -->
+          <div class="direct-verdict-box" id="direct-verdict-box">
+            <div class="verdict-header">
+              <span class="verdict-badge" id="verdict-badge">🌟 แนวโน้มเป็นบวกมาก</span>
+              <h3 class="verdict-title" id="verdict-title" data-i18n="verdict_box_title">บทสรุปฟันธง & คำแนะนำปฏิบัติ</h3>
             </div>
-            <button id="btn-start-own-reading" class="btn-mystic-primary btn-sm">
-              <span>✨</span>
-              <span data-i18n="btn_start_own_reading">เปิดไพ่ดูดวงของคุณเอง</span>
-            </button>
+            <div class="verdict-content" id="verdict-content"></div>
+            <div class="verdict-actions-summary" id="verdict-actions-summary"></div>
           </div>
 
-          <div class="results-seeker-greeting" id="results-seeker-greeting"></div>
-          <h2 data-i18n="results_title">คำทำนายจากม่านมนตรา</h2>
-          <div class="user-question-recap" id="results-question-recap">
-            <!-- Question text -->
-          </div>
-        </div>
-
-        <!-- Direct Answer to Question Box -->
-        <!-- ========================================================= -->
-        <!-- 1. ตอนแรก: บทสรุปภาพรวมดวงชะตาตามตำรา (Overview Verdict) -->
-        <!-- ========================================================= -->
-        <div class="direct-verdict-box" id="direct-verdict-box">
-          <div class="verdict-header">
-            <span class="verdict-badge" id="verdict-badge">🌟 แนวโน้มเป็นบวกมาก</span>
-            <h3 class="verdict-title" id="verdict-title" data-i18n="verdict_box_title">บทสรุปภาพรวมดวงชะตาตามตำรา</h3>
-          </div>
-          <p class="verdict-content" id="verdict-content">
-            <!-- Plain, easy-to-understand direct answer -->
-          </p>
-          
-          <!-- Witch Synthesis Note integrated into summary -->
-          <div class="witch-synthesis-note" id="witch-synthesis-note">
-            <div class="synthesis-note-header">
-              <span>🔮</span>
-              <span data-i18n="synthesis_title">บทสังเคราะห์พลังงานชะตาจากแม่มด</span>
+          <!-- ปุ่มแชร์โซเชียล (Info Card + คำทำนายเต็ม) และดาวน์โหลดไฟล์ PDF -->
+          <div class="results-action-panel">
+            <div class="action-panel-header">
+              <h4>📲 บันทึกผลคำทำนาย & แชร์ไปยังโซเชียล</h4>
+              <p>แชร์เป็นภาพ Info สรุปไพ่ 3 ใบพร้อมคำทำนายเต็มต่อท้าย หรือบันทึกเก็บลงเครื่องเป็นไฟล์ PDF</p>
             </div>
-            <p class="grand-summary-text" id="grand-synthesis-text">
-              <!-- Dynamically synthesized reading based on cards and question -->
-            </p>
-          </div>
+            <div class="results-action-row">
+              <button id="btn-social-share" class="btn-mystic-primary btn-share-action">
+                <span>📤</span>
+                <span data-i18n="btn_share_reading">แชร์โซเชียล (รูป Info + คำทำนายเต็ม)</span>
+              </button>
 
-          <div class="verdict-actions-summary" id="verdict-actions-summary">
-            <!-- Actionable Do & Don't -->
-          </div>
-        </div>
+              <button id="btn-download-pdf" class="btn-secondary-mystic btn-pdf-action">
+                <span>📄</span>
+                <span data-i18n="btn_download_pdf">บันทึกเป็นไฟล์ PDF ลงเครื่อง</span>
+              </button>
 
-        <!-- แถวแสดงไพ่ 3D Revealed Cards Row -->
-        <div class="revealed-cards-flex" id="revealed-cards-container">
-          <!-- Dynamically populated 3D Flipping Cards -->
-        </div>
+              <button id="btn-copy-reading" class="btn-secondary-mystic">
+                <span>📋</span>
+                <span data-i18n="btn_copy_reading">คัดลอกคำทำนายฉบับเต็ม</span>
+              </button>
 
-        <!-- ==================================================================== -->
-        <!-- 2. ต่อมา: การบอกความหมายของไพ่แต่ละตำแหน่ง เฉพาะด้านที่ถาม (อ่านง่าย) -->
-        <!-- ==================================================================== -->
-        <div class="positions-feed-header" id="positions-feed-header">
-          <div class="positions-badge-tag">✦ ความหมายของไพ่แต่ละตำแหน่ง</div>
-          <h3 class="positions-section-title" id="positions-section-title">
-            คำทำนายเจาะลึกเฉพาะด้าน
-          </h3>
-          <p class="positions-section-subtitle" id="positions-section-subtitle">
-            ความหมายของไพ่แต่ละตำแหน่ง เฉพาะด้านที่ท่านเลือกพยากรณ์ เพื่อให้อ่านและเข้าใจง่ายที่สุด
-          </p>
-        </div>
+              <button type="button" id="btn-tarot-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
+                <span>🎋</span>
+                <span>ไปใช้สิทธิ์เสี่ยงเซียมซี (แพ็กคู่)</span>
+              </button>
 
-        <!-- Feed ไพ่แต่ละตำแหน่ง (เช่น 1 อดีต ได้ไพ่... ด้านความรัก คำทำนาย...) -->
-        <div class="interpretations-section" id="interpretations-feed">
-          <!-- Dynamically generated position cards -->
-        </div>
-
-        <!-- ========================================================= -->
-        <!-- 3. ส่วนท้าย: คำถามเพื่อส่งต่อ AI (Gemini AI Consultation) -->
-        <!-- ========================================================= -->
-
-        <!-- Gemini AI Assistant Bridge Card (Placed at the end as requested) -->
-        <div class="gemini-ai-card" id="gemini-ai-card">
-          <div class="gemini-card-header">
-            <div class="gemini-badge">
-              <span class="gemini-sparkle">✨</span>
-              <span>Gemini AI Tarot Oracle</span>
+              <button id="btn-ask-again" class="btn-secondary-mystic" style="display: none;">
+                <span>🔮</span>
+                <span data-i18n="btn_ask_again">ดูดวงใหม่อีกครั้ง</span>
+              </button>
             </div>
-            <h3 data-i18n="gemini_box_title">คุยต่อกับ Gemini AI เพื่อความเข้าใจที่ลึกซึ้งยิ่งขึ้น</h3>
-            <p data-i18n="gemini_box_desc">
-              ต้องการเจาะลึกเฉพาะจุด หรือขอคำปรึกษาเพิ่มเติม? กรอกคำถามที่ท่านสงสัยด้านล่าง แล้วกดปุ่มเพื่อคัดลอกคำทำนายและเปิด Gemini ทันที จากนั้นเพียงกดวาง (Ctrl+V / Cmd+V) ในหน้าต่าง Gemini เพื่อคุยต่อได้เลย!
-            </p>
-          </div>
-
-          <!-- Specific Question Input for Gemini -->
-          <div class="gemini-question-input-wrapper">
-            <label class="gemini-input-label" for="gemini-custom-question">
-              <span>💬</span>
-              <span data-i18n="gemini_input_label">กรอกคำถามเฉพาะเจาะจงที่ท่านอยากปรึกษา AI เพิ่มเติมจากไพ่ชุดนี้ (ถ้ามี):</span>
-            </label>
-            <textarea 
-              id="gemini-custom-question" 
-              class="gemini-textarea" 
-              rows="2" 
-              placeholder="เช่น คนที่คุยอยู่ตอนนี้เขารู้สึกอย่างไรกับเรา? หรือ ควรตัดสินใจเปลี่ยนงานดีไหม? (หรือเว้นว่างไว้เพื่อให้ AI วิเคราะห์ภาพรวม)"
-              data-i18n-placeholder="gemini_input_placeholder"
-            ></textarea>
-          </div>
-
-          <div class="gemini-btn-row">
-            <button id="btn-copy-and-open-gemini" class="btn-gemini-glow-hero">
-              <span class="btn-hero-icon">🚀</span>
-              <span data-i18n="btn_copy_open_gemini">คัดลอกคำถาม+คำทำนาย & เข้าสู่ Gemini ทันที (แค่กดวาง)</span>
-            </button>
-            <button id="btn-copy-gemini" class="btn-gemini-link">
-              <span>📋</span>
-              <span data-i18n="btn_copy_gemini">คัดลอกข้อความอย่างเดียว</span>
-            </button>
-          </div>
-
-          <div class="gemini-prompt-preview" id="gemini-prompt-preview">
-            <div class="preview-header">
-              <span>📝</span>
-              <span data-i18n="gemini_preview_title">ข้อความคำถามที่จัดเตรียมไว้ให้ Gemini:</span>
+            <div id="code-locked-notice" class="code-locked-notice">
+              🔒 ผลคำทำนายนี้ถูกบันทึกผูกกับรหัสโค้ดของท่านแล้ว สามารถเปิดดูซ้ำ แชร์ หรือดาวน์โหลด PDF ได้ตลอดอายุโค้ด 24 ชั่วโมง
             </div>
-            <pre class="prompt-code-block" id="gemini-prompt-text"></pre>
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="results-action-row">
-          <button id="btn-ask-again" class="btn-mystic-primary" style="max-width: 260px;">
-            <span>🔮</span>
-            <span data-i18n="btn_ask_again">ถามคำถามใหม่</span>
-          </button>
-
-          <button id="btn-social-share" class="btn-secondary-mystic btn-share-action">
-            <span>📤</span>
-            <span data-i18n="btn_share_reading">แชร์คำทำนาย</span>
-          </button>
-
-          <button id="btn-download-pdf" class="btn-secondary-mystic btn-pdf-action">
-            <span>📄</span>
-            <span data-i18n="btn_download_pdf">ดาวน์โหลด PDF</span>
-          </button>
-
-          <button id="btn-copy-reading" class="btn-secondary-mystic">
-            <span>📋</span>
-            <span data-i18n="btn_copy_reading">คัดลอกคำทำนาย</span>
-          </button>
-
-          <button id="btn-browse-all-cards" class="btn-secondary-mystic">
-            <span>📖</span>
-            <span data-i18n="btn_explore_grimoire">เปิดดูคัมภีร์ไพ่</span>
-          </button>
-        </div>
-
-      </section>
-
-      <!-- =================================================================== -->
-      <!-- SCREEN 4: GRIMOIRE (สารานุกรมไพ่ทาโรต์ 78 ใบ) -->
-      <!-- =================================================================== -->
-      <section id="screen-grimoire" class="view-screen">
-        <div class="grimoire-container">
-          
-          <div class="grimoire-header">
-            <h2 data-i18n="grimoire_heading">คัมภีร์ไพ่ทาโรต์ (Tarot Grimoire)</h2>
-            <p data-i18n="grimoire_sub">ศึกษาความหมาย ลวดลาย และจิตวิญญาณแห่งไพ่ทาโรต์ทั้ง 78 ใบ</p>
           </div>
 
-          <!-- Search Bar -->
-          <div class="grimoire-search-bar">
-            <input 
-              type="text" 
-              id="grimoire-search-input" 
-              class="grimoire-search-input" 
-              placeholder="ค้นหาชื่อไพ่ หรือคีย์เวิร์ด..."
-              data-i18n-placeholder="placeholder_search"
-            >
+          <!-- Hidden legacy elements for safe DOM binding -->
+          <div style="display: none;">
+            <p id="grand-synthesis-text"></p>
+            <button id="btn-browse-all-cards"></button>
           </div>
 
-          <!-- Category Filters -->
-          <div class="grimoire-filters-tabs">
-            <button class="filter-tab-btn active" data-filter="all" data-i18n="filter_all">ทั้งหมด (78)</button>
-            <button class="filter-tab-btn" data-filter="major" data-i18n="filter_major">Major Arcana (22)</button>
-            <button class="filter-tab-btn" data-filter="pentacles" data-i18n="filter_pentacles">ไพ่เหรียญ (14)</button>
-            <button class="filter-tab-btn" data-filter="cups" data-i18n="filter_cups">ไพ่ถ้วย (14)</button>
-            <button class="filter-tab-btn" data-filter="swords" data-i18n="filter_swords">ไพ่ดาบ (14)</button>
-            <button class="filter-tab-btn" data-filter="wands" data-i18n="filter_wands">ไพ่ไม้ (14)</button>
-          </div>
+        </section>
 
-          <!-- Grid of Cards -->
-          <div class="grimoire-cards-grid" id="grimoire-cards-grid">
-            <!-- 78 Cards rendered dynamically -->
+        <!-- SCREEN 4: GRIMOIRE (ซ่อนจากหน้าลูกค้า) -->
+        <section id="screen-grimoire" class="view-screen" style="display: none;">
+          <div class="grimoire-container">
+            <input type="text" id="grimoire-search-input" />
+            <div class="grimoire-cards-grid" id="grimoire-cards-grid"></div>
           </div>
-
-        </div>
-      </section>
+        </section>
 
       </div> <!-- /#tarot-mode-container -->
 
       <!-- =================================================================== -->
-      <!-- SIAMSI MODE CONTAINER (โหมดเสี่ยงเซียมซี 100 ใบ เบอร์ 00 - 99) -->
+      <!-- SIAMSI MODE CONTAINER (โหมดเสี่ยงเซียมซี - ซ่อนเมนูไพ่ทาโรต์ทั้งหมด) -->
       <!-- =================================================================== -->
       <div id="siamsi-mode-container" style="display: none;">
 
-        <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 1: SHAKING & ALTAR SCREEN (ตั้งจิตอธิษฐาน & เขย่ากระบอกเซียมซี) -->
-        <!-- ----------------------------------------------------------------- -->
+        <!-- SCREEN 1: SHAKING & ALTAR SCREEN -->
         <section id="screen-siamsi-shaking" class="view-screen active">
           <div class="altar-hero">
             <div class="altar-seal-wrapper">
@@ -469,7 +489,7 @@
                 <div class="witch-icon">🎋</div>
               </div>
             </div>
-            <h2 data-i18n="siamsi_altar_title">แท่นบูชาเสี่ยงเซียมซีหว่องไทซิน</h2>
+            <h2 data-i18n="siamsi_altar_title">แท่นบูชาเสี่ยงเซียมซีศักดิ์สิทธิ์</h2>
             <p class="hero-subtitle" data-i18n="siamsi_altar_subtitle">
               "ตั้งจิตสงบนิ่ง รวบรวมสมาธิถึงเรื่องที่ปรารถนาจะล่วงรู้ แล้วเขย่ากระบอกไม้ไผ่เพื่อเปิดม่านลิขิตแห่งฟ้า..."
             </p>
@@ -479,7 +499,7 @@
               <div class="form-group">
                 <label class="form-label">
                   <span>📜</span>
-                  <span data-i18n="label_siamsi_deck">เลือกตำราเซียมซี</span>
+                  <span data-i18n="label_siamsi_deck">เลือกตำราเซียมซีศักดิ์สิทธิ์</span>
                 </label>
                 <div class="siamsi-deck-grid" id="siamsi-deck-options">
                   <button type="button" class="deck-option-card active" data-deck="wongtaisin" id="deck-opt-wongtaisin">
@@ -505,13 +525,11 @@
 
             <!-- Interactive Shaking Altar Area -->
             <div class="siamsi-shaking-altar">
-              <!-- Bamboo Cylinder Interactive Arena -->
               <div class="siamsi-cylinder-arena" id="siamsi-cylinder-wrapper" title="คลิกค้างแล้วสะบัดเมาส์ หรือเขย่ามือถือเพื่อเสี่ยงทาย">
                 <div class="siamsi-cylinder-glow"></div>
 
                 <!-- 3D Realistic Bamboo Cylinder -->
                 <div class="siamsi-cylinder-container" id="siamsi-bamboo-cylinder">
-                  <!-- Protruding sticks bundle (vibrate dynamically) -->
                   <div class="siamsi-sticks-bundle" id="siamsi-stick-bundle">
                     <span class="bamboo-stick s1"></span>
                     <span class="bamboo-stick s2"></span>
@@ -527,13 +545,11 @@
                     <span class="bamboo-stick s12"></span>
                   </div>
 
-                  <!-- The one stick gradually rising higher as you shake -->
                   <div class="siamsi-rising-stick" id="siamsi-rising-stick">
                     <span class="rising-stick-red-tip"></span>
                     <span class="rising-stick-carving">籤</span>
                   </div>
 
-                  <!-- Cylinder Body -->
                   <div class="bamboo-cylinder-body">
                     <div class="cylinder-rim top-rim"></div>
                     <div class="cylinder-carving">
@@ -545,7 +561,7 @@
                   </div>
                 </div>
 
-                <!-- Realistic Flying & Bouncing Stick Stage (appears when dropping) -->
+                <!-- Flying Stick Stage -->
                 <div class="siamsi-flying-stick-stage" id="siamsi-flying-stick-stage">
                   <div class="siamsi-projectile-shadow" id="siamsi-projectile-shadow"></div>
                   <div class="siamsi-projectile-stick" id="siamsi-projectile-stick">
@@ -566,7 +582,6 @@
                   <p class="siamsi-shake-hint" id="siamsi-shake-hint" data-i18n="siamsi_shake_hint_default">
                     📱 เขย่ามือถือของคุณ หรือ 🖱️ คลิกค้างแล้วสะบัดเมาส์เขย่ากระบอก
                   </p>
-                  <!-- iOS Motion Sensor Permission Helper Banner -->
                   <div class="ios-motion-helper" id="ios-motion-helper" style="display: none;">
                     <button type="button" class="btn-ios-motion-permit" id="btn-ios-motion-permit">
                       <span class="ios-btn-icon">📱</span>
@@ -576,9 +591,8 @@
                 </div>
               </div>
 
-              <!-- Fallen Stick Mat Display (appears when stick settles on mat) -->
+              <!-- Fallen Stick Mat Display -->
               <div class="siamsi-dropped-stick-container" id="siamsi-dropped-stick-container">
-                <!-- Prominent Number Announcement Banner -->
                 <div class="siamsi-revelation-banner" id="siamsi-revelation-banner">
                   <div class="rev-banner-tag" data-i18n="siamsi_rev_tag">🎋 ไม้เซียมซีหล่นลงมาแล้ว!</div>
                   <div class="rev-banner-number-row">
@@ -594,7 +608,6 @@
                   </div>
                 </div>
 
-                <!-- Altar Red Velvet Mat with Fallen Bamboo Stick -->
                 <div class="altar-red-mat" id="altar-red-mat" title="คลิกที่ไม้เซียมซีเพื่อเปิดอ่านคำทำนาย">
                   <div class="mat-corner-ornament tl"></div>
                   <div class="mat-corner-ornament tr"></div>
@@ -620,21 +633,21 @@
                 </button>
               </div>
 
-              <!-- Action Controls -->
+              <!-- Action Controls (เฉพาะปุ่มเขย่า ไม่แสดงเมนูสารบัญที่ไม่เกี่ยวข้อง) -->
               <div class="siamsi-actions-toolbar">
                 <button type="button" id="btn-siamsi-auto-shake" class="btn-mystic-primary">
                   <span>🙏</span>
-                  <span data-i18n="btn_siamsi_auto_shake">ตั้งจิตอธิษฐาน & เขย่าเซียมซี</span>
+                  <span data-i18n="btn_siamsi_auto_shake">ตั้งจิตอธิษฐาน & เขย่าเซียมซีอัตโนมัติ</span>
                 </button>
-                <button type="button" id="btn-siamsi-reset-shake" class="btn-mystic-secondary">
+                <button type="button" id="btn-siamsi-reset-shake" class="btn-mystic-secondary" style="display: none;">
                   <span>🔄</span>
                   <span data-i18n="btn_siamsi_reset_shake">เขย่าใหม่</span>
                 </button>
-                <button type="button" id="btn-open-direct-number-modal" class="btn-mystic-secondary">
+                <button type="button" id="btn-open-direct-number-modal" class="btn-mystic-secondary" style="display: none;">
                   <span>🔢</span>
-                  <span data-i18n="btn_siamsi_direct_num">ระบุเบอร์ 00 - 99 โดยตรง</span>
+                  <span data-i18n="btn_siamsi_direct_num">ระบุเบอร์ 00 - 99</span>
                 </button>
-                <button type="button" id="btn-open-siamsi-directory" class="btn-mystic-secondary">
+                <button type="button" id="btn-open-siamsi-directory" class="btn-mystic-secondary" style="display: none;">
                   <span>📖</span>
                   <span data-i18n="btn_siamsi_directory">สารบัญ 100 ใบ</span>
                 </button>
@@ -644,12 +657,9 @@
           </div>
         </section>
 
-        <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 2: SIAMSI RESULTS (หน้าแสดงผลคำทำนาย 100 ใบครบ 7 ด้าน) -->
-        <!-- ----------------------------------------------------------------- -->
+        <!-- SCREEN 2: SIAMSI RESULTS -->
         <section id="screen-siamsi-result" class="view-screen">
           <div class="siamsi-result-wrapper">
-            
             <div class="results-seeker-greeting" id="siamsi-result-seeker-greeting">
               ชะตาแห่งสวรรค์สำหรับท่านผู้ขอพร
             </div>
@@ -658,7 +668,7 @@
             <div class="siamsi-plaque-card">
               <div class="plaque-top-meta">
                 <span class="siamsi-deck-badge" id="siamsi-result-deck-badge">🏛️ ตำรา: เซียมซีหว่องไทซิน</span>
-                <button type="button" class="btn-switch-result-deck" id="btn-switch-result-deck" title="สลับตำราเพื่อดูคำทำนายอีกตำรา">สลับตำรา ⇄</button>
+                <button type="button" class="btn-switch-result-deck" id="btn-switch-result-deck" style="display: none;">สลับตำรา ⇄</button>
                 <span class="siamsi-number-pill" id="siamsi-result-number-badge">เบอร์ 01 (ใบที่ 1)</span>
                 <span class="siamsi-level-badge" id="siamsi-result-level-badge">
                   <span class="level-icon">✨</span> <span>ดีที่สุด</span>
@@ -677,9 +687,7 @@
                 <span class="scroll-ornament-icon">📜</span>
                 <h4 data-i18n="siamsi_poem_header">บทกลอนประจำใบเซียมซี</h4>
               </div>
-              <div class="siamsi-poem-thai-box" id="siamsi-result-poem-th">
-                <!-- Injected lines -->
-              </div>
+              <div class="siamsi-poem-thai-box" id="siamsi-result-poem-th"></div>
               <div class="siamsi-poem-chinese-box">
                 <span class="poem-cn-label" data-i18n="siamsi_poem_cn_label">บทกลอนดั้งเดิม:</span>
                 <p class="poem-cn-text" id="siamsi-result-poem-cn"></p>
@@ -692,19 +700,16 @@
                 <span class="story-icon">🏮</span>
                 <h4 data-i18n="siamsi_story_header">เรื่องราวความเป็นมาในอดีต</h4>
               </div>
-              <div class="story-content" id="siamsi-result-story-text">
-                <!-- Injected story -->
-              </div>
+              <div class="story-content" id="siamsi-result-story-text"></div>
             </div>
 
             <!-- 7 Aspects Comprehensive Section -->
             <div class="siamsi-aspects-section">
               <div class="aspects-section-header">
                 <h3 data-i18n="siamsi_aspects_title">สรุปคำทำนายเจาะลึก 7 ด้าน</h3>
-                <p data-i18n="siamsi_aspects_subtitle">คลิกที่การ์ดเพื่ออ่านบทวิเคราะห์เชิงลึก หรือเลือกกรองเฉพาะด้านที่ท่านต้องการ</p>
+                <p data-i18n="siamsi_aspects_subtitle">เลือกกรองเฉพาะด้านที่ท่านต้องการ หรืออ่านครบทุกด้าน</p>
               </div>
 
-              <!-- Filter tabs -->
               <div class="siamsi-aspect-filter-row">
                 <button type="button" class="siamsi-aspect-filter-chip active" data-aspect="all" data-i18n="siamsi_tab_all">ทั้งหมด (7 ด้าน)</button>
                 <button type="button" class="siamsi-aspect-filter-chip" data-aspect="career" data-i18n="siamsi_tab_career">💼 อาชีพ</button>
@@ -716,82 +721,55 @@
                 <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general" data-i18n="siamsi_tab_general">🔮 ภาพรวม</button>
               </div>
 
-              <!-- Cards container -->
-              <div class="siamsi-aspects-grid" id="siamsi-aspects-grid">
-                <!-- Injected dynamically -->
-              </div>
+              <div class="siamsi-aspects-grid" id="siamsi-aspects-grid"></div>
             </div>
 
             <!-- Result Actions -->
-            <div class="results-action-row siamsi-actions-footer">
-              <button type="button" id="btn-siamsi-reshake" class="btn-mystic-primary pulse-btn">
-                <span>🎋</span>
-                <span data-i18n="btn_siamsi_reshake">เสี่ยงเซียมซีใหม่อีกครั้ง</span>
-              </button>
-              <button type="button" id="btn-siamsi-copy-result" class="btn-mystic-secondary">
-                <span>📋</span>
-                <span data-i18n="btn_siamsi_copy_result">คัดลอกคำทำนาย</span>
-              </button>
-              <button type="button" id="btn-siamsi-share-result" class="btn-mystic-secondary">
-                <span>📤</span>
-                <span data-i18n="btn_siamsi_share_result">แชร์ผลเซียมซี</span>
-              </button>
-              <button type="button" id="btn-siamsi-view-directory" class="btn-mystic-secondary">
-                <span>📖</span>
-                <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
-              </button>
+            <div class="results-action-panel">
+              <div class="action-panel-header">
+                <h4>📲 บันทึกใบเซียมซี & แชร์ไปยังโซเชียล</h4>
+                <p>แชร์เป็นภาพ Info ใบเซียมซีพร้อมคำทำนายเต็ม หรือดาวน์โหลดเก็บลงเครื่องเป็นไฟล์ PDF</p>
+              </div>
+              <div class="results-action-row siamsi-actions-footer">
+                <button type="button" id="btn-siamsi-share-result" class="btn-mystic-primary">
+                  <span>📤</span>
+                  <span data-i18n="btn_siamsi_share_result">แชร์โซเชียล (รูป Info + คำทำนายเต็ม)</span>
+                </button>
+                <button type="button" id="btn-siamsi-download-pdf" class="btn-secondary-mystic">
+                  <span>📄</span>
+                  <span>บันทึกเป็นไฟล์ PDF ลงเครื่อง</span>
+                </button>
+                <button type="button" id="btn-siamsi-copy-result" class="btn-secondary-mystic">
+                  <span>📋</span>
+                  <span data-i18n="btn_siamsi_copy_result">คัดลอกคำทำนายเต็ม</span>
+                </button>
+                <button type="button" id="btn-siamsi-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
+                  <span>🔮</span>
+                  <span>ไปใช้สิทธิ์ดูดวงไพ่ทาโรต์ (แพ็กคู่)</span>
+                </button>
+                <button type="button" id="btn-siamsi-reshake" class="btn-secondary-mystic" style="display: none;">
+                  <span>🎋</span>
+                  <span data-i18n="btn_siamsi_reshake">เสี่ยงเซียมซีใหม่อีกครั้ง</span>
+                </button>
+                <button type="button" id="btn-siamsi-view-directory" class="btn-secondary-mystic" style="display: none;">
+                  <span>📖</span>
+                  <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
+                </button>
+              </div>
+              <div class="code-locked-notice">
+                🔒 ผลเซียมซีนี้ถูกบันทึกผูกกับรหัสโค้ดของท่านแล้ว สามารถเปิดดูซ้ำ แชร์ หรือดาวน์โหลด PDF ได้ตลอดอายุโค้ด 24 ชั่วโมง
+              </div>
             </div>
 
           </div>
         </section>
 
-        <!-- ----------------------------------------------------------------- -->
-        <!-- SCREEN 3: SIAMSI DIRECTORY (สารบัญ 100 ใบ เบอร์ 00 - 99) -->
-        <!-- ----------------------------------------------------------------- -->
-        <section id="screen-siamsi-directory" class="view-screen">
+        <!-- SCREEN 3: SIAMSI DIRECTORY (Hidden in customer flow) -->
+        <section id="screen-siamsi-directory" class="view-screen" style="display: none;">
           <div class="siamsi-directory-wrapper">
-            <div class="directory-top-bar">
-              <button type="button" id="btn-back-from-directory" class="btn-mystic-secondary btn-sm">
-                <span>←</span>
-                <span data-i18n="btn_back">ย้อนกลับ</span>
-              </button>
-              <h2 data-i18n="siamsi_dir_title" id="siamsi-dir-main-title">สารบัญคำทำนายเซียมซี 100 ใบ</h2>
-            </div>
-            <p class="directory-subtitle" data-i18n="siamsi_dir_subtitle">ค้นหาคำทำนายตามหมายเลข หรือค้นหาตามเนื้อหาคำทำนาย</p>
-
-            <!-- Directory Deck Filter Tabs -->
-            <div class="siamsi-dir-deck-tabs" id="siamsi-dir-deck-tabs">
-              <button type="button" class="dir-deck-tab active" data-deck="wongtaisin" id="dir-deck-tab-wongtaisin">
-                <span>🏛️</span> เซียมซีหว่องไทซิน (100 ใบ)
-              </button>
-              <button type="button" class="dir-deck-tab" data-deck="tanjai" id="dir-deck-tab-tanjai">
-                <span>🪷</span> เซียมซีหลวงพ่อทันใจ (100 ใบ)
-              </button>
-            </div>
-
-            <!-- Search & Filter Controls -->
-            <div class="directory-controls">
-              <input 
-                type="search" 
-                id="siamsi-directory-search" 
-                class="mystic-text-input directory-search-input" 
-                placeholder="🔍 พิมพ์เบอร์ (เช่น 28, 00) หรือค้นหาชื่อเรื่อง..." 
-                data-i18n-placeholder="siamsi_dir_search_ph"
-              />
-              <div class="directory-level-filters">
-                <button type="button" class="siamsi-dir-filter-chip active" data-level="all">ทั้งหมด (100 ใบ)</button>
-                <button type="button" class="siamsi-dir-filter-chip level-supreme" data-level="ดีที่สุด">ดีที่สุด (3)</button>
-                <button type="button" class="siamsi-dir-filter-chip level-great" data-level="ดีมาก">ดีมาก (10)</button>
-                <button type="button" class="siamsi-dir-filter-chip level-good" data-level="ค่อนข้างดี">ค่อนข้างดี (29)</button>
-                <button type="button" class="siamsi-dir-filter-chip level-neutral" data-level="ปานกลาง">ปานกลาง (40)</button>
-                <button type="button" class="siamsi-dir-filter-chip level-caution" data-level="ไม่ดี">ไม่ดี (18)</button>
-              </div>
-            </div>
-
-            <!-- Grid of 100 signs -->
-            <div class="siamsi-directory-grid" id="siamsi-directory-grid">
-              <!-- Injected dynamically -->
-            </div>
+            <button type="button" id="btn-back-from-directory" class="btn-mystic-secondary btn-sm">← ย้อนกลับ</button>
+            <input type="search" id="siamsi-directory-search" />
+            <div class="siamsi-directory-grid" id="siamsi-directory-grid"></div>
           </div>
         </section>
 
@@ -802,50 +780,83 @@
     <!-- Footer -->
     <footer class="mystic-footer">
       <p data-i18n="footer_credits">
-        Mystic Witch Tarot • พัฒนาด้วยความเคารพในศาสตร์แห่งไพ่ทาโรต์และจิตวิทยาเชิงสัญลักษณ์
+        เซียมซีทาโรต์ (SiamSi Tarot) • ระบบพยากรณ์ไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซีศักดิ์สิทธิ์
       </p>
-      <p style="margin-top: 0.4rem; font-size: 0.78rem;">
-        Tarot System: Rider-Waite • เซียมซี 100 ใบ: เซียมซีหว่องไทซิน &amp; เซียมซีหลวงพ่อทันใจ
+      <p style="margin-top: 0.35rem; font-size: 0.78rem; opacity: 0.75;">
+        บริการพยากรณ์ออนไลน์ระดับมืออาชีพ • <a href="admin.html" style="color: var(--gold-primary); text-decoration: none;">สำหรับผู้ดูแลระบบ (Admin Backoffice)</a>
       </p>
     </footer>
 
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SOCIAL SHARE STUDIO MODAL (Info Image + Full Caption for Post/Comment) -->
+  <!-- ===================================================================== -->
+  <div id="social-share-modal" class="modal-overlay">
+    <div class="modal-content-box share-studio-modal">
+      <button class="modal-close-btn" id="btn-close-share-modal">&times;</button>
+
+      <div class="share-studio-header">
+        <span class="share-studio-badge">✦ SOCIAL SHARE & PDF STUDIO ✦</span>
+        <h3>แชร์ผลคำทำนาย "เซียมซีทาโรต์"</h3>
+        <p>รูป Info สรุปหน้าไพ่พร้อมคำทำนายด้านที่เลือกอย่างย่อ และข้อความคำทำนายฉบับเต็มสำหรับวางในโพสต์หรือคอมเมนต์</p>
+      </div>
+
+      <div class="share-studio-grid">
+        <!-- Left: Generated Info Image Preview -->
+        <div class="share-info-preview-col">
+          <div class="share-col-label">1. รูป Info สรุปผลดวงชะตา (สำหรับแนบเป็นรูปโพสต์)</div>
+          <div class="info-canvas-preview-wrap" id="info-canvas-preview-wrap">
+            <img id="share-info-preview-img" alt="SiamSi Tarot Info Card" />
+          </div>
+          <button type="button" id="btn-save-info-image" class="btn-secondary-mystic btn-full-width">
+            <span>🖼️</span>
+            <span>บันทึกรูป Info Card ลงเครื่อง (.PNG)</span>
+          </button>
+        </div>
+
+        <!-- Right: Full Prediction Text for Post / Comment -->
+        <div class="share-caption-col">
+          <div class="share-col-label">2. คำทำนายฉบับเต็ม (สำหรับวางในแคปชันโพสต์ หรือคอมเมนต์ต่อท้าย)</div>
+          <textarea id="share-full-caption-textarea" class="share-caption-textarea" rows="10" readonly></textarea>
+
+          <div class="share-studio-actions">
+            <button type="button" id="btn-native-share-all" class="btn-mystic-primary btn-full-width">
+              <span>📲</span>
+              <span>แชร์รูป Info + คำทำนายเต็มไปโซเชียลทันที</span>
+            </button>
+
+            <button type="button" id="btn-copy-full-caption" class="btn-secondary-mystic btn-full-width">
+              <span>💬</span>
+              <span>คัดลอกคำทำนายเต็ม (นำไปวางในโพสต์ / คอมเมนต์)</span>
+            </button>
+
+            <button type="button" id="btn-modal-download-pdf" class="btn-secondary-mystic btn-full-width">
+              <span>📄</span>
+              <span>ดาวน์โหลดใบคำทำนายเป็นไฟล์ PDF เก็บลงเครื่อง</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Direct Number Input Modal -->
   <div id="siamsi-direct-modal" class="modal-overlay">
     <div class="modal-content-box siamsi-modal-content">
       <button class="modal-close-btn" id="btn-close-direct-modal">&times;</button>
-      <div class="direct-modal-header">
-        <span class="direct-modal-icon">🎋</span>
-        <h3>เปิดดูคำทำนายตามเลขเซียมซี</h3>
-        <p>ระบุเบอร์ 00 - 99 หรือเลขใบที่ 1 - 100 ที่ท่านเสี่ยงทายได้</p>
-      </div>
       <div class="direct-modal-body">
-        <div class="direct-input-row">
-          <input 
-            type="number" 
-            id="siamsi-direct-num-input" 
-            class="mystic-text-input direct-num-input" 
-            placeholder="เช่น 28 หรือ 00" 
-            min="0" 
-            max="100" 
-          />
-          <button type="button" id="btn-confirm-direct-num" class="btn-mystic-primary">
-            <span>🔍</span>
-            <span>ดูคำทำนาย</span>
-          </button>
-        </div>
+        <input type="number" id="siamsi-direct-num-input" min="0" max="100" />
+        <button type="button" id="btn-confirm-direct-num" class="btn-mystic-primary">ดูคำทำนาย</button>
       </div>
     </div>
   </div>
 
-  <!-- Single Card Detail Modal -->
+  <!-- Single Card Detail Modal (ซูมดูหน้าไพ่ชัดๆ) -->
   <div id="card-detail-modal" class="modal-overlay">
     <div class="modal-content-box">
       <button class="modal-close-btn" id="btn-close-modal">&times;</button>
-      <div id="modal-card-body">
-        <!-- Injected dynamically -->
-      </div>
+      <div id="modal-card-body"></div>
     </div>
   </div>
 
@@ -860,6 +871,8 @@
   <script src="js/siamsi-tanjai-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
+  <script src="js/code-manager.js"></script>
+  <script src="js/share-pdf.js"></script>
   <script src="js/siamsi.js"></script>
   <script src="js/app.js"></script>
 

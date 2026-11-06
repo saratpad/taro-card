@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบหลังบ้านจัดการโค้ด Fastwork | เซียมซีทาโรต์ (SiamSi Tarot Admin)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Top Header -->
+  <header class="admin-header">
+    <div class="admin-brand">
+      <span class="admin-brand-icon">🔮</span>
+      <div>
+        <h1>เซียมซีทาโรต์ — ระบบหลังบ้าน (Fastwork Admin)</h1>
+        <p>สร้างโค้ดดูดวง (จำกัด 1 ครั้ง / อายุ 1 วัน) • ตรวจสอบ Log การเข้าใช้งาน แชร์ และดาวน์โหลดไฟล์ PDF คำทำนายส่งลูกค้า</p>
+      </div>
+    </div>
+    <div class="admin-header-actions">
+      <span id="sync-mode-badge" class="sync-mode-badge">🟢 ระบบพร้อมใช้งาน</span>
+      <button type="button" id="btn-refresh-codes" class="btn-admin-secondary">
+        <span>🔄</span> รีเฟรชข้อมูลล่าสุด
+      </button>
+      <a href="index.html" class="btn-admin-primary" target="_blank">
+        <span>✨</span> เปิดหน้าเว็บลูกค้า
+      </a>
+    </div>
+  </header>
+
+  <main class="admin-container">
+
+    <!-- 1. Dashboard Summary Stats -->
+    <section class="admin-stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🔑</div>
+        <div class="stat-info">
+          <span class="stat-label">โค้ดทั้งหมด</span>
+          <strong class="stat-value" id="stat-total-codes">0</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-accessed">
+        <div class="stat-icon">👁️</div>
+        <div class="stat-info">
+          <span class="stat-label">ลูกค้าเข้าระบบแล้ว</span>
+          <strong class="stat-value" id="stat-accessed-codes">0</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-drawn">
+        <div class="stat-icon">🎴</div>
+        <div class="stat-info">
+          <span class="stat-label">สุ่มไพ่/เซียมซีแล้ว</span>
+          <strong class="stat-value" id="stat-drawn-codes">0</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-shared">
+        <div class="stat-icon">📤</div>
+        <div class="stat-info">
+          <span class="stat-label">แชร์ / โหลด PDF แล้ว</span>
+          <strong class="stat-value" id="stat-shared-codes">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Create New Code Box (สำหรับสร้างโค้ดส่งงานลูกค้า Fastwork) -->
+    <section class="admin-panel-card create-code-panel">
+      <div class="panel-header">
+        <div>
+          <h2>✨ สร้างโค้ดดูดวงใหม่สำหรับลูกค้า Fastwork</h2>
+          <p>โค้ดทุกใบจำกัดการสุ่มดูดวง <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
+        </div>
+      </div>
+
+      <form id="create-code-form" class="create-code-form" autocomplete="off">
+        <div class="form-row-grid">
+          <div class="admin-field">
+            <label for="input-customer-name">👤 ชื่อลูกค้า (Fastwork)</label>
+            <input type="text" id="input-customer-name" placeholder="เช่น คุณพลอย / คุณมินทร์" required />
+          </div>
+
+          <div class="admin-field">
+            <label for="input-order-id">🏷️ เลขออเดอร์ Fastwork / หมายเหตุ</label>
+            <input type="text" id="input-order-id" placeholder="เช่น FW-8821" />
+          </div>
+
+          <div class="admin-field">
+            <label for="select-service-mode">📦 แพ็กเกจบริการ (ลูกค้ากดสุ่มดูด้วยตนเอง)</label>
+            <select id="select-service-mode">
+              <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)</option>
+              <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (1 ครั้ง)</option>
+              <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (โค้ดพิเศษ ใช้ได้ 2 บริการ อย่างละ 1 ครั้ง)</option>
+            </select>
+          </div>
+
+          <div class="admin-field" id="field-locked-category">
+            <label for="select-locked-category">🎯 หมวดหมู่คำทำนาย</label>
+            <select id="select-locked-category">
+              <option value="">ให้ลูกค้าเลือกหมวดหมู่เอง (ความรัก/การงาน/การเงิน/สุขภาพ)</option>
+              <option value="love">💖 ล็อกหมวด: ความรัก</option>
+              <option value="career">💼 ล็อกหมวด: การงาน</option>
+              <option value="finance">💰 ล็อกหมวด: การเงิน</option>
+              <option value="health">🌿 ล็อกหมวด: สุขภาพ</option>
+            </select>
+          </div>
+
+          <div class="admin-field">
+            <label for="input-custom-code">🔑 รหัสโค้ด (เว้นว่างเพื่อสุ่มอัตโนมัติ)</label>
+            <input type="text" id="input-custom-code" placeholder="เช่น TR-9988 (เว้นว่างได้)" maxlength="20" />
+          </div>
+        </div>
+
+        <div class="create-form-actions">
+          <button type="submit" class="btn-admin-primary btn-lg">
+            <span>✨</span> สร้างโค้ด (จำกัด 1 ครั้ง / อายุ 1 วัน) & คัดลอกข้อความส่งลูกค้า
+          </button>
+        </div>
+      </form>
+
+      <!-- แถบแจ้งเตือนโค้ดที่เพิ่งสร้างเสร็จ พร้อมปุ่มก๊อบปี้ส่งแชท Fastwork -->
+      <div id="newly-created-box" class="newly-created-box" style="display: none;">
+        <div class="newly-created-head">
+          <span class="badge-success">✅ สร้างโค้ดสำเร็จ!</span>
+          <strong id="newly-created-code-label">TR-XXXX</strong>
+          <span id="newly-created-meta"></span>
+        </div>
+        <textarea id="newly-created-message" class="fastwork-msg-preview" rows="5" readonly></textarea>
+        <div class="newly-created-btns">
+          <button type="button" id="btn-copy-fastwork-msg" class="btn-admin-primary">
+            <span>📋</span> คัดลอกข้อความพร้อมลิงก์ส่งแชท Fastwork
+          </button>
+          <button type="button" id="btn-copy-direct-link" class="btn-admin-secondary">
+            <span>🔗</span> คัดลอกเฉพาะลิงก์เข้าดูดวง
+          </button>
+          <button type="button" id="btn-open-created-link" class="btn-admin-secondary">
+            <span>🚀</span> ทดสอบเปิดลิงก์โค้ดนี้
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Code Management & Real-Time Log Table -->
+    <section class="admin-panel-card">
+      <div class="panel-header table-header-bar">
+        <div>
+          <h2>📋 รายการโค้ดดูดวง & Log การใช้งานของลูกค้า</h2>
+          <p>ติดตามว่าลูกค้าเข้าระบบหรือยัง สุ่มไพ่ใบไหน แชร์หรือยัง และกดดาวน์โหลดไฟล์ PDF / รูป Info เพื่อส่งให้ลูกค้าแบบแมนนวลได้ทันที</p>
+        </div>
+
+        <div class="table-filters">
+          <input type="search" id="admin-search-input" class="admin-search-input" placeholder="🔍 ค้นหารหัสโค้ด, ชื่อลูกค้า, ออเดอร์..." />
+          <select id="admin-filter-mode" class="admin-filter-select">
+            <option value="all">ทุกแพ็กเกจ (1, 2, 3)</option>
+            <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
+            <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซี</option>
+            <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี</option>
+          </select>
+          <select id="admin-filter-status" class="admin-filter-select">
+            <option value="all">ทุกสถานะ</option>
+            <option value="unused">⏳ ยังไม่เข้าระบบ</option>
+            <option value="accessed">👁️ เข้าระบบแล้ว (ยังไม่จับไพ่)</option>
+            <option value="drawn">✅ จับไพ่/เซียมซีแล้ว</option>
+            <option value="expired">⌛ หมดอายุแล้ว</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-table-responsive">
+        <table class="admin-codes-table">
+          <thead>
+            <tr>
+              <th>รหัสโค้ด / ลูกค้า</th>
+              <th>บริการที่เข้าถึง</th>
+              <th>อายุโค้ด (1 วัน)</th>
+              <th>Log สถานะการใช้งาน</th>
+              <th>ผลคำทำนายที่ลูกค้าสุ่มได้</th>
+              <th>ดาวน์โหลด PDF / จัดการแมนนวล</th>
+            </tr>
+          </thead>
+          <tbody id="admin-codes-tbody">
+            <!-- Injected dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: ดูคำทำนายฉบับเต็ม & ประวัติ Log ของโค้ด -->
+  <div id="admin-detail-modal" class="modal-overlay">
+    <div class="modal-content-box admin-modal-box">
+      <button class="modal-close-btn" id="btn-close-admin-modal">&times;</button>
+      <div id="admin-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="mystic-toast" class="mystic-toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/tarot-data.js"></script>
+  <script src="js/tarot-minor-data.js"></script>
+  <script src="js/tarot-love-data.js"></script>
+  <script src="js/siamsi-data.js"></script>
+  <script src="js/siamsi-tanjai-data.js"></script>
+  <script src="js/code-manager.js"></script>
+  <script src="js/share-pdf.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

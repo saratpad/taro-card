@@ -3758,3 +3758,879 @@ body {
   border-color: var(--gold-primary);
 }
 
+
+/* =========================================================================
+ * เซียมซีทาโรต์ (SIAMSI TAROT) - FASTWORK ACCESS GATE & SACRED ENHANCEMENTS
+ * ========================================================================= */
+
+.app-viewport {
+  min-height: 100dvh;
+}
+
+/* Active Code Header Pill */
+.active-code-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, rgba(245, 197, 66, 0.16), rgba(88, 28, 135, 0.35));
+  border: 1px solid rgba(245, 197, 66, 0.55);
+  border-radius: 9999px;
+  padding: 0.35rem 0.5rem 0.35rem 0.9rem;
+  box-shadow: 0 0 18px rgba(245, 197, 66, 0.2);
+}
+
+.code-pill-icon {
+  font-size: 1.2rem;
+}
+
+.code-pill-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.code-pill-id {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-primary);
+  letter-spacing: 0.5px;
+}
+
+.code-pill-Sub {
+  font-size: 0.7rem;
+  color: #fde68a;
+}
+
+.btn-change-code {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  color: var(--text-main);
+  font-family: var(--font-thai);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-change-code:hover:not(:disabled) {
+  background: var(--gold-primary);
+  color: #120724;
+}
+
+/* Screen 0: Access Code Gate */
+.access-gate-card {
+  max-width: 620px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 2.6rem 2.2rem;
+  background: linear-gradient(160deg, rgba(24, 10, 48, 0.92) 0%, rgba(12, 5, 26, 0.96) 100%);
+  border: 1.5px solid rgba(245, 197, 66, 0.5);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(245, 197, 66, 0.18);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+
+.gate-sacred-emblem {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gate-emblem-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgba(245, 197, 66, 0.65);
+  border-radius: 50%;
+  box-shadow: 0 0 28px rgba(245, 197, 66, 0.35), inset 0 0 20px rgba(192, 132, 252, 0.3);
+  animation: pulse-spin 18s linear infinite;
+}
+
+.gate-emblem-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 2rem;
+  z-index: 2;
+}
+
+.emblem-center {
+  font-size: 2.7rem;
+  filter: drop-shadow(0 0 14px rgba(245, 197, 66, 0.8));
+}
+
+.gate-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 2.5px;
+  color: var(--gold-primary);
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  padding: 0.25rem 0.9rem;
+  border-radius: 9999px;
+  margin-bottom: 0.65rem;
+  font-weight: 600;
+}
+
+.gate-title {
+  font-size: clamp(1.85rem, 1.3rem + 2.5vw, 2.7rem);
+  font-weight: 700;
+  color: var(--gold-primary);
+  text-shadow: 0 0 24px rgba(245, 197, 66, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+.gate-subtitle {
+  color: var(--text-muted);
+  font-size: 0.96rem;
+  line-height: 1.65;
+  margin-bottom: 1.8rem;
+}
+
+.access-code-form {
+  margin-bottom: 1.8rem;
+}
+
+.code-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.access-code-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-thai);
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(10, 4, 22, 0.85);
+  border: 2px solid rgba(245, 197, 66, 0.5);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 197, 66, 0.15);
+  transition: var(--transition-fast);
+}
+
+.access-code-input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 24px rgba(245, 197, 66, 0.4), inset 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.btn-unlock-oracle {
+  width: 100%;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+.access-code-error {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: var(--radius-sm);
+  color: #fecaca;
+  font-size: 0.9rem;
+}
+
+.gate-rules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.gate-rule-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(245, 197, 66, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.rule-icon {
+  font-size: 1.45rem;
+  flex-shrink: 0;
+}
+
+.gate-rule-item strong {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--gold-primary);
+  margin-bottom: 0.2rem;
+}
+
+.gate-rule-item p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.gate-quick-demo {
+  padding-top: 1.1rem;
+  border-top: 1px dashed rgba(245, 197, 66, 0.22);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.demo-label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.demo-code-chip {
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  color: #fde68a;
+  font-family: var(--font-thai);
+  font-size: 0.78rem;
+  padding: 0.32rem 0.75rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.demo-code-chip:hover:not(:disabled) {
+  background: var(--gold-primary);
+  color: #120724;
+}
+
+.demo-admin-link {
+  font-size: 0.78rem;
+  color: #c084fc;
+  text-decoration: none;
+  padding: 0.32rem 0.75rem;
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  border-radius: 9999px;
+  transition: var(--transition-fast);
+}
+
+.demo-admin-link:hover {
+  background: rgba(192, 132, 252, 0.2);
+  color: #fff;
+}
+
+/* 4-Category Focused Selector */
+.four-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+}
+
+.four-cats-grid .cat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.15rem 1rem;
+  gap: 0.25rem;
+  text-align: center;
+  font-family: var(--font-thai);
+  color: var(--text-main);
+}
+
+.chip-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+/* 3-Card Sacred Spread Banner */
+.three-card-ritual-banner {
+  margin: 1.4rem 0 1.6rem;
+  padding: 1.1rem 1.2rem;
+  background: linear-gradient(135deg, rgba(245, 197, 66, 0.12), rgba(147, 51, 234, 0.16));
+  border: 1px solid rgba(245, 197, 66, 0.45);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.ritual-banner-badge {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--gold-primary);
+  margin-bottom: 0.65rem;
+}
+
+.ritual-positions-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.pos-step-pill {
+  background: rgba(15, 7, 30, 0.75);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  color: #fde68a;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.pos-step-arrow {
+  color: var(--gold-primary);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Drawing Altar Sacred Magic Circle & Effects */
+.altar-table {
+  position: relative;
+  overflow: hidden;
+}
+
+.altar-sacred-magic-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 480px;
+  height: 480px;
+  margin-left: -240px;
+  margin-top: -240px;
+  border-radius: 50%;
+  border: 2px dashed rgba(245, 197, 66, 0.18);
+  box-shadow: 0 0 50px rgba(245, 197, 66, 0.08), inset 0 0 50px rgba(192, 132, 252, 0.08);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulse-spin 28s linear infinite;
+  transition: all 0.5s ease;
+}
+
+.altar-sacred-magic-circle.draw-step-1 {
+  border-color: rgba(245, 197, 66, 0.38);
+  box-shadow: 0 0 65px rgba(245, 197, 66, 0.22), inset 0 0 45px rgba(245, 197, 66, 0.15);
+}
+
+.altar-sacred-magic-circle.draw-step-2 {
+  border-color: rgba(245, 197, 66, 0.65);
+  box-shadow: 0 0 85px rgba(245, 197, 66, 0.38), inset 0 0 65px rgba(192, 132, 252, 0.28);
+}
+
+.altar-sacred-magic-circle.draw-step-3 {
+  border-color: #f5c542;
+  box-shadow: 0 0 120px rgba(245, 197, 66, 0.7), inset 0 0 90px rgba(245, 197, 66, 0.45);
+}
+
+.drawing-domain-pill {
+  display: inline-block;
+  padding: 0.3rem 0.95rem;
+  border-radius: 9999px;
+  background: rgba(245, 197, 66, 0.15);
+  border: 1px solid rgba(245, 197, 66, 0.45);
+  color: var(--gold-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.slot-locked-card-back {
+  position: relative;
+  width: 100%;
+  height: 132px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--gold-primary);
+  box-shadow: 0 0 20px rgba(245, 197, 66, 0.45);
+  animation: slotCardLockIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+}
+
+.slot-locked-card-back .card-back-pattern {
+  width: 100%;
+  height: 100%;
+}
+
+.slot-rune-seal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--gold-primary);
+  text-shadow: 0 0 14px #f5c542;
+}
+
+@keyframes slotCardLockIn {
+  0% { transform: scale(0.5) translateY(30px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.floating-draw-rune {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #fde68a;
+  background: rgba(20, 8, 40, 0.9);
+  border: 1.5px solid #f5c542;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 24px rgba(245, 197, 66, 0.8);
+  animation: floatRuneUp 1s ease-out forwards;
+}
+
+@keyframes floatRuneUp {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+  100% { opacity: 0; transform: translate(-50%, -130px) scale(1.15); }
+}
+
+/* Ritual Climax Overlay (When 3rd card is drawn) */
+.ritual-climax-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(44, 15, 84, 0.95) 0%, rgba(7, 3, 13, 0.98) 100%);
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.ritual-climax-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.climax-magic-seal {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.climax-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed var(--gold-primary);
+}
+
+.climax-ring.ring-outer {
+  inset: 0;
+  box-shadow: 0 0 45px rgba(245, 197, 66, 0.6);
+  animation: pulse-spin 4s linear infinite;
+}
+
+.climax-ring.ring-middle {
+  inset: 22px;
+  border-style: solid;
+  border-color: rgba(192, 132, 252, 0.8);
+  animation: pulse-spin 3s linear infinite reverse;
+}
+
+.climax-core-icon {
+  font-size: 3.6rem;
+  filter: drop-shadow(0 0 20px #f5c542);
+}
+
+.climax-title {
+  font-size: 1.65rem;
+  color: var(--gold-primary);
+  text-shadow: 0 0 20px rgba(245, 197, 66, 0.6);
+  margin-bottom: 0.4rem;
+}
+
+.climax-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Card Flip Aura Shockwave */
+.card-flip-aura-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 18px;
+  border: 2px solid rgba(245, 197, 66, 0);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.card-flip-aura-ring.pulse-burst {
+  animation: cardFlipShockwave 0.9s ease-out forwards;
+}
+
+@keyframes cardFlipShockwave {
+  0% {
+    transform: scale(0.92);
+    border-color: rgba(245, 197, 66, 0.95);
+    box-shadow: 0 0 35px rgba(245, 197, 66, 0.85);
+  }
+  100% {
+    transform: scale(1.22);
+    border-color: rgba(245, 197, 66, 0);
+    box-shadow: 0 0 0 rgba(245, 197, 66, 0);
+  }
+}
+
+.is-reversed-thumb {
+  transform: rotate(180deg);
+}
+
+/* Results Action Panel & Locked Code Notice */
+.results-action-panel {
+  margin-top: 2rem;
+  padding: 1.8rem 1.5rem;
+  background: linear-gradient(145deg, rgba(26, 12, 52, 0.9), rgba(14, 6, 30, 0.95));
+  border: 1.5px solid rgba(245, 197, 66, 0.45);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+.action-panel-header {
+  margin-bottom: 1.25rem;
+}
+
+.action-panel-header h4 {
+  font-size: 1.25rem;
+  color: var(--gold-primary);
+  margin-bottom: 0.3rem;
+}
+
+.action-panel-header p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.code-locked-notice {
+  margin-top: 1.1rem;
+  font-size: 0.82rem;
+  color: #fde68a;
+  background: rgba(245, 197, 66, 0.1);
+  border: 1px dashed rgba(245, 197, 66, 0.35);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+/* Social Share Studio Modal */
+.share-studio-modal {
+  max-width: 880px;
+  width: 95%;
+}
+
+.share-studio-header {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.share-studio-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--gold-primary);
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  padding: 0.2rem 0.8rem;
+  border-radius: 9999px;
+  margin-bottom: 0.4rem;
+}
+
+.share-studio-header h3 {
+  font-size: 1.45rem;
+  color: var(--gold-primary);
+  margin-bottom: 0.3rem;
+}
+
+.share-studio-header p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.share-studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.share-col-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #fde68a;
+  margin-bottom: 0.55rem;
+}
+
+.info-canvas-preview-wrap {
+  background: #090312;
+  border: 1.5px solid rgba(245, 197, 66, 0.45);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.info-canvas-preview-wrap img {
+  width: 100%;
+  max-height: 410px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+.share-caption-textarea {
+  width: 100%;
+  min-height: 230px;
+  background: rgba(10, 4, 22, 0.9);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  color: var(--text-main);
+  font-family: var(--font-thai);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  resize: vertical;
+  margin-bottom: 0.85rem;
+}
+
+.share-studio-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.btn-full-width {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   COMBO PACKAGE SELECTOR SCREEN (แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี อย่างละ 1 ครั้ง)
+   ========================================================================== */
+
+.btn-combo-switch {
+  padding: 0.25rem 0.65rem;
+  font-size: 0.76rem;
+  font-family: var(--font-thai);
+  font-weight: 700;
+  color: #120724;
+  background: linear-gradient(135deg, #fde68a 0%, #f5c542 100%);
+  border: 1px solid #fff;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-combo-switch:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(245, 197, 66, 0.6);
+}
+
+.demo-chip-combo {
+  border-color: rgba(52, 211, 153, 0.6);
+  background: rgba(16, 185, 129, 0.14);
+  color: #a7f3d0;
+}
+
+.combo-selector-card {
+  max-width: 780px;
+}
+
+.combo-services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.combo-service-option {
+  background: linear-gradient(160deg, rgba(28, 12, 54, 0.92), rgba(14, 6, 30, 0.96));
+  border: 1.5px solid rgba(245, 197, 66, 0.38);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.combo-service-option:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-primary);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 22px rgba(245, 197, 66, 0.22);
+}
+
+.combo-service-status {
+  align-self: flex-start;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.22rem 0.7rem;
+  border-radius: 9999px;
+}
+
+.combo-service-status.ready {
+  background: rgba(245, 197, 66, 0.16);
+  border: 1px solid rgba(245, 197, 66, 0.5);
+  color: #fde68a;
+}
+
+.combo-service-status.used {
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  color: #6ee7b7;
+}
+
+.combo-service-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.combo-service-option h3 {
+  font-size: 1.25rem;
+  color: var(--gold-primary);
+  margin: 0;
+}
+
+.combo-service-option p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+.combo-service-result-mini {
+  background: rgba(8, 3, 18, 0.85);
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  border-radius: 8px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.82rem;
+  color: #fde68a;
+  line-height: 1.45;
+}
+
+.btn-combo-action {
+  border-color: rgba(52, 211, 153, 0.6) !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #a7f3d0 !important;
+}
+
+@media (max-width: 680px) {
+  .combo-services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   LOVE STATUS SELECTOR ("โสดมั้ย?" — Single vs Couple)
+   ========================================================================== */
+
+.love-status-group {
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(245, 197, 66, 0.28);
+  animation: fadeIn 0.28s ease-out;
+}
+
+.love-status-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+}
+
+.love-status-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.95rem 1.1rem;
+  background: rgba(18, 8, 36, 0.85);
+  border: 1.5px solid rgba(245, 197, 66, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-thai);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.love-status-chip:hover {
+  border-color: rgba(245, 197, 66, 0.7);
+  background: rgba(34, 15, 66, 0.9);
+  transform: translateY(-2px);
+}
+
+.love-status-chip.active {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.22) 0%, rgba(168, 85, 247, 0.25) 100%);
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 18px rgba(245, 197, 66, 0.28);
+}
+
+.status-chip-icon {
+  font-size: 1.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.status-chip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.status-chip-info strong {
+  font-size: 0.95rem;
+  color: #fde68a;
+}
+
+.status-chip-info span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.love-status-focused-box {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: rgba(236, 72, 153, 0.1);
+  border: 1px solid rgba(244, 114, 182, 0.35);
+  border-radius: var(--radius-sm);
+}
+
+.love-status-focused-box .love-status-head {
+  color: #fbcfe8;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+
+.love-status-focused-box .love-status-text {
+  color: #fff;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .love-status-selector-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,4 +1,4 @@
-/* Responsive Media Queries for Mobile & Tablets */
+/* Responsive Media Queries for Mobile-First & Multi-Device Experience */
 
 @media (max-width: 900px) {
   .modal-card-detail-layout {
@@ -11,17 +11,18 @@
     margin: 0 auto;
   }
 
-  .spread-cards-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .share-studio-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
 }
 
 @media (max-width: 768px) {
   .mystic-header {
-    padding: 0.9rem 1.2rem;
+    padding: 0.75rem 1rem;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 
   .brand-text h1 {
@@ -32,58 +33,78 @@
     display: none;
   }
 
+  .active-code-banner {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.4rem 0.75rem;
+  }
+
   .nav-actions {
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .btn-icon {
-    padding: 0.45rem 0.75rem;
-    font-size: 0.82rem;
+    padding: 0.42rem 0.7rem;
+    font-size: 0.8rem;
   }
 
   .main-stage-container {
-    padding: 1.2rem 1rem 3rem;
+    padding: 1rem 0.85rem 2.5rem;
+  }
+
+  .access-gate-card {
+    margin: 0.5rem auto 1.5rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .gate-rules-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
 
   .ritual-card-box {
-    padding: 1.6rem 1.2rem;
+    padding: 1.4rem 1.05rem;
   }
 
-  .category-chips-grid {
+  .four-cats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
   }
 
-  .spread-cards-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .four-cats-grid .cat-chip {
+    padding: 0.95rem 0.75rem;
   }
 
-  /* Card Target Slots on Mobile */
+  .ritual-positions-preview {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .pos-step-arrow {
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+
+  /* 3 Card Target Slots on Mobile */
   .selected-slots-rack {
-    gap: 0.5rem;
+    gap: 0.6rem;
+    justify-content: center;
   }
 
   .card-target-slot {
-    width: 85px;
-    height: 140px;
-    padding: 0.3rem;
+    width: 96px;
+    height: 155px;
+    padding: 0.35rem;
+  }
+
+  .slot-locked-card-back {
+    height: 112px;
   }
 
   .slot-position-label {
-    font-size: 0.58rem;
-  }
-
-  .slot-placeholder-icon {
-    font-size: 1.3rem;
-  }
-
-  /* Compact slots even smaller on mobile */
-  .selected-slots-rack.compact-slots .card-target-slot {
-    width: 72px;
-    height: 120px;
-  }
-
-  .selected-slots-rack.compact-slots .slot-position-label {
-    font-size: 0.5rem;
+    font-size: 0.62rem;
+    line-height: 1.25;
   }
 
   /* Ribbon on Mobile */
@@ -94,9 +115,9 @@
   }
 
   .altar-shuffle-status {
-    font-size: 0.85rem;
-    padding: 0.35rem 0.9rem;
-    max-width: 95%;
+    font-size: 0.82rem;
+    padding: 0.35rem 0.85rem;
+    max-width: 96%;
     text-align: center;
   }
 
@@ -105,79 +126,33 @@
   }
 
   .tarot-card-deck-item.shuffling-split-left {
-    transform: translate(-70px, -15px) rotate(-10deg) scale(1.03) !important;
+    transform: translate(-65px, -12px) rotate(-10deg) scale(1.02) !important;
   }
 
   .tarot-card-deck-item.shuffling-split-right {
-    transform: translate(70px, -15px) rotate(10deg) scale(1.03) !important;
+    transform: translate(65px, -12px) rotate(10deg) scale(1.02) !important;
   }
 
-  /* 3D Revealed Cards on Mobile */
+  /* 3D Revealed Cards on Mobile (3 cards neatly arranged) */
   .revealed-cards-flex {
-    gap: 1rem;
+    gap: 0.75rem;
+    justify-content: center;
   }
 
   .revealed-card-cardunit {
-    width: 120px;
+    width: calc(33.333% - 0.55rem);
+    max-width: 125px;
+    min-width: 95px;
   }
 
   .card-3d-flipper {
-    width: 120px;
-    height: 210px;
-  }
-
-  .interpretation-card {
-    padding: 1.4rem 1.1rem;
-  }
-
-  .grand-summary-card {
-    padding: 1.6rem 1.2rem;
-  }
-
-  .grimoire-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-    gap: 0.8rem;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 7;
   }
 
   .modal-content-box {
-    padding: 1.8rem 1.2rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .category-chips-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .spread-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .altar-hero h2 {
-    font-size: 1.75rem;
-  }
-
-  .revealed-card-cardunit {
-    width: 100px;
-  }
-
-  .card-3d-flipper {
-    width: 100px;
-    height: 175px;
-  }
-
-  .card-target-slot {
-    width: 70px;
-    height: 115px;
-  }
-
-  .slot-position-label {
-    font-size: 0.5rem;
-  }
-
-  .selected-slots-rack.compact-slots .card-target-slot {
-    width: 60px;
-    height: 100px;
+    padding: 1.5rem 1.1rem;
   }
 }
 
@@ -190,7 +165,7 @@
   .results-action-row {
     flex-direction: column;
     width: 100%;
-    gap: 0.6rem;
+    gap: 0.65rem;
   }
 
   .results-action-row button {
@@ -199,26 +174,8 @@
   }
 
   .results-seeker-greeting {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     padding: 0.4rem 0.9rem;
-  }
-
-  .shared-reading-notice {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    padding: 0.9rem 1rem;
-    gap: 0.8rem;
-  }
-
-  .shared-notice-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .shared-reading-notice button {
-    width: 100%;
-    justify-content: center;
   }
 
   /* Siamsi Mode Responsive */
@@ -231,12 +188,12 @@
   }
 
   .siamsi-plaque-card {
-    padding: 1.6rem 1.2rem;
+    padding: 1.5rem 1.1rem;
   }
 
   .siamsi-cylinder-arena {
-    min-height: 330px;
-    padding: 2rem 1rem 1rem;
+    min-height: 320px;
+    padding: 1.8rem 1rem 1rem;
   }
 
   .siamsi-cylinder-container {
@@ -245,16 +202,16 @@
   }
 
   .siamsi-revelation-banner {
-    padding: 1.2rem 1rem;
+    padding: 1.15rem 0.95rem;
   }
 
   .rev-number-highlight {
-    font-size: 1.65rem;
+    font-size: 1.6rem;
   }
 
   .altar-red-mat {
-    padding: 1.5rem 1rem;
-    max-width: 95%;
+    padding: 1.4rem 0.9rem;
+    max-width: 98%;
   }
 
   .siamsi-fallen-stick {
@@ -268,11 +225,11 @@
   }
 
   .fallen-stick-main-number {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
 
   .fallen-stick-thai-title {
-    max-width: 90px;
+    max-width: 110px;
     font-size: 0.78rem;
   }
 
@@ -288,20 +245,27 @@
     font-size: 0.85rem;
   }
 
-  .siamsi-directory-grid {
-    grid-template-columns: 1fr;
-  }
-
   .siamsi-actions-toolbar button {
     width: 100%;
   }
 }
 
-@media (max-width: 768px) {
-  .sanctuary-mode-nav {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    margin-top: 4px;
+@media (max-width: 400px) {
+  .card-target-slot {
+    width: 86px;
+    height: 142px;
+  }
+
+  .slot-locked-card-back {
+    height: 98px;
+  }
+
+  .revealed-card-cardunit {
+    min-width: 88px;
+  }
+
+  .card-slot-badge {
+    font-size: 0.62rem;
+    padding: 0.18rem 0.45rem;
   }
 }

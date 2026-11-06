@@ -273,6 +273,7 @@ class SiamsiApp {
     this.btnReshake = document.getElementById("btn-siamsi-reshake");
     this.btnCopyResult = document.getElementById("btn-siamsi-copy-result");
     this.btnShareResult = document.getElementById("btn-siamsi-share-result");
+    this.btnDownloadPdf = document.getElementById("btn-siamsi-download-pdf");
     this.btnViewDirectoryFromResult = document.getElementById("btn-siamsi-view-directory");
 
     // Directory Screen Elements
@@ -447,12 +448,21 @@ class SiamsiApp {
       });
     }
 
-    // Share & Copy
+    // Share, PDF & Copy
     if (this.btnCopyResult) {
       this.btnCopyResult.addEventListener("click", () => this.copyResultToClipboard());
     }
     if (this.btnShareResult) {
       this.btnShareResult.addEventListener("click", () => this.shareResult());
+    }
+    if (this.btnDownloadPdf) {
+      this.btnDownloadPdf.addEventListener("click", () => {
+        if (!this.currentSign) return;
+        const payload = this.buildSiamsiReadingPayload(this.currentSign);
+        if (this.app && this.app.downloadDirectPDF) {
+          this.app.downloadDirectPDF(payload);
+        }
+      });
     }
   }
 
@@ -647,8 +657,8 @@ class SiamsiApp {
   registerShakeBurst(intensity = 1.0) {
     if (this.shakeProgress >= 100 || this.isStickDropped) return;
 
-    // Calibrated progress gain: ~25-35 natural handheld shakes (~10-15s) fills the gauge
-    const gain = Math.max(1.8, Math.min(4.5, 2.4 * intensity));
+    // Calibrated progress gain: ~10-14 natural handheld shakes fills the gauge smoothly
+    const gain = Math.max(5.5, Math.min(12.0, 7.5 * intensity));
     this.shakeProgress = Math.min(100, this.shakeProgress + gain);
     this.lastShakeActionTime = Date.now();
 
@@ -775,8 +785,8 @@ class SiamsiApp {
     }
 
     let elapsed = 0;
-    const totalDuration = 29000; // ~29 seconds
-    const interval = 240; // ms per tick (~120 ticks)
+    const totalDuration = 5200; // ~5.2 seconds dramatic ritual shake
+    const interval = 200; // ms per tick
 
     if (this._autoShakeTimer) clearInterval(this._autoShakeTimer);
     this._autoShakeTimer = setInterval(() => {
@@ -904,6 +914,14 @@ class SiamsiApp {
     const randomIndex = Math.floor(Math.random() * data.length);
     const sign = data[randomIndex];
     this.currentSign = sign;
+
+    // Record 1-time Siamsi draw to customer's access code immediately
+    const payload = this.buildSiamsiReadingPayload(sign);
+    if (this.app && this.app.activeCode && window.codeManager) {
+      window.codeManager.recordReadingDraw(this.app.activeCode, payload).then(updated => {
+        if (updated && this.app) this.app.activeCodeObj = updated;
+      });
+    }
 
     // Reset any previous drop display state
     if (this.droppedStickContainer) {
@@ -1473,21 +1491,81 @@ ${poem}
     }
   }
 
+  buildSiamsiReadingPayload(sign) {
+    if (!sign) return null;
+    const isTanjai = this.currentDeck === "tanjai";
+    const deckName = isTanjai ? "เซียมซีหลวงพ่อทันใจ" : "เซียมซีหว่องไทซิน";
+    const aspectLabels = {
+      career: "💼 อาชีพการงาน",
+      wealth: "💰 โชคลาภการเงิน",
+      love: "❤️ ความรักคู่ครอง",
+      health: "🌿 สุขภาพพลานามัย",
+      study: "🎓 การเรียนการสอบ",
+      home: "🏡 ครอบครัวเคหสถาน",
+      general: "🔮 ภาพรวมดวงชะตา"
+    };
+    const aspectsSummary = [];
+    if (sign.aspects) {
+      Object.keys(aspectLabels).forEach(k => {
+        if (sign.aspects[k]) {
+          aspectsSummary.push({
+            key: k,
+            label: aspectLabels[k],
+            text: sign.aspects[k].summary || "",
+            detail: sign.aspects[k].detail || sign.aspects[k].summary || ""
+          });
+        }
+      });
+    }
+
+    return {
+      mode: "siamsi",
+      code: (this.app && this.app.activeCode) ? this.app.activeCode : "",
+      customerName: (this.app && this.app.seekerName) ? this.app.seekerName : "",
+      deck: this.currentDeck,
+      deckName,
+      signNumber: sign.number,
+      stickNum: sign.stick_num || sign.id,
+      signTitle: sign.thai_title || "",
+      chineseTitle: sign.chinese_title || "",
+      fortuneLevel: sign.fortune_level || "",
+      oneLine: sign.one_line_summary || "",
+      poemLines: sign.poem_th || [],
+      aspectsSummary,
+      timestamp: Date.now()
+    };
+  }
+
+  enterWithCustomerCode(codeObj) {
+    if (!codeObj) return;
+    if (codeObj.lockedCategory === "wongtaisin" || codeObj.lockedCategory === "tanjai") {
+      this.setDeck(codeObj.lockedCategory);
+    }
+
+    const savedSiamsi = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+    const siamsiUsed = (codeObj.siamsiDrawCount || 0) >= 1 || (codeObj.mode === "siamsi" && codeObj.drawCount >= 1);
+
+    if (siamsiUsed && savedSiamsi && savedSiamsi.signNumber !== undefined) {
+      if (savedSiamsi.deck) {
+        this.setDeck(savedSiamsi.deck);
+      }
+      const savedSign = this.getSignByNumberOrId(savedSiamsi.signNumber);
+      if (savedSign) {
+        this.showResultScreen(savedSign);
+        return;
+      }
+    }
+
+    this.resetToShakingScreen();
+    this.checkIosMotionBanner();
+    this.startListeningMotion();
+  }
+
   shareResult() {
     if (!this.currentSign) return;
-    const sign = this.currentSign;
-    const isEn = this.lang === "en";
-    const shareUrl = `${window.location.origin}${window.location.pathname}#siamsi=${sign.number}`;
-    const title = (isEn && sign.en && sign.en.title) ? `Siamsi #${sign.number} - ${sign.en.title}` : `เซียมซีเบอร์ ${sign.number} - ${sign.thai_title}`;
-    const level = (isEn && sign.en && sign.en.fortune_level) ? sign.en.fortune_level : sign.fortune_level;
-    const summary = (isEn && sign.en && sign.en.one_line_summary) ? sign.en.one_line_summary : sign.one_line_summary;
-
-    if (navigator.share) {
-      navigator.share({
-        title: title,
-        text: `Siamsi #${sign.number} (${level}): ${summary}`,
-        url: shareUrl
-      }).catch(() => {});
+    const payload = this.buildSiamsiReadingPayload(this.currentSign);
+    if (this.app && this.app.openSocialShareStudio) {
+      this.app.openSocialShareStudio(payload);
     } else {
       this.copyResultToClipboard();
     }

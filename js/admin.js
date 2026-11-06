@@ -1,0 +1,772 @@
+/**
+ * เซียมซีทาโรต์ (SiamSi Tarot) - Fastwork Admin Backoffice Controller
+ * จัดการรหัสโค้ดดูดวง (จำกัด 1 ครั้ง อายุ 1 วัน), ตรวจสอบ Log การเข้าใช้งาน/แชร์/PDF,
+ * และดาวน์โหลดไฟล์ PDF / รูป Info คำทำนายของลูกค้าเพื่อส่งงานใน Fastwork แบบแมนนวล
+ */
+
+const CATEGORY_NAMES_TH = {
+  love: "ความรัก",
+  career: "การงาน",
+  finance: "การเงิน",
+  health: "สุขภาพ",
+  wongtaisin: "ตำราหว่องไทซิน",
+  tanjai: "ตำราหลวงพ่อทันใจ"
+};
+
+class AdminBackoffice {
+  constructor() {
+    this.codes = [];
+    this.lastCreatedCodeObj = null;
+
+    this.initDOM();
+    this.bindEvents();
+    this.refreshData();
+
+    // Auto-refresh logs every 8 seconds when tab is visible
+    setInterval(() => {
+      if (document.visibilityState === "visible") {
+        this.refreshData(true);
+      }
+    }, 8000);
+  }
+
+  initDOM() {
+    this.syncModeBadge = document.getElementById("sync-mode-badge");
+    this.btnRefreshCodes = document.getElementById("btn-refresh-codes");
+
+    // Stats
+    this.statTotal = document.getElementById("stat-total-codes");
+    this.statAccessed = document.getElementById("stat-accessed-codes");
+    this.statDrawn = document.getElementById("stat-drawn-codes");
+    this.statShared = document.getElementById("stat-shared-codes");
+
+    // Create Code Form
+    this.createForm = document.getElementById("create-code-form");
+    this.inputCustomerName = document.getElementById("input-customer-name");
+    this.inputOrderId = document.getElementById("input-order-id");
+    this.selectServiceMode = document.getElementById("select-service-mode");
+    this.selectLockedCategory = document.getElementById("select-locked-category");
+    this.inputCustomCode = document.getElementById("input-custom-code");
+
+    // Newly Created Box
+    this.newlyCreatedBox = document.getElementById("newly-created-box");
+    this.newlyCreatedCodeLabel = document.getElementById("newly-created-code-label");
+    this.newlyCreatedMeta = document.getElementById("newly-created-meta");
+    this.newlyCreatedMessage = document.getElementById("newly-created-message");
+    this.btnCopyFastworkMsg = document.getElementById("btn-copy-fastwork-msg");
+    this.btnCopyDirectLink = document.getElementById("btn-copy-direct-link");
+    this.btnOpenCreatedLink = document.getElementById("btn-open-created-link");
+
+    // Filters & Table
+    this.searchInput = document.getElementById("admin-search-input");
+    this.filterMode = document.getElementById("admin-filter-mode");
+    this.filterStatus = document.getElementById("admin-filter-status");
+    this.codesTbody = document.getElementById("admin-codes-tbody");
+
+    // Detail Modal
+    this.detailModal = document.getElementById("admin-detail-modal");
+    this.detailModalBody = document.getElementById("admin-modal-body");
+    this.btnCloseDetailModal = document.getElementById("btn-close-admin-modal");
+
+    // Toast
+    this.toast = document.getElementById("mystic-toast");
+  }
+
+  bindEvents() {
+    if (this.btnRefreshCodes) {
+      this.btnRefreshCodes.addEventListener("click", () => {
+        this.refreshData();
+        this.showToast("🔄 อัปเดตข้อมูลโค้ดและ Log ล่าสุดแล้ว");
+      });
+    }
+
+    // Update category dropdown options when switching between Tarot and Siamsi
+    if (this.selectServiceMode) {
+      this.selectServiceMode.addEventListener("change", () => {
+        this.updateCategoryDropdownForMode(this.selectServiceMode.value);
+      });
+    }
+
+    // Create Code Submit
+    if (this.createForm) {
+      this.createForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await this.handleCreateCode();
+      });
+    }
+
+    if (this.btnCopyFastworkMsg) {
+      this.btnCopyFastworkMsg.addEventListener("click", () => {
+        if (!this.newlyCreatedMessage) return;
+        navigator.clipboard.writeText(this.newlyCreatedMessage.value).then(() => {
+          this.showToast("📋 คัดลอกข้อความส่งลูกค้า Fastwork เรียบร้อยแล้ว!");
+        });
+      });
+    }
+
+    if (this.btnCopyDirectLink) {
+      this.btnCopyDirectLink.addEventListener("click", () => {
+        if (!this.lastCreatedCodeObj) return;
+        const link = this.buildCustomerDirectUrl(this.lastCreatedCodeObj.code);
+        navigator.clipboard.writeText(link).then(() => {
+          this.showToast("🔗 คัดลอกลิงก์เข้าดูดวงเรียบร้อยแล้ว!");
+        });
+      });
+    }
+
+    if (this.btnOpenCreatedLink) {
+      this.btnOpenCreatedLink.addEventListener("click", () => {
+        if (!this.lastCreatedCodeObj) return;
+        const link = this.buildCustomerDirectUrl(this.lastCreatedCodeObj.code);
+        window.open(link, "_blank");
+      });
+    }
+
+    // Search & Filters
+    if (this.searchInput) {
+      this.searchInput.addEventListener("input", () => this.renderTable());
+    }
+    if (this.filterMode) {
+      this.filterMode.addEventListener("change", () => this.renderTable());
+    }
+    if (this.filterStatus) {
+      this.filterStatus.addEventListener("change", () => this.renderTable());
+    }
+
+    // Modal close
+    if (this.btnCloseDetailModal) {
+      this.btnCloseDetailModal.addEventListener("click", () => {
+        this.detailModal.classList.remove("active");
+      });
+    }
+    if (this.detailModal) {
+      this.detailModal.addEventListener("click", (e) => {
+        if (e.target === this.detailModal) this.detailModal.classList.remove("active");
+      });
+    }
+  }
+
+  updateCategoryDropdownForMode(mode) {
+    if (!this.selectLockedCategory) return;
+    if (mode === "siamsi") {
+      this.selectLockedCategory.innerHTML = `
+        <option value="">ให้ลูกค้าเลือกตำราเซียมซีเอง</option>
+        <option value="wongtaisin">🏛️ ล็อกตำรา: เซียมซีหว่องไทซิน (100 ใบ)</option>
+        <option value="tanjai">🪷 ล็อกตำรา: เซียมซีหลวงพ่อทันใจ (100 ใบ)</option>
+      `;
+    } else {
+      this.selectLockedCategory.innerHTML = `
+        <option value="">ให้ลูกค้าเลือกหมวดหมู่เอง (ความรัก/การงาน/การเงิน/สุขภาพ)</option>
+        <option value="love">💖 ล็อกหมวด: ความรัก</option>
+        <option value="career">💼 ล็อกหมวด: การงาน</option>
+        <option value="finance">💰 ล็อกหมวด: การเงิน</option>
+        <option value="health">🌿 ล็อกหมวด: สุขภาพ</option>
+      `;
+    }
+  }
+
+  buildCustomerDirectUrl(codeObjOrStr) {
+    const isObj = typeof codeObjOrStr === "object" && codeObjOrStr !== null;
+    const codeStr = isObj ? codeObjOrStr.code : codeObjOrStr;
+    const codeObj = isObj ? codeObjOrStr : (this.codes.find(c => c.code === codeStr) || null);
+    const basePath = window.location.pathname.replace(/admin\.html.*$/, "index.html");
+    const token = (codeObj && window.codeManager.encodeCodeToken) ? window.codeManager.encodeCodeToken(codeObj) : "";
+    const tokenParam = token ? `&t=${encodeURIComponent(token)}` : "";
+    return `${window.location.origin}${basePath}?code=${encodeURIComponent(codeStr)}${tokenParam}`;
+  }
+
+  buildFastworkCustomerMessage(codeObj) {
+    const link = this.buildCustomerDirectUrl(codeObj);
+    const serviceMap = {
+      tarot: "🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (สิทธิ์สุ่มด้วยตนเอง 1 ครั้ง)",
+      siamsi: "🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (สิทธิ์เขย่าด้วยตนเอง 1 ครั้ง)",
+      combo: "🌟 แพ็กเกจ 3 (VIP คู่พิเศษ): ดูดวงไพ่ทาโรต์ 3 ใบ + เสี่ยงเซียมซี (ใช้ได้ทั้ง 2 บริการ อย่างละ 1 ครั้ง)"
+    };
+    const serviceName = serviceMap[codeObj.mode] || serviceMap.tarot;
+    const catNote = codeObj.lockedCategory && CATEGORY_NAMES_TH[codeObj.lockedCategory]
+      ? ` (${CATEGORY_NAMES_TH[codeObj.lockedCategory]})`
+      : "";
+    const expireStr = new Date(codeObj.expiresAt).toLocaleString("th-TH", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+    const limitRule = codeObj.mode === "combo"
+      ? `- โค้ดพิเศษนี้สามารถเลือกใช้บริการได้ทั้ง "ดูดวงไพ่ทาโรต์ 3 ใบ" และ "เสี่ยงเซียมซี" อย่างละ 1 ครั้ง (มีอายุใช้งาน 1 วัน ถึง ${expireStr})`
+      : `- โค้ดนี้ให้คุณกดสุ่มเปิดดวงด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`;
+
+    return `🔮 ขอต้อนรับสู่ "เซียมซีทาโรต์" สำหรับคุณ ${codeObj.customerName}\n` +
+      `✦ ${serviceName}${catNote}\n` +
+      `🔑 รหัสโค้ดเข้าดูดวงของคุณ: ${codeObj.code}\n` +
+      `🔗 คลิกเข้าสู่ระบบเพื่อกดดูดวงด้วยตนเอง: ${link}\n\n` +
+      `📌 เงื่อนไขการใช้งาน:\n` +
+      `${limitRule}\n` +
+      `- หลังกดเปิดคำทำนายแล้ว สามารถกดแชร์รูป Info พร้อมคำทำนายเต็มไปยังโซเชียล หรือดาวน์โหลดเก็บเป็นไฟล์ PDF ลงเครื่องได้ทันทีค่ะ ✨`;
+  }
+
+  async handleCreateCode() {
+    try {
+      const customerName = this.inputCustomerName.value.trim();
+      const fastworkOrder = this.inputOrderId.value.trim();
+      const mode = this.selectServiceMode.value;
+      const lockedCategory = this.selectLockedCategory.value;
+      const customCode = this.inputCustomCode.value.trim();
+
+      const codeObj = await window.codeManager.createCode({
+        customerName,
+        fastworkOrder,
+        mode,
+        lockedCategory,
+        customCode,
+        durationHours: 24
+      });
+
+      this.lastCreatedCodeObj = codeObj;
+      const msg = this.buildFastworkCustomerMessage(codeObj);
+
+      if (this.newlyCreatedBox) {
+        const modeTitleMap = {
+          tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
+          siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
+          combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
+        };
+        this.newlyCreatedBox.style.display = "block";
+        this.newlyCreatedCodeLabel.textContent = `รหัสโค้ด: ${codeObj.code}`;
+        this.newlyCreatedMeta.textContent = `(${codeObj.customerName} • ${modeTitleMap[codeObj.mode] || "ดูดวง"})`;
+        this.newlyCreatedMessage.value = msg;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(msg).catch(() => {});
+      }
+
+      this.inputCustomerName.value = "";
+      this.inputOrderId.value = "";
+      this.inputCustomCode.value = "";
+
+      await this.refreshData();
+      this.showToast(`✨ สร้างโค้ด ${codeObj.code} และคัดลอกข้อความสำหรับส่งลูกค้า Fastwork แล้ว!`);
+    } catch (err) {
+      alert(err.message || "ไม่สามารถสร้างโค้ดได้");
+    }
+  }
+
+  async refreshData(silent = false) {
+    this.codes = await window.codeManager.getAllCodes();
+
+    if (this.syncModeBadge) {
+      if (window.codeManager.apiAvailable) {
+        this.syncModeBadge.textContent = "🟢 เชื่อมต่อฐานข้อมูล Server API แล้ว";
+      } else {
+        this.syncModeBadge.textContent = "🟢 โหมดพร้อมใช้งาน (Local & Smart Sync)";
+      }
+    }
+
+    this.renderStats();
+    this.renderTable();
+  }
+
+  renderStats() {
+    const total = this.codes.length;
+    const accessed = this.codes.filter(c => c.logs && c.logs.accessCount > 0).length;
+    const drawn = this.codes.filter(c => c.drawCount > 0 && c.readingResult).length;
+    const sharedOrPdf = this.codes.filter(c => c.logs && (c.logs.shareCount > 0 || c.logs.pdfDownloadCount > 0)).length;
+
+    if (this.statTotal) this.statTotal.textContent = total;
+    if (this.statAccessed) this.statAccessed.textContent = accessed;
+    if (this.statDrawn) this.statDrawn.textContent = drawn;
+    if (this.statShared) this.statShared.textContent = sharedOrPdf;
+  }
+
+  formatDateTime(ts) {
+    if (!ts) return "-";
+    return new Date(ts).toLocaleString("th-TH", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  getEffectiveStatus(codeObj) {
+    if (window.codeManager.isCodeExpired(codeObj)) return "expired";
+    if (codeObj.drawCount > 0 && codeObj.readingResult) return "drawn";
+    if (codeObj.logs && codeObj.logs.accessCount > 0) return "accessed";
+    return "unused";
+  }
+
+  renderTable() {
+    if (!this.codesTbody) return;
+    const q = (this.searchInput ? this.searchInput.value : "").trim().toLowerCase();
+    const modeFilter = this.filterMode ? this.filterMode.value : "all";
+    const statusFilter = this.filterStatus ? this.filterStatus.value : "all";
+
+    const filtered = this.codes.filter(c => {
+      if (modeFilter !== "all" && c.mode !== modeFilter) return false;
+      const effStatus = this.getEffectiveStatus(c);
+      if (statusFilter !== "all" && effStatus !== statusFilter) return false;
+
+      if (q) {
+        const hay = `${c.code} ${c.customerName} ${c.fastworkOrder}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      this.codesTbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center; padding: 2.5rem; color: var(--text-muted);">
+            ไม่พบรายการรหัสโค้ดที่ตรงกับเงื่อนไข
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    this.codesTbody.innerHTML = "";
+
+    filtered.forEach(codeObj => {
+      const tr = document.createElement("tr");
+      const isExpired = window.codeManager.isCodeExpired(codeObj);
+      const remainText = window.codeManager.getRemainingTimeText(codeObj, "th");
+      const logs = codeObj.logs || {};
+      const hasAccessed = logs.accessCount > 0;
+      const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
+      const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+      const hasDrawn = !!(tarotRes || siamsiRes);
+      const hasShared = logs.shareCount > 0;
+      const hasPdf = logs.pdfDownloadCount > 0;
+
+      let modeBadge = `<span class="mode-pill tarot">🔮 แพ็ก 1: ไพ่ทาโรต์ 3 ใบ</span>`;
+      let quotaText = `สิทธิ์จับไพ่: ${codeObj.tarotDrawCount || (tarotRes ? 1 : 0)} / 1 ครั้ง`;
+      if (codeObj.mode === "siamsi") {
+        modeBadge = `<span class="mode-pill siamsi">🎋 แพ็ก 2: เสี่ยงเซียมซี</span>`;
+        quotaText = `สิทธิ์เซียมซี: ${codeObj.siamsiDrawCount || (siamsiRes ? 1 : 0)} / 1 ครั้ง`;
+      } else if (codeObj.mode === "combo") {
+        modeBadge = `<span class="mode-pill combo">🌟 แพ็ก 3: ดูดวง + เซียมซี</span>`;
+        quotaText = `ทาโรต์: ${codeObj.tarotDrawCount || (tarotRes ? 1 : 0)}/1 • เซียมซี: ${codeObj.siamsiDrawCount || (siamsiRes ? 1 : 0)}/1`;
+      }
+
+      const catTag = codeObj.lockedCategory && CATEGORY_NAMES_TH[codeObj.lockedCategory]
+        ? `<div style="font-size:0.76rem; color:#fde68a; margin-top:4px;">หมวดที่ล็อก: ${CATEGORY_NAMES_TH[codeObj.lockedCategory]}</div>`
+        : `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">ลูกค้าเลือกหมวดเอง</div>`;
+
+      // Reading result summary cell (supports Tarot, Siamsi, or both in Combo)
+      const resultBlocks = [];
+      if (tarotRes) {
+        const cardsListHtml = (tarotRes.cards || []).map((card, idx) =>
+          `<div>${idx + 1}. ${card.name_th} ${card.isReversed ? '<span style="color:#fca5a5;">(กลับหัว)</span>' : '<span style="color:#86efac;">(ตั้งตรง)</span>'}</div>`
+        ).join("");
+        resultBlocks.push(`
+          <div class="drawn-summary-box" style="margin-bottom:6px;">
+            <strong style="color:var(--gold-primary);">🔮 ไพ่ทาโรต์ (หมวด${tarotRes.categoryName || tarotRes.category})</strong>
+            <div class="drawn-cards-mini-list">${cardsListHtml}</div>
+          </div>
+        `);
+      }
+      if (siamsiRes) {
+        resultBlocks.push(`
+          <div class="drawn-summary-box">
+            <strong style="color:var(--gold-primary);">🎋 เซียมซีเบอร์ ${siamsiRes.signNumber} (${siamsiRes.fortuneLevel || ""})</strong>
+            <div style="font-size:0.8rem; color:#fff; margin-top:2px;">${siamsiRes.signTitle || ""}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${siamsiRes.deckName || ""}</div>
+          </div>
+        `);
+      }
+      const resultHtml = resultBlocks.length > 0
+        ? resultBlocks.join("")
+        : `<span style="color:var(--text-dim); font-size:0.8rem;">⏳ รอลูกค้าเข้ามากดสุ่มด้วยตนเอง</span>`;
+
+      // Manual PDF / Info download buttons for each drawn service
+      let downloadBtnsHtml = "";
+      if (tarotRes) {
+        downloadBtnsHtml += `
+          <button type="button" class="btn-row-act btn-pdf-highlight" data-act="download-pdf-tarot" title="ดาวน์โหลดไฟล์ PDF ไพ่ทาโรต์ที่ลูกค้าสุ่มได้">
+            📄 โหลด PDF ไพ่ทาโรต์
+          </button>
+          <button type="button" class="btn-row-act" data-act="download-info-tarot" title="ดาวน์โหลดรูป Info ไพ่ทาโรต์">
+            🖼️ รูป Info ทาโรต์
+          </button>
+        `;
+      }
+      if (siamsiRes) {
+        downloadBtnsHtml += `
+          <button type="button" class="btn-row-act btn-pdf-highlight" data-act="download-pdf-siamsi" title="ดาวน์โหลดไฟล์ PDF เซียมซีที่ลูกค้าสุ่มได้">
+            📄 โหลด PDF เซียมซี
+          </button>
+          <button type="button" class="btn-row-act" data-act="download-info-siamsi" title="ดาวน์โหลดรูป Info เซียมซี">
+            🖼️ รูป Info เซียมซี
+          </button>
+        `;
+      }
+      if (hasDrawn) {
+        downloadBtnsHtml += `
+          <button type="button" class="btn-row-act" data-act="copy-reading" title="คัดลอกคำทำนายเต็มส่งแชทลูกค้า">
+            💬 ก๊อบปี้คำทำนายเต็ม
+          </button>
+        `;
+      }
+
+      tr.innerHTML = `
+        <td>
+          <div class="code-badge-main">${codeObj.code}</div>
+          <div class="customer-meta-line">👤 ${codeObj.customerName}</div>
+          <div class="order-meta-line">ออเดอร์: ${codeObj.fastworkOrder || "-"}</div>
+        </td>
+        <td>
+          ${modeBadge}
+          ${catTag}
+          <div style="font-size:0.74rem; color:#c4b5fd; margin-top:4px;">${quotaText}</div>
+        </td>
+        <td>
+          <div style="font-weight:700; color:${isExpired ? '#fca5a5' : '#86efac'};">${remainText}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">สร้าง: ${this.formatDateTime(codeObj.createdAt)}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">หมดอายุ: ${this.formatDateTime(codeObj.expiresAt)}</div>
+        </td>
+        <td>
+          <div class="log-checklist">
+            <div class="log-item ${hasAccessed ? 'done' : 'pending'}">
+              <span>${hasAccessed ? '✅' : '⚪'}</span>
+              <span>เข้าระบบ: ${hasAccessed ? `เข้าแล้ว (${logs.accessCount} ครั้ง • ${this.formatDateTime(logs.lastAccessedAt)})` : 'ยังไม่เข้า'}</span>
+            </div>
+            <div class="log-item ${hasDrawn ? 'done' : 'pending'}">
+              <span>${hasDrawn ? '✅' : '⚪'}</span>
+              <span>ลูกค้ากดสุ่ม: ${hasDrawn ? `สุ่มแล้ว (${this.formatDateTime(logs.drawnAt)})` : 'ยังไม่สุ่ม'}</span>
+            </div>
+            <div class="log-item ${hasShared ? 'done' : 'pending'}">
+              <span>${hasShared ? '✅' : '⚪'}</span>
+              <span>แชร์โซเชียล: ${hasShared ? `แชร์แล้ว (${logs.shareCount} ครั้ง • ${this.formatDateTime(logs.sharedAt)})` : 'ยังไม่แชร์'}</span>
+            </div>
+            <div class="log-item ${hasPdf ? 'done' : 'pending'}">
+              <span>${hasPdf ? '✅' : '⚪'}</span>
+              <span>โหลด PDF: ${hasPdf ? `โหลดแล้ว (${logs.pdfDownloadCount} ครั้ง • ${this.formatDateTime(logs.pdfDownloadedAt)})` : 'ยังไม่โหลด'}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          ${resultHtml}
+        </td>
+        <td>
+          <div class="row-actions-stack">
+            <button type="button" class="btn-row-act" data-act="copy-msg" title="คัดลอกข้อความ+ลิงก์ส่งลูกค้า Fastwork">
+              📋 คัดลอกส่งลูกค้า
+            </button>
+            <button type="button" class="btn-row-act" data-act="open-link" title="เปิดหน้าเว็บด้วยโค้ดนี้">
+              🚀 เปิดลิงก์
+            </button>
+            ${downloadBtnsHtml}
+            <button type="button" class="btn-row-act" data-act="view-logs" title="ดูรายละเอียดและประวัติ Log">
+              📜 ประวัติ Log
+            </button>
+            <button type="button" class="btn-row-act" data-act="reset-draw" title="รีเซ็ตให้ลูกค้ากดสุ่มใหม่ได้">
+              🔄 รีเซ็ตสิทธิ์
+            </button>
+            <button type="button" class="btn-row-act" data-act="extend-1d" title="ต่ออายุโค้ดอีก 1 วัน (24 ชม.)">
+              ⏳ +1 วัน
+            </button>
+            <button type="button" class="btn-row-act btn-danger" data-act="delete" title="ลบโค้ดนี้">
+              🗑️ ลบ
+            </button>
+          </div>
+        </td>
+      `;
+
+      // Bind row action buttons
+      tr.querySelectorAll("[data-act]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const act = btn.getAttribute("data-act");
+          this.handleRowAction(act, codeObj);
+        });
+      });
+
+      this.codesTbody.appendChild(tr);
+    });
+  }
+
+  async handleRowAction(act, codeObj) {
+    if (act === "copy-msg") {
+      const msg = this.buildFastworkCustomerMessage(codeObj);
+      await navigator.clipboard.writeText(msg);
+      this.showToast(`📋 คัดลอกข้อความและโค้ด ${codeObj.code} สำหรับส่งลูกค้าแล้ว!`);
+      return;
+    }
+
+    if (act === "open-link") {
+      const url = this.buildCustomerDirectUrl(codeObj.code);
+      window.open(url, "_blank");
+      return;
+    }
+
+    const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
+    const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+
+    if (act === "download-pdf-tarot" && tarotRes) {
+      this.showToast(`⏳ กำลังสร้างไฟล์ PDF ไพ่ทาโรต์สำหรับโค้ด ${codeObj.code}...`);
+      const ok = await window.shareAndPdfEngine.downloadReadingPdfFile(
+        tarotRes,
+        `SiamSiTarot_Tarot_${codeObj.code}_${codeObj.customerName || "Customer"}.pdf`
+      );
+      if (ok) {
+        await window.codeManager.recordActionLog(codeObj.code, "pdf", "แอดมินดาวน์โหลดไฟล์ PDF ไพ่ทาโรต์เพื่อส่งให้ลูกค้า");
+        await this.refreshData(true);
+        this.showToast(`📄 ดาวน์โหลดไฟล์ PDF ไพ่ทาโรต์ของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      }
+      return;
+    }
+
+    if (act === "download-pdf-siamsi" && siamsiRes) {
+      this.showToast(`⏳ กำลังสร้างไฟล์ PDF เซียมซีสำหรับโค้ด ${codeObj.code}...`);
+      const ok = await window.shareAndPdfEngine.downloadReadingPdfFile(
+        siamsiRes,
+        `SiamSiTarot_Siamsi_${codeObj.code}_${codeObj.customerName || "Customer"}.pdf`
+      );
+      if (ok) {
+        await window.codeManager.recordActionLog(codeObj.code, "pdf", "แอดมินดาวน์โหลดไฟล์ PDF เซียมซีเพื่อส่งให้ลูกค้า");
+        await this.refreshData(true);
+        this.showToast(`📄 ดาวน์โหลดไฟล์ PDF เซียมซีของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      }
+      return;
+    }
+
+    if (act === "download-info-tarot" && tarotRes) {
+      this.showToast(`⏳ กำลังสร้างรูป Info Card ไพ่ทาโรต์...`);
+      await window.shareAndPdfEngine.downloadInfoImageFile(tarotRes);
+      this.showToast(`🖼️ ดาวน์โหลดรูป Info Card ไพ่ทาโรต์ของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      return;
+    }
+
+    if (act === "download-info-siamsi" && siamsiRes) {
+      this.showToast(`⏳ กำลังสร้างรูป Info Card เซียมซี...`);
+      await window.shareAndPdfEngine.downloadInfoImageFile(siamsiRes);
+      this.showToast(`🖼️ ดาวน์โหลดรูป Info Card เซียมซีของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      return;
+    }
+
+    if (act === "copy-reading") {
+      const blocks = [];
+      if (tarotRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(tarotRes));
+      if (siamsiRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(siamsiRes));
+      if (blocks.length === 0) return;
+      await navigator.clipboard.writeText(blocks.join("\n\n==============================\n\n"));
+      this.showToast(`💬 คัดลอกคำทำนายฉบับเต็มของโค้ด ${codeObj.code} แล้ว! นำไปวางส่งลูกค้าได้เลย`);
+      return;
+    }
+
+    if (act === "view-logs") {
+      this.openCodeDetailModal(codeObj);
+      return;
+    }
+
+    if (act === "reset-draw") {
+      await window.codeManager.updateCodeAdmin(codeObj.code, "reset_draw");
+      await this.refreshData();
+      this.showToast(`🔄 รีเซ็ตสิทธิ์โค้ด ${codeObj.code} เรียบร้อย (สุ่มใหม่ได้ 1 ครั้ง)`);
+      return;
+    }
+
+    if (act === "extend-1d") {
+      await window.codeManager.updateCodeAdmin(codeObj.code, "extend_1day");
+      await this.refreshData();
+      this.showToast(`⏳ ต่ออายุโค้ด ${codeObj.code} เพิ่มอีก 24 ชั่วโมงแล้ว`);
+      return;
+    }
+
+    if (act === "delete") {
+      if (!confirm(`ยืนยันการลบรหัสโค้ด ${codeObj.code} (${codeObj.customerName}) ?`)) return;
+      await window.codeManager.deleteCode(codeObj.code);
+      await this.refreshData();
+      this.showToast(`🗑️ ลบรหัสโค้ด ${codeObj.code} เรียบร้อยแล้ว`);
+    }
+  }
+
+  /**
+   * สุ่มไพ่ทาโรต์ 3 ใบ หรือเสี่ยงเซียมซีให้ลูกค้าทันทีจากหน้าแอดมิน (กรณีลูกค้าให้หมอดูสุ่มแล้วส่ง PDF ให้)
+   */
+  async manualDrawForCustomer(codeObj) {
+    const nowStr = new Date().toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
+
+    if (codeObj.mode === "siamsi") {
+      const isTanjai = codeObj.lockedCategory === "tanjai";
+      const data = isTanjai && window.SIAMSI_TANJAI_DATA ? window.SIAMSI_TANJAI_DATA : window.SIAMSI_DATA;
+      const sign = data[Math.floor(Math.random() * data.length)];
+
+      const aspectLabels = {
+        career: "💼 อาชีพการงาน",
+        wealth: "💰 โชคลาภการเงิน",
+        love: "❤️ ความรักคู่ครอง",
+        health: "🌿 สุขภาพพลานามัย",
+        study: "🎓 การเรียนการสอบ",
+        home: "🏡 ครอบครัวเคหสถาน",
+        general: "🔮 ภาพรวมดวงชะตา"
+      };
+      const aspectsSummary = [];
+      if (sign.aspects) {
+        Object.keys(aspectLabels).forEach(k => {
+          if (sign.aspects[k]) {
+            aspectsSummary.push({
+              key: k,
+              label: aspectLabels[k],
+              text: sign.aspects[k].summary || "",
+              detail: sign.aspects[k].detail || sign.aspects[k].summary || ""
+            });
+          }
+        });
+      }
+
+      const payload = {
+        mode: "siamsi",
+        code: codeObj.code,
+        customerName: codeObj.customerName,
+        deck: isTanjai ? "tanjai" : "wongtaisin",
+        deckName: isTanjai ? "เซียมซีหลวงพ่อทันใจ" : "เซียมซีหว่องไทซิน",
+        signNumber: sign.number,
+        stickNum: sign.stick_num || sign.id,
+        signTitle: sign.thai_title || "",
+        chineseTitle: sign.chinese_title || "",
+        fortuneLevel: sign.fortune_level || "",
+        oneLine: sign.one_line_summary || "",
+        poemLines: sign.poem_th || [],
+        aspectsSummary,
+        timestamp: Date.now()
+      };
+
+      await window.codeManager.recordReadingDraw(codeObj.code, payload);
+      await this.refreshData();
+      this.showToast(`🎋 สุ่มเซียมซีให้ ${codeObj.customerName} เรียบร้อย (ได้เบอร์ ${sign.number})! กดโหลด PDF ส่งลูกค้าได้เลย`);
+      return;
+    }
+
+    // สุ่มไพ่ทาโรต์ 3 ใบ
+    const cat = (codeObj.lockedCategory && ["love", "career", "finance", "health"].includes(codeObj.lockedCategory))
+      ? codeObj.lockedCategory
+      : "love";
+    const catName = CATEGORY_NAMES_TH[cat] || "ความรัก";
+
+    const posMap = {
+      love: [
+        "ใบที่ 1: เขา — ความรู้สึกและมุมมองของอีกฝ่าย",
+        "ใบที่ 2: คุณ — สถานะหัวใจและพลังงานของคุณ",
+        "ใบที่ 3: ความสัมพันธ์ — แนวโน้มและบทสรุปความรัก"
+      ],
+      career: [
+        "ใบที่ 1: รากฐาน — ที่มาและผลงานที่ผ่านมา",
+        "ใบที่ 2: ปัจจุบัน — สถานการณ์การงานที่กำลังเผชิญ",
+        "ใบที่ 3: อนาคต — โอกาสความก้าวหน้าและผลลัพธ์"
+      ],
+      finance: [
+        "ใบที่ 1: พื้นฐานการเงิน — พฤติกรรมและที่มาของรายได้",
+        "ใบที่ 2: กระแสเงินปัจจุบัน — สภาพคล่องและภาระ",
+        "ใบที่ 3: แนวโน้มการเงิน — โชคลาภและผลตอบแทนข้างหน้า"
+      ],
+      health: [
+        "ใบที่ 1: พื้นฐานสุขภาพ — พฤติกรรมสะสมที่ผ่านมา",
+        "ใบที่ 2: สภาวะปัจจุบัน — พลังงานร่างกายและจิตใจตอนนี้",
+        "ใบที่ 3: แนวโน้มการฟื้นฟู — ทิศทางสุขภาพในอนาคต"
+      ]
+    };
+
+    const shuffled = [...TAROT_CARDS].sort(() => Math.random() - 0.5).slice(0, 3);
+    const payloadCards = shuffled.map((card, idx) => {
+      const isReversed = Math.random() < 0.25;
+      const aspect = isReversed ? card.reversed : card.upright;
+      let domainMeaning = "";
+      let shortMeaning = "";
+      if (cat === "love") {
+        const base = aspect.love.th || "";
+        const single = (aspect.love.single && aspect.love.single.th) ? `คนโสด: ${aspect.love.single.th}` : "";
+        const couple = (aspect.love.couple && aspect.love.couple.th) ? `คนมีคู่: ${aspect.love.couple.th}` : "";
+        domainMeaning = [base, single, couple].filter(Boolean).join(" | ");
+        shortMeaning = base;
+      } else {
+        domainMeaning = aspect[cat] ? aspect[cat].th : aspect.career.th;
+        shortMeaning = domainMeaning;
+      }
+
+      return {
+        id: card.id,
+        name_th: card.name_th,
+        name_en: card.name_en,
+        image: card.image,
+        isReversed,
+        positionTitle: posMap[cat][idx],
+        domainMeaning,
+        shortMeaning,
+        advice: aspect.advice.th
+      };
+    });
+
+    const cNames = payloadCards.map(c => c.name_th).join(" ➔ ");
+    const payload = {
+      mode: "tarot",
+      code: codeObj.code,
+      customerName: codeObj.customerName,
+      category: cat,
+      categoryName: catName,
+      timestamp: Date.now(),
+      dateText: nowStr,
+      cards: payloadCards,
+      verdictBadge: "🌟 พลังงานดวงชะตาเปิดกว้างและเกื้อหนุน",
+      verdictPlain: `จากหน้าไพ่ทั้ง 3 ใบ (${cNames}) ในหมวด${catName} สะท้อนถึงจังหวะการเปลี่ยนแปลงที่ชัดเจน หากตั้งสติและนำคำแนะนำของไพ่แต่ละใบไปปรับใช้ จะช่วยให้ตัดสินใจได้อย่างแม่นยำและเกิดผลลัพธ์ที่ดีที่สุด`,
+      doAction: "เปิดใจรับโอกาสใหม่ วางแผนเป็นขั้นตอน และทำตามสารเตือนใจของไพ่ทั้ง 3 ใบ",
+      dontAction: "อย่าตัดสินใจด้วยความใจร้อนวู่วาม หรือปล่อยให้ความกังวลบดบังสติปัญญา"
+    };
+
+    await window.codeManager.recordReadingDraw(codeObj.code, payload);
+    await this.refreshData();
+    this.showToast(`🎴 สุ่มไพ่ทาโรต์ 3 ใบให้ ${codeObj.customerName} เรียบร้อยแล้ว! กดปุ่ม "โหลด PDF คำทำนาย" เพื่อส่งให้ลูกค้าได้เลย`);
+  }
+
+  openCodeDetailModal(codeObj) {
+    if (!this.detailModal || !this.detailModalBody) return;
+    const eventsHtml = (codeObj.events || []).map(ev => `
+      <div style="padding: 0.55rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; gap:1rem; font-size:0.84rem;">
+        <span>• ${ev.detail}</span>
+        <span style="color:var(--text-muted); white-space:nowrap;">${this.formatDateTime(ev.time)}</span>
+      </div>
+    `).join("") || `<div style="padding:1rem; color:var(--text-muted);">ยังไม่มีประวัติการใช้งาน</div>`;
+
+    const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
+    const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+    const blocks = [];
+    if (tarotRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(tarotRes));
+    if (siamsiRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(siamsiRes));
+    const fullReadingText = blocks.length > 0 ? blocks.join("\n\n==============================\n\n") : "ลูกค้ายังไม่ได้กดสุ่มคำทำนาย";
+
+    const modeMap = {
+      tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
+      siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
+      combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
+    };
+
+    this.detailModalBody.innerHTML = `
+      <h3 style="color:var(--gold-primary); margin-bottom:0.4rem;">🔑 รายละเอียดโค้ด ${codeObj.code} (${codeObj.customerName})</h3>
+      <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1.2rem;">
+        ออเดอร์: ${codeObj.fastworkOrder || "-"} • ${modeMap[codeObj.mode] || "ดูดวง"}
+      </p>
+
+      <h4 style="color:#fde68a; font-size:0.95rem; margin-bottom:0.5rem;">📜 ประวัติ Log การใช้งาน (Activity Timeline)</h4>
+      <div style="background:rgba(8,3,18,0.85); border:1px solid rgba(245,197,66,0.3); border-radius:8px; max-height:200px; overflow-y:auto; margin-bottom:1.2rem;">
+        ${eventsHtml}
+      </div>
+
+      <h4 style="color:#fde68a; font-size:0.95rem; margin-bottom:0.5rem;">🔮 คำทำนายฉบับเต็มของรหัสนี้</h4>
+      <textarea style="width:100%; min-height:220px; background:rgba(8,3,18,0.9); border:1px solid rgba(245,197,66,0.35); border-radius:8px; padding:0.8rem; color:#fff; font-family:var(--font-thai); font-size:0.85rem; line-height:1.55;" readonly>${fullReadingText}</textarea>
+    `;
+
+    this.detailModal.classList.add("active");
+  }
+
+  showToast(message) {
+    if (!this.toast) return;
+    this.toast.textContent = message;
+    this.toast.classList.add("active");
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      this.toast.classList.remove("active");
+    }, 3200);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  window.adminBackoffice = new AdminBackoffice();
+});
