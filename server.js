@@ -191,6 +191,29 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { codes: db.codes });
   }
 
+  // Admin Passcode Endpoints
+  if (pathname === "/api/admin-passcode" && req.method === "GET") {
+    const db = readDb();
+    const pass = (db.adminPasscode && typeof db.adminPasscode === "string" && db.adminPasscode !== "undefined")
+      ? db.adminPasscode.trim().toUpperCase()
+      : "ADMIN99";
+    return sendJson(res, 200, { passcode: pass });
+  }
+
+  if (pathname === "/api/admin-passcode" && req.method === "POST") {
+    const body = await parseBody(req);
+    const raw = (body && body.passcode !== undefined && body.passcode !== null)
+      ? String(body.passcode).trim()
+      : "";
+    const clean = (raw && raw.toLowerCase() !== "undefined" && raw.toLowerCase() !== "null")
+      ? raw.toUpperCase()
+      : "ADMIN99";
+    const db = readDb();
+    db.adminPasscode = clean;
+    writeDb(db);
+    return sendJson(res, 200, { ok: true, passcode: clean });
+  }
+
   // RAG Knowledge Base Endpoints (NotebookLM Summaries)
   if (pathname === "/api/rag-docs" && req.method === "GET") {
     const db = readDb();

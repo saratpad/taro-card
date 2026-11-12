@@ -14,6 +14,19 @@ class CodeManager {
     this.apiAvailable = null;
     this.codesCache = this._loadLocalCodes();
     this._ensureDemoCodes();
+    this._syncAdminPasscodeFromApi();
+  }
+
+  async _syncAdminPasscodeFromApi() {
+    try {
+      const data = await this._apiRequest("/api/admin-passcode");
+      if (data && data.passcode && typeof data.passcode === "string") {
+        const clean = data.passcode.trim().toUpperCase();
+        if (clean && clean !== "UNDEFINED" && clean !== "NULL") {
+          localStorage.setItem("siamsi_tarot_admin_passcode_v1", clean);
+        }
+      }
+    } catch (_) {}
   }
 
   _loadLocalCodes() {
@@ -282,6 +295,10 @@ class CodeManager {
     try {
       localStorage.setItem("siamsi_tarot_admin_passcode_v1", clean);
     } catch (e) {}
+    this._apiRequest("/api/admin-passcode", {
+      method: "POST",
+      body: JSON.stringify({ passcode: clean })
+    }).catch(() => {});
     return clean;
   }
 
