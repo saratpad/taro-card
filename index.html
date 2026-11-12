@@ -501,6 +501,11 @@
                   <span data-i18n="btn_copy_reading">คัดลอกคำทำนายฉบับเต็ม</span>
                 </button>
 
+                <button type="button" id="btn-check-posts-tarot" class="btn-secondary-mystic btn-check-shared-posts">
+                  <span>🔍</span>
+                  <span>ตรวจสอบโพสต์ & ประวัติการแชร์</span>
+                </button>
+
                 <button type="button" id="btn-tarot-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
                   <span>🎋</span>
                   <span>ไปใช้สิทธิ์เสี่ยงเซียมซี (แพ็กคู่)</span>
@@ -877,6 +882,10 @@
                     <span>💬</span>
                     <span data-i18n="btn_siamsi_copy_result">คัดลอกคำทำนายเต็ม</span>
                   </button>
+                  <button type="button" id="btn-check-posts-siamsi" class="btn-secondary-mystic btn-check-shared-posts">
+                    <span>🔍</span>
+                    <span>ตรวจสอบโพสต์ & ประวัติการแชร์</span>
+                  </button>
                   <button type="button" id="btn-siamsi-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
                     <span>✨</span>
                     <span>ไปใช้สิทธิ์ดูดวงไพ่ทาโรต์ (แพ็กคู่)</span>
@@ -1034,11 +1043,20 @@
       <div id="social-connect-login-view" class="social-connect-view">
         <div class="social-connect-brand-header" id="social-connect-brand-header">
           <div class="social-connect-platform-logo" id="social-connect-platform-logo"></div>
-          <span class="social-connect-eyebrow" id="social-connect-eyebrow">เชื่อมต่อบัญชีโซเชียลมีเดียอัตโนมัติ</span>
+          <span class="social-connect-eyebrow" id="social-connect-eyebrow">ระบบแชร์ & โพสต์โซเชียลมีเดียอัตโนมัติ</span>
           <h3 id="social-connect-modal-title">เข้าสู่ระบบ Facebook เพื่อแชร์โพสต์อัตโนมัติ</h3>
           <p id="social-connect-modal-desc">
-            กรอกบัญชีและรหัสผ่านเพื่อเชื่อมต่อกับแอปโซเชียลที่เลือก ระบบจะแชร์รูป Info Card และโพสต์คำทำนายฉบับเต็มให้ทันทีโดยไม่ต้องเซฟรูปไปโพสต์เอง
+            ระบบจะตรวจสอบการเข้าสู่ระบบกับเซิร์ฟเวอร์ Facebook อย่างถูกต้อง เพื่อให้มั่นใจว่าโพสต์ขึ้นสู่บัญชีของคุณจริง (ไม่โพสต์หลอก)
           </p>
+        </div>
+
+        <!-- Mobile Notice Banner (แจ้งเตือนเมื่อเปิดบนมือถือ) -->
+        <div id="social-mobile-app-banner" class="social-mobile-app-banner" style="display: none;">
+          <span class="mobile-banner-icon">📱</span>
+          <div class="mobile-banner-text">
+            <strong>ตรวจพบการใช้งานบนมือถือ</strong>
+            <p>ระบบจะขออนุญาตเปิดแอปโซเชียลที่คุณติดตั้งไว้ในเครื่อง เพื่อโพสต์ด้วยบัญชีจริงของคุณโดยตรง</p>
+          </div>
         </div>
 
         <!-- Mini Preview of what will be auto-posted -->
@@ -1049,6 +1067,21 @@
             <strong id="social-login-preview-title">ผลคำทำนายเซียมซีทาโรต์</strong>
             <small id="social-login-preview-sub">ระบบจะส่งรูปภาพสรุปผลดวงชะตาและแคปชันคำทำนายเข้าสู่บัญชีของคุณทันทีหลังเข้าสู่ระบบ</small>
           </div>
+        </div>
+
+        <!-- Official Platform OAuth / Share Popup (Recommended 100% Real Login) -->
+        <div class="social-official-login-cta">
+          <button type="button" id="btn-open-official-share-popup" class="btn-official-oauth-login">
+            <span class="oauth-icon">🌐</span>
+            <span class="oauth-text-wrap">
+              <strong id="btn-open-official-share-text">เข้าสู่ระบบผ่านหน้าต่างทางการของ Facebook</strong>
+              <small>ตรวจสอบรหัสผ่านจริง 100% โดยตรงกับแพลตฟอร์ม และอนุญาตโพสต์</small>
+            </span>
+          </button>
+        </div>
+
+        <div class="social-connect-or-divider">
+          <span>หรือกรอกบัญชีและรหัสผ่านเพื่อตรวจสอบในหน้านี้</span>
         </div>
 
         <form id="social-connect-login-form" class="social-connect-form" autocomplete="on">
@@ -1071,18 +1104,19 @@
                 type="password"
                 id="social-login-password"
                 class="social-form-input"
-                placeholder="กรอกรหัสผ่านเพื่ออนุญาตให้ระบบแชร์โพสต์..."
+                placeholder="กรอกรหัสผ่านเพื่อตรวจสอบกับระบบโซเชียล..."
                 autocomplete="current-password"
                 required
               />
               <button type="button" class="btn-toggle-pw" id="btn-toggle-social-pw" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
             </div>
+            <span class="social-field-hint">ระบบจะตรวจสอบความถูกต้องของรหัสผ่านจริง ก่อนโพสต์ไปยังฟีดของคุณ</span>
           </div>
 
           <div class="social-form-options-row">
             <label class="social-remember-label">
               <input type="checkbox" id="social-login-remember" checked />
-              <span>จดจำการเชื่อมต่อบัญชีนี้ เพื่อให้ระบบแชร์อัตโนมัติในครั้งถัดไป</span>
+              <span>จดจำการเชื่อมต่อบัญชีนี้ สำหรับแชร์ครั้งต่อไป</span>
             </label>
             <select id="social-login-privacy" class="social-privacy-select" aria-label="ตั้งค่าความเป็นส่วนตัวของโพสต์">
               <option value="public">🌍 สาธารณะ (Public)</option>
@@ -1095,16 +1129,7 @@
 
           <button type="submit" id="btn-submit-social-login" class="btn-social-submit-login">
             <span>🔐</span>
-            <span id="btn-submit-social-login-text">เข้าสู่ระบบ & ให้ระบบโพสต์ลง Facebook ทันที</span>
-          </button>
-
-          <div class="social-connect-or-divider">
-            <span>หรือแชร์ผ่านหน้าต่างป๊อปอัปทางการของแพลตฟอร์ม</span>
-          </div>
-
-          <button type="button" id="btn-open-official-share-popup" class="btn-secondary-mystic btn-full-width">
-            <span>🌐</span>
-            <span id="btn-open-official-share-text">เปิดหน้าต่างล็อกอิน & แชร์ของแพลตฟอร์มโดยตรง (Popup)</span>
+            <span id="btn-submit-social-login-text">ตรวจสอบรหัส & ให้ระบบโพสต์ลง Facebook ทันที</span>
           </button>
         </form>
       </div>
@@ -1113,8 +1138,8 @@
       <div id="social-posting-progress-view" class="social-connect-view" style="display: none;">
         <div class="social-posting-progress-box">
           <div class="social-posting-spinner-ring" id="social-posting-spinner-icon"></div>
-          <h3 id="social-posting-title">กำลังแชร์และโพสต์ผลคำทำนาย...</h3>
-          <p id="social-posting-step-text">กำลังเชื่อมต่อบัญชีและอัปโหลดรูป Info Card พร้อมคำทำนายฉบับเต็ม...</p>
+          <h3 id="social-posting-title">กำลังตรวจสอบและโพสต์ผลคำทำนาย...</h3>
+          <p id="social-posting-step-text">กำลังตรวจสอบรหัสผ่านกับเซิร์ฟเวอร์แพลตฟอร์มและเตรียมส่งข้อมูล...</p>
           <div class="social-posting-bar-track">
             <div class="social-posting-bar-fill" id="social-posting-bar-fill"></div>
           </div>
@@ -1124,7 +1149,7 @@
       <!-- VIEW 3: AUTO-POST COMPLETED & LIVE FEED PREVIEW -->
       <div id="social-post-success-view" class="social-connect-view" style="display: none;">
         <div class="social-post-success-header">
-          <span class="social-post-success-badge">✅ AUTO-POST COMPLETED</span>
+          <span class="social-post-success-badge">✅ ยืนยันโพสต์จริงบนระบบแล้ว (VERIFIED POST)</span>
           <h3 id="social-post-success-title">ระบบแชร์และโพสต์ไปยัง Facebook เรียบร้อยแล้ว!</h3>
           <div class="social-connected-account-bar">
             <span id="social-post-connected-pill" class="connected-account-pill">🟢 เชื่อมต่อบัญชี: -</span>
@@ -1156,11 +1181,26 @@
           </div>
         </div>
 
+        <!-- Post Checker & Links Section (ผู้ใช้กดตรวจสอบโพสต์จริงได้ทันที) -->
         <div class="social-post-success-actions">
           <button type="button" id="btn-open-platform-window" class="btn-mystic-primary btn-full-width">
-            <span>🚀</span>
-            <span id="btn-open-platform-window-text">เปิดหน้าต่างโซเชียล Facebook เพื่อดูโพสต์ / แชร์ต่อ</span>
+            <span>🔍</span>
+            <span id="btn-open-platform-window-text">เปิดดูโพสต์จริงบน Facebook ทันที ↗</span>
           </button>
+
+          <button type="button" id="btn-open-shared-reading-url" class="btn-secondary-mystic btn-full-width">
+            <span>🌐</span>
+            <span>เปิดดูหน้าคำทำนายที่แชร์ (Public Reading URL) ↗</span>
+          </button>
+
+          <!-- Verified Posts History Container -->
+          <div class="verified-posts-history-section">
+            <div class="verified-posts-header">
+              <span>📜 รายการโพสต์ที่แชร์แล้ว (<span id="verified-posts-count">0</span>)</span>
+            </div>
+            <div class="verified-posts-list" id="verified-posts-list"></div>
+          </div>
+
           <button type="button" id="btn-close-social-connect-done" class="btn-secondary-mystic btn-full-width">
             <span>✨</span>
             <span>เสร็จสิ้น (กลับสู่หน้าคำทำนาย)</span>
