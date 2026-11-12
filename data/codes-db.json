@@ -1,6 +1,45 @@
 {
   "codes": [
     {
+      "code": "PALM99",
+      "customerName": "",
+      "fastworkOrder": "FW-PACK4",
+      "mode": "palm",
+      "lockedCategory": "",
+      "createdAt": 1794500000000,
+      "expiresAt": 1797092800000,
+      "maxDraws": 1,
+      "drawCount": 0,
+      "tarotDrawCount": 0,
+      "siamsiDrawCount": 0,
+      "palmDrawCount": 0,
+      "status": "unused",
+      "logs": {
+        "firstAccessedAt": null,
+        "lastAccessedAt": null,
+        "accessCount": 0,
+        "drawnAt": null,
+        "tarotDrawnAt": null,
+        "siamsiDrawnAt": null,
+        "palmDrawnAt": null,
+        "sharedAt": null,
+        "shareCount": 0,
+        "pdfDownloadedAt": null,
+        "pdfDownloadCount": 0
+      },
+      "readingResult": null,
+      "tarotResult": null,
+      "siamsiResult": null,
+      "palmResult": null,
+      "events": [
+        {
+          "time": 1794500000000,
+          "type": "created",
+          "detail": "สร้างโค้ด แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (1 ครั้ง / อายุ 24 ชม.)"
+        }
+      ]
+    },
+    {
       "code": "TAROT99",
       "customerName": "ลูกค้าแพ็ก 1 (ดูดวงไพ่ทาโรต์)",
       "fastworkOrder": "FW-PACK1",

@@ -284,15 +284,20 @@ class TarotApp {
     this.comboSiamsiStatus = document.getElementById("combo-siamsi-status");
     this.comboTarotMiniResult = document.getElementById("combo-tarot-mini-result");
     this.comboSiamsiMiniResult = document.getElementById("combo-siamsi-mini-result");
+    this.comboPalmStatus = document.getElementById("combo-palm-status");
+    this.comboPalmMiniResult = document.getElementById("combo-palm-mini-result");
     this.btnComboEnterTarot = document.getElementById("btn-combo-enter-tarot");
     this.btnComboTarotLabel = document.getElementById("btn-combo-tarot-label");
     this.btnComboEnterSiamsi = document.getElementById("btn-combo-enter-siamsi");
     this.btnComboSiamsiLabel = document.getElementById("btn-combo-siamsi-label");
+    this.btnComboEnterPalm = document.getElementById("btn-combo-enter-palm");
+    this.btnComboPalmLabel = document.getElementById("btn-combo-palm-label");
     this.btnTarotGoCombo = document.getElementById("btn-tarot-go-combo");
     this.btnSiamsiGoCombo = document.getElementById("btn-siamsi-go-combo");
 
     this.tarotModeContainer = document.getElementById("tarot-mode-container");
     this.siamsiModeContainer = document.getElementById("siamsi-mode-container");
+    this.palmModeContainer = document.getElementById("palm-mode-container");
     this.climaxOverlay = document.getElementById("ritual-climax-overlay");
 
     // Tarot Screens
@@ -445,6 +450,12 @@ class TarotApp {
       this.btnComboEnterSiamsi.addEventListener("click", () => {
         window.mysticAudio.playClick();
         this.openSiamsiServiceForCode(this.activeCodeObj);
+      });
+    }
+    if (this.btnComboEnterPalm) {
+      this.btnComboEnterPalm.addEventListener("click", () => {
+        window.mysticAudio.playClick();
+        this.openPalmServiceForCode(this.activeCodeObj);
       });
     }
     if (this.btnTarotGoCombo) {
@@ -775,8 +786,10 @@ class TarotApp {
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    if (this.palmModeContainer) this.palmModeContainer.style.display = "none";
     if (this.activeCodeBanner) this.activeCodeBanner.style.display = "none";
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
+    if (window.palmApp) window.palmApp.stopCamera();
   }
 
   async enterWithCode(rawCode, recordAccess = true) {
@@ -822,7 +835,7 @@ class TarotApp {
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
     if (this.activeCodeBanner) {
       this.activeCodeBanner.style.display = "inline-flex";
-      const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "แพ็กคู่" };
+      const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "แพ็กเกจรวม", palm: "สแกนลายมือ" };
       if (this.activeCodeText) {
         this.activeCodeText.textContent = `🔑 ${codeObj.code} • ${shortLabelMap[codeObj.mode] || "ดูดวง"}`;
       }
@@ -842,7 +855,7 @@ class TarotApp {
       this.btnSiamsiGoCombo.style.display = codeObj.mode === "combo" ? "inline-flex" : "none";
     }
 
-    // Route according to the 3 packages:
+    // Route according to the packages:
     // 1. Package 3 (combo): Show the Service Selector Screen first!
     if (codeObj.mode === "combo") {
       this.showComboSelector(codeObj);
@@ -855,7 +868,13 @@ class TarotApp {
       return;
     }
 
-    // 3. Package 1 (tarot): Go directly to Tarot 3-card
+    // 3. Package 4 (palm): Go directly to Palm Reading
+    if (codeObj.mode === "palm") {
+      this.openPalmServiceForCode(codeObj);
+      return;
+    }
+
+    // 4. Package 1 (tarot): Go directly to Tarot 3-card
     this.openTarotServiceForCode(codeObj);
   }
 
@@ -864,14 +883,18 @@ class TarotApp {
     if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    if (this.palmModeContainer) this.palmModeContainer.style.display = "none";
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.add("active");
 
+    if (window.palmApp) window.palmApp.stopCamera();
+
     if (this.comboWelcomeTitle) {
-      this.comboWelcomeTitle.textContent = `ยินดีต้อนรับสู่แพ็กเกจคู่พิเศษ (ไพ่ทาโรต์ + เซียมซี)`;
+      this.comboWelcomeTitle.textContent = `ยินดีต้อนรับสู่แพ็กเกจรวมพิเศษ (ไพ่ทาโรต์ • เซียมซี • สแกนลายมือ)`;
     }
 
     const tarotDone = (codeObj.tarotDrawCount || 0) >= 1 && !!codeObj.tarotResult;
     const siamsiDone = (codeObj.siamsiDrawCount || 0) >= 1 && !!codeObj.siamsiResult;
+    const palmDone = (codeObj.palmDrawCount || 0) >= 1 && !!codeObj.palmResult;
 
     if (this.comboTarotStatus) {
       this.comboTarotStatus.textContent = tarotDone
@@ -914,6 +937,26 @@ class TarotApp {
         : "เริ่มเสี่ยงเซียมซีศักดิ์สิทธิ์ (1 ครั้ง)";
     }
 
+    if (this.comboPalmStatus) {
+      this.comboPalmStatus.textContent = palmDone
+        ? "✅ สแกนลายมือแล้ว (1/1 ครั้ง)"
+        : "🎯 สิทธิ์คงเหลือ: 1 / 1 ครั้ง (พร้อมสแกน)";
+      this.comboPalmStatus.className = `combo-service-status ${palmDone ? "used" : "ready"}`;
+    }
+    if (this.comboPalmMiniResult) {
+      if (palmDone && codeObj.palmResult) {
+        this.comboPalmMiniResult.style.display = "block";
+        this.comboPalmMiniResult.innerHTML = `<strong>ผลสแกน:</strong> ${codeObj.palmResult.reading ? codeObj.palmResult.reading.handMeta.name : "ฝ่ามือ"} (ความแม่นยำ ${codeObj.palmResult.confidence || "98"}%)`;
+      } else {
+        this.comboPalmMiniResult.style.display = "none";
+      }
+    }
+    if (this.btnComboPalmLabel) {
+      this.btnComboPalmLabel.textContent = palmDone
+        ? "เปิดดูผลสแกนลายมือของคุณ"
+        : "เริ่มสแกนดูลายมือ (1 ครั้ง)";
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -921,7 +964,10 @@ class TarotApp {
     if (!codeObj) return;
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    if (this.palmModeContainer) this.palmModeContainer.style.display = "none";
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "block";
+
+    if (window.palmApp) window.palmApp.stopCamera();
 
     // Check if category is pre-locked by admin
     if (codeObj.lockedCategory && ["love", "career", "finance", "health"].includes(codeObj.lockedCategory)) {
@@ -946,10 +992,25 @@ class TarotApp {
     if (!codeObj) return;
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
+    if (this.palmModeContainer) this.palmModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "block";
+
+    if (window.palmApp) window.palmApp.stopCamera();
 
     if (this.siamsiApp) {
       this.siamsiApp.enterWithCustomerCode(codeObj);
+    }
+  }
+
+  openPalmServiceForCode(codeObj) {
+    if (!codeObj) return;
+    if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
+    if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
+    if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    if (this.palmModeContainer) this.palmModeContainer.style.display = "block";
+
+    if (window.palmApp) {
+      window.palmApp.startCamera();
     }
   }
 
@@ -2839,6 +2900,11 @@ class TarotApp {
 
 window.addEventListener("DOMContentLoaded", () => {
   window.tarotApp = new TarotApp();
+  window.taroApp = window.tarotApp;
+  if (typeof PalmApp !== "undefined") {
+    window.palmApp = new PalmApp();
+    window.tarotApp.palmApp = window.palmApp;
+  }
   if (window.siamsiApp) {
     window.siamsiApp.app = window.tarotApp;
     window.tarotApp.siamsiApp = window.siamsiApp;

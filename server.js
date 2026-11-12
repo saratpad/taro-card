@@ -110,10 +110,11 @@ function ensureDb() {
           lockedCategory: "",
           createdAt: now,
           expiresAt: now + oneDayMs,
-          maxDraws: 2,
+          maxDraws: 3,
           drawCount: 0,
           tarotDrawCount: 0,
           siamsiDrawCount: 0,
+          palmDrawCount: 0,
           status: "unused",
           logs: {
             firstAccessedAt: null,
@@ -122,6 +123,7 @@ function ensureDb() {
             drawnAt: null,
             tarotDrawnAt: null,
             siamsiDrawnAt: null,
+            palmDrawnAt: null,
             sharedAt: null,
             shareCount: 0,
             pdfDownloadedAt: null,
@@ -130,8 +132,44 @@ function ensureDb() {
           readingResult: null,
           tarotResult: null,
           siamsiResult: null,
+          palmResult: null,
           events: [
-            { time: now, type: "created", detail: "สร้างโค้ดพิเศษ แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง / อายุ 24 ชม.)" }
+            { time: now, type: "created", detail: "สร้างโค้ดพิเศษ แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี + สแกนลายมือ (อย่างละ 1 ครั้ง / อายุ 24 ชม.)" }
+          ]
+        },
+        {
+          code: "PALM99",
+          customerName: "",
+          fastworkOrder: "FW-PACK4",
+          mode: "palm",
+          lockedCategory: "",
+          createdAt: now,
+          expiresAt: now + oneDayMs,
+          maxDraws: 1,
+          drawCount: 0,
+          tarotDrawCount: 0,
+          siamsiDrawCount: 0,
+          palmDrawCount: 0,
+          status: "unused",
+          logs: {
+            firstAccessedAt: null,
+            lastAccessedAt: null,
+            accessCount: 0,
+            drawnAt: null,
+            tarotDrawnAt: null,
+            siamsiDrawnAt: null,
+            palmDrawnAt: null,
+            sharedAt: null,
+            shareCount: 0,
+            pdfDownloadedAt: null,
+            pdfDownloadCount: 0
+          },
+          readingResult: null,
+          tarotResult: null,
+          siamsiResult: null,
+          palmResult: null,
+          events: [
+            { time: now, type: "created", detail: "สร้างโค้ด แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (1 ครั้ง / อายุ 24 ชม.)" }
           ]
         }
       ]
@@ -338,6 +376,11 @@ const server = http.createServer(async (req, res) => {
           codeObj.logs.tarotDrawnAt = now;
           const cNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
           detail = `ลูกค้าเปิดไพ่ทาโรต์ 3 ใบ หมวด${readingResult.categoryName || readingResult.category}: ${cNames}`;
+        } else if (readingResult.mode === "palm") {
+          codeObj.palmDrawCount = (codeObj.palmDrawCount || 0) + 1;
+          codeObj.palmResult = readingResult;
+          codeObj.logs.palmDrawnAt = now;
+          detail = `ลูกค้าสแกนลายมือ (${readingResult.hand === "left" ? "มือซ้าย" : "มือขวา"}) ความแม่นยำ ${readingResult.confidence || "98"}%`;
         } else {
           codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
           codeObj.siamsiResult = readingResult;
@@ -345,7 +388,7 @@ const server = http.createServer(async (req, res) => {
           detail = `ลูกค้าเสี่ยงเซียมซี ได้เบอร์ ${readingResult.signNumber} (${readingResult.signTitle || ""})`;
         }
 
-        codeObj.drawCount = (codeObj.tarotDrawCount || 0) + (codeObj.siamsiDrawCount || 0);
+        codeObj.drawCount = (codeObj.tarotDrawCount || 0) + (codeObj.siamsiDrawCount || 0) + (codeObj.palmDrawCount || 0);
         codeObj.status = "drawn";
         codeObj.logs.drawnAt = now;
         codeObj.readingResult = readingResult;

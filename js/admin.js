@@ -341,7 +341,8 @@ class AdminBackoffice {
     const serviceMap = {
       tarot: "🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (สิทธิ์สุ่มด้วยตนเอง 1 ครั้ง)",
       siamsi: "🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (สิทธิ์เขย่าด้วยตนเอง 1 ครั้ง)",
-      combo: "🌟 แพ็กเกจ 3 (VIP คู่พิเศษ): ดูดวงไพ่ทาโรต์ 3 ใบ + เสี่ยงเซียมซี (ใช้ได้ทั้ง 2 บริการ อย่างละ 1 ครั้ง)"
+      combo: "🌟 แพ็กเกจ 3 (VIP รวม 3 ศาสตร์): ไพ่ทาโรต์ + เซียมซี + สแกนลายมือ (ใช้ได้ทุกบริการ อย่างละ 1 ครั้ง)",
+      palm: "✋ แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (สิทธิ์สแกนด้วยตนเอง 1 ครั้ง)"
     };
     const serviceName = serviceMap[codeObj.mode] || serviceMap.tarot;
     const catNote = codeObj.lockedCategory && CATEGORY_NAMES_TH[codeObj.lockedCategory]
@@ -566,7 +567,9 @@ class AdminBackoffice {
       if (codeObj.mode === "siamsi") {
         modeBadge = `<span class="mode-pill siamsi">🎋 เซียมซี</span>`;
       } else if (codeObj.mode === "combo") {
-        modeBadge = `<span class="mode-pill combo">🌟 ทาโรต์+เซียมซี</span>`;
+        modeBadge = `<span class="mode-pill combo">🌟 รวม 3 ศาสตร์</span>`;
+      } else if (codeObj.mode === "palm") {
+        modeBadge = `<span class="mode-pill palm" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.45); color: #86efac;">✋ สแกนลายมือ</span>`;
       }
 
       const catShort = codeObj.lockedCategory && CATEGORY_NAMES_TH[codeObj.lockedCategory]

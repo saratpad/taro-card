@@ -207,10 +207,12 @@ class SiamsiApp {
     // Mode Switcher Buttons in Top Nav
     this.modeTarotBtn = document.getElementById("mode-switch-tarot");
     this.modeSiamsiBtn = document.getElementById("mode-switch-siamsi");
+    this.modePalmBtn = document.getElementById("mode-switch-palm");
 
     // Containers
     this.tarotContainer = document.getElementById("tarot-mode-container");
     this.siamsiContainer = document.getElementById("siamsi-mode-container");
+    this.palmContainer = document.getElementById("palm-mode-container");
 
     // Screens inside Siamsi Container
     this.screenShaking = document.getElementById("screen-siamsi-shaking");
@@ -311,6 +313,9 @@ class SiamsiApp {
     }
     if (this.modeTarotBtn) {
       this.modeTarotBtn.addEventListener("click", () => this.switchToTarotMode());
+    }
+    if (this.modePalmBtn) {
+      this.modePalmBtn.addEventListener("click", () => this.switchToPalmMode());
     }
 
     // Deck Selection on Altar
@@ -1589,10 +1594,14 @@ ${poem}
 
   switchToSiamsiMode() {
     if (this.modeTarotBtn) this.modeTarotBtn.classList.remove("active");
+    if (this.modePalmBtn) this.modePalmBtn.classList.remove("active");
     if (this.modeSiamsiBtn) this.modeSiamsiBtn.classList.add("active");
 
     if (this.tarotContainer) this.tarotContainer.style.display = "none";
+    if (this.palmContainer) this.palmContainer.style.display = "none";
     if (this.siamsiContainer) this.siamsiContainer.style.display = "block";
+
+    if (window.palmApp) window.palmApp.stopCamera();
 
     // Set seeker name from Tarot if available
     if (this.app && this.app.seekerName && this.seekerNameInput && !this.seekerNameInput.value) {
@@ -1607,10 +1616,14 @@ ${poem}
     this.stopListeningMotion();
 
     if (this.modeSiamsiBtn) this.modeSiamsiBtn.classList.remove("active");
+    if (this.modePalmBtn) this.modePalmBtn.classList.remove("active");
     if (this.modeTarotBtn) this.modeTarotBtn.classList.add("active");
 
     if (this.siamsiContainer) this.siamsiContainer.style.display = "none";
+    if (this.palmContainer) this.palmContainer.style.display = "none";
     if (this.tarotContainer) this.tarotContainer.style.display = "block";
+
+    if (window.palmApp) window.palmApp.stopCamera();
 
     // Transfer seeker name back to Tarot if filled
     const seekerVal = (this.seekerNameInput && typeof this.seekerNameInput.value === "string") ? this.seekerNameInput.value.trim() : "";
@@ -1618,6 +1631,22 @@ ${poem}
       this.app.seekerName = seekerVal;
       const tarotInput = document.getElementById("seeker-name-input");
       if (tarotInput) tarotInput.value = this.app.seekerName;
+    }
+  }
+
+  switchToPalmMode() {
+    this.stopListeningMotion();
+
+    if (this.modeTarotBtn) this.modeTarotBtn.classList.remove("active");
+    if (this.modeSiamsiBtn) this.modeSiamsiBtn.classList.remove("active");
+    if (this.modePalmBtn) this.modePalmBtn.classList.add("active");
+
+    if (this.tarotContainer) this.tarotContainer.style.display = "none";
+    if (this.siamsiContainer) this.siamsiContainer.style.display = "none";
+    if (this.palmContainer) this.palmContainer.style.display = "block";
+
+    if (window.palmApp) {
+      window.palmApp.startCamera();
     }
   }
 }

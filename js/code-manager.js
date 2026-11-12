@@ -50,12 +50,18 @@ class CodeManager {
     c.siamsiDrawCount = typeof c.siamsiDrawCount === "number"
       ? c.siamsiDrawCount
       : (c.mode === "siamsi" && c.drawCount ? c.drawCount : (c.siamsiResult ? 1 : 0));
+    c.palmDrawCount = typeof c.palmDrawCount === "number"
+      ? c.palmDrawCount
+      : (c.mode === "palm" && c.drawCount ? c.drawCount : (c.palmResult ? 1 : 0));
 
     if (!c.tarotResult && c.readingResult && c.readingResult.mode === "tarot") {
       c.tarotResult = c.readingResult;
     }
     if (!c.siamsiResult && c.readingResult && c.readingResult.mode === "siamsi") {
       c.siamsiResult = c.readingResult;
+    }
+    if (!c.palmResult && c.readingResult && c.readingResult.mode === "palm") {
+      c.palmResult = c.readingResult;
     }
 
     c.logs = c.logs || {
@@ -65,6 +71,7 @@ class CodeManager {
       drawnAt: null,
       tarotDrawnAt: null,
       siamsiDrawnAt: null,
+      palmDrawnAt: null,
       sharedAt: null,
       shareCount: 0,
       pdfDownloadedAt: null,
@@ -160,10 +167,11 @@ class CodeManager {
           lockedCategory: "",
           createdAt: now,
           expiresAt: now + oneDayMs,
-          maxDraws: 2,
+          maxDraws: 3,
           drawCount: 0,
           tarotDrawCount: 0,
           siamsiDrawCount: 0,
+          palmDrawCount: 0,
           status: "unused",
           logs: {
             firstAccessedAt: null,
@@ -172,6 +180,7 @@ class CodeManager {
             drawnAt: null,
             tarotDrawnAt: null,
             siamsiDrawnAt: null,
+            palmDrawnAt: null,
             sharedAt: null,
             shareCount: 0,
             pdfDownloadedAt: null,
@@ -180,8 +189,44 @@ class CodeManager {
           readingResult: null,
           tarotResult: null,
           siamsiResult: null,
+          palmResult: null,
           events: [
-            { time: now, type: "created", detail: "สร้างโค้ดพิเศษ แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง / อายุ 24 ชม.)" }
+            { time: now, type: "created", detail: "สร้างโค้ดพิเศษ แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี + สแกนลายมือ (อย่างละ 1 ครั้ง / อายุ 24 ชม.)" }
+          ]
+        },
+        {
+          code: "PALM99",
+          customerName: "",
+          fastworkOrder: "FW-PACK4",
+          mode: "palm",
+          lockedCategory: "",
+          createdAt: now,
+          expiresAt: now + oneDayMs,
+          maxDraws: 1,
+          drawCount: 0,
+          tarotDrawCount: 0,
+          siamsiDrawCount: 0,
+          palmDrawCount: 0,
+          status: "unused",
+          logs: {
+            firstAccessedAt: null,
+            lastAccessedAt: null,
+            accessCount: 0,
+            drawnAt: null,
+            tarotDrawnAt: null,
+            siamsiDrawnAt: null,
+            palmDrawnAt: null,
+            sharedAt: null,
+            shareCount: 0,
+            pdfDownloadedAt: null,
+            pdfDownloadCount: 0
+          },
+          readingResult: null,
+          tarotResult: null,
+          siamsiResult: null,
+          palmResult: null,
+          events: [
+            { time: now, type: "created", detail: "สร้างโค้ด แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (1 ครั้ง / อายุ 24 ชม.)" }
           ]
         }
       ];
@@ -314,7 +359,7 @@ class CodeManager {
    */
   async createCode({ customerName = "", fastworkOrder = "", mode = "tarot", lockedCategory = "", customCode = "", durationHours = 24 }) {
     const cleanMode = (mode && String(mode).trim()) ? String(mode).trim() : "tarot";
-    const prefixMap = { tarot: "TR", siamsi: "SS", combo: "VIP" };
+    const prefixMap = { tarot: "TR", siamsi: "SS", combo: "VIP", palm: "PL" };
     const prefix = prefixMap[cleanMode] || "OR";
     const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(10 + Math.random() * 90);
     const codeStr = (customCode && customCode.trim())
@@ -327,7 +372,8 @@ class CodeManager {
     const modeDescMap = {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี (1 ครั้ง)",
-      combo: "แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
+      combo: "แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี + สแกนลายมือ (อย่างละ 1 ครั้ง)",
+      palm: "แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (1 ครั้ง)"
     };
     const modeDesc = modeDescMap[cleanMode] || modeDescMap.tarot;
 
@@ -339,10 +385,11 @@ class CodeManager {
       lockedCategory: lockedCategory || "",
       createdAt: now,
       expiresAt: expiresAt,
-      maxDraws: cleanMode === "combo" ? 2 : 1,
+      maxDraws: cleanMode === "combo" ? 3 : 1,
       drawCount: 0,
       tarotDrawCount: 0,
       siamsiDrawCount: 0,
+      palmDrawCount: 0,
       status: "unused",
       logs: {
         firstAccessedAt: null,
@@ -351,6 +398,7 @@ class CodeManager {
         drawnAt: null,
         tarotDrawnAt: null,
         siamsiDrawnAt: null,
+        palmDrawnAt: null,
         sharedAt: null,
         shareCount: 0,
         pdfDownloadedAt: null,
@@ -480,6 +528,11 @@ class CodeManager {
       codeObj.logs.tarotDrawnAt = now;
       const cardNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
       summaryDetail = `ลูกค้าเปิดไพ่ทาโรต์ 3 ใบ หมวด${readingResult.categoryName || readingResult.category}: ${cardNames}`;
+    } else if (readingResult.mode === "palm") {
+      codeObj.palmDrawCount = (codeObj.palmDrawCount || 0) + 1;
+      codeObj.palmResult = readingResult;
+      codeObj.logs.palmDrawnAt = now;
+      summaryDetail = `ลูกค้าสแกนลายมือ (${readingResult.hand === "left" ? "มือซ้าย" : "มือขวา"}) ความแม่นยำ ${readingResult.confidence || "98%"}%`;
     } else {
       codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
       codeObj.siamsiResult = readingResult;
@@ -487,7 +540,7 @@ class CodeManager {
       summaryDetail = `ลูกค้าเสี่ยงเซียมซี ได้เบอร์ ${readingResult.signNumber} (${readingResult.signTitle || ""})`;
     }
 
-    codeObj.drawCount = (codeObj.tarotDrawCount || 0) + (codeObj.siamsiDrawCount || 0);
+    codeObj.drawCount = (codeObj.tarotDrawCount || 0) + (codeObj.siamsiDrawCount || 0) + (codeObj.palmDrawCount || 0);
     codeObj.readingResult = readingResult;
     codeObj.logs.drawnAt = now;
     codeObj.status = "drawn";
@@ -679,30 +732,33 @@ class CodeManager {
             code: cleanCode,
             customerName: "",
             fastworkOrder: parsed.o || "-",
-            mode: ["tarot", "siamsi", "combo"].includes(parsed.m) ? parsed.m : "tarot",
+            mode: ["tarot", "siamsi", "combo", "palm"].includes(parsed.m) ? parsed.m : "tarot",
             lockedCategory: parsed.l || "",
             createdAt: Number(parsed.s) || now,
             expiresAt: Number(parsed.e) || (now + oneDayMs),
-            maxDraws: parsed.m === "combo" ? 2 : 1,
+            maxDraws: parsed.m === "combo" ? 3 : 1,
             drawCount: 0,
             tarotDrawCount: 0,
             siamsiDrawCount: 0,
+            palmDrawCount: 0,
             status: "unused",
             logs: { firstAccessedAt: null, lastAccessedAt: null, accessCount: 0, drawnAt: null, sharedAt: null, shareCount: 0, pdfDownloadedAt: null, pdfDownloadCount: 0 },
             readingResult: null,
             tarotResult: null,
             siamsiResult: null,
+            palmResult: null,
             events: [{ time: now, type: "created", detail: "เปิดใช้งานโค้ดผ่านลิงก์พยากรณ์" }]
           });
         }
       }
     } catch (e) {}
 
-    // 2. If customer typed a standard generated code prefix (TR-XXXX, SS-XXXX, VIP-XXXX, CB-XXXX) directly
+    // 2. If customer typed a standard generated code prefix (TR-XXXX, SS-XXXX, VIP-XXXX, CB-XXXX, PL-XXXX) directly
     let inferredMode = null;
     if (/^TR-[A-Z0-9]{3,12}$/.test(cleanCode)) inferredMode = "tarot";
     else if (/^SS-[A-Z0-9]{3,12}$/.test(cleanCode)) inferredMode = "siamsi";
     else if (/^(VIP|CB)-[A-Z0-9]{3,12}$/.test(cleanCode)) inferredMode = "combo";
+    else if (/^PL-[A-Z0-9]{3,12}$/.test(cleanCode)) inferredMode = "palm";
 
     if (inferredMode) {
       return this._normalizeCodeObj({
@@ -713,15 +769,17 @@ class CodeManager {
         lockedCategory: "",
         createdAt: now,
         expiresAt: now + oneDayMs,
-        maxDraws: inferredMode === "combo" ? 2 : 1,
+        maxDraws: inferredMode === "combo" ? 3 : 1,
         drawCount: 0,
         tarotDrawCount: 0,
         siamsiDrawCount: 0,
+        palmDrawCount: 0,
         status: "unused",
         logs: { firstAccessedAt: null, lastAccessedAt: null, accessCount: 0, drawnAt: null, sharedAt: null, shareCount: 0, pdfDownloadedAt: null, pdfDownloadCount: 0 },
         readingResult: null,
         tarotResult: null,
         siamsiResult: null,
+        palmResult: null,
         events: [{ time: now, type: "created", detail: "เปิดใช้งานรหัสโค้ดบนอุปกรณ์ของลูกค้า" }]
       });
     }

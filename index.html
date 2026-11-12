@@ -75,6 +75,10 @@
           <span>🎋</span>
           <span data-i18n="mode_siamsi">เสี่ยงเซียมซี</span>
         </button>
+        <button type="button" class="mode-nav-btn" id="mode-switch-palm">
+          <span>✋</span>
+          <span data-i18n="mode_palm">สแกนลายมือ</span>
+        </button>
       </div>
 
       <div class="nav-actions">
@@ -154,7 +158,7 @@
           <div class="gate-badge">🌟 SPECIAL VIP COMBO PACKAGE 🌟</div>
           <h2 class="gate-title" id="combo-welcome-title">แพ็กเกจคู่: ดูดวงไพ่ทาโรต์ & เสี่ยงเซียมซี</h2>
           <p class="gate-subtitle" id="combo-welcome-sub">
-            รหัสโค้ดพิเศษของท่านสามารถใช้บริการได้ครบทั้ง <strong>2 รูปแบบ (อย่างละ 1 ครั้ง)</strong><br>
+            รหัสโค้ดพิเศษของท่านสามารถใช้บริการเปิดดวงชะตาได้ครบทุกศาสตร์ <strong>(อย่างละ 1 ครั้ง)</strong><br>
             โปรดเลือกบริการที่ท่านต้องการเปิดคำทำนายก่อน
           </p>
 
@@ -186,6 +190,21 @@
               <button type="button" class="btn-mystic-primary btn-full-width" id="btn-combo-enter-siamsi">
                 <span>🎋</span>
                 <span id="btn-combo-siamsi-label">เข้าสู่แท่นเสี่ยงเซียมซี</span>
+              </button>
+            </div>
+
+            <!-- บริการที่ 3: สแกนดูลายมืออัจฉริยะ -->
+            <div class="combo-service-option" id="combo-choose-palm">
+              <div class="combo-service-status" id="combo-palm-status">🎯 สิทธิ์คงเหลือ: 1 / 1 ครั้ง</div>
+              <div class="combo-service-logo-wrap">
+                <img src="assets/logo.jpg" alt="SIAMSI TAROT" class="combo-service-logo-img" />
+              </div>
+              <h3>สแกนดูลายมืออัจฉริยะ</h3>
+              <p>ถ่ายภาพฝ่ามือเพื่อสแกนรอยย่นลึกระดับ Sub-pixel วิเคราะห์ 6 เส้นหลัก และเนินทั้ง 7 ตามคัมภีร์หัตถศาสตร์</p>
+              <div class="combo-service-result-mini" id="combo-palm-mini-result" style="display: none;"></div>
+              <button type="button" class="btn-mystic-primary btn-full-width" id="btn-combo-enter-palm">
+                <span>✋</span>
+                <span id="btn-combo-palm-label">เข้าสู่แท่นสแกนดูลายมือ</span>
               </button>
             </div>
           </div>
@@ -916,6 +935,227 @@
 
       </div> <!-- /#siamsi-mode-container -->
 
+      <!-- =================================================================== -->
+      <!-- PALM MODE CONTAINER (โหมดสแกนลายมือและหัตถศาสตร์พยากรณ์ความแม่นยำสูง) -->
+      <!-- =================================================================== -->
+      <div id="palm-mode-container" style="display: none;">
+
+        <!-- SCREEN 1: CAMERA CAPTURE & UPLOAD SCREEN -->
+        <section id="screen-palm-capture" class="view-screen active">
+          <div class="altar-hero palm-hero">
+            <div class="altar-seal-wrapper">
+              <div class="mystic-circle">
+                <div class="altar-stationary-logo">
+                  <img src="assets/logo.jpg" alt="สแกนลายมือ" class="brand-logo-img" />
+                </div>
+              </div>
+            </div>
+            <div class="sacred-tag-badge">✦ หัตถศาสตร์พยากรณ์อัจฉริยะ (AI PALMISTRY SCAN) ✦</div>
+            <h2 class="altar-title">สแกนดูลายมือความแม่นยำสูง</h2>
+            <p class="altar-subtitle">
+              ตรวจวัด 6 เส้นสายมงคล (เส้นชีวิต, สมอง, หัวใจ, วาสนา, อาทิตย์, สุขภาพ) และเนินทั้ง 7 ด้วยระบบ Computer Vision ลึกระดับ Sub-pixel
+            </p>
+          </div>
+
+          <!-- Hand Choice Toggle: ซ้าย vs ขวา -->
+          <div class="palm-hand-selector-wrap">
+            <span class="palm-selector-label">เลือกข้างฝ่ามือที่ต้องการสแกน:</span>
+            <div class="palm-hand-buttons">
+              <button type="button" class="btn-hand-toggle" id="btn-palm-hand-left">
+                <span>✋</span>
+                <div class="hand-btn-text">
+                  <strong>มือซ้าย (Left Hand)</strong>
+                  <small>ชะตากำเนิด • พรสวรรค์ • จิตใต้สำนึก</small>
+                </div>
+              </button>
+              <button type="button" class="btn-hand-toggle active" id="btn-palm-hand-right">
+                <span>🤚</span>
+                <div class="hand-btn-text">
+                  <strong>มือขวา (Right Hand)</strong>
+                  <small>ชะตาปัจจุบัน • ความสำเร็จ • สิ่งที่สร้างขึ้น</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Camera Viewfinder & Alignment Reticle -->
+          <div class="palm-viewfinder-card">
+            <div class="palm-camera-wrapper" id="palm-camera-container">
+              <video id="palm-camera-feed" playsinline autoplay muted class="palm-camera-video"></video>
+              
+              <!-- Glowing Alignment Reticle Overlay -->
+              <div class="palm-alignment-reticle" id="palm-camera-reticle" data-hand="right">
+                <div class="reticle-wrist-guide"></div>
+                <div class="reticle-palm-circle"></div>
+                <div class="reticle-fingers-guide">
+                  <span class="finger-dot dot-thumb"></span>
+                  <span class="finger-dot dot-index"></span>
+                  <span class="finger-dot dot-middle"></span>
+                  <span class="finger-dot dot-ring"></span>
+                  <span class="finger-dot dot-pinky"></span>
+                </div>
+                <div class="reticle-scan-laser-line"></div>
+              </div>
+
+              <!-- Reticle Guidance Text -->
+              <div class="palm-guide-hint">
+                <span>🎯 วางฝ่ามือให้พอดีกรอบ กางนิ้วเล็กน้อย และอยู่ในที่ที่มีแสงสว่างพอเหมาะ</span>
+              </div>
+
+              <!-- Camera Controls Overlay -->
+              <div class="palm-camera-tools">
+                <button type="button" class="btn-tool-circle" id="btn-palm-switch-camera" title="สลับกล้องหน้า/หลัง">
+                  🔄
+                </button>
+                <button type="button" class="btn-tool-circle" id="btn-palm-toggle-torch" title="เปิด/ปิดไฟฉาย">
+                  💡
+                </button>
+              </div>
+            </div>
+
+            <!-- Capture Actions -->
+            <div class="palm-capture-actions">
+              <button type="button" id="btn-palm-capture-photo" class="btn-mystic-primary btn-lg btn-palm-shutter">
+                <span class="shutter-icon">📸</span>
+                <span>ถ่ายภาพฝ่ามือเพื่อเริ่มสแกน</span>
+              </button>
+
+              <div class="palm-or-divider">
+                <span>หรือเลือกรูปจากเครื่อง</span>
+              </div>
+
+              <div class="palm-upload-options">
+                <input type="file" id="palm-file-input" accept="image/*" style="display: none;" />
+                <button type="button" id="btn-palm-upload-trigger" class="btn-secondary-mystic">
+                  <span>📁</span>
+                  <span>เลือกรูปภาพจากเครื่อง</span>
+                </button>
+                <button type="button" id="btn-palm-sample-demo" class="btn-secondary-mystic">
+                  <span>✨</span>
+                  <span>ทดสอบด้วยภาพตัวอย่าง</span>
+                </button>
+              </div>
+
+              <!-- Drag & Drop Zone -->
+              <div class="palm-upload-dropzone" id="palm-upload-dropzone">
+                <span>📥 หรือลากและวางไฟล์รูปฝ่ามือลงในบริเวณนี้</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 2: SCANNING PROGRESS ANIMATION -->
+        <section id="screen-palm-scanning" class="view-screen">
+          <div class="palm-scanning-modal-card">
+            <div class="palm-scanner-laser-box">
+              <div class="palm-scanner-hologram">
+                <div class="holo-hand-silhouette"></div>
+                <div class="holo-laser-sweep" id="palm-scan-laser-beam"></div>
+                <div class="holo-grid-lines"></div>
+              </div>
+            </div>
+            <h3 class="scanning-title">กำลังวิเคราะห์ลายมือด้วยระบบ Computer Vision...</h3>
+            <p id="palm-scan-step-text" class="scanning-step-text">กำลังตรวจจับตำแหน่งฝ่ามือและจุดกระดูก (Hand Contour & Skeleton Detection)...</p>
+            <div class="palm-progress-bar-track">
+              <div class="palm-progress-bar-fill" id="palm-scan-progress-fill"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 3: HIGH-PRECISION INSPECTION & RESULT -->
+        <section id="screen-palm-result" class="view-screen">
+          <div class="palm-result-header">
+            <div class="result-badges-row">
+              <span class="confidence-pill" id="palm-confidence-badge">🎯 ความแม่นยำ: <strong id="palm-confidence-val">98.8%</strong></span>
+              <span class="hand-type-pill" id="palm-hand-info-pill">✋ มือขวา (ชะตาปัจจุบัน)</span>
+            </div>
+            <h2 class="palm-result-title">ผลการสแกนลายมือและคำทำนาย</h2>
+            <p class="palm-result-desc" id="palm-summary-verdict">
+              ตรวจพบโครงสร้างเส้นสายมงคล 6 เส้นหลักคมชัดระดับสูง พร้อมการประเมินเนินบนฝ่ามือตามคัมภีร์หัตถศาสตร์
+            </p>
+          </div>
+
+          <!-- Interactive HUD Canvas & Layer Inspector -->
+          <div class="palm-hud-inspection-card">
+            <div class="hud-top-bar">
+              <span class="hud-title">🔍 ตรวจสอบภาพสแกนเส้นลายมือ (Interactive Vector HUD)</span>
+              <div class="hud-layer-chips">
+                <button type="button" class="chip-layer active" data-palm-layer="all">ทั้งหมด</button>
+                <button type="button" class="chip-layer" data-palm-layer="life">เส้นชีวิต</button>
+                <button type="button" class="chip-layer" data-palm-layer="head">เส้นสมอง</button>
+                <button type="button" class="chip-layer" data-palm-layer="heart">เส้นหัวใจ</button>
+                <button type="button" class="chip-layer" data-palm-layer="fate">เส้นวาสนา</button>
+                <button type="button" class="chip-layer" data-palm-layer="sun">เส้นอาทิตย์</button>
+                <button type="button" class="chip-layer" data-palm-layer="mercury">เส้นสุขภาพ</button>
+                <button type="button" class="chip-layer" data-palm-layer="mounts">เนินทั้ง 7</button>
+              </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="palm-canvas-container" id="palm-result-canvas-wrap">
+              <canvas id="palm-result-canvas"></canvas>
+            </div>
+
+            <!-- Active Selected Line Detail Box -->
+            <div class="palm-line-detail-box" id="palm-active-line-detail"></div>
+
+            <!-- Calibration & Re-scan Sliders (สำหรับปรับความคมชัดเพื่อความแม่นยำสูงสุด) -->
+            <div class="palm-calibration-panel">
+              <div class="calibration-header">
+                <span>⚙️ ปรับแต่งความคมชัด & ความไวการสแกน (Fine-Tuning Calibration)</span>
+              </div>
+              <div class="calibration-sliders-grid">
+                <div class="calib-item">
+                  <label for="palm-slider-brightness">ความสว่าง (Brightness)</label>
+                  <input type="range" id="palm-slider-brightness" min="-50" max="50" value="0" />
+                </div>
+                <div class="calib-item">
+                  <label for="palm-slider-contrast">คอนทราสต์ (Contrast)</label>
+                  <input type="range" id="palm-slider-contrast" min="-50" max="50" value="0" />
+                </div>
+                <div class="calib-item">
+                  <label for="palm-slider-sensitivity">ความไวตรวจจับเส้น (Sensitivity)</label>
+                  <input type="range" id="palm-slider-sensitivity" min="1" max="5" value="3" />
+                </div>
+              </div>
+              <div class="calibration-actions">
+                <button type="button" id="btn-palm-recalibrate" class="btn-secondary-mystic btn-sm">
+                  <span>⚡</span>
+                  <span>สแกนปรับปรุงใหม่ (Recalibrate)</span>
+                </button>
+                <button type="button" id="btn-palm-retake" class="btn-secondary-mystic btn-sm">
+                  <span>📸</span>
+                  <span>ถ่ายภาพใหม่</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Palmistry 5-Aspect Reading Cards -->
+          <div class="palm-aspects-section">
+            <h3 class="aspects-section-title">📜 คำพยากรณ์หัตถศาสตร์อย่างละเอียด 5 ด้าน</h3>
+            <div class="palm-aspects-grid" id="palm-reading-aspects"></div>
+          </div>
+
+          <!-- Result Actions -->
+          <div class="palm-result-actions">
+            <button type="button" id="btn-palm-copy-reading" class="btn-mystic-primary">
+              <span>📋</span>
+              <span>คัดลอกผลการสแกนลายมือ</span>
+            </button>
+            <button type="button" id="btn-palm-share-social" class="btn-secondary-mystic">
+              <span>🌐</span>
+              <span>แชร์ผลสแกนลายมือลงโซเชียล</span>
+            </button>
+            <button type="button" id="btn-palm-download-pdf" class="btn-secondary-mystic">
+              <span>📄</span>
+              <span>ดาวน์โหลดเอกสารคำทำนาย (PDF)</span>
+            </button>
+          </div>
+        </section>
+
+      </div> <!-- /#palm-mode-container -->
+
     </main>
 
     <!-- Footer (คลีน ไม่แสดงลิงก์แอดมินในหน้าลูกค้า) -->
@@ -1238,6 +1478,8 @@
   <script src="js/tarot-love-data.js"></script>
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
+  <script src="js/palm-data.js"></script>
+  <script src="js/palm-scanner.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/rag-engine.js"></script>
