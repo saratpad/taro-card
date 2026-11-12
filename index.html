@@ -419,21 +419,21 @@
           <div class="results-action-panel social-hub-panel">
             <div class="social-hub-top">
               <div class="social-hub-title-group">
-                <span class="social-hub-eyebrow">SHARE TO SOCIAL MEDIA & SAVE</span>
-                <h4>แชร์ผลคำทำนายลงโซเชียลมีเดีย หรือบันทึกเก็บไว้</h4>
-                <p>คลิกเลือกโซเชียลที่ต้องการเพื่อแชร์รูปสรุปคำทำนาย (Info Card) พร้อมคัดลอกคำทำนายฉบับเต็มอัตโนมัติ</p>
+                <span class="social-hub-eyebrow">AUTO-POST & DIRECT SOCIAL SHARE</span>
+                <h4>แชร์และโพสต์ผลคำทำนายไปยังโซเชียลมีเดียอัตโนมัติ</h4>
+                <p>คลิกเลือกแอปโซเชียลที่ต้องการ เพื่อให้ระบบแชร์รูป Info Card และโพสต์คำทำนายฉบับเต็มไปยังบัญชีของคุณโดยตรง (หากยังไม่ได้เชื่อมต่อ ระบบจะเด้งหน้าต่างล็อกอินให้อัตโนมัติ)</p>
               </div>
             </div>
 
             <!-- ปุ่มกดแชร์ตรงไปยัง Facebook / IG / TikTok / LINE / X -->
-            <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อแชร์ผลคำทำนาย">
+            <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อให้ระบบแชร์ผลคำทำนาย">
               <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="tarot">
                 <span class="plat-icon">
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
                 </span>
                 <span class="plat-text">
                   <strong>Facebook</strong>
-                  <small>แชร์โพสต์ + รูป Info</small>
+                  <small data-plat-status="facebook">คลิกเพื่อโพสต์อัตโนมัติ</small>
                 </span>
               </button>
 
@@ -443,7 +443,7 @@
                 </span>
                 <span class="plat-text">
                   <strong>Instagram (IG)</strong>
-                  <small>IG Story / โพสต์รูป</small>
+                  <small data-plat-status="instagram">คลิกเพื่อโพสต์ลง IG</small>
                 </span>
               </button>
 
@@ -453,7 +453,7 @@
                 </span>
                 <span class="plat-text">
                   <strong>TikTok</strong>
-                  <small>โพสต์รูป / Story</small>
+                  <small data-plat-status="tiktok">คลิกเพื่อโพสต์ TikTok</small>
                 </span>
               </button>
 
@@ -463,7 +463,7 @@
                 </span>
                 <span class="plat-text">
                   <strong>LINE</strong>
-                  <small>ส่งแชต / ไทม์ไลน์</small>
+                  <small data-plat-status="line">คลิกเพื่อแชร์เข้า LINE</small>
                 </span>
               </button>
 
@@ -473,7 +473,7 @@
                 </span>
                 <span class="plat-text">
                   <strong>X (Twitter)</strong>
-                  <small>โพสต์ทวีตผลดวง</small>
+                  <small data-plat-status="x">คลิกเพื่อโพสต์ทวีต</small>
                 </span>
               </button>
             </div>
@@ -484,10 +484,10 @@
                   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                 </span>
                 <span class="share-btn-label-wrap">
-                  <strong data-i18n="btn_share_reading">เปิดสตูดิโอตัวอย่างรูป Info Card & แคปชันคำทำนาย</strong>
-                  <small>ดูตัวอย่างภาพกราฟิกสรุปหน้าไพ่ 3 ใบ + บันทึกรูปลงเครื่อง</small>
+                  <strong data-i18n="btn_share_reading">ดูตัวอย่างภาพกราฟิก Info Card & ตั้งค่าการแชร์โซเชียล</strong>
+                  <small>พรีวิวภาพกราฟิกสรุปหน้าไพ่ 3 ใบ พร้อมแชร์ไปยังทุกแพลตฟอร์มอัตโนมัติ</small>
                 </span>
-                <span class="share-btn-pill-cta">ดูรูป Info ↗</span>
+                <span class="share-btn-pill-cta">พรีวิว Info ↗</span>
               </button>
 
               <div class="results-action-row secondary-share-grid">
@@ -797,21 +797,21 @@
             <div class="results-action-panel social-hub-panel">
               <div class="social-hub-top">
                 <div class="social-hub-title-group">
-                  <span class="social-hub-eyebrow">SHARE TO SOCIAL MEDIA & SAVE</span>
-                  <h4>แชร์ผลคำทำนายเซียมซีลงโซเชียลมีเดีย หรือบันทึกเก็บไว้</h4>
-                  <p>คลิกเลือกโซเชียลที่ต้องการเพื่อแชร์รูปสรุปใบเซียมซี (Info Card) พร้อมคัดลอกคำทำนายฉบับเต็มอัตโนมัติ</p>
+                  <span class="social-hub-eyebrow">AUTO-POST & DIRECT SOCIAL SHARE</span>
+                  <h4>แชร์และโพสต์ผลคำทำนายเซียมซีไปยังโซเชียลมีเดียอัตโนมัติ</h4>
+                  <p>คลิกเลือกแอปโซเชียลที่ต้องการ เพื่อให้ระบบแชร์รูปใบเซียมซี (Info Card) และโพสต์คำทำนายฉบับเต็มไปยังบัญชีของคุณโดยตรง (หากยังไม่ได้เชื่อมต่อ ระบบจะเด้งหน้าต่างล็อกอินให้อัตโนมัติ)</p>
                 </div>
               </div>
 
               <!-- ปุ่มกดแชร์ตรงไปยัง Facebook / IG / TikTok / LINE / X -->
-              <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อแชร์ผลเซียมซี">
+              <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อให้ระบบแชร์ผลเซียมซี">
                 <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="siamsi">
                   <span class="plat-icon">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
                   </span>
                   <span class="plat-text">
                     <strong>Facebook</strong>
-                    <small>แชร์โพสต์ + รูป Info</small>
+                    <small data-plat-status="facebook">คลิกเพื่อโพสต์อัตโนมัติ</small>
                   </span>
                 </button>
 
@@ -821,7 +821,7 @@
                   </span>
                   <span class="plat-text">
                     <strong>Instagram (IG)</strong>
-                    <small>IG Story / โพสต์รูป</small>
+                    <small data-plat-status="instagram">คลิกเพื่อโพสต์ลง IG</small>
                   </span>
                 </button>
 
@@ -831,7 +831,7 @@
                   </span>
                   <span class="plat-text">
                     <strong>TikTok</strong>
-                    <small>โพสต์รูป / Story</small>
+                    <small data-plat-status="tiktok">คลิกเพื่อโพสต์ TikTok</small>
                   </span>
                 </button>
 
@@ -841,7 +841,7 @@
                   </span>
                   <span class="plat-text">
                     <strong>LINE</strong>
-                    <small>ส่งแชต / ไทม์ไลน์</small>
+                    <small data-plat-status="line">คลิกเพื่อแชร์เข้า LINE</small>
                   </span>
                 </button>
 
@@ -851,7 +851,7 @@
                   </span>
                   <span class="plat-text">
                     <strong>X (Twitter)</strong>
-                    <small>โพสต์ทวีตผลดวง</small>
+                    <small data-plat-status="x">คลิกเพื่อโพสต์ทวีต</small>
                   </span>
                 </button>
               </div>
@@ -862,10 +862,10 @@
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                   </span>
                   <span class="share-btn-label-wrap">
-                    <strong data-i18n="btn_siamsi_share_result">เปิดสตูดิโอตัวอย่างรูป Info Card & แคปชันคำทำนาย</strong>
-                    <small>ดูตัวอย่างภาพกราฟิกใบเซียมซี + บันทึกรูปลงเครื่อง</small>
+                    <strong data-i18n="btn_siamsi_share_result">ดูตัวอย่างภาพกราฟิก Info Card & ตั้งค่าการแชร์โซเชียล</strong>
+                    <small>พรีวิวภาพกราฟิกใบเซียมซี พร้อมแชร์ไปยังทุกแพลตฟอร์มอัตโนมัติ</small>
                   </span>
-                  <span class="share-btn-pill-cta">ดูรูป Info ↗</span>
+                  <span class="share-btn-pill-cta">พรีวิว Info ↗</span>
                 </button>
 
                 <div class="results-action-row secondary-share-grid siamsi-actions-footer">
@@ -946,15 +946,15 @@
 
         <!-- Right: Full Prediction Text for Post / Comment -->
         <div class="share-caption-col">
-          <div class="share-col-label">2. เลือกแอปโซเชียลที่ต้องการแชร์ (คัดลอกคำทำนาย + เตรียมรูปให้อัตโนมัติ)</div>
-          <div class="direct-social-platforms-grid modal-platforms-grid" role="group" aria-label="แชร์ไปยังโซเชียลมีเดีย">
+          <div class="share-col-label">2. คลิกเลือกแอปโซเชียลเพื่อให้ระบบแชร์และโพสต์ให้อัตโนมัติ</div>
+          <div class="direct-social-platforms-grid modal-platforms-grid" role="group" aria-label="แชร์ไปยังโซเชียลมีเดียอัตโนมัติ">
             <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="active">
               <span class="plat-icon">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
               </span>
               <span class="plat-text">
                 <strong>Facebook</strong>
-                <small>แชร์โพสต์</small>
+                <small data-plat-status="facebook">คลิกเพื่อโพสต์อัตโนมัติ</small>
               </span>
             </button>
 
@@ -964,7 +964,7 @@
               </span>
               <span class="plat-text">
                 <strong>Instagram (IG)</strong>
-                <small>Story / โพสต์</small>
+                <small data-plat-status="instagram">คลิกเพื่อโพสต์ลง IG</small>
               </span>
             </button>
 
@@ -974,7 +974,7 @@
               </span>
               <span class="plat-text">
                 <strong>TikTok</strong>
-                <small>โพสต์รูป / คลิป</small>
+                <small data-plat-status="tiktok">คลิกเพื่อโพสต์ TikTok</small>
               </span>
             </button>
 
@@ -984,7 +984,7 @@
               </span>
               <span class="plat-text">
                 <strong>LINE</strong>
-                <small>ส่งแชต</small>
+                <small data-plat-status="line">คลิกเพื่อแชร์เข้า LINE</small>
               </span>
             </button>
 
@@ -994,23 +994,23 @@
               </span>
               <span class="plat-text">
                 <strong>X (Twitter)</strong>
-                <small>ทวีตผลดวง</small>
+                <small data-plat-status="x">คลิกเพื่อโพสต์ทวีต</small>
               </span>
             </button>
           </div>
 
-          <div class="share-col-label" style="margin-top: 0.85rem;">3. คำทำนายฉบับเต็ม (สำหรับวางในแคปชันโพสต์ หรือคอมเมนต์ต่อท้าย)</div>
+          <div class="share-col-label" style="margin-top: 0.85rem;">3. คำทำนายฉบับเต็ม (ระบบจะนำข้อความนี้ไปโพสต์พร้อมรูป Info Card อัตโนมัติ)</div>
           <textarea id="share-full-caption-textarea" class="share-caption-textarea" rows="8" readonly></textarea>
 
           <div class="share-studio-actions">
             <button type="button" id="btn-native-share-all" class="btn-mystic-primary btn-full-width">
               <span>📲</span>
-              <span>แชร์ด่วนผ่านเมนูเครื่อง (ส่งรูป Info + คำทำนายไปยังแอปในมือถือ)</span>
+              <span>แชร์ด่วนผ่านระบบเครื่อง (ส่งรูป Info + คำทำนายไปยังแอปโซเชียลทันที)</span>
             </button>
 
             <button type="button" id="btn-copy-full-caption" class="btn-secondary-mystic btn-full-width">
               <span>💬</span>
-              <span>คัดลอกคำทำนายเต็ม (นำไปวางในโพสต์ / คอมเมนต์)</span>
+              <span>คัดลอกคำทำนายเต็มเก็บไว้ในคลิปบอร์ด</span>
             </button>
 
             <button type="button" id="btn-modal-download-pdf" class="btn-secondary-mystic btn-full-width">
@@ -1018,6 +1018,153 @@
               <span>ดาวน์โหลดใบคำทำนายเป็นไฟล์ PDF เก็บลงเครื่อง</span>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SOCIAL CONNECT & AUTO-POST POPUP MODAL (เด้งล็อกอินเมื่อยังไม่เชื่อมต่อ + โพสต์อัตโนมัติ) -->
+  <!-- ===================================================================== -->
+  <div id="social-connect-post-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="social-connect-modal-title">
+    <div class="modal-content-box social-connect-modal-box" id="social-connect-modal-box" data-platform="facebook">
+      <button type="button" class="modal-close-btn" id="btn-close-social-connect-modal" aria-label="ปิดหน้าต่าง">&times;</button>
+
+      <!-- VIEW 1: LOGIN / CONNECT SOCIAL ACCOUNT POPUP -->
+      <div id="social-connect-login-view" class="social-connect-view">
+        <div class="social-connect-brand-header" id="social-connect-brand-header">
+          <div class="social-connect-platform-logo" id="social-connect-platform-logo"></div>
+          <span class="social-connect-eyebrow" id="social-connect-eyebrow">เชื่อมต่อบัญชีโซเชียลมีเดียอัตโนมัติ</span>
+          <h3 id="social-connect-modal-title">เข้าสู่ระบบ Facebook เพื่อแชร์โพสต์อัตโนมัติ</h3>
+          <p id="social-connect-modal-desc">
+            กรอกบัญชีและรหัสผ่านเพื่อเชื่อมต่อกับแอปโซเชียลที่เลือก ระบบจะแชร์รูป Info Card และโพสต์คำทำนายฉบับเต็มให้ทันทีโดยไม่ต้องเซฟรูปไปโพสต์เอง
+          </p>
+        </div>
+
+        <!-- Mini Preview of what will be auto-posted -->
+        <div class="social-connect-Attachment-preview">
+          <img id="social-login-preview-thumb" src="assets/logo.jpg" alt="Info Card Preview" class="social-login-thumb" />
+          <div class="social-login-preview-meta">
+            <span class="preview-pill-ready">✨ เตรียมโพสต์รูป Info Card + คำทำนายฉบับเต็ม</span>
+            <strong id="social-login-preview-title">ผลคำทำนายเซียมซีทาโรต์</strong>
+            <small id="social-login-preview-sub">ระบบจะส่งรูปภาพสรุปผลดวงชะตาและแคปชันคำทำนายเข้าสู่บัญชีของคุณทันทีหลังเข้าสู่ระบบ</small>
+          </div>
+        </div>
+
+        <form id="social-connect-login-form" class="social-connect-form" autocomplete="on">
+          <div class="social-form-field">
+            <label for="social-login-identifier" id="social-login-identifier-label">อีเมล / เบอร์โทรศัพท์ / ชื่อผู้ใช้ (Username)</label>
+            <input
+              type="text"
+              id="social-login-identifier"
+              class="social-form-input"
+              placeholder="กรอกอีเมล เบอร์โทรศัพท์ หรือชื่อผู้ใช้บัญชีของคุณ..."
+              autocomplete="username"
+              required
+            />
+          </div>
+
+          <div class="social-form-field">
+            <label for="social-login-password">รหัสผ่าน (Password)</label>
+            <div class="social-password-wrap">
+              <input
+                type="password"
+                id="social-login-password"
+                class="social-form-input"
+                placeholder="กรอกรหัสผ่านเพื่ออนุญาตให้ระบบแชร์โพสต์..."
+                autocomplete="current-password"
+                required
+              />
+              <button type="button" class="btn-toggle-pw" id="btn-toggle-social-pw" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
+            </div>
+          </div>
+
+          <div class="social-form-options-row">
+            <label class="social-remember-label">
+              <input type="checkbox" id="social-login-remember" checked />
+              <span>จดจำการเชื่อมต่อบัญชีนี้ เพื่อให้ระบบแชร์อัตโนมัติในครั้งถัดไป</span>
+            </label>
+            <select id="social-login-privacy" class="social-privacy-select" aria-label="ตั้งค่าความเป็นส่วนตัวของโพสต์">
+              <option value="public">🌍 สาธารณะ (Public)</option>
+              <option value="friends">👥 เฉพาะเพื่อน (Friends)</option>
+              <option value="private">🔒 เฉพาะฉัน (Only Me)</option>
+            </select>
+          </div>
+
+          <div id="social-login-error" class="social-login-error" style="display: none;"></div>
+
+          <button type="submit" id="btn-submit-social-login" class="btn-social-submit-login">
+            <span>🔐</span>
+            <span id="btn-submit-social-login-text">เข้าสู่ระบบ & ให้ระบบโพสต์ลง Facebook ทันที</span>
+          </button>
+
+          <div class="social-connect-or-divider">
+            <span>หรือแชร์ผ่านหน้าต่างป๊อปอัปทางการของแพลตฟอร์ม</span>
+          </div>
+
+          <button type="button" id="btn-open-official-share-popup" class="btn-secondary-mystic btn-full-width">
+            <span>🌐</span>
+            <span id="btn-open-official-share-text">เปิดหน้าต่างล็อกอิน & แชร์ของแพลตฟอร์มโดยตรง (Popup)</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- VIEW 2: AUTO-POSTING PROGRESS STATE -->
+      <div id="social-posting-progress-view" class="social-connect-view" style="display: none;">
+        <div class="social-posting-progress-box">
+          <div class="social-posting-spinner-ring" id="social-posting-spinner-icon"></div>
+          <h3 id="social-posting-title">กำลังแชร์และโพสต์ผลคำทำนาย...</h3>
+          <p id="social-posting-step-text">กำลังเชื่อมต่อบัญชีและอัปโหลดรูป Info Card พร้อมคำทำนายฉบับเต็ม...</p>
+          <div class="social-posting-bar-track">
+            <div class="social-posting-bar-fill" id="social-posting-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: AUTO-POST COMPLETED & LIVE FEED PREVIEW -->
+      <div id="social-post-success-view" class="social-connect-view" style="display: none;">
+        <div class="social-post-success-header">
+          <span class="social-post-success-badge">✅ AUTO-POST COMPLETED</span>
+          <h3 id="social-post-success-title">ระบบแชร์และโพสต์ไปยัง Facebook เรียบร้อยแล้ว!</h3>
+          <div class="social-connected-account-bar">
+            <span id="social-post-connected-pill" class="connected-account-pill">🟢 เชื่อมต่อบัญชี: -</span>
+            <button type="button" id="btn-switch-social-account" class="btn-switch-social-account">
+              🔄 สลับบัญชี / ล็อกอินใหม่
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Post Card Preview showing the exact post published by the system -->
+        <div class="social-published-card-preview">
+          <div class="published-card-top">
+            <div class="published-user-avatar" id="published-platform-avatar">FB</div>
+            <div class="published-user-meta">
+              <strong id="published-account-name">ผู้ใช้งาน</strong>
+              <small id="published-time-privacy">โพสต์อัตโนมัติเมื่อสักครู่ • 🌍 สาธารณะ</small>
+            </div>
+            <span class="published-status-tag">โพสต์สำเร็จ ✓</span>
+          </div>
+
+          <div class="published-card-body-grid">
+            <div class="published-img-col">
+              <img id="social-post-result-img" src="assets/logo.jpg" alt="Posted Info Card" />
+            </div>
+            <div class="published-caption-col">
+              <div class="published-caption-label">ข้อความแคปชันและลิงก์ผลคำทำนายที่ระบบโพสต์ให้:</div>
+              <textarea id="social-post-result-caption" class="published-caption-box" rows="6" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-post-success-actions">
+          <button type="button" id="btn-open-platform-window" class="btn-mystic-primary btn-full-width">
+            <span>🚀</span>
+            <span id="btn-open-platform-window-text">เปิดหน้าต่างโซเชียล Facebook เพื่อดูโพสต์ / แชร์ต่อ</span>
+          </button>
+          <button type="button" id="btn-close-social-connect-done" class="btn-secondary-mystic btn-full-width">
+            <span>✨</span>
+            <span>เสร็จสิ้น (กลับสู่หน้าคำทำนาย)</span>
+          </button>
         </div>
       </div>
     </div>

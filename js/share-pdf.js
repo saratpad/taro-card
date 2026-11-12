@@ -514,10 +514,37 @@ class ShareAndPdfEngine {
   }
 
   /**
+   * สร้างลิงก์สำหรับแชร์ผลคำทำนายโดยตรง เพื่อให้เพื่อนในโซเชียลคลิกเข้ามาดูหน้าคำทำนายชุดเดียวกันได้ทันที
+   */
+  buildShareableReadingUrl(readingData) {
+    const baseUrl = window.location.origin + window.location.pathname;
+    if (!readingData) return baseUrl;
+
+    const params = new URLSearchParams();
+    params.set("share", "1");
+
+    if (readingData.mode === "siamsi") {
+      params.set("siamsi", String(readingData.signNumber || readingData.stickNum || "1"));
+      if (readingData.deck) params.set("deck", readingData.deck);
+      return `${baseUrl}?${params.toString()}`;
+    }
+
+    const cardsStr = (readingData.cards || [])
+      .map(c => `${c.id}:${c.isReversed ? 1 : 0}`)
+      .filter(Boolean)
+      .join(",");
+    if (cardsStr) params.set("cards", cardsStr);
+    if (readingData.category) params.set("cat", readingData.category);
+    if (readingData.loveStatus) params.set("loveStatus", readingData.loveStatus);
+    return `${baseUrl}?${params.toString()}`;
+  }
+
+  /**
    * สร้างข้อความคำทำนายฉบับเต็ม สำหรับโพสต์โซเชียล / วางในคอมเมนต์ต่อท้ายรูป Info
    */
   buildFullSocialCaption(readingData) {
     if (!readingData) return "";
+    const shareUrl = this.buildShareableReadingUrl(readingData);
 
     if (readingData.mode === "siamsi") {
       const poem = (readingData.poemLines || []).join("\n");
@@ -529,6 +556,7 @@ class ShareAndPdfEngine {
         `💡 หัวใจสำคัญ: "${readingData.oneLine || ""}"\n\n` +
         `📜 บทกลอนประจำใบเซียมซี:\n${poem}\n\n` +
         `🔮 คำทำนายฉบับเต็ม:\n${aspectsText}\n\n` +
+        `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
         `#เซียมซีทาโรต์ #ดูดวง #เสี่ยงเซียมซี`;
     }
 
@@ -569,6 +597,7 @@ class ShareAndPdfEngine {
       luckyLine + `\n` +
       `⚠️ ข้อควรระวัง:\n` +
       `• ${readingData.dontAction}\n\n` +
+      `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
       `#เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์ #ไพ่ยิปซี #ดูดวง${readingData.categoryName}`;
   }
 

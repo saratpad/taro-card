@@ -218,6 +218,27 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { deleted: true });
   }
 
+  // Social Auto-Post Endpoint
+  if (pathname === "/api/social/post" && req.method === "POST") {
+    const body = await parseBody(req);
+    const db = readDb();
+    db.socialPosts = Array.isArray(db.socialPosts) ? db.socialPosts : [];
+    const postRecord = {
+      postId: `sp_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      platform: String(body.platform || "facebook"),
+      account: String(body.account || ""),
+      privacy: String(body.privacy || "public"),
+      code: String(body.code || ""),
+      mode: String(body.mode || "tarot"),
+      shareUrl: String(body.shareUrl || ""),
+      postedAt: Date.now()
+    };
+    db.socialPosts.unshift(postRecord);
+    if (db.socialPosts.length > 200) db.socialPosts.length = 200;
+    writeDb(db);
+    return sendJson(res, 200, { ok: true, post: postRecord });
+  }
+
   if (pathname === "/api/codes" && req.method === "POST") {
     const body = await parseBody(req);
     if (!body || !body.code) {

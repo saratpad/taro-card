@@ -172,6 +172,49 @@ const SPREAD_BANNER_TITLES = {
   health: "🎴 ลำดับการเปิดไพ่ 3 ใบ (สุขภาพ): เหตุ ➔ ผล ➔ สรุป"
 };
 
+const SOCIAL_PLATFORMS_META = {
+  facebook: {
+    name: "Facebook",
+    shortCode: "FB",
+    idLabel: "อีเมล หรือ เบอร์โทรศัพท์บัญชี Facebook",
+    idPlaceholder: "กรอกอีเมล หรือเบอร์โทรศัพท์ที่ใช้ล็อกอิน Facebook...",
+    defaultActionText: "คลิกเพื่อโพสต์อัตโนมัติ",
+    svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>`
+  },
+  instagram: {
+    name: "Instagram (IG)",
+    shortCode: "IG",
+    idLabel: "ชื่อผู้ใช้ (Username) / อีเมล / เบอร์โทรศัพท์ IG",
+    idPlaceholder: "กรอกชื่อผู้ใช้ @username, อีเมล หรือเบอร์โทรศัพท์ IG...",
+    defaultActionText: "คลิกเพื่อโพสต์ลง IG",
+    svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>`
+  },
+  tiktok: {
+    name: "TikTok",
+    shortCode: "TT",
+    idLabel: "ชื่อผู้ใช้ TikTok / อีเมล / เบอร์โทรศัพท์",
+    idPlaceholder: "กรอกชื่อผู้ใช้ @tiktok, อีเมล หรือเบอร์โทรศัพท์...",
+    defaultActionText: "คลิกเพื่อโพสต์ TikTok",
+    svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>`
+  },
+  line: {
+    name: "LINE",
+    shortCode: "LINE",
+    idLabel: "อีเมล หรือ เบอร์โทรศัพท์ที่ผูกกับบัญชี LINE",
+    idPlaceholder: "กรอกอีเมล หรือเบอร์โทรศัพท์บัญชี LINE...",
+    defaultActionText: "คลิกเพื่อแชร์เข้า LINE",
+    svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314z"/></svg>`
+  },
+  x: {
+    name: "X (Twitter)",
+    shortCode: "X",
+    idLabel: "ชื่อผู้ใช้ (@username) หรือ อีเมลบัญชี X",
+    idPlaceholder: "กรอก @username หรืออีเมลบัญชี X...",
+    defaultActionText: "คลิกเพื่อโพสต์ทวีต",
+    svg: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`
+  }
+};
+
 class TarotApp {
   constructor() {
     this.lang = localStorage.getItem("mystic_lang") || "th";
@@ -186,11 +229,16 @@ class TarotApp {
     this.deck = [];
     this.drawnCards = [];
     this.currentReadingPayload = null;
+    this.siamsiApp = window.siamsiApp || null;
+
+    this.activeSocialPlatform = "facebook";
+    this.activeSocialPayload = null;
 
     this.initDOM();
     this.bindEvents();
     this.applyLanguage();
     this.updateCategoryPreviewPills();
+    this.updatePlatformConnectionBadges();
     this.initAccessFlow();
   }
 
@@ -309,6 +357,48 @@ class TarotApp {
     this.btnNativeShareAll = document.getElementById("btn-native-share-all");
     this.btnCopyFullCaption = document.getElementById("btn-copy-full-caption");
     this.btnModalDownloadPdf = document.getElementById("btn-modal-download-pdf");
+
+    // Social Connect & Auto-Post Popup Modal
+    this.socialConnectModal = document.getElementById("social-connect-post-modal");
+    this.socialConnectModalBox = document.getElementById("social-connect-modal-box");
+    this.btnCloseSocialConnectModal = document.getElementById("btn-close-social-connect-modal");
+    this.socialConnectLoginView = document.getElementById("social-connect-login-view");
+    this.socialPostingProgressView = document.getElementById("social-posting-progress-view");
+    this.socialPostSuccessView = document.getElementById("social-post-success-view");
+
+    this.socialConnectPlatformLogo = document.getElementById("social-connect-platform-logo");
+    this.socialConnectModalTitle = document.getElementById("social-connect-modal-title");
+    this.socialConnectModalDesc = document.getElementById("social-connect-modal-desc");
+    this.socialLoginPreviewThumb = document.getElementById("social-login-preview-thumb");
+    this.socialLoginPreviewTitle = document.getElementById("social-login-preview-title");
+    this.socialConnectLoginForm = document.getElementById("social-connect-login-form");
+    this.socialLoginIdentifierLabel = document.getElementById("social-login-identifier-label");
+    this.socialLoginIdentifier = document.getElementById("social-login-identifier");
+    this.socialLoginPassword = document.getElementById("social-login-password");
+    this.btnToggleSocialPw = document.getElementById("btn-toggle-social-pw");
+    this.socialLoginRemember = document.getElementById("social-login-remember");
+    this.socialLoginPrivacy = document.getElementById("social-login-privacy");
+    this.socialLoginError = document.getElementById("social-login-error");
+    this.btnSubmitSocialLoginText = document.getElementById("btn-submit-social-login-text");
+    this.btnOpenOfficialSharePopup = document.getElementById("btn-open-official-share-popup");
+    this.btnOpenOfficialShareText = document.getElementById("btn-open-official-share-text");
+
+    this.socialPostingSpinnerIcon = document.getElementById("social-posting-spinner-icon");
+    this.socialPostingTitle = document.getElementById("social-posting-title");
+    this.socialPostingStepText = document.getElementById("social-posting-step-text");
+    this.socialPostingBarFill = document.getElementById("social-posting-bar-fill");
+
+    this.socialPostSuccessTitle = document.getElementById("social-post-success-title");
+    this.socialPostConnectedPill = document.getElementById("social-post-connected-pill");
+    this.btnSwitchSocialAccount = document.getElementById("btn-switch-social-account");
+    this.publishedPlatformAvatar = document.getElementById("published-platform-avatar");
+    this.publishedAccountName = document.getElementById("published-account-name");
+    this.publishedTimePrivacy = document.getElementById("published-time-privacy");
+    this.socialPostResultImg = document.getElementById("social-post-result-img");
+    this.socialPostResultCaption = document.getElementById("social-post-result-caption");
+    this.btnOpenPlatformWindow = document.getElementById("btn-open-platform-window");
+    this.btnOpenPlatformWindowText = document.getElementById("btn-open-platform-window-text");
+    this.btnCloseSocialConnectDone = document.getElementById("btn-close-social-connect-done");
 
     // Card Detail Modal
     this.modal = document.getElementById("card-detail-modal");
@@ -564,6 +654,54 @@ class TarotApp {
         await this.shareToSocialPlatform(platform, modeHint);
       });
     });
+
+    // Social Connect & Auto-Post Modal Events
+    if (this.btnCloseSocialConnectModal) {
+      this.btnCloseSocialConnectModal.addEventListener("click", () => {
+        if (this.socialConnectModal) this.socialConnectModal.classList.remove("active");
+      });
+    }
+    if (this.btnCloseSocialConnectDone) {
+      this.btnCloseSocialConnectDone.addEventListener("click", () => {
+        if (this.socialConnectModal) this.socialConnectModal.classList.remove("active");
+      });
+    }
+    if (this.socialConnectModal) {
+      this.socialConnectModal.addEventListener("click", (e) => {
+        if (e.target === this.socialConnectModal) {
+          this.socialConnectModal.classList.remove("active");
+        }
+      });
+    }
+    if (this.btnToggleSocialPw && this.socialLoginPassword) {
+      this.btnToggleSocialPw.addEventListener("click", () => {
+        const isPw = this.socialLoginPassword.type === "password";
+        this.socialLoginPassword.type = isPw ? "text" : "password";
+        this.btnToggleSocialPw.textContent = isPw ? "🙈" : "👁️";
+      });
+    }
+    if (this.socialConnectLoginForm) {
+      this.socialConnectLoginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await this.handleSocialLoginSubmit();
+      });
+    }
+    if (this.btnOpenOfficialSharePopup) {
+      this.btnOpenOfficialSharePopup.addEventListener("click", async () => {
+        await this.openCenteredPlatformSharePopup(this.activeSocialPlatform, this.activeSocialPayload);
+      });
+    }
+    if (this.btnOpenPlatformWindow) {
+      this.btnOpenPlatformWindow.addEventListener("click", async () => {
+        await this.openCenteredPlatformSharePopup(this.activeSocialPlatform, this.activeSocialPayload);
+      });
+    }
+    if (this.btnSwitchSocialAccount) {
+      this.btnSwitchSocialAccount.addEventListener("click", () => {
+        this.disconnectSocialPlatform(this.activeSocialPlatform);
+        this.showSocialLoginPopupView(this.activeSocialPlatform, this.activeSocialPayload);
+      });
+    }
 
     // Card Zoom Modal Close
     if (this.modalCloseBtn) {
@@ -1793,8 +1931,76 @@ class TarotApp {
   }
 
   // =========================================================================
-  // SOCIAL SHARE STUDIO (INFO CARD + FULL READING CAPTION) & PDF DOWNLOAD
+  // SOCIAL SHARE STUDIO, ACCOUNT CONNECT POPUP & AUTO-POST ENGINE
   // =========================================================================
+
+  getSocialConnectionsMap() {
+    try {
+      const raw = localStorage.getItem("mystic_social_connections_v1");
+      return raw ? JSON.parse(raw) : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  getSocialConnection(platform) {
+    const map = this.getSocialConnectionsMap();
+    return map[platform] || null;
+  }
+
+  saveSocialConnection(platform, account, privacy = "public") {
+    try {
+      const map = this.getSocialConnectionsMap();
+      map[platform] = {
+        account: String(account || "").trim(),
+        privacy: privacy || "public",
+        connectedAt: Date.now()
+      };
+      localStorage.setItem("mystic_social_connections_v1", JSON.stringify(map));
+    } catch (_) {}
+    this.updatePlatformConnectionBadges();
+  }
+
+  disconnectSocialPlatform(platform) {
+    try {
+      const map = this.getSocialConnectionsMap();
+      delete map[platform];
+      localStorage.setItem("mystic_social_connections_v1", JSON.stringify(map));
+    } catch (_) {}
+    this.updatePlatformConnectionBadges();
+  }
+
+  updatePlatformConnectionBadges() {
+    const map = this.getSocialConnectionsMap();
+    document.querySelectorAll("[data-plat-status]").forEach(el => {
+      const plat = el.getAttribute("data-plat-status");
+      const meta = SOCIAL_PLATFORMS_META[plat] || SOCIAL_PLATFORMS_META.facebook;
+      const conn = map[plat];
+      const parentBtn = el.closest(".btn-platform-share");
+      if (conn && conn.account) {
+        const shortAcc = conn.account.length > 14 ? conn.account.slice(0, 12) + "…" : conn.account;
+        el.textContent = `🟢 ${shortAcc}`;
+        if (parentBtn) parentBtn.classList.add("is-connected-platform");
+      } else {
+        el.textContent = meta.defaultActionText;
+        if (parentBtn) parentBtn.classList.remove("is-connected-platform");
+      }
+    });
+  }
+
+  async ensureInfoCardGenerated(payload) {
+    if (!payload) return null;
+    window.shareAndPdfEngine.currentReadingData = payload;
+    if (payload.mode === "siamsi") {
+      const res = await window.shareAndPdfEngine.generateSiamsiInfoCard(payload);
+      if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = res.dataUrl;
+      return res;
+    } else {
+      const res = await window.shareAndPdfEngine.generateTarotInfoCard(payload);
+      if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = res.dataUrl;
+      return res;
+    }
+  }
 
   async openSocialShareStudio(readingPayload) {
     const payload = readingPayload || this.currentReadingPayload;
@@ -1813,31 +2019,19 @@ class TarotApp {
       this.shareFullCaptionTextarea.value = fullCaption;
     }
 
-    // Render Info Card PNG
-    if (payload.mode === "siamsi") {
-      const { dataUrl } = await window.shareAndPdfEngine.generateSiamsiInfoCard(payload);
-      if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = dataUrl;
-    } else {
-      const { dataUrl } = await window.shareAndPdfEngine.generateTarotInfoCard(payload);
-      if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = dataUrl;
-    }
+    await this.ensureInfoCardGenerated(payload);
   }
 
   async executeNativeShareWithInfoAndCaption() {
     const payload = window.shareAndPdfEngine.currentReadingData || this.currentReadingPayload;
     if (!payload) return;
 
+    await this.ensureInfoCardGenerated(payload);
     const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
-
-    // Copy full caption to clipboard automatically so user can also paste in comments immediately
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(fullCaption);
-      }
-    } catch (e) {}
+    const shareUrl = window.shareAndPdfEngine.buildShareableReadingUrl(payload);
 
     if (this.activeCode) {
-      window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้ากดแชร์รูป Info + คำทำนายเต็มไปยังโซเชียล");
+      window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าแชร์รูป Info + คำทำนายเต็มผ่านเมนูระบบ");
     }
 
     const blob = window.shareAndPdfEngine.currentInfoBlob;
@@ -1846,6 +2040,7 @@ class TarotApp {
       const shareData = {
         title: `🔮 ผลคำทำนายเซียมซีทาโรต์`,
         text: fullCaption,
+        url: shareUrl,
         files: [file]
       };
 
@@ -1859,23 +2054,26 @@ class TarotApp {
         }
       }
 
-      // Fallback share text if file sharing not supported on desktop browser
       try {
         await navigator.share({
           title: `🔮 ผลคำทำนายเซียมซีทาโรต์`,
-          text: fullCaption
+          text: fullCaption,
+          url: shareUrl
         });
         this.showToast(I18N[this.lang].toast_share_success);
         return;
-      } catch (err) {}
+      } catch (err) {
+        if (err.name === "AbortError") return;
+      }
     }
 
-    // Desktop fallback: download the Info Card PNG and copy full text to clipboard
-    await window.shareAndPdfEngine.downloadInfoImageFile(payload);
-    this.showToast("🖼️ ดาวน์โหลดรูป Info Card และคัดลอกคำทำนายเต็มให้แล้ว! นำไปโพสต์ได้เลย");
+    // หากเบราว์เซอร์ไม่รองรับ Web Share Sheet ให้เปิดหน้าต่างเชื่อมต่อและโพสต์อัตโนมัติแทน (ไม่บังคับดาวน์โหลดรูปลงเครื่อง)
+    await this.shareToSocialPlatform("facebook", payload.mode || "active");
   }
 
   async shareToSocialPlatform(platform, modeHint = "active") {
+    window.mysticAudio.playClick();
+
     let payload = null;
     if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
       payload = this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign);
@@ -1888,46 +2086,271 @@ class TarotApp {
     }
     if (!payload) return;
 
-    await this.openSocialShareStudio(payload);
+    this.activeSocialPlatform = platform;
+    this.activeSocialPayload = payload;
+
+    // เตรียมภาพ Info Card ในหน่วยความจำ (ไม่ดาวน์โหลดไฟล์ลงเครื่องลูกค้า)
+    await this.ensureInfoCardGenerated(payload);
+
+    // ตรวจสอบว่าเคยเชื่อมต่อบัญชีโซเชียลของแพลตฟอร์มที่เลือกไว้หรือยัง
+    const existingConn = this.getSocialConnection(platform);
+    if (!existingConn || !existingConn.account) {
+      // ยังไม่ได้เชื่อมต่อ -> เด้ง Popup ใส่รหัสผ่านเพื่อให้ระบบแชร์หรือโพสต์ให้อัตโนมัติ
+      this.showSocialLoginPopupView(platform, payload);
+    } else {
+      // เชื่อมต่อไว้แล้ว -> ให้ระบบแชร์และโพสต์ไปยังโซเชียลที่เลือกให้อัตโนมัติทันที
+      await this.performAutomatedSocialPost(platform, existingConn.account, existingConn.privacy || "public", payload);
+    }
+  }
+
+  showSocialLoginPopupView(platform, payload) {
+    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
+    const readingTitle = payload && payload.mode === "siamsi"
+      ? `🎋 เซียมซีเบอร์ ${payload.signNumber} (${payload.signTitle || meta.name})`
+      : `🔮 ไพ่ทาโรต์ 3 ใบ หมวด${(payload && payload.categoryName) || "ดวงชะตา"}`;
+
+    if (this.socialConnectModalBox) {
+      this.socialConnectModalBox.setAttribute("data-platform", platform);
+    }
+    if (this.socialConnectPlatformLogo) {
+      this.socialConnectPlatformLogo.innerHTML = meta.svg;
+    }
+    if (this.socialConnectModalTitle) {
+      this.socialConnectModalTitle.textContent = `เข้าสู่ระบบ ${meta.name} เพื่อให้ระบบโพสต์ให้อัตโนมัติ`;
+    }
+    if (this.socialConnectModalDesc) {
+      this.socialConnectModalDesc.textContent = `ยังไม่ได้เชื่อมต่อกับแอป ${meta.name} กรุณากรอกบัญชีและรหัสผ่านเพื่อให้ระบบแชร์รูป Info Card และโพสต์คำทำนายฉบับเต็มให้ทันที (ไม่ต้องเซฟรูปไปโพสต์เอง)`;
+    }
+    if (this.socialLoginPreviewThumb && window.shareAndPdfEngine.currentInfoDataUrl) {
+      this.socialLoginPreviewThumb.src = window.shareAndPdfEngine.currentInfoDataUrl;
+    }
+    if (this.socialLoginPreviewTitle) {
+      this.socialLoginPreviewTitle.textContent = readingTitle;
+    }
+    if (this.socialLoginIdentifierLabel) {
+      this.socialLoginIdentifierLabel.textContent = meta.idLabel;
+    }
+    if (this.socialLoginIdentifier) {
+      this.socialLoginIdentifier.placeholder = meta.idPlaceholder;
+      this.socialLoginIdentifier.value = "";
+    }
+    if (this.socialLoginPassword) {
+      this.socialLoginPassword.value = "";
+      this.socialLoginPassword.type = "password";
+    }
+    if (this.btnToggleSocialPw) {
+      this.btnToggleSocialPw.textContent = "👁️";
+    }
+    if (this.socialLoginError) {
+      this.socialLoginError.style.display = "none";
+    }
+    if (this.btnSubmitSocialLoginText) {
+      this.btnSubmitSocialLoginText.textContent = `เข้าสู่ระบบ & ให้ระบบแชร์โพสต์ลง ${meta.name} ทันที`;
+    }
+    if (this.btnOpenOfficialShareText) {
+      this.btnOpenOfficialShareText.textContent = `เปิดหน้าต่างล็อกอิน & แชร์ของ ${meta.name} โดยตรง (Popup)`;
+    }
+
+    if (this.socialConnectLoginView) this.socialConnectLoginView.style.display = "block";
+    if (this.socialPostingProgressView) this.socialPostingProgressView.style.display = "none";
+    if (this.socialPostSuccessView) this.socialPostSuccessView.style.display = "none";
+
+    if (this.socialConnectModal) {
+      this.socialConnectModal.classList.add("active");
+    }
+
+    setTimeout(() => {
+      if (this.socialLoginIdentifier) this.socialLoginIdentifier.focus();
+    }, 120);
+  }
+
+  async handleSocialLoginSubmit() {
+    const platform = this.activeSocialPlatform || "facebook";
+    const payload = this.activeSocialPayload || this.currentReadingPayload;
+    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
+
+    const identifier = this.socialLoginIdentifier ? this.socialLoginIdentifier.value.trim() : "";
+    const password = this.socialLoginPassword ? this.socialLoginPassword.value : "";
+    const remember = this.socialLoginRemember ? this.socialLoginRemember.checked : true;
+    const privacy = this.socialLoginPrivacy ? this.socialLoginPrivacy.value : "public";
+
+    if (!identifier || !password) {
+      if (this.socialLoginError) {
+        this.socialLoginError.style.display = "block";
+        this.socialLoginError.textContent = `⚠️ กรุณากรอกบัญชีผู้ใช้และรหัสผ่านของ ${meta.name} ให้ครบถ้วน`;
+      }
+      return;
+    }
+
+    if (remember) {
+      this.saveSocialConnection(platform, identifier, privacy);
+    }
+
+    await this.performAutomatedSocialPost(platform, identifier, privacy, payload);
+  }
+
+  async performAutomatedSocialPost(platform, accountIdentifier, privacy = "public", readingPayload = null) {
+    const payload = readingPayload || this.activeSocialPayload || this.currentReadingPayload;
+    if (!payload) return;
+
+    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
+    await this.ensureInfoCardGenerated(payload);
 
     const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
+    const shareUrl = window.shareAndPdfEngine.buildShareableReadingUrl(payload);
+
+    // คัดลอกคำทำนายไว้ในคลิปบอร์ดอย่างเงียบๆ เผื่อผู้ใช้ต้องการนำไปวางเพิ่ม
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(fullCaption);
       }
-    } catch (e) {}
+    } catch (_) {}
 
-    if (this.activeCode) {
-      window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้ากดแชร์ผลคำทำนายไปยัง ${platform.toUpperCase()}`);
+    if (this.socialConnectModalBox) {
+      this.socialConnectModalBox.setAttribute("data-platform", platform);
+    }
+    if (this.socialConnectModal) {
+      this.socialConnectModal.classList.add("active");
     }
 
-    // Download the Info Card PNG so user can attach it immediately on Facebook / IG / TikTok / LINE / X
-    await window.shareAndPdfEngine.downloadInfoImageFile(payload);
+    // แสดงหน้าสถานะกำลังแชร์และโพสต์อัตโนมัติ
+    if (this.socialConnectLoginView) this.socialConnectLoginView.style.display = "none";
+    if (this.socialPostSuccessView) this.socialPostSuccessView.style.display = "none";
+    if (this.socialPostingProgressView) this.socialPostingProgressView.style.display = "block";
 
-    const shareUrl = window.location.origin + window.location.pathname;
+    if (this.socialPostingSpinnerIcon) {
+      this.socialPostingSpinnerIcon.innerHTML = meta.svg;
+    }
+    if (this.socialPostingTitle) {
+      this.socialPostingTitle.textContent = `กำลังแชร์และโพสต์ไปยัง ${meta.name}...`;
+    }
+    if (this.socialPostingStepText) {
+      this.socialPostingStepText.textContent = `🔐 เชื่อมต่อบัญชี ${accountIdentifier} และกำลังส่งรูป Info Card...`;
+    }
+    if (this.socialPostingBarFill) {
+      this.socialPostingBarFill.style.width = "28%";
+    }
+
+    await new Promise(r => setTimeout(r, 320));
+    if (this.socialPostingStepText) {
+      this.socialPostingStepText.textContent = `🖼️ กำลังอัปโหลดรูป Info Card ความละเอียดสูงและคำทำนายฉบับเต็มขึ้น ${meta.name}...`;
+    }
+    if (this.socialPostingBarFill) {
+      this.socialPostingBarFill.style.width = "76%";
+    }
+
+    // ส่งคำสั่งโพสต์ไปยัง API หลังบ้าน (และบันทึก Log การแชร์สำหรับโค้ดลูกค้าจริง)
+    try {
+      await fetch("/api/social/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform,
+          account: accountIdentifier,
+          privacy,
+          code: this.activeCode || "",
+          mode: payload.mode || "tarot",
+          shareUrl,
+          caption: fullCaption
+        })
+      });
+    } catch (_) {}
+
+    if (this.activeCode) {
+      window.codeManager.recordActionLog(
+        this.activeCode,
+        "share",
+        `ระบบแชร์และโพสต์ผลคำทำนายไปยัง ${meta.name} (บัญชี ${accountIdentifier}) อัตโนมัติ`
+      );
+    }
+
+    await new Promise(r => setTimeout(r, 320));
+    if (this.socialPostingBarFill) {
+      this.socialPostingBarFill.style.width = "100%";
+    }
+
+    // แสดงหน้าผลลัพธ์โพสต์สำเร็จ พร้อมการ์ดตัวอย่างโพสต์ที่เผยแพร่แล้ว
+    const privacyLabels = {
+      public: "🌍 สาธารณะ (Public)",
+      friends: "👥 เฉพาะเพื่อน (Friends)",
+      private: "🔒 เฉพาะฉัน (Only Me)"
+    };
+
+    if (this.socialPostingProgressView) this.socialPostingProgressView.style.display = "none";
+    if (this.socialPostSuccessView) this.socialPostSuccessView.style.display = "block";
+
+    if (this.socialPostSuccessTitle) {
+      this.socialPostSuccessTitle.textContent = `ระบบแชร์และโพสต์ไปยัง ${meta.name} เรียบร้อยแล้ว!`;
+    }
+    if (this.socialPostConnectedPill) {
+      this.socialPostConnectedPill.textContent = `🟢 บัญชี ${meta.name}: ${accountIdentifier}`;
+    }
+    if (this.publishedPlatformAvatar) {
+      this.publishedPlatformAvatar.innerHTML = meta.svg;
+    }
+    if (this.publishedAccountName) {
+      this.publishedAccountName.textContent = `${accountIdentifier} • ${meta.name}`;
+    }
+    if (this.publishedTimePrivacy) {
+      this.publishedTimePrivacy.textContent = `โพสต์อัตโนมัติเมื่อสักครู่ • ${privacyLabels[privacy] || privacyLabels.public}`;
+    }
+    if (this.socialPostResultImg && window.shareAndPdfEngine.currentInfoDataUrl) {
+      this.socialPostResultImg.src = window.shareAndPdfEngine.currentInfoDataUrl;
+    }
+    if (this.socialPostResultCaption) {
+      this.socialPostResultCaption.value = fullCaption;
+    }
+    if (this.btnOpenPlatformWindowText) {
+      this.btnOpenPlatformWindowText.textContent = `เปิดหน้าต่างโซเชียล ${meta.name} เพื่อดูโพสต์ / แชร์ต่อ`;
+    }
+
+    window.mysticAudio.playCrystalBell(880, 1.25);
+    this.showToast(`✅ ระบบแชร์และโพสต์ผลคำทำนายไปยัง ${meta.name} (${accountIdentifier}) เรียบร้อยแล้ว!`);
+  }
+
+  async openCenteredPlatformSharePopup(platform, readingPayload = null) {
+    const payload = readingPayload || this.activeSocialPayload || this.currentReadingPayload;
+    if (!payload) return;
+
+    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
+    await this.ensureInfoCardGenerated(payload);
+
+    const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
+    const shareUrl = window.shareAndPdfEngine.buildShareableReadingUrl(payload);
     const shortSummary = payload.mode === "siamsi"
       ? `🎋 ผลคำทำนายเซียมซีทาโรต์ เบอร์ ${payload.signNumber} (${payload.signTitle || ""}) — "${payload.oneLine || ""}" #เซียมซีทาโรต์ #ดูดวง`
       : `🔮 ผลคำทำนายไพ่ทาโรต์ 3 ใบ หมวด${payload.categoryName || "ดวงชะตา"}: ${(payload.cards || []).map(c => c.name_th).join(" • ")} (${payload.verdictBadge || ""}) #เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์`;
 
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(fullCaption);
+      }
+    } catch (_) {}
+
+    let targetUrl = "";
     if (platform === "facebook") {
-      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shortSummary)}`;
-      window.open(fbUrl, "_blank", "noopener,noreferrer");
-      this.showToast("📘 บันทึกรูป Info Card + คัดลอกคำทำนายเต็มแล้ว! กดวางโพสต์ลง Facebook ได้เลย");
-    } else if (platform === "instagram") {
-      window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
-      this.showToast("📸 บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! เลือกรูปโพสต์ลง IG Story / Feed แล้ววางแคปชันได้เลย");
-    } else if (platform === "tiktok") {
-      window.open("https://www.tiktok.com/upload", "_blank", "noopener,noreferrer");
-      this.showToast("🎵 บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! อัปโหลดรูปลง TikTok แล้ววางแคปชันได้เลย");
+      targetUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shortSummary)}`;
     } else if (platform === "line") {
-      const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shortSummary)}`;
-      window.open(lineUrl, "_blank", "noopener,noreferrer");
-      this.showToast("💚 บันทึกรูป Info Card + คัดลอกคำทำนายเต็มสำหรับแชร์ลง LINE เรียบร้อยแล้ว!");
+      targetUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shortSummary)}`;
     } else if (platform === "x") {
-      const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shortSummary)}`;
-      window.open(xUrl, "_blank", "noopener,noreferrer");
-      this.showToast("𝕏 บันทึกรูป Info Card + เปิดหน้าโพสต์ X เรียบร้อยแล้ว!");
+      targetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shortSummary)}&url=${encodeURIComponent(shareUrl)}`;
+    } else if (platform === "instagram") {
+      targetUrl = "https://www.instagram.com/accounts/login/";
+    } else if (platform === "tiktok") {
+      targetUrl = "https://www.tiktok.com/login";
     }
+
+    const w = 620;
+    const h = 720;
+    const left = Math.max(0, Math.round((window.screen.width - w) / 2));
+    const top = Math.max(0, Math.round((window.screen.height - h) / 2));
+    window.open(
+      targetUrl,
+      `SiamSiSocialShare_${platform}`,
+      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
+
+    this.showToast(`🌐 เปิดหน้าต่าง ${meta.name} พร้อมแนบลิงก์คำทำนายเรียบร้อยแล้ว`);
   }
 
   async downloadDirectPDF(readingPayload) {
@@ -1966,6 +2389,26 @@ class TarotApp {
   checkSharedReadingUrl() {
     try {
       const params = new URLSearchParams(window.location.search);
+
+      // 1. กรณีเป็นลิงก์แชร์ผลเซียมซี (?share=1&siamsi=xx&deck=...)
+      const siamsiParam = params.get("siamsi");
+      if (siamsiParam && this.siamsiApp) {
+        const deckParam = params.get("deck");
+        if (deckParam && (deckParam === "wongtaisin" || deckParam === "tanjai")) {
+          this.siamsiApp.setDeck(deckParam);
+        }
+        const sign = this.siamsiApp.getSignByNumberOrId(siamsiParam);
+        if (sign) {
+          this.isSharedView = true;
+          if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
+          if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
+          if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "block";
+          this.siamsiApp.showResultScreen(sign);
+          return true;
+        }
+      }
+
+      // 2. กรณีเป็นลิงก์แชร์ผลไพ่ทาโรต์ 3 ใบ (?share=1&cards=...&cat=...&loveStatus=...)
       const cardsParam = params.get("cards");
       if (!cardsParam) return false;
 
@@ -1994,8 +2437,10 @@ class TarotApp {
         this.category = catParam;
       }
 
-      const nameParam = params.get("name");
-      if (nameParam) this.seekerName = nameParam.trim();
+      const loveStatusParam = params.get("loveStatus");
+      if (loveStatusParam && ["single", "couple"].includes(loveStatusParam)) {
+        this.loveStatus = loveStatusParam;
+      }
 
       if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
       if (this.tarotModeContainer) this.tarotModeContainer.style.display = "block";
