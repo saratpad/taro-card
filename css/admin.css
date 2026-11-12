@@ -683,6 +683,48 @@
 }
 
 /* =========================================================================
+ * ADMIN HEADER MENU TABS (แยกหน้าจัดการโค้ด กับ เมนูอัปโหลดตำรา RAG ชัดเจน)
+ * ========================================================================= */
+.admin-menu-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  background: rgba(6, 12, 34, 0.92);
+  border: 1px solid rgba(243, 207, 122, 0.35);
+}
+
+.btn-admin-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cbd5e1;
+  font-family: var(--font-thai);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-tab:hover {
+  color: #fff1be;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn-admin-tab.active {
+  background: linear-gradient(135deg, rgba(243, 207, 122, 0.25), rgba(56, 189, 248, 0.25));
+  border-color: #f3cf7a;
+  color: #fff1be;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(243, 207, 122, 0.25);
+}
+
+/* =========================================================================
  * NOTEBOOKLM RAG KNOWLEDGE BASE PANEL
  * ========================================================================= */
 .rag-upload-grid {

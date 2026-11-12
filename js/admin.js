@@ -34,6 +34,13 @@ class AdminBackoffice {
     this.syncModeBadge = document.getElementById("sync-mode-badge");
     this.btnRefreshCodes = document.getElementById("btn-refresh-codes");
 
+    // Admin Menu Tabs & Views
+    this.btnTabCodes = document.getElementById("btn-admin-tab-codes");
+    this.btnTabRag = document.getElementById("btn-admin-tab-rag");
+    this.btnBackToCodesView = document.getElementById("btn-back-to-codes-view");
+    this.adminViewCodes = document.getElementById("admin-view-codes");
+    this.ragKnowledgeSection = document.getElementById("rag-knowledge-section");
+
     // Stats
     this.statTotal = document.getElementById("stat-total-codes");
     this.statAccessed = document.getElementById("stat-accessed-codes");
@@ -87,6 +94,22 @@ class AdminBackoffice {
   }
 
   bindEvents() {
+    // Admin Menu Tab Switching (แสดงระบบปรับปรุงตำรา RAG เฉพาะเมื่อกดเข้าเมนูอัปโหลดตำรา RAG เท่านั้น)
+    if (this.btnTabCodes) {
+      this.btnTabCodes.addEventListener("click", () => this.switchAdminTab("codes"));
+    }
+    if (this.btnTabRag) {
+      this.btnTabRag.addEventListener("click", () => this.switchAdminTab("rag"));
+    }
+    if (this.btnBackToCodesView) {
+      this.btnBackToCodesView.addEventListener("click", () => this.switchAdminTab("codes"));
+    }
+    if (window.location.hash === "#rag-knowledge-section") {
+      this.switchAdminTab("rag");
+    } else {
+      this.switchAdminTab("codes");
+    }
+
     if (this.btnRefreshCodes) {
       this.btnRefreshCodes.addEventListener("click", () => {
         this.refreshData();
@@ -244,6 +267,25 @@ class AdminBackoffice {
         });
       });
     }
+  }
+
+  switchAdminTab(tabName) {
+    const isRag = tabName === "rag";
+    if (this.adminViewCodes) {
+      this.adminViewCodes.style.display = isRag ? "none" : "block";
+    }
+    if (this.ragKnowledgeSection) {
+      this.ragKnowledgeSection.style.display = isRag ? "block" : "none";
+    }
+    if (this.btnTabCodes) {
+      this.btnTabCodes.classList.toggle("active", !isRag);
+      this.btnTabCodes.setAttribute("aria-selected", String(!isRag));
+    }
+    if (this.btnTabRag) {
+      this.btnTabRag.classList.toggle("active", isRag);
+      this.btnTabRag.setAttribute("aria-selected", String(isRag));
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   updateCategoryDropdownForMode(mode) {

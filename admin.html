@@ -23,9 +23,14 @@
     </div>
     <div class="admin-header-actions">
       <span id="sync-mode-badge" class="sync-mode-badge">🟢 ระบบพร้อมใช้งาน</span>
-      <a href="#rag-knowledge-section" class="btn-admin-secondary">
-        <span>📚</span> อัปโหลดตำรา RAG (NotebookLM)
-      </a>
+      <div class="admin-menu-tabs" role="tablist" aria-label="เมนูระบบหลังบ้าน">
+        <button type="button" id="btn-admin-tab-codes" class="btn-admin-tab active" role="tab" aria-selected="true">
+          <span>🔑</span> จัดการโค้ดลูกค้า
+        </button>
+        <button type="button" id="btn-admin-tab-rag" class="btn-admin-tab" role="tab" aria-selected="false">
+          <span>📚</span> อัปโหลดตำรา RAG (NotebookLM)
+        </button>
+      </div>
       <button type="button" id="btn-refresh-codes" class="btn-admin-secondary">
         <span>🔄</span> รีเฟรชข้อมูล
       </button>
@@ -36,6 +41,11 @@
   </header>
 
   <main class="admin-container">
+
+    <!-- ================================================================= -->
+    <!-- VIEW 1: หน้าจัดการโค้ดลูกค้า (แสดงเป็นค่าเริ่มต้น ไม่ปนกับหน้าอัปโหลด RAG) -->
+    <!-- ================================================================= -->
+    <div id="admin-view-codes">
 
     <!-- 0. แผงรหัสเข้าหลังบ้านจากหน้าลูกค้า & รหัสทดสอบด่วน 3 แพ็กเกจ (ย้ายมาจากหน้าลูกค้า) -->
     <section class="admin-panel-card admin-quick-pass-bar">
@@ -237,16 +247,25 @@
       </div>
     </section>
 
-    <!-- 4. ระบบปรับปรุงตำราพยากรณ์ RAG (NotebookLM Knowledge Base Upload) -->
-    <section id="rag-knowledge-section" class="admin-panel-card rag-knowledge-panel">
+    </div> <!-- /#admin-view-codes -->
+
+    <!-- ================================================================= -->
+    <!-- VIEW 2: เมนูอัปโหลดตำรา RAG (แสดงเฉพาะเมื่อกดเมนู "อัปโหลดตำรา RAG") -->
+    <!-- ================================================================= -->
+    <section id="rag-knowledge-section" class="admin-panel-card rag-knowledge-panel" style="display: none;">
       <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
         <div>
           <h2>📚 ระบบปรับปรุงตำราพยากรณ์อัจฉริยะ (NotebookLM RAG Knowledge Base)</h2>
           <p>นำตำราไพ่ทาโรต์ เซียมซี หรือศาสตร์พยากรณ์ไปสรุปใน <strong>Google NotebookLM</strong> แล้วอัปโหลดไฟล์ (<code>.md</code>, <code>.txt</code>, <code>.json</code>) หรือวางเนื้อหาที่นี่ เพื่อให้ระบบดึงเกร็ดตำรา (RAG) ไปเสริมคำทำนายให้แม่นยำและลึกซึ้งยิ่งขึ้น</p>
         </div>
-        <button type="button" id="btn-copy-notebooklm-prompt" class="btn-admin-secondary" style="border-color:#f3cf7a;">
-          <span>📋</span> คัดลอก Prompt สำหรับสั่ง NotebookLM สรุปตำรา
-        </button>
+        <div style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+          <button type="button" id="btn-back-to-codes-view" class="btn-admin-secondary">
+            <span>←</span> กลับไปหน้าจัดการโค้ดลูกค้า
+          </button>
+          <button type="button" id="btn-copy-notebooklm-prompt" class="btn-admin-secondary" style="border-color:#f3cf7a;">
+            <span>📋</span> คัดลอก Prompt สำหรับสั่ง NotebookLM สรุปตำรา
+          </button>
+        </div>
       </div>
 
       <div class="rag-upload-grid">
