@@ -191,6 +191,33 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { codes: db.codes });
   }
 
+  // RAG Knowledge Base Endpoints (NotebookLM Summaries)
+  if (pathname === "/api/rag-docs" && req.method === "GET") {
+    const db = readDb();
+    return sendJson(res, 200, { docs: db.ragDocs || [] });
+  }
+
+  if (pathname === "/api/rag-docs" && req.method === "POST") {
+    const body = await parseBody(req);
+    const db = readDb();
+    db.ragDocs = Array.isArray(db.ragDocs) ? db.ragDocs : [];
+    if (body && body.id) {
+      db.ragDocs = db.ragDocs.filter(d => d.id !== body.id);
+      db.ragDocs.unshift(body);
+      writeDb(db);
+    }
+    return sendJson(res, 201, { doc: body });
+  }
+
+  const ragDelMatch = pathname.match(/^\/api\/rag-docs\/([^/]+)$/);
+  if (ragDelMatch && req.method === "DELETE") {
+    const docId = ragDelMatch[1];
+    const db = readDb();
+    db.ragDocs = (db.ragDocs || []).filter(d => d.id !== docId);
+    writeDb(db);
+    return sendJson(res, 200, { deleted: true });
+  }
+
   if (pathname === "/api/codes" && req.method === "POST") {
     const body = await parseBody(req);
     if (!body || !body.code) {

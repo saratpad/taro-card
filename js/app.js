@@ -601,6 +601,7 @@ class TarotApp {
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    if (this.customDiscContainer) this.customDiscContainer.style.display = "none";
     if (this.activeCodeBanner) this.activeCodeBanner.style.display = "none";
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
   }
@@ -608,6 +609,16 @@ class TarotApp {
   async enterWithCode(rawCode, recordAccess = true) {
     if (!rawCode) return;
     if (this.accessCodeError) this.accessCodeError.style.display = "none";
+
+    // 0. ตรวจสอบรหัสผู้ดูแลระบบ (Admin Passcode) จากช่องกรอกโค้ดหน้าลูกค้า
+    if (window.codeManager && typeof window.codeManager.isAdminPasscode === "function" && window.codeManager.isAdminPasscode(rawCode)) {
+      window.mysticAudio.playCrystalBell(1046.5, 1.4);
+      this.showToast("🔐 กำลังเข้าสู่ระบบจัดการหลังบ้าน (Admin Backoffice)...");
+      setTimeout(() => {
+        window.location.href = "admin.html";
+      }, 450);
+      return;
+    }
 
     const res = await window.codeManager.verifyAndAccessCode(rawCode, recordAccess);
     if (!res.valid) {
@@ -633,6 +644,9 @@ class TarotApp {
 
     // Hide Access Gate
     if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
+    if (this.customDiscContainer) this.customDiscContainer.style.display = "none";
+
+    const customDisc = window.disciplineManager ? window.disciplineManager.getDisciplineById(codeObj.mode) : null;
 
     // Show Active Code Header Pill & STRICTLY hide top mode switcher so unrelated menus never appear
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
@@ -641,10 +655,11 @@ class TarotApp {
       const iconMap = { tarot: "🔮", siamsi: "🎋", combo: "🌟" };
       const labelMap = { tarot: "แพ็ก 1: ดูดวงไพ่ทาโรต์", siamsi: "แพ็ก 2: เสี่ยงเซียมซี", combo: "แพ็ก 3: ดูดวง + เซียมซี" };
       if (this.activeCodeModeIcon) {
-        this.activeCodeModeIcon.textContent = iconMap[codeObj.mode] || "🔮";
+        this.activeCodeModeIcon.textContent = customDisc ? (customDisc.icon || "✨") : (iconMap[codeObj.mode] || "🔮");
       }
       if (this.activeCodeText) {
-        this.activeCodeText.textContent = `${codeObj.code} (${labelMap[codeObj.mode] || "ดูดวง"})`;
+        const modeTitle = customDisc ? customDisc.name_th : (labelMap[codeObj.mode] || "ดูดวง");
+        this.activeCodeText.textContent = `${codeObj.code} (${modeTitle})`;
       }
       if (this.activeCodeExpiry) {
         this.activeCodeExpiry.textContent = window.codeManager.getRemainingTimeText(codeObj, this.lang);
@@ -662,7 +677,12 @@ class TarotApp {
       this.btnSiamsiGoCombo.style.display = codeObj.mode === "combo" ? "inline-flex" : "none";
     }
 
-    // Route according to the 3 packages:
+    // Route according to the packages or custom discipline:
+    if (customDisc) {
+      this.openCustomDisciplineForCode(codeObj, customDisc);
+      return;
+    }
+
     // 1. Package 3 (combo): Show the Service Selector Screen first!
     if (codeObj.mode === "combo") {
       this.showComboSelector(codeObj);
@@ -677,6 +697,129 @@ class TarotApp {
 
     // 3. Package 1 (tarot): Go directly to Tarot 3-card
     this.openTarotServiceForCode(codeObj);
+  }
+
+  openCustomDisciplineForCode(codeObj, disc) {
+    if (!this.customDiscContainer || !disc) return;
+    if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
+    if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
+    if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+    this.customDiscContainer.style.display = "block";
+
+    const alreadyUsed = (codeObj.drawCount || 0) >= 1 && codeObj.readingResult;
+    const renderCustomResult = (resPayload) => {
+      this.currentReadingPayload = resPayload;
+      this.customDiscContainer.innerHTML = `
+        <div class="intention-card glass-panel" style="max-width:780px; margin: 1.5rem auto;">
+          <div class="ritual-exclusive-banner">
+            <span class="ritual-banner-badge">${disc.icon || "✨"} ${disc.name_th} • ผลคำทำนายศักดิ์สิทธิ์</span>
+          </div>
+          <h2 class="hero-title" style="margin-top:0.6rem;">${disc.icon || "✨"} ผลพยากรณ์${disc.name_th}</h2>
+          <p class="hero-subtitle">ผู้รับคำทำนาย: <strong style="color:var(--gold-primary);">${codeObj.customerName || "ผู้มีจิตศรัทธา"}</strong> (รหัส ${codeObj.code})</p>
+          <div style="display:grid; gap:1rem; margin:1.4rem 0; text-align:left;">
+            ${(resPayload.cards || []).map((c, idx) => `
+              <div class="pos-reading-card" style="padding:1.2rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+                  <span class="pos-number-badge">${idx + 1}</span>
+                  <strong style="color:var(--gold-bright); font-size:1.05rem;">${c.positionTitle || `ตำแหน่งที่ ${idx + 1}`}: ${c.name_th}</strong>
+                </div>
+                <p style="color:var(--text-main); line-height:1.7; margin:0.4rem 0;">${c.domainMeaning}</p>
+                <div style="margin-top:0.5rem; font-size:0.9rem; color:var(--gold-primary);">✨ คำแนะนำ: “${c.advice || "ตั้งสติและลงมือทำด้วยความมั่นใจ"}”</div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="direct-verdict-box glass-panel" style="margin-top:1rem; text-align:left;">
+            <span class="verdict-badge favorable">${resPayload.verdictBadge || "✨ สรุปคำพยากรณ์"}</span>
+            <p style="margin-top:0.65rem; line-height:1.75;">${resPayload.verdictPlain || ""}</p>
+          </div>
+          <div class="luxury-share-panel" style="margin-top:1.5rem;">
+            <button type="button" class="btn-social-hero-cta" id="btn-custom-disc-share">
+              <span class="social-cta-glow"></span>
+              <span class="social-cta-icon-ring">📲</span>
+              <span class="social-cta-text-group">
+                <span class="social-cta-main">แชร์ Info Card กราฟิก & คำทำนายลงโซเชียล</span>
+                <span class="social-cta-sub">บันทึกรูปสรุปคำทำนายสวยหรู + คัดลอกคำทำนายเต็ม</span>
+              </span>
+              <span class="social-cta-arrow">➔</span>
+            </button>
+            <div class="secondary-Utility-actions">
+              <button type="button" class="btn-action secondary-btn" id="btn-custom-disc-pdf">📄 ดาวน์โหลดไฟล์ PDF</button>
+            </div>
+          </div>
+        </div>
+      `;
+      const shareBtn = document.getElementById("btn-custom-disc-share");
+      if (shareBtn) shareBtn.addEventListener("click", () => this.openSocialShareStudio(resPayload));
+      const pdfBtn = document.getElementById("btn-custom-disc-pdf");
+      if (pdfBtn) pdfBtn.addEventListener("click", () => this.downloadDirectPDF(resPayload));
+    };
+
+    if (alreadyUsed) {
+      renderCustomResult(codeObj.readingResult);
+      return;
+    }
+
+    this.customDiscContainer.innerHTML = `
+      <div class="intention-card glass-panel" style="max-width:680px; margin: 1.5rem auto;">
+        <div class="ritual-exclusive-banner">
+          <span class="ritual-banner-badge">${disc.icon || "✨"} ศาสตร์พยากรณ์พิเศษ: ${disc.name_th}</span>
+        </div>
+        <h2 class="hero-title" style="margin-top:0.6rem;">${disc.icon || "✨"} ${disc.name_th}</h2>
+        <p class="hero-subtitle">${disc.description || "ตั้งจิตอธิษฐานถึงสิ่งที่ต้องการถาม แล้วกดปุ่มเปิดคำพยากรณ์"}</p>
+        <button type="button" class="btn-primary-ritual" id="btn-draw-custom-disc" style="margin-top:1.4rem;">
+          <span class="btn-glow"></span>
+          <span class="btn-icon">${disc.icon || "✨"}</span>
+          <span>อธิษฐานจิตและเปิดคำทำนาย (${disc.drawCount || 3} ตำแหน่ง)</span>
+        </button>
+      </div>
+    `;
+
+    const drawBtn = document.getElementById("btn-draw-custom-disc");
+    if (drawBtn) {
+      drawBtn.addEventListener("click", async () => {
+        window.mysticAudio.playSuccessOracle();
+        const pool = Array.isArray(disc.items) && disc.items.length > 0 ? [...disc.items] : [];
+        const shuffled = pool.sort(() => Math.random() - 0.5);
+        const count = Math.min(disc.drawCount || 3, shuffled.length || 3);
+        const positions = Array.isArray(disc.positions) ? disc.positions : ["อดีต / เหตุ", "ปัจจุบัน / ผล", "อนาคต / สรุป"];
+        const chosenCards = [];
+        for (let i = 0; i < count; i++) {
+          const it = shuffled[i] || { name: `สัญลักษณ์ที่ ${i + 1}`, meaning: "พลังงานแห่งการเปลี่ยนแปลงที่ดี", advice: "ตั้งสติและเปิดรับโอกาสใหม่" };
+          chosenCards.push({
+            id: `custom_${i}`,
+            name_th: it.name,
+            name_en: it.name,
+            image: "assets/logo.jpg",
+            isReversed: false,
+            positionTitle: positions[i] || `ตำแหน่งที่ ${i + 1}`,
+            domainMeaning: it.meaning,
+            shortMeaning: it.meaning,
+            advice: it.advice || "ใช้สติและปัญญาในการดำเนินชีวิต"
+          });
+        }
+        const nowStr = new Date().toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
+        const payload = {
+          mode: "tarot",
+          customDisciplineId: disc.id,
+          customDisciplineName: disc.name_th,
+          code: codeObj.code,
+          customerName: codeObj.customerName || "",
+          category: "custom",
+          categoryName: disc.name_th,
+          spreadFormula: positions.slice(0, count).join(" ➔ "),
+          timestamp: Date.now(),
+          dateText: nowStr,
+          cards: chosenCards,
+          verdictBadge: `✨ บทสรุป${disc.name_th}`,
+          verdictPlain: `จากศาสตร์ ${disc.name_th} ทั้ง ${count} ตำแหน่ง (${chosenCards.map(c => c.name_th).join(" ➔ ")}) พลังงานชี้แนะให้คุณเชื่อมั่นในสัญชาตญาณและลงมือทำตามจังหวะเวลาที่เหมาะสม`,
+          doAction: chosenCards[0] ? chosenCards[0].advice : "เปิดใจรับโอกาสใหม่",
+          dontAction: "อย่าลังเลหรือยึดติดกับความกังวลเดิมๆ"
+        };
+        const updated = await window.codeManager.recordReadingDraw(codeObj.code, payload);
+        if (updated) this.activeCodeObj = updated;
+        renderCustomResult(payload);
+      });
+    }
   }
 
   showComboSelector(codeObj) {
@@ -1208,6 +1351,17 @@ class TarotApp {
 
   getCardDomainText(card, isReversed, category, lang = "th") {
     const aspect = isReversed ? card.reversed : card.upright;
+    const ragHit = (window.ragEngine && typeof window.ragEngine.retrieveCardInsight === "function")
+      ? window.ragEngine.retrieveCardInsight(card.id, card.name_en, card.name_th, category, this.loveStatus)
+      : null;
+    const ragHtml = ragHit
+      ? `<div class="rag-insight-callout">
+           <div class="rag-insight-head">📚 เกร็ดตำราพยากรณ์ (${ragHit.docTitle})</div>
+           <p class="rag-insight-text">${ragHit.insight}</p>
+         </div>`
+      : "";
+    const ragPlain = ragHit ? ` [ตำราเสริม: ${ragHit.insight}]` : "";
+
     if (category === "love") {
       if (aspect.love && aspect.love.single && aspect.love.couple) {
         const base = aspect.love[lang] || "";
@@ -1221,22 +1375,23 @@ class TarotApp {
               <div class="love-status-head"><strong>${statusTitle}</strong></div>
               <p class="love-status-text">${specificText}</p>
             </div>
+            ${ragHtml}
           `,
-          plainText: `${base} (${isSingle ? 'คนโสด' : 'ความสัมพันธ์'}: ${specificText})`,
+          plainText: `${base} (${isSingle ? 'คนโสด' : 'ความสัมพันธ์'}: ${specificText})${ragPlain}`,
           shortText: specificText || base
         };
       }
       return {
-        fullHtml: `<p class="domain-main-paragraph">${aspect.love[lang]}</p>`,
-        plainText: aspect.love[lang],
+        fullHtml: `<p class="domain-main-paragraph">${aspect.love[lang]}</p>${ragHtml}`,
+        plainText: `${aspect.love[lang]}${ragPlain}`,
         shortText: aspect.love[lang]
       };
     }
 
     const raw = (aspect[category] && aspect[category][lang]) ? aspect[category][lang] : aspect.career[lang];
     return {
-      fullHtml: `<p class="domain-main-paragraph">${raw}</p>`,
-      plainText: raw,
+      fullHtml: `<p class="domain-main-paragraph">${raw}</p>${ragHtml}`,
+      plainText: `${raw}${ragPlain}`,
       shortText: raw
     };
   }
@@ -1492,8 +1647,18 @@ class TarotApp {
     }
 
     const verdictData = this.generateConciseVerdictText(verdictType);
+    const ragSynthesis = (window.ragEngine && typeof window.ragEngine.retrieveSpreadSynthesis === "function")
+      ? window.ragEngine.retrieveSpreadSynthesis(this.drawnCards, this.category, this.loveStatus)
+      : null;
+
     if (this.verdictContent) {
-      this.verdictContent.innerHTML = `<p>${verdictData.plainText}</p>`;
+      const ragSynthHtml = ragSynthesis
+        ? `<div class="rag-insight-callout" style="margin-top:0.75rem;">
+             <div class="rag-insight-head">📖 วิเคราะห์เชื่อมโยงตำราพยากรณ์ RAG (${ragSynthesis.docTitle})</div>
+             <p class="rag-insight-text">${ragSynthesis.insight}</p>
+           </div>`
+        : "";
+      this.verdictContent.innerHTML = `<p>${verdictData.plainText}</p>${ragSynthHtml}`;
     }
     if (this.verdictActionsSummary) {
       this.verdictActionsSummary.innerHTML = `
@@ -1511,7 +1676,7 @@ class TarotApp {
     return {
       verdictType,
       badgeText,
-      plainText: verdictData.plainText,
+      plainText: ragSynthesis ? `${verdictData.plainText} (${ragSynthesis.insight})` : verdictData.plainText,
       doAction: verdictData.doAction,
       dontAction: verdictData.dontAction
     };

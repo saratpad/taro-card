@@ -1,23 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg-deep: #07030d;
-  --bg-altar: #120724;
-  --bg-card: rgba(22, 11, 44, 0.75);
-  --bg-card-hover: rgba(36, 17, 72, 0.85);
+  --bg-deep: #040717;
+  --bg-dark: #080e29;
+  --bg-altar: #0b1336;
+  --bg-card: rgba(11, 20, 54, 0.84);
+  --bg-card-hover: rgba(18, 32, 78, 0.9);
   
-  --gold-primary: #f5c542;
-  --gold-glow: rgba(245, 197, 66, 0.4);
-  --gold-border: rgba(245, 197, 66, 0.35);
-  --gold-dark: #b8860b;
+  --gold-primary: #f3cf7a;
+  --gold-bright: #fff1be;
+  --gold-glow: rgba(243, 207, 122, 0.48);
+  --gold-border: rgba(243, 207, 122, 0.38);
+  --gold-dark: #c7953d;
   
-  --purple-glow: rgba(192, 132, 252, 0.45);
-  --purple-accent: #c084fc;
-  --fuchsia-accent: #e879f9;
+  --accent-purple: #38bdf8;
+  --accent-violet: #a855f7;
+  --accent-cyan: #22d3ee;
+  --purple-glow: rgba(56, 189, 248, 0.42);
+  --purple-accent: #38bdf8;
+  --fuchsia-accent: #a855f7;
   
-  --text-main: #f3e8ff;
-  --text-muted: #c4b5fd;
-  --text-dim: #8b7ca6;
+  --text-main: #f8fafc;
+  --text-muted: #bae6fd;
+  --text-dim: #94a3b8;
   
   --font-title: 'Cinzel Decorative', 'Prompt', serif;
   --font-sub: 'Cinzel', 'Prompt', serif;
@@ -29,8 +34,8 @@
   --radius-lg: 22px;
   --radius-full: 9999px;
   
-  --shadow-gold: 0 0 25px rgba(245, 197, 66, 0.25);
-  --shadow-purple: 0 0 30px rgba(192, 132, 252, 0.25);
+  --shadow-gold: 0 0 28px rgba(243, 207, 122, 0.28);
+  --shadow-purple: 0 0 32px rgba(56, 189, 248, 0.25);
   --transition-fast: 0.2s ease;
   --transition-normal: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   --transition-slow: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
@@ -52,9 +57,9 @@ body {
   position: relative;
   line-height: 1.6;
   background-image: 
-    radial-gradient(circle at 50% 0%, #2a0845 0%, transparent 65%),
-    radial-gradient(circle at 10% 40%, #15002b 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, #1f0238 0%, transparent 55%);
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.16) 0%, rgba(168, 85, 247, 0.12) 35%, transparent 70%),
+    radial-gradient(circle at 12% 42%, rgba(14, 30, 82, 0.9) 0%, transparent 55%),
+    radial-gradient(circle at 88% 78%, rgba(76, 29, 149, 0.32) 0%, transparent 58%);
   background-attachment: fixed;
 }
 
@@ -4632,5 +4637,245 @@ body {
 @media (max-width: 640px) {
   .love-status-selector-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================================
+ * SIAMSI TAROT • ORACLE BRAND LOGO MEDALLION & ASTRAL NAVY THEME
+ * ========================================================================= */
+.mystic-header {
+  background: rgba(4, 7, 23, 0.86);
+  border-bottom: 1px solid rgba(243, 207, 122, 0.36);
+  box-shadow: 0 4px 28px rgba(4, 7, 23, 0.75);
+}
+
+.brand-logo-frame {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, #fff1be 0%, #f3cf7a 45%, #38bdf8 100%);
+  box-shadow: 0 0 18px rgba(243, 207, 122, 0.45), 0 0 26px rgba(56, 189, 248, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-logo:hover .brand-logo-frame {
+  transform: scale(1.06);
+  box-shadow: 0 0 24px rgba(243, 207, 122, 0.7), 0 0 34px rgba(56, 189, 248, 0.5);
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.gate-logo-emblem {
+  width: 156px;
+  height: 156px;
+  margin: 0 auto 1.15rem;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #fff1be 0%, #f3cf7a 40%, #38bdf8 75%, #a855f7 100%);
+  box-shadow:
+    0 0 38px rgba(243, 207, 122, 0.42),
+    0 0 65px rgba(56, 189, 248, 0.28),
+    inset 0 0 18px rgba(255, 241, 190, 0.4);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: gateLogoFloat 5s ease-in-out infinite;
+}
+
+@keyframes gateLogoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.gate-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  border: 2px solid rgba(4, 7, 23, 0.9);
+}
+
+/* =========================================================================
+ * LUXURY SOCIAL SHARE HERO CTA & SECONDARY UTILITY BAR
+ * ========================================================================= */
+.luxury-share-panel {
+  width: 100%;
+  max-width: 680px;
+  margin: 1.8rem auto 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.btn-social-hero-cta {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.5rem;
+  border-radius: 18px;
+  border: 2px solid #f3cf7a;
+  background: linear-gradient(135deg, rgba(12, 25, 68, 0.96) 0%, rgba(28, 22, 78, 0.96) 50%, rgba(14, 48, 92, 0.96) 100%);
+  color: #ffffff;
+  font-family: var(--font-thai);
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px rgba(4, 7, 23, 0.8),
+    0 0 28px rgba(243, 207, 122, 0.35),
+    0 0 42px rgba(56, 189, 248, 0.22);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  text-align: left;
+}
+
+.btn-social-hero-cta:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: #fff1be;
+  box-shadow:
+    0 16px 38px rgba(4, 7, 23, 0.9),
+    0 0 38px rgba(243, 207, 122, 0.65),
+    0 0 55px rgba(56, 189, 248, 0.4);
+}
+
+.btn-social-hero-cta .social-cta-glow {
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 241, 190, 0.24), rgba(56, 189, 248, 0.2), transparent);
+  transform: skewX(-25deg);
+  animation: socialCtaShimmer 3.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes socialCtaShimmer {
+  0% { left: -120%; }
+  55%, 100% { left: 160%; }
+}
+
+.social-cta-icon-ring {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff1be 0%, #f3cf7a 55%, #c7953d 100%);
+  color: #040717;
+  font-size: 1.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 18px rgba(243, 207, 122, 0.55);
+}
+
+.social-cta-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.social-cta-main {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #fff1be;
+  letter-spacing: 0.2px;
+}
+
+.social-cta-sub {
+  font-size: 0.84rem;
+  color: #bae6fd;
+  line-height: 1.4;
+}
+
+.social-cta-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(243, 207, 122, 0.16);
+  border: 1px solid rgba(243, 207, 122, 0.5);
+  color: #fff1be;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.btn-social-hero-cta:hover .social-cta-arrow {
+  transform: translateX(4px);
+  background: rgba(243, 207, 122, 0.32);
+}
+
+.secondary-Utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* =========================================================================
+ * NOTEBOOKLM RAG KNOWLEDGE BASE INSIGHT CALLOUT
+ * ========================================================================= */
+.rag-insight-callout {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1.05rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(14, 36, 82, 0.78) 0%, rgba(30, 22, 74, 0.78) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  border-left: 4px solid #f3cf7a;
+  box-shadow: 0 4px 16px rgba(4, 7, 23, 0.45);
+}
+
+.rag-insight-head {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rag-insight-text {
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .btn-social-hero-cta {
+    padding: 1rem 1.1rem;
+  }
+  .social-cta-icon-ring {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+  .social-cta-main {
+    font-size: 0.98rem;
+  }
+  .social-cta-sub {
+    font-size: 0.78rem;
   }
 }

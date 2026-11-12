@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบหลังบ้านจัดการโค้ด Fastwork | เซียมซีทาโรต์ (SiamSi Tarot Admin)</title>
+  <title>ระบบหลังบ้านจัดการโค้ด & ตำราพยากรณ์ RAG | เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE)</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -12,16 +12,24 @@
   <!-- Top Header -->
   <header class="admin-header">
     <div class="admin-brand">
-      <span class="admin-brand-icon">🔮</span>
+      <div class="brand-logo-frame" style="width:56px; height:56px;">
+        <img src="assets/logo.jpg" alt="SIAMSI TAROT" class="brand-logo-img" id="admin-brand-logo-img" />
+      </div>
       <div>
-        <h1>เซียมซีทาโรต์ — ระบบหลังบ้าน (Fastwork Admin)</h1>
-        <p>สร้างโค้ดดูดวง (จำกัด 1 ครั้ง / อายุ 1 วัน) • ตรวจสอบ Log การเข้าใช้งาน แชร์ และดาวน์โหลดไฟล์ PDF คำทำนายส่งลูกค้า</p>
+        <h1>เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE) — ระบบหลังบ้าน</h1>
+        <p>จัดการโค้ดลูกค้า Fastwork • อัปโหลดตำราพยากรณ์ RAG (NotebookLM) • เพิ่มศาสตร์พยากรณ์ใหม่ • ดาวน์โหลดไฟล์ PDF</p>
       </div>
     </div>
     <div class="admin-header-actions">
       <span id="sync-mode-badge" class="sync-mode-badge">🟢 ระบบพร้อมใช้งาน</span>
+      <button type="button" id="btn-open-add-discipline" class="btn-admin-secondary" style="border-color:#38bdf8; color:#bae6fd;">
+        <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่
+      </button>
+      <a href="#rag-knowledge-section" class="btn-admin-secondary">
+        <span>📚</span> อัปโหลดตำรา RAG (NotebookLM)
+      </a>
       <button type="button" id="btn-refresh-codes" class="btn-admin-secondary">
-        <span>🔄</span> รีเฟรชข้อมูลล่าสุด
+        <span>🔄</span> รีเฟรชข้อมูล
       </button>
       <a href="index.html" class="btn-admin-primary" target="_blank">
         <span>✨</span> เปิดหน้าเว็บลูกค้า
@@ -30,6 +38,62 @@
   </header>
 
   <main class="admin-container">
+
+    <!-- 0. แผงรหัสเข้าหลังบ้านจากหน้าลูกค้า & รหัสทดสอบด่วน 3 แพ็กเกจ (ย้ายมาจากหน้าลูกค้า) -->
+    <section class="admin-panel-card admin-quick-pass-bar">
+      <div class="quick-pass-grid">
+        <!-- การเข้าระบบหลังบ้านผ่านช่องกรอกโค้ดหน้าลูกค้า -->
+        <div class="quick-pass-block">
+          <div class="quick-pass-title">
+            <span>🔐 รหัสลับสำหรับเข้าหน้าหลังบ้าน (กรอกในช่องโค้ดหน้าลูกค้าได้ทันที)</span>
+          </div>
+          <p class="quick-pass-desc">
+            พิมพ์รหัสนี้ในช่องกรอกรหัสหน้าลูกค้า (<code>index.html</code>) ระบบจะพามาหน้าจัดการหลังบ้านอัตโนมัติโดยไม่มีปุ่มรกหน้าเว็บลูกค้า
+          </p>
+          <div class="admin-passcode-Row">
+            <input type="text" id="input-admin-passcode" value="ADMIN99" class="admin-pass-input" title="รหัสผ่านเข้าหน้าแอดมิน" />
+            <button type="button" id="btn-save-admin-passcode" class="btn-admin-secondary">💾 บันทึกรหัสแอดมิน</button>
+            <span class="pass-hint-pill">รหัสเริ่มต้น: <strong>ADMIN99</strong> หรือ <strong>ADMIN</strong></span>
+          </div>
+        </div>
+
+        <!-- รหัสทดสอบด่วน 3 แพ็กเกจ (แสดงเฉพาะในหน้าแอดมิน) -->
+        <div class="quick-pass-block">
+          <div class="quick-pass-title">
+            <span>🧪 รหัสทดสอบด่วน 3 แพ็กเกจ (แสดงเฉพาะในหน้าหลังบ้าน)</span>
+          </div>
+          <p class="quick-pass-desc">
+            คลิกเพื่อเปิดทดสอบหน้าลูกค้า หรือกดคัดลอกรหัสไปทดลองกรอกในหน้าลูกค้าได้ทันที:
+          </p>
+          <div class="admin-demo-chips-row">
+            <div class="admin-demo-chip-card">
+              <span class="demo-pkg-tag">🔮 แพ็ก 1: ไพ่ทาโรต์ 3 ใบ</span>
+              <code>TAROT99</code>
+              <div class="demo-chip-actions">
+                <button type="button" class="btn-mini-action" data-test-code="TAROT99">🚀 เปิดทดสอบ</button>
+                <button type="button" class="btn-mini-action" data-reset-code="TAROT99">🔄 รีเซ็ตสิทธิ์</button>
+              </div>
+            </div>
+            <div class="admin-demo-chip-card">
+              <span class="demo-pkg-tag">🎋 แพ็ก 2: เสี่ยงเซียมซี</span>
+              <code>SIAMSI99</code>
+              <div class="demo-chip-actions">
+                <button type="button" class="btn-mini-action" data-test-code="SIAMSI99">🚀 เปิดทดสอบ</button>
+                <button type="button" class="btn-mini-action" data-reset-code="SIAMSI99">🔄 รีเซ็ตสิทธิ์</button>
+              </div>
+            </div>
+            <div class="admin-demo-chip-card">
+              <span class="demo-pkg-tag">🌟 แพ็ก 3: ดูดวง + เซียมซี</span>
+              <code>COMBO99</code>
+              <div class="demo-chip-actions">
+                <button type="button" class="btn-mini-action" data-test-code="COMBO99">🚀 เปิดทดสอบ</button>
+                <button type="button" class="btn-mini-action" data-reset-code="COMBO99">🔄 รีเซ็ตสิทธิ์</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- 1. Dashboard Summary Stats -->
     <section class="admin-stats-grid">
@@ -55,21 +119,24 @@
         </div>
       </div>
       <div class="stat-card stat-shared">
-        <div class="stat-icon">📤</div>
+        <div class="stat-icon">📚</div>
         <div class="stat-info">
-          <span class="stat-label">แชร์ / โหลด PDF แล้ว</span>
-          <strong class="stat-value" id="stat-shared-codes">0</strong>
+          <span class="stat-label">คลังตำรา RAG (Chunks)</span>
+          <strong class="stat-value" id="stat-rag-chunks">0</strong>
         </div>
       </div>
     </section>
 
     <!-- 2. Create New Code Box (สำหรับสร้างโค้ดส่งงานลูกค้า Fastwork) -->
     <section class="admin-panel-card create-code-panel">
-      <div class="panel-header">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
         <div>
           <h2>✨ สร้างโค้ดดูดวงใหม่สำหรับลูกค้า Fastwork</h2>
           <p>โค้ดทุกใบจำกัดการสุ่มดูดวง <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
         </div>
+        <button type="button" id="btn-inline-add-discipline" class="btn-admin-secondary" style="border-color:#38bdf8; color:#bae6fd;">
+          <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่เข้าระบบ
+        </button>
       </div>
 
       <form id="create-code-form" class="create-code-form" autocomplete="off">
@@ -85,7 +152,7 @@
           </div>
 
           <div class="admin-field">
-            <label for="select-service-mode">📦 แพ็กเกจบริการ (ลูกค้ากดสุ่มดูด้วยตนเอง)</label>
+            <label for="select-service-mode">📦 แพ็กเกจบริการ / ศาสตร์พยากรณ์</label>
             <select id="select-service-mode">
               <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)</option>
               <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (1 ครั้ง)</option>
@@ -150,7 +217,7 @@
         <div class="table-filters">
           <input type="search" id="admin-search-input" class="admin-search-input" placeholder="🔍 ค้นหารหัสโค้ด, ชื่อลูกค้า, ออเดอร์..." />
           <select id="admin-filter-mode" class="admin-filter-select">
-            <option value="all">ทุกแพ็กเกจ (1, 2, 3)</option>
+            <option value="all">ทุกแพ็กเกจ / ทุกศาสตร์</option>
             <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
             <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซี</option>
             <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี</option>
@@ -184,13 +251,139 @@
       </div>
     </section>
 
+    <!-- 4. ระบบปรับปรุงตำราพยากรณ์ RAG (NotebookLM Knowledge Base Upload) -->
+    <section id="rag-knowledge-section" class="admin-panel-card rag-knowledge-panel">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <h2>📚 ระบบปรับปรุงตำราพยากรณ์อัจฉริยะ (NotebookLM RAG Knowledge Base)</h2>
+          <p>นำตำราไพ่ทาโรต์ เซียมซี หรือศาสตร์พยากรณ์ไปสรุปใน <strong>Google NotebookLM</strong> แล้วอัปโหลดไฟล์ (<code>.md</code>, <code>.txt</code>, <code>.json</code>) หรือวางเนื้อหาที่นี่ เพื่อให้ระบบดึงเกร็ดตำรา (RAG) ไปเสริมคำทำนายให้แม่นยำและลึกซึ้งยิ่งขึ้น</p>
+        </div>
+        <button type="button" id="btn-copy-notebooklm-prompt" class="btn-admin-secondary" style="border-color:#f3cf7a;">
+          <span>📋</span> คัดลอก Prompt สำหรับสั่ง NotebookLM สรุปตำรา
+        </button>
+      </div>
+
+      <div class="rag-upload-grid">
+        <!-- ฟอร์มอัปโหลดไฟล์หรือวางสรุปจาก NotebookLM -->
+        <form id="rag-upload-form" class="rag-upload-form">
+          <div class="admin-field">
+            <label for="rag-doc-title">📖 ชื่อชุดตำรา / แหล่งอ้างอิง (NotebookLM Note Title)</label>
+            <input type="text" id="rag-doc-title" placeholder="เช่น สรุปตำราไพ่ทาโรต์ความรักเชิงลึก (NotebookLM)" required />
+          </div>
+
+          <div class="form-row-grid" style="margin-bottom:0.6rem;">
+            <div class="admin-field">
+              <label for="rag-doc-discipline">🔮 ใช้กับศาสตร์พยากรณ์</label>
+              <select id="rag-doc-discipline">
+                <option value="tarot">🔮 ไพ่ทาโรต์ 78 ใบ (Tarot 3-Card)</option>
+                <option value="siamsi">🎋 เซียมซีศักดิ์สิทธิ์ (Siamsi)</option>
+                <option value="all">🌟 ทุกศาสตร์พยากรณ์</option>
+              </select>
+            </div>
+
+            <div class="admin-field">
+              <label for="rag-file-input">📂 อัปโหลดไฟล์สรุปจาก NotebookLM (.md, .txt, .json)</label>
+              <input type="file" id="rag-file-input" accept=".md,.txt,.json" />
+            </div>
+          </div>
+
+          <div class="admin-field">
+            <label for="rag-doc-content">📝 เนื้อหาสรุปตำราจาก NotebookLM (วางข้อความ หรืออัปโหลดไฟล์ด้านบน)</label>
+            <textarea id="rag-doc-content" rows="6" class="fastwork-msg-preview" placeholder="# The Lovers (ไพ่เดอะเลิฟเวอร์)&#10;- ความรักคนโสด: มีเกณฑ์พบรักที่มีแรงดึงดูดสูงมาก...&#10;- ความรักคนมีคู่: ความรู้สึกเชื่อมโยงลึกซึ้ง...&#10;- การงาน: ได้พาร์ทเนอร์หรือหุ้นส่วนที่เกื้อหนุน..." required></textarea>
+          </div>
+
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <button type="submit" class="btn-admin-primary">
+              <span>🚀</span> อัปโหลดเข้าคลังความรู้ RAG & อัปเกรดความแม่นยำทันที
+            </button>
+          </div>
+        </form>
+
+        <!-- รายการคลังตำรา RAG ที่ใช้งานอยู่ในระบบ -->
+        <div class="rag-docs-list-wrap">
+          <h3 style="font-size:1rem; color:#fff1be; margin-bottom:0.65rem;">✨ คลังตำราพยากรณ์ RAG ที่เปิดใช้งานอยู่</h3>
+          <div id="rag-docs-list" class="rag-docs-list">
+            <!-- Injected by admin.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. รายการศาสตร์พยากรณ์ในระบบ & ตั้งค่าโลโก้แบรนด์ -->
+    <section class="admin-panel-card">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <h2>🌟 จัดการศาสตร์พยากรณ์ & ธีมโลโก้แบรนด์ (SIAMSI TAROT • ORACLE)</h2>
+          <p>รองรับการเพิ่มศาสตร์พยากรณ์ใหม่ๆ ในอนาคต และปรับแต่งโลโก้/ธีมสีของระบบให้เข้ากับแบรนด์</p>
+        </div>
+        <button type="button" id="btn-open-add-discipline-2" class="btn-admin-primary">
+          <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่
+        </button>
+      </div>
+
+      <div id="custom-disciplines-grid" class="custom-disciplines-grid">
+        <!-- Injected by admin.js -->
+      </div>
+    </section>
+
   </main>
 
-  <!-- Modal: ดูคำทำนายฉบับเต็ม & ประวัติ Log ของโค้ด -->
+  <!-- Modal 1: ดูคำทำนายฉบับเต็ม & ประวัติ Log ของโค้ด -->
   <div id="admin-detail-modal" class="modal-overlay">
     <div class="modal-content-box admin-modal-box">
       <button class="modal-close-btn" id="btn-close-admin-modal">&times;</button>
       <div id="admin-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal 2: เพิ่มศาสตร์พยากรณ์ใหม่ (Add New Divination Discipline) -->
+  <div id="add-discipline-modal" class="modal-overlay">
+    <div class="modal-content-box admin-modal-box" style="max-width:680px;">
+      <button class="modal-close-btn" id="btn-close-discipline-modal">&times;</button>
+      <h2 style="color:var(--gold-primary); margin-bottom:0.35rem;">➕ เพิ่มศาสตร์พยากรณ์ใหม่เข้าระบบ</h2>
+      <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.1rem;">
+        เมื่อเพิ่มศาสตร์ใหม่แล้ว คุณจะสามารถออกรหัสโค้ดให้ลูกค้าเข้าใช้งานศาสตร์นี้ได้ทันที พร้อมรองรับการแชร์รูป Info Card และโหลด PDF อัตโนมัติ
+      </p>
+
+      <form id="add-discipline-form" class="create-code-form">
+        <div class="form-row-grid">
+          <div class="admin-field">
+            <label for="disc-name-th">ชื่อศาสตร์พยากรณ์ (ภาษาไทย)</label>
+            <input type="text" id="disc-name-th" placeholder="เช่น ไพ่ออราเคิลจักรวาล / อักษรรูนส์โบราณ" required />
+          </div>
+          <div class="admin-field">
+            <label for="disc-icon">ไอคอนประจำศาสตร์</label>
+            <input type="text" id="disc-icon" value="🪐" maxlength="4" required />
+          </div>
+          <div class="admin-field">
+            <label for="disc-draw-count">จำนวนไพ่/สัญลักษณ์ที่สุ่มต่อครั้ง</label>
+            <select id="disc-draw-count">
+              <option value="3" selected>3 ตำแหน่ง (มาตรฐาน 3 ใบ)</option>
+              <option value="1">1 ตำแหน่ง (ฟันธงใบเดียว)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-field" style="margin-bottom:0.85rem;">
+          <label for="disc-positions">ชื่อตำแหน่งคำทำนาย (คั่นด้วยเครื่องหมายจุลภาค ,)</label>
+          <input type="text" id="disc-positions" value="อดีต / เหตุ, ปัจจุบัน / ผล, อนาคต / สรุป" />
+        </div>
+
+        <div class="admin-field" style="margin-bottom:0.85rem;">
+          <label for="disc-description">คำอธิบายสำหรับแสดงให้ลูกค้าตั้งจิตอธิษฐาน</label>
+          <input type="text" id="disc-description" placeholder="เช่น ตั้งจิตอธิษฐานถึงสิ่งที่ต้องการถาม แล้วกดเปิดรับสารจากจักรวาล" />
+        </div>
+
+        <div class="admin-field" style="margin-bottom:1rem;">
+          <label for="disc-items-text">รายการคำทำนายประจำศาสตร์ (บรรทัดละ 1 ใบ ในรูปแบบ: <code>ชื่อไพ่ | คำทำนาย | คำแนะนำ</code>)</label>
+          <textarea id="disc-items-text" rows="5" class="fastwork-msg-preview" placeholder="ดวงดาวแห่งโชคลาภ | เกณฑ์ได้รับข่าวดีด้านการเงินและโอกาสใหม่ที่รอคอย | เปิดใจรับข้อเสนอใหม่ด้วยความมั่นใจ&#10;กุญแจแห่งปัญญา | ปัญหาที่ติดขัดจะคลี่คลายด้วยสติและผู้ใหญ่ช่วยเหลือ | ปรึกษาผู้เชี่ยวชาญและวางแผนเป็นขั้นตอน&#10;แสงอรุณรุ่ง | การเริ่มต้นใหม่ที่สดใสทั้งความรักและการงาน | ก้าวออกจากความกังวลเดิมแล้วลงมือทำทันที"></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" id="btn-cancel-discipline" class="btn-admin-secondary">ยกเลิก</button>
+          <button type="submit" class="btn-admin-primary">✨ บันทึกศาสตร์พยากรณ์ใหม่</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -203,6 +396,7 @@
   <script src="js/tarot-love-data.js"></script>
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
+  <script src="js/rag-engine.js"></script>
   <script src="js/code-manager.js"></script>
   <script src="js/share-pdf.js"></script>
   <script src="js/admin.js"></script>

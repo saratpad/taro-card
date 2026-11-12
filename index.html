@@ -37,7 +37,9 @@
     <!-- Top Navigation Header -->
     <header class="mystic-header">
       <a href="#" class="brand-logo" id="nav-brand" title="เซียมซีทาโรต์">
-        <div class="brand-sigil">🔮</div>
+        <div class="brand-sigil brand-logo-frame">
+          <img src="assets/logo.jpg" alt="เซียมซีทาโรต์" class="brand-logo-img" />
+        </div>
         <div class="brand-text">
           <h1 data-i18n="brand_title">เซียมซีทาโรต์</h1>
           <p data-i18n="brand_sub">SIAMSI TAROT ORACLE</p>
@@ -96,24 +98,20 @@
     <main class="main-stage-container">
 
       <!-- =================================================================== -->
-      <!-- SCREEN 0: ACCESS CODE GATE (หน้ากรอกโค้ดเข้าดูดวง สำหรับลูกค้า Fastwork) -->
+      <!-- SCREEN 0: ACCESS CODE GATE (หน้ากรอกโค้ดเข้าดูดวง คลีน เรียบหรู มืออาชีพ) -->
       <!-- =================================================================== -->
       <section id="access-gate-screen" class="view-screen active">
         <div class="access-gate-card">
           <div class="gate-sacred-emblem">
             <div class="gate-emblem-ring"></div>
-            <div class="gate-emblem-icons">
-              <span class="emblem-tarot">🃏</span>
-              <span class="emblem-center">🔮</span>
-              <span class="emblem-siamsi">🎋</span>
-            </div>
+            <img src="assets/logo.jpg" alt="เซียมซีทาโรต์" class="brand-logo-img gate-logo-img" />
           </div>
 
           <div class="gate-badge">✦ SACRED ORACLE SANCTUARY ✦</div>
           <h2 class="gate-title">เซียมซีทาโรต์</h2>
           <p class="gate-subtitle">
-            ระบบพยากรณ์ดวงชะตาไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซีศักดิ์สิทธิ์<br>
-            กรุณากรอก <strong>รหัสโค้ดดูดวง</strong> ที่ท่านได้รับเพื่อเข้าสู่พิธีกรรมเปิดดวงชะตา
+            พยากรณ์ดวงชะตาไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซีศักดิ์สิทธิ์<br>
+            กรุณากรอก <strong>รหัสโค้ดพยากรณ์</strong> ของท่านเพื่อเข้าสู่พิธีกรรมเปิดดวงชะตา
           </p>
 
           <form id="access-code-form" class="access-code-form" autocomplete="off">
@@ -122,44 +120,18 @@
                 type="text"
                 id="access-code-input"
                 class="access-code-input"
-                placeholder="กรอกรหัสโค้ด เช่น TR-XXXX หรือ TAROT99"
+                placeholder="กรอกรหัสโค้ดเปิดคำทำนายของท่าน"
                 maxlength="24"
                 required
               />
               <button type="submit" id="btn-submit-code" class="btn-mystic-primary btn-unlock-oracle">
                 <span>✨</span>
-                <span>เข้าสู่ระบบดูดวง</span>
+                <span>เข้าสู่ระบบพยากรณ์</span>
                 <span>✨</span>
               </button>
             </div>
             <div id="access-code-error" class="access-code-error" style="display: none;"></div>
           </form>
-
-          <div class="gate-rules-grid">
-            <div class="gate-rule-item">
-              <span class="rule-icon">🎯</span>
-              <div>
-                <strong>สิทธิ์เปิดดวง 1 ครั้ง / โค้ด</strong>
-                <p>ตั้งจิตอธิษฐานให้พร้อมก่อนเริ่มสุ่ม ระบบจะบันทึกผลคำทำนายแรกของท่านไว้ทันที</p>
-              </div>
-            </div>
-            <div class="gate-rule-item">
-              <span class="rule-icon">⏳</span>
-              <div>
-                <strong>อายุโค้ด 24 ชั่วโมง (1 วัน)</strong>
-                <p>สามารถกลับเข้ามาดูผลคำทำนายเดิม แชร์โซเชียล หรือดาวน์โหลดไฟล์ PDF ได้ตลอด 24 ชม.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- ปุ่มทดสอบด่วนสำหรับเจ้าของระบบ -->
-          <div class="gate-quick-demo">
-            <span class="demo-label">รหัสทดสอบด่วน (3 แพ็กเกจ):</span>
-            <button type="button" class="demo-code-chip" data-demo-code="TAROT99">🔮 แพ็ก 1: ดูดวงไพ่ทาโรต์ (TAROT99)</button>
-            <button type="button" class="demo-code-chip" data-demo-code="SIAMSI99">🎋 แพ็ก 2: เสี่ยงเซียมซี (SIAMSI99)</button>
-            <button type="button" class="demo-code-chip demo-chip-combo" data-demo-code="COMBO99">🌟 แพ็ก 3: ดูดวง + เซียมซี (COMBO99)</button>
-            <a href="admin.html" class="demo-admin-link">⚙️ จัดการโค้ดหลังบ้าน (Admin)</a>
-          </div>
         </div>
       </section>
 
@@ -421,21 +393,27 @@
             <div class="verdict-actions-summary" id="verdict-actions-summary"></div>
           </div>
 
-          <!-- ปุ่มแชร์โซเชียล (Info Card + คำทำนายเต็ม) และดาวน์โหลดไฟล์ PDF -->
-          <div class="results-action-panel">
+          <!-- ปุ่มแชร์โซเชียลโฉมใหม่ (Info Card กราฟิกพรีเมียม + คำทำนายเต็ม) และดาวน์โหลดไฟล์ PDF -->
+          <div class="results-action-panel luxury-share-panel">
             <div class="action-panel-header">
-              <h4>📲 บันทึกผลคำทำนาย & แชร์ไปยังโซเชียล</h4>
-              <p>แชร์เป็นภาพ Info สรุปไพ่ 3 ใบพร้อมคำทำนายเต็มต่อท้าย หรือบันทึกเก็บลงเครื่องเป็นไฟล์ PDF</p>
+              <span class="share-panel-crown">✦ SHARE YOUR DESTINY ✦</span>
+              <h4>📲 แชร์การ์ดคำทำนายลงโซเชียล & บันทึกใบรับรอง PDF</h4>
+              <p>รับภาพกราฟิก Info Card ดีไซน์หรูพร้อมคำทำนายฉบับเต็มสำหรับโพสต์/คอมเมนต์ หรือบันทึกเป็นไฟล์ PDF</p>
             </div>
-            <div class="results-action-row">
-              <button id="btn-social-share" class="btn-mystic-primary btn-share-action">
-                <span>📤</span>
-                <span data-i18n="btn_share_reading">แชร์โซเชียล (รูป Info + คำทำนายเต็ม)</span>
+            <div class="social-hero-cta-wrap">
+              <button id="btn-social-share" class="btn-social-hero-cta">
+                <span class="social-cta-icon">✨📤</span>
+                <div class="social-cta-text">
+                  <strong data-i18n="btn_share_reading">แชร์ลงโซเชียล (ภาพกราฟิก Info Card + คำทำนายเต็ม)</strong>
+                  <span>Facebook • Instagram • LINE • TikTok • X</span>
+                </div>
+                <span class="social-cta-arrow">➔</span>
               </button>
-
+            </div>
+            <div class="results-action-row secondary-share-grid">
               <button id="btn-download-pdf" class="btn-secondary-mystic btn-pdf-action">
                 <span>📄</span>
-                <span data-i18n="btn_download_pdf">บันทึกเป็นไฟล์ PDF ลงเครื่อง</span>
+                <span data-i18n="btn_download_pdf">ดาวน์โหลดใบคำทำนาย PDF</span>
               </button>
 
               <button id="btn-copy-reading" class="btn-secondary-mystic">
@@ -452,9 +430,6 @@
                 <span>🔮</span>
                 <span data-i18n="btn_ask_again">ดูดวงใหม่อีกครั้ง</span>
               </button>
-            </div>
-            <div id="code-locked-notice" class="code-locked-notice">
-              🔒 ผลคำทำนายนี้ถูกบันทึกผูกกับรหัสโค้ดของท่านแล้ว สามารถเปิดดูซ้ำ แชร์ หรือดาวน์โหลด PDF ได้ตลอดอายุโค้ด 24 ชั่วโมง
             </div>
           </div>
 
@@ -725,19 +700,26 @@
             </div>
 
             <!-- Result Actions -->
-            <div class="results-action-panel">
+            <div class="results-action-panel luxury-share-panel">
               <div class="action-panel-header">
-                <h4>📲 บันทึกใบเซียมซี & แชร์ไปยังโซเชียล</h4>
-                <p>แชร์เป็นภาพ Info ใบเซียมซีพร้อมคำทำนายเต็ม หรือดาวน์โหลดเก็บลงเครื่องเป็นไฟล์ PDF</p>
+                <span class="share-panel-crown">✦ SHARE SACRED FORTUNE ✦</span>
+                <h4>📲 แชร์การ์ดเซียมซีลงโซเชียล & บันทึกใบรับรอง PDF</h4>
+                <p>รับภาพกราฟิก Info Card ใบเซียมซีดีไซน์หรูพร้อมคำทำนายเต็ม หรือดาวน์โหลดเก็บลงเครื่องเป็นไฟล์ PDF</p>
               </div>
-              <div class="results-action-row siamsi-actions-footer">
-                <button type="button" id="btn-siamsi-share-result" class="btn-mystic-primary">
-                  <span>📤</span>
-                  <span data-i18n="btn_siamsi_share_result">แชร์โซเชียล (รูป Info + คำทำนายเต็ม)</span>
+              <div class="social-hero-cta-wrap">
+                <button type="button" id="btn-siamsi-share-result" class="btn-social-hero-cta">
+                  <span class="social-cta-icon">✨📤</span>
+                  <div class="social-cta-text">
+                    <strong data-i18n="btn_siamsi_share_result">แชร์ลงโซเชียล (ภาพกราฟิก Info Card + คำทำนายเต็ม)</strong>
+                    <span>Facebook • Instagram • LINE • TikTok • X</span>
+                  </div>
+                  <span class="social-cta-arrow">➔</span>
                 </button>
+              </div>
+              <div class="results-action-row secondary-share-grid siamsi-actions-footer">
                 <button type="button" id="btn-siamsi-download-pdf" class="btn-secondary-mystic">
                   <span>📄</span>
-                  <span>บันทึกเป็นไฟล์ PDF ลงเครื่อง</span>
+                  <span>ดาวน์โหลดใบเซียมซี PDF</span>
                 </button>
                 <button type="button" id="btn-siamsi-copy-result" class="btn-secondary-mystic">
                   <span>📋</span>
@@ -756,9 +738,6 @@
                   <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
                 </button>
               </div>
-              <div class="code-locked-notice">
-                🔒 ผลเซียมซีนี้ถูกบันทึกผูกกับรหัสโค้ดของท่านแล้ว สามารถเปิดดูซ้ำ แชร์ หรือดาวน์โหลด PDF ได้ตลอดอายุโค้ด 24 ชั่วโมง
-              </div>
             </div>
 
           </div>
@@ -775,15 +754,67 @@
 
       </div> <!-- /#siamsi-mode-container -->
 
+      <!-- =================================================================== -->
+      <!-- CUSTOM DISCIPLINE CONTAINER (สำหรับศาสตร์พยากรณ์ใหม่ที่เพิ่มจากหลังบ้าน) -->
+      <!-- =================================================================== -->
+      <div id="custom-discipline-container" style="display: none;">
+        <section class="view-screen active">
+          <div class="altar-hero">
+            <div class="altar-seal-wrapper">
+              <div class="mystic-circle">
+                <div class="witch-icon" id="custom-disc-icon">🌟</div>
+              </div>
+            </div>
+            <h2 id="custom-disc-title">แท่นพยากรณ์ศาสตร์ศักดิ์สิทธิ์</h2>
+            <p class="hero-subtitle" id="custom-disc-desc">ตั้งจิตอธิษฐานถึงสิ่งที่ปรารถนา แล้วกดเปิดรับคำทำนาย</p>
+
+            <div class="ritual-card-box" id="custom-disc-setup-box">
+              <div class="three-card-ritual-banner">
+                <div class="ritual-banner-badge" id="custom-disc-positions-badge">✦ ตำราเรียงลำดับคำทำนาย ✦</div>
+                <div class="ritual-positions-preview" id="custom-disc-positions-preview"></div>
+              </div>
+              <button type="button" id="btn-custom-disc-draw" class="btn-mystic-primary btn-begin-grand">
+                <span>✨</span>
+                <span>ตั้งจิตอธิษฐาน & เปิดคำทำนาย</span>
+                <span>✨</span>
+              </button>
+            </div>
+
+            <div id="custom-disc-result-area" style="display: none; width: 100%; max-width: 900px; margin-top: 1.5rem;">
+              <div class="interpretations-section" id="custom-disc-feed"></div>
+              <div class="results-action-panel luxury-share-panel" style="margin-top: 1.8rem;">
+                <div class="action-panel-header">
+                  <span class="share-panel-crown">✦ SHARE YOUR DESTINY ✦</span>
+                  <h4>📲 แชร์การ์ดคำทำนายลงโซเชียล & บันทึกใบรับรอง PDF</h4>
+                </div>
+                <div class="social-hero-cta-wrap">
+                  <button type="button" id="btn-custom-disc-share" class="btn-social-hero-cta">
+                    <span class="social-cta-icon">✨📤</span>
+                    <div class="social-cta-text">
+                      <strong>แชร์ลงโซเชียล (ภาพกราฟิก Info Card + คำทำนายเต็ม)</strong>
+                      <span>Facebook • Instagram • LINE • TikTok • X</span>
+                    </div>
+                    <span class="social-cta-arrow">➔</span>
+                  </button>
+                </div>
+                <div class="results-action-row secondary-share-grid">
+                  <button type="button" id="btn-custom-disc-pdf" class="btn-secondary-mystic">
+                    <span>📄</span>
+                    <span>ดาวน์โหลดใบคำทำนาย PDF</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (คลีน ไม่แสดงลิงก์แอดมินในหน้าลูกค้า) -->
     <footer class="mystic-footer">
       <p data-i18n="footer_credits">
-        เซียมซีทาโรต์ (SiamSi Tarot) • ระบบพยากรณ์ไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซีศักดิ์สิทธิ์
-      </p>
-      <p style="margin-top: 0.35rem; font-size: 0.78rem; opacity: 0.75;">
-        บริการพยากรณ์ออนไลน์ระดับมืออาชีพ • <a href="admin.html" style="color: var(--gold-primary); text-decoration: none;">สำหรับผู้ดูแลระบบ (Admin Backoffice)</a>
+        เซียมซีทาโรต์ (SiamSi Tarot) • สถาบันพยากรณ์ไพ่ทาโรต์และเสี่ยงเซียมซีศักดิ์สิทธิ์
       </p>
     </footer>
 
@@ -871,6 +902,7 @@
   <script src="js/siamsi-tanjai-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
+  <script src="js/rag-engine.js"></script>
   <script src="js/code-manager.js"></script>
   <script src="js/share-pdf.js"></script>
   <script src="js/siamsi.js"></script>

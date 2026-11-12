@@ -39,6 +39,30 @@ class AdminBackoffice {
     this.statAccessed = document.getElementById("stat-accessed-codes");
     this.statDrawn = document.getElementById("stat-drawn-codes");
     this.statShared = document.getElementById("stat-shared-codes");
+    this.statRagChunks = document.getElementById("stat-rag-chunks");
+
+    // Admin Passcode & Quick Demo Bar
+    this.inputAdminPasscode = document.getElementById("input-admin-passcode");
+    this.btnSaveAdminPasscode = document.getElementById("btn-save-admin-passcode");
+
+    // RAG Knowledge Base Elements
+    this.ragUploadForm = document.getElementById("rag-upload-form");
+    this.ragDocTitle = document.getElementById("rag-doc-title");
+    this.ragDocDiscipline = document.getElementById("rag-doc-discipline");
+    this.ragFileInput = document.getElementById("rag-file-input");
+    this.ragDocContent = document.getElementById("rag-doc-content");
+    this.ragDocsList = document.getElementById("rag-docs-list");
+    this.btnCopyNotebookLmPrompt = document.getElementById("btn-copy-notebooklm-prompt");
+
+    // Add New Discipline Modal Elements
+    this.btnOpenAddDiscipline = document.getElementById("btn-open-add-discipline");
+    this.btnOpenAddDiscipline2 = document.getElementById("btn-open-add-discipline-2");
+    this.btnInlineAddDiscipline = document.getElementById("btn-inline-add-discipline");
+    this.addDisciplineModal = document.getElementById("add-discipline-modal");
+    this.btnCloseDisciplineModal = document.getElementById("btn-close-discipline-modal");
+    this.btnCancelDiscipline = document.getElementById("btn-cancel-discipline");
+    this.addDisciplineForm = document.getElementById("add-discipline-form");
+    this.customDisciplinesGrid = document.getElementById("custom-disciplines-grid");
 
     // Create Code Form
     this.createForm = document.getElementById("create-code-form");
@@ -142,6 +166,117 @@ class AdminBackoffice {
     if (this.detailModal) {
       this.detailModal.addEventListener("click", (e) => {
         if (e.target === this.detailModal) this.detailModal.classList.remove("active");
+      });
+    }
+
+    // Admin Passcode Save
+    if (this.inputAdminPasscode && window.codeManager && typeof window.codeManager.getAdminPasscode === "function") {
+      this.inputAdminPasscode.value = window.codeManager.getAdminPasscode();
+    }
+    if (this.btnSaveAdminPasscode) {
+      this.btnSaveAdminPasscode.addEventListener("click", () => {
+        const val = this.inputAdminPasscode ? this.inputAdminPasscode.value.trim() : "ADMIN99";
+        if (window.codeManager && typeof window.codeManager.setAdminPasscode === "function") {
+          const saved = window.codeManager.setAdminPasscode(val);
+          if (this.inputAdminPasscode) this.inputAdminPasscode.value = saved;
+          this.showToast(`🔐 บันทึกรหัสผ่านเข้าหน้าแอดมินเป็น "${saved}" เรียบร้อยแล้ว!`);
+        }
+      });
+    }
+
+    // Demo Code Quick Test & Reset Buttons in Admin Bar
+    document.querySelectorAll("[data-test-code]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const code = btn.getAttribute("data-test-code");
+        const url = this.buildCustomerDirectUrl(code);
+        window.open(url, "_blank");
+      });
+    });
+    document.querySelectorAll("[data-reset-code]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const code = btn.getAttribute("data-reset-code");
+        await window.codeManager.updateCodeAdmin(code, "reset_draw");
+        await this.refreshData();
+        this.showToast(`🔄 รีเซ็ตสิทธิ์โค้ดทดสอบ ${code} เรียบร้อยแล้ว!`);
+      });
+    });
+
+    // NotebookLM RAG Knowledge Base File Input & Submit
+    if (this.ragFileInput) {
+      this.ragFileInput.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const text = String(ev.target.result || "");
+          if (this.ragDocContent) this.ragDocContent.value = text;
+          if (this.ragDocTitle && !this.ragDocTitle.value.trim()) {
+            this.ragDocTitle.value = file.name.replace(/\.(md|txt|json)$/i, "");
+          }
+          this.showToast(`📂 อ่านไฟล์ตำรา "${file.name}" เรียบร้อย พร้อมอัปโหลดเข้าคลัง RAG`);
+        };
+        reader.readAsText(file, "utf-8");
+      });
+    }
+
+    if (this.ragUploadForm) {
+      this.ragUploadForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!window.ragEngine) return;
+        const title = this.ragDocTitle ? this.ragDocTitle.value.trim() : "";
+        const discipline = this.ragDocDiscipline ? this.ragDocDiscipline.value : "tarot";
+        const content = this.ragDocContent ? this.ragDocContent.value.trim() : "";
+        if (!content) {
+          this.showToast("⚠️ กรุณาวางเนื้อหาสรุปตำราหรือเลือกไฟล์ก่อนอัปโหลด");
+          return;
+        }
+        const doc = await window.ragEngine.uploadKnowledgeDocument({
+          title: title || "ตำราพยากรณ์เสริม (NotebookLM)",
+          source: "NotebookLM Upload",
+          discipline,
+          content
+        });
+        if (this.ragDocTitle) this.ragDocTitle.value = "";
+        if (this.ragDocContent) this.ragDocContent.value = "";
+        if (this.ragFileInput) this.ragFileInput.value = "";
+        this.renderRagKnowledgeBase();
+        this.renderStats();
+        this.showToast(`📚 อัปโหลดตำรา "${doc.title}" (${(doc.chunks || []).length} หัวข้อ) เข้าระบบพยากรณ์ RAG สำเร็จ!`);
+      });
+    }
+
+    if (this.btnCopyNotebookLmPrompt) {
+      this.btnCopyNotebookLmPrompt.addEventListener("click", () => {
+        if (!window.ragEngine) return;
+        const promptText = window.ragEngine.getNotebookLMPromptTemplate();
+        navigator.clipboard.writeText(promptText).then(() => {
+          this.showToast("📋 คัดลอก Prompt สำหรับนำไปสั่ง Google NotebookLM สรุปตำราเรียบร้อยแล้ว!");
+        });
+      });
+    }
+
+    // Add New Divination Discipline Modal Events
+    const openDiscModal = () => {
+      if (this.addDisciplineModal) this.addDisciplineModal.classList.add("active");
+    };
+    const closeDiscModal = () => {
+      if (this.addDisciplineModal) this.addDisciplineModal.classList.remove("active");
+    };
+    if (this.btnOpenAddDiscipline) this.btnOpenAddDiscipline.addEventListener("click", openDiscModal);
+    if (this.btnOpenAddDiscipline2) this.btnOpenAddDiscipline2.addEventListener("click", openDiscModal);
+    if (this.btnInlineAddDiscipline) this.btnInlineAddDiscipline.addEventListener("click", openDiscModal);
+    if (this.btnCloseDisciplineModal) this.btnCloseDisciplineModal.addEventListener("click", closeDiscModal);
+    if (this.btnCancelDiscipline) this.btnCancelDiscipline.addEventListener("click", closeDiscModal);
+    if (this.addDisciplineModal) {
+      this.addDisciplineModal.addEventListener("click", (e) => {
+        if (e.target === this.addDisciplineModal) closeDiscModal();
+      });
+    }
+
+    if (this.addDisciplineForm) {
+      this.addDisciplineForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleAddNewDiscipline();
       });
     }
   }
@@ -261,6 +396,8 @@ class AdminBackoffice {
       }
     }
 
+    this.renderDisciplinesAndDropdowns();
+    this.renderRagKnowledgeBase();
     this.renderStats();
     this.renderTable();
   }
@@ -268,13 +405,209 @@ class AdminBackoffice {
   renderStats() {
     const total = this.codes.length;
     const accessed = this.codes.filter(c => c.logs && c.logs.accessCount > 0).length;
-    const drawn = this.codes.filter(c => c.drawCount > 0 && c.readingResult).length;
+    const drawn = this.codes.filter(c => (c.drawCount > 0 && c.readingResult) || c.tarotResult || c.siamsiResult).length;
     const sharedOrPdf = this.codes.filter(c => c.logs && (c.logs.shareCount > 0 || c.logs.pdfDownloadCount > 0)).length;
 
     if (this.statTotal) this.statTotal.textContent = total;
     if (this.statAccessed) this.statAccessed.textContent = accessed;
     if (this.statDrawn) this.statDrawn.textContent = drawn;
     if (this.statShared) this.statShared.textContent = sharedOrPdf;
+
+    if (this.statRagChunks && window.ragEngine) {
+      const docs = window.ragEngine.getAllDocuments();
+      const totalChunks = docs.reduce((acc, d) => acc + ((d.chunks && d.chunks.length) || 0), 0);
+      this.statRagChunks.textContent = `${totalChunks} หัวข้อ (${docs.length} ตำรา)`;
+    }
+  }
+
+  renderRagKnowledgeBase() {
+    if (!this.ragDocsList || !window.ragEngine) return;
+    const docs = window.ragEngine.getAllDocuments();
+    if (docs.length === 0) {
+      this.ragDocsList.innerHTML = `<div style="padding:1rem; color:var(--text-muted);">ยังไม่มีตำราในคลังความรู้</div>`;
+      return;
+    }
+
+    const discLabel = { tarot: "🔮 ไพ่ทาโรต์", siamsi: "🎋 เซียมซี", all: "🌟 ทุกศาสตร์" };
+    this.ragDocsList.innerHTML = docs.map(doc => `
+      <div class="rag-doc-card">
+        <div class="rag-doc-card-main">
+          <div class="rag-doc-title-row">
+            <strong>📖 ${doc.title}</strong>
+            <span class="rag-chunk-pill">${(doc.chunks || []).length} หัวข้อความรู้</span>
+          </div>
+          <div class="rag-doc-meta">
+            <span>${discLabel[doc.discipline] || "🔮 พยากรณ์"}</span>
+            <span>• แหล่งที่มา: ${doc.source || "NotebookLM"}</span>
+            <span>• อัปเดต: ${this.formatDateTime(doc.uploadedAt)}</span>
+          </div>
+        </div>
+        <div class="rag-doc-actions">
+          ${doc.id !== "doc_default_master_tarot"
+            ? `<button type="button" class="btn-row-act btn-danger" data-del-rag="${doc.id}">🗑️ ลบตำรา</button>`
+            : `<span class="badge-success" style="font-size:0.75rem;">ตำราหลักตั้งต้น</span>`}
+        </div>
+      </div>
+    `).join("");
+
+    this.ragDocsList.querySelectorAll("[data-del-rag]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const docId = btn.getAttribute("data-del-rag");
+        await window.ragEngine.deleteDocument(docId);
+        this.renderRagKnowledgeBase();
+        this.renderStats();
+        this.showToast("🗑️ ลบชุดตำราออกจากคลัง RAG เรียบร้อยแล้ว");
+      });
+    });
+  }
+
+  renderDisciplinesAndDropdowns() {
+    if (!window.disciplineManager) return;
+    const customList = window.disciplineManager.getAllCustomDisciplines();
+
+    // Update Package Dropdown in Create Code Form
+    if (this.selectServiceMode) {
+      const currentVal = this.selectServiceMode.value;
+      let html = `
+        <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)</option>
+        <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (1 ครั้ง)</option>
+        <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (โค้ดพิเศษ ใช้ได้ 2 บริการ อย่างละ 1 ครั้ง)</option>
+      `;
+      customList.forEach(d => {
+        html += `<option value="${d.id}">${d.icon || "✨"} ศาสตร์พิเศษ: ${d.name_th} (${d.drawCount || 3} ตำแหน่ง)</option>`;
+      });
+      this.selectServiceMode.innerHTML = html;
+      if (currentVal) this.selectServiceMode.value = currentVal;
+    }
+
+    // Update Filter Dropdown
+    if (this.filterMode) {
+      const curFilter = this.filterMode.value;
+      let fHtml = `
+        <option value="all">ทุกแพ็กเกจ / ทุกศาสตร์</option>
+        <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
+        <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซี</option>
+        <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี</option>
+      `;
+      customList.forEach(d => {
+        fHtml += `<option value="${d.id}">${d.icon || "✨"} ${d.name_th}</option>`;
+      });
+      this.filterMode.innerHTML = fHtml;
+      if (curFilter) this.filterMode.value = curFilter;
+    }
+
+    // Render Disciplines Grid in Section 5
+    if (this.customDisciplinesGrid) {
+      const builtInCards = `
+        <div class="discipline-item-card builtin">
+          <div class="disc-card-head">
+            <span class="disc-card-icon">🔮</span>
+            <div>
+              <strong>แพ็กเกจ 1: ไพ่ทาโรต์ 78 ใบ (3-Card Spread)</strong>
+              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
+            </div>
+          </div>
+          <p class="disc-card-desc">เรียงไพ่ 3 ใบตามตำรา (ความรักโสด/มีคู่, การงาน, การเงิน, สุขภาพ) พร้อมระบบ RAG เสริมความแม่นยำ</p>
+        </div>
+        <div class="discipline-item-card builtin">
+          <div class="disc-card-head">
+            <span class="disc-card-icon">🎋</span>
+            <div>
+              <strong>แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (2 ตำรา 200 ใบ)</strong>
+              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
+            </div>
+          </div>
+          <p class="disc-card-desc">ตำราหว่องไทซิน 100 ใบ และตำราหลวงพ่อทันใจ 100 ใบ พร้อมระบบเขย่าเซียมซี 3 มิติ</p>
+        </div>
+        <div class="discipline-item-card builtin">
+          <div class="disc-card-head">
+            <span class="disc-card-icon">🌟</span>
+            <div>
+              <strong>แพ็กเกจ 3: แพ็กเกจคู่พิเศษ (ดูดวง + เซียมซี)</strong>
+              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
+            </div>
+          </div>
+          <p class="disc-card-desc">รหัสโค้ดเดียวเข้าใช้บริการได้ทั้งไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซี อย่างละ 1 ครั้ง</p>
+        </div>
+      `;
+
+      const customCards = customList.map(d => `
+        <div class="discipline-item-card custom">
+          <div class="disc-card-head">
+            <span class="disc-card-icon">${d.icon || "✨"}</span>
+            <div>
+              <strong>${d.name_th}</strong>
+              <span class="disc-status-tag custom-tag">ศาสตร์ที่เพิ่มใหม่ (${d.drawCount || 3} ตำแหน่ง)</span>
+            </div>
+          </div>
+          <p class="disc-card-desc">${d.description || ""}</p>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+            <span style="font-size:0.78rem; color:#bae6fd;">จำนวนคำทำนาย: ${(d.items || []).length} รายการ</span>
+            <button type="button" class="btn-row-act btn-danger" data-del-disc="${d.id}">🗑️ ลบศาสตร์นี้</button>
+          </div>
+        </div>
+      `).join("");
+
+      this.customDisciplinesGrid.innerHTML = builtInCards + customCards;
+
+      this.customDisciplinesGrid.querySelectorAll("[data-del-disc]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del-disc");
+          window.disciplineManager.deleteDiscipline(id);
+          this.renderDisciplinesAndDropdowns();
+          this.showToast("🗑️ ลบศาสตร์พยากรณ์ออกจากระบบแล้ว");
+        });
+      });
+    }
+  }
+
+  handleAddNewDiscipline() {
+    if (!window.disciplineManager) return;
+    const nameThEl = document.getElementById("disc-name-th");
+    const iconEl = document.getElementById("disc-icon");
+    const drawCountEl = document.getElementById("disc-draw-count");
+    const positionsEl = document.getElementById("disc-positions");
+    const descEl = document.getElementById("disc-description");
+    const itemsTextEl = document.getElementById("disc-items-text");
+
+    const name_th = nameThEl ? nameThEl.value.trim() : "";
+    if (!name_th) return;
+
+    const icon = iconEl ? iconEl.value.trim() : "🪐";
+    const drawCount = drawCountEl ? parseInt(drawCountEl.value, 10) : 3;
+    const positions = positionsEl
+      ? positionsEl.value.split(",").map(s => s.trim()).filter(Boolean)
+      : ["อดีต / เหตุ", "ปัจจุบัน / ผล", "อนาคต / สรุป"];
+    const description = descEl ? descEl.value.trim() : "";
+    const rawLines = itemsTextEl ? itemsTextEl.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean) : [];
+    const items = rawLines.map(line => {
+      const parts = line.split("|").map(p => p.trim());
+      return {
+        name: parts[0] || "สัญลักษณ์ศักดิ์สิทธิ์",
+        meaning: parts[1] || "พลังงานแห่งความสำเร็จและการเปลี่ยนแปลงที่ดี",
+        advice: parts[2] || "ตั้งสติและเปิดรับโอกาสใหม่ด้วยความมั่นใจ"
+      };
+    });
+
+    const created = window.disciplineManager.addDiscipline({
+      name_th,
+      icon,
+      drawCount,
+      positions,
+      description,
+      items: items.length > 0 ? items : undefined
+    });
+
+    if (nameThEl) nameThEl.value = "";
+    if (descEl) descEl.value = "";
+    if (itemsTextEl) itemsTextEl.value = "";
+    if (this.addDisciplineModal) this.addDisciplineModal.classList.remove("active");
+
+    this.renderDisciplinesAndDropdowns();
+    if (this.selectServiceMode) {
+      this.selectServiceMode.value = created.id;
+    }
+    this.showToast(`✨ เพิ่มศาสตร์พยากรณ์ใหม่ "${created.name_th}" เรียบร้อยแล้ว! สามารถสร้างโค้ดให้ลูกค้าได้ทันที`);
   }
 
   formatDateTime(ts) {
@@ -339,7 +672,11 @@ class AdminBackoffice {
 
       let modeBadge = `<span class="mode-pill tarot">🔮 แพ็ก 1: ไพ่ทาโรต์ 3 ใบ</span>`;
       let quotaText = `สิทธิ์จับไพ่: ${codeObj.tarotDrawCount || (tarotRes ? 1 : 0)} / 1 ครั้ง`;
-      if (codeObj.mode === "siamsi") {
+      const customDisc = window.disciplineManager ? window.disciplineManager.getDisciplineById(codeObj.mode) : null;
+      if (customDisc) {
+        modeBadge = `<span class="mode-pill combo">${customDisc.icon || "✨"} ${customDisc.name_th}</span>`;
+        quotaText = `สิทธิ์เปิดคำทำนาย: ${codeObj.drawCount || 0} / 1 ครั้ง`;
+      } else if (codeObj.mode === "siamsi") {
         modeBadge = `<span class="mode-pill siamsi">🎋 แพ็ก 2: เสี่ยงเซียมซี</span>`;
         quotaText = `สิทธิ์เซียมซี: ${codeObj.siamsiDrawCount || (siamsiRes ? 1 : 0)} / 1 ครั้ง`;
       } else if (codeObj.mode === "combo") {

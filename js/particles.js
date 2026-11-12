@@ -84,9 +84,9 @@ class MysticParticles {
 
   createParticle(fromMouse = false) {
     const rand = Math.random();
-    let color = "245, 197, 66"; // Gold
-    if (rand > 0.65) color = "192, 132, 252"; // Mystic Amethyst
-    else if (rand > 0.88) color = "239, 68, 68"; // Sacred Crimson
+    let color = "243, 207, 122"; // Champagne Gold (Logo Gold)
+    if (rand > 0.62) color = "56, 189, 248"; // Celestial Cyan (Logo Starlight)
+    else if (rand > 0.84) color = "168, 85, 247"; // Nebula Violet (Logo Cosmic Glow)
 
     return {
       x: fromMouse ? this.mouseX + (Math.random() * 40 - 20) : Math.random() * this.width,

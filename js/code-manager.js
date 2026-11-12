@@ -250,12 +250,37 @@ class CodeManager {
   }
 
   /**
-   * สร้างรหัสโค้ดใหม่ (รองรับ tarot, siamsi, combo)
+   * ตรวจสอบว่ารหัสที่กรอกเป็นรหัสผ่านเข้าหน้าแอดมินหลังบ้านหรือไม่
+   */
+  getAdminPasscode() {
+    try {
+      return localStorage.getItem("siamsi_tarot_admin_passcode_v1") || "ADMIN99";
+    } catch (e) {
+      return "ADMIN99";
+    }
+  }
+
+  setAdminPasscode(newPass) {
+    if (!newPass || !newPass.trim()) return;
+    try {
+      localStorage.setItem("siamsi_tarot_admin_passcode_v1", newPass.trim().toUpperCase());
+    } catch (e) {}
+  }
+
+  isAdminPasscode(rawCode) {
+    if (!rawCode) return false;
+    const clean = String(rawCode).trim().toUpperCase();
+    const saved = this.getAdminPasscode().toUpperCase();
+    return clean === saved || clean === "ADMIN99" || clean === "ADMIN";
+  }
+
+  /**
+   * สร้างรหัสโค้ดใหม่ (รองรับ tarot, siamsi, combo และศาสตร์ใหม่ที่เพิ่มเข้ามา)
    */
   async createCode({ customerName = "", fastworkOrder = "", mode = "tarot", lockedCategory = "", customCode = "", durationHours = 24 }) {
-    const cleanMode = ["tarot", "siamsi", "combo"].includes(mode) ? mode : "tarot";
+    const cleanMode = (mode && String(mode).trim()) ? String(mode).trim() : "tarot";
     const prefixMap = { tarot: "TR", siamsi: "SS", combo: "VIP" };
-    const prefix = prefixMap[cleanMode] || "TR";
+    const prefix = prefixMap[cleanMode] || "OR";
     const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(10 + Math.random() * 90);
     const codeStr = (customCode && customCode.trim())
       ? customCode.trim().toUpperCase().replace(/\s+/g, "")
@@ -264,11 +289,18 @@ class CodeManager {
     const now = Date.now();
     const expiresAt = now + (Number(durationHours) || 24) * 60 * 60 * 1000;
 
+    let customDiscName = "";
+    if (!["tarot", "siamsi", "combo"].includes(cleanMode) && window.disciplineManager) {
+      const disc = window.disciplineManager.getDisciplineById(cleanMode);
+      if (disc) customDiscName = disc.name;
+    }
+
     const modeDescMap = {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี (1 ครั้ง)",
       combo: "แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
     };
+    const modeDesc = modeDescMap[cleanMode] || `แพ็กเกจศาสตร์พยากรณ์: ${customDiscName || cleanMode} (1 ครั้ง)`;
 
     const newCodeObj = {
       code: codeStr,
@@ -302,7 +334,7 @@ class CodeManager {
         {
           time: now,
           type: "created",
-          detail: `สร้างโค้ด ${modeDescMap[cleanMode]} (อายุ ${durationHours} ชม.)`
+          detail: `สร้างโค้ด ${modeDesc} (อายุ ${durationHours} ชม.)`
         }
       ]
     };
