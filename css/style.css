@@ -203,29 +203,31 @@ body {
 
 .altar-seal-wrapper {
   position: relative;
-  display: inline-block;
-  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.6rem;
 }
 
 .mystic-circle {
-  width: 138px;
-  height: 138px;
+  width: 136px;
+  height: 136px;
   border-radius: 50%;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   margin: 0 auto;
-  box-shadow: 0 0 38px var(--purple-glow), inset 0 0 22px rgba(243, 207, 122, 0.25);
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 72%);
+  box-shadow: 0 0 36px var(--purple-glow), 0 0 24px rgba(243, 207, 122, 0.35);
 }
 
 .mystic-circle::before {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: -7px;
   border-radius: 50%;
   border: 2px dashed var(--gold-primary);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
   animation: rotate-seal 24s linear infinite;
   pointer-events: none;
 }
@@ -233,9 +235,11 @@ body {
 .mystic-circle::after {
   content: "";
   position: absolute;
-  inset: -12px;
+  inset: -14px;
   border-radius: 50%;
-  border: 1.5px dotted rgba(56, 189, 248, 0.65);
+  border: 1.5px dotted rgba(56, 189, 248, 0.7);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
   animation: rotate-seal 18s linear infinite reverse;
   pointer-events: none;
 }
@@ -3860,21 +3864,36 @@ body {
 
 .gate-sacred-emblem {
   position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 146px;
+  height: 146px;
+  margin: 0.5rem auto 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
 }
 
 .gate-emblem-ring {
   position: absolute;
-  inset: 0;
-  border: 2px dashed rgba(245, 197, 66, 0.65);
+  inset: -7px;
+  border: 2px dashed rgba(243, 207, 122, 0.78);
   border-radius: 50%;
-  box-shadow: 0 0 28px rgba(245, 197, 66, 0.35), inset 0 0 20px rgba(192, 132, 252, 0.3);
-  animation: pulse-spin 18s linear infinite;
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  box-shadow: 0 0 28px rgba(243, 207, 122, 0.35), inset 0 0 18px rgba(56, 189, 248, 0.28);
+  animation: rotate-seal 22s linear infinite;
+  pointer-events: none;
+}
+
+.gate-sacred-emblem::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border: 1.5px dotted rgba(56, 189, 248, 0.65);
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  animation: rotate-seal 16s linear infinite reverse;
+  pointer-events: none;
 }
 
 .gate-emblem-icons {
@@ -4243,31 +4262,33 @@ body {
 
 .climax-magic-seal {
   position: relative;
-  width: 170px;
-  height: 170px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
+  width: 144px;
+  height: 144px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1.6rem;
+  border-radius: 50%;
 }
 
 .climax-ring {
   position: absolute;
   border-radius: 50%;
-  border: 2px dashed var(--gold-primary);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  pointer-events: none;
 }
 
 .climax-ring.ring-outer {
-  inset: 0;
-  box-shadow: 0 0 45px rgba(245, 197, 66, 0.6);
-  animation: pulse-spin 4s linear infinite;
+  inset: -8px;
+  border: 2px dashed var(--gold-primary);
+  box-shadow: 0 0 40px rgba(243, 207, 122, 0.55);
+  animation: rotate-seal 8s linear infinite;
 }
 
 .climax-ring.ring-middle {
-  inset: 22px;
-  border-style: solid;
-  border-color: rgba(192, 132, 252, 0.8);
-  animation: pulse-spin 3s linear infinite reverse;
+  inset: -16px;
+  border: 1.5px dotted rgba(56, 189, 248, 0.85);
+  animation: rotate-seal 6s linear infinite reverse;
 }
 
 .climax-core-icon {
@@ -4669,64 +4690,55 @@ body {
 }
 
 .brand-logo-frame {
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, #fff1be 0%, #f3cf7a 45%, #38bdf8 100%);
-  box-shadow: 0 0 18px rgba(243, 207, 122, 0.48), 0 0 28px rgba(56, 189, 248, 0.32);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 0 16px rgba(243, 207, 122, 0.45), 0 0 24px rgba(56, 189, 248, 0.3);
+  display: inline-grid;
+  place-items: center;
   flex-shrink: 0;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* เอฟเฟกต์วงแหวนเวทย์หมุนรอบโลโก้ โดยตัวโลโก้อยู่นิ่ง */
+/* เอฟเฟกต์วงแหวนเวทย์หมุนรอบโลโก้แบบสมมาตร (Concentric 100%) โดยตัวโลโก้อยู่นิ่ง */
 .logo-orbit-ring {
   position: absolute;
-  inset: -6px;
+  inset: -4px;
   border-radius: 50%;
-  border: 1.5px dashed rgba(243, 207, 122, 0.72);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-  animation: rotate-seal 14s linear infinite;
+  border: 1.5px dashed rgba(243, 207, 122, 0.78);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.32);
+  animation: rotate-seal 16s linear infinite;
   pointer-events: none;
 }
 
-.logo-orbit-ring::after {
-  content: "✦";
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.65rem;
-  color: #fff1be;
-  text-shadow: 0 0 6px #38bdf8;
-}
-
 .brand-logo:hover .brand-logo-frame {
-  transform: scale(1.06);
-  box-shadow: 0 0 24px rgba(243, 207, 122, 0.75), 0 0 34px rgba(56, 189, 248, 0.55);
+  transform: scale(1.05);
+  box-shadow: 0 0 22px rgba(243, 207, 122, 0.72), 0 0 32px rgba(56, 189, 248, 0.5);
 }
 
 .brand-logo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   border-radius: 50%;
+  border: 1.5px solid rgba(243, 207, 122, 0.85);
   display: block;
   position: relative;
   z-index: 2;
 }
 
 .altar-stationary-logo {
-  width: 112px;
-  height: 112px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  border: 2.5px solid var(--gold-primary);
-  box-shadow: 0 0 25px rgba(243, 207, 122, 0.5);
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 24px rgba(243, 207, 122, 0.48);
   object-fit: cover;
+  object-position: center center;
 }
 
 .code-pill-logo-img {
@@ -4734,23 +4746,21 @@ body {
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: center center;
   border: 1.5px solid var(--gold-primary);
   box-shadow: 0 0 10px rgba(243, 207, 122, 0.45);
   flex-shrink: 0;
 }
 
 .climax-core-logo {
-  width: 104px;
-  height: 104px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, #fff1be, #f3cf7a, #38bdf8);
-  box-shadow: 0 0 35px rgba(243, 207, 122, 0.8), 0 0 50px rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 35px rgba(243, 207, 122, 0.75), 0 0 50px rgba(56, 189, 248, 0.5);
   position: relative;
   z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
 }
 
 .print-cert-logo {
@@ -4758,56 +4768,21 @@ body {
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: center center;
   border: 2px solid #f3cf7a;
   margin: 0 auto 0.5rem;
   display: block;
-}
-
-.gate-logo-emblem {
-  width: 158px;
-  height: 158px;
-  margin: 0 auto 1.25rem;
-  border-radius: 50%;
-  padding: 4px;
-  background: linear-gradient(135deg, #fff1be 0%, #f3cf7a 40%, #38bdf8 75%, #a855f7 100%);
-  box-shadow:
-    0 0 38px rgba(243, 207, 122, 0.45),
-    0 0 65px rgba(56, 189, 248, 0.3),
-    inset 0 0 18px rgba(255, 241, 190, 0.4);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gate-logo-emblem::before {
-  content: "";
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 2px dashed rgba(243, 207, 122, 0.72);
-  box-shadow: 0 0 22px rgba(56, 189, 248, 0.3);
-  animation: rotate-seal 20s linear infinite;
-  pointer-events: none;
-}
-
-.gate-logo-emblem::after {
-  content: "";
-  position: absolute;
-  inset: -18px;
-  border-radius: 50%;
-  border: 1.5px dotted rgba(56, 189, 248, 0.55);
-  animation: rotate-seal 15s linear infinite reverse;
-  pointer-events: none;
 }
 
 .gate-logo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   border-radius: 50%;
   display: block;
-  border: 2px solid rgba(4, 7, 23, 0.92);
+  border: 2px solid rgba(243, 207, 122, 0.88);
+  box-shadow: 0 0 28px rgba(243, 207, 122, 0.42);
   position: relative;
   z-index: 2;
 }

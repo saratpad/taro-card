@@ -165,11 +165,11 @@ const DOMAIN_POSITIONS_3 = {
 };
 
 const SPREAD_BANNER_TITLES = {
-  love_single: "🎴 ตำราเรียงไพ่ 3 ใบ (ความรัก • คนโสด): อดีต ➔ ปัจจุบัน ➔ แนวโน้มในอนาคต",
-  love_couple: "🎴 ตำราเรียงไพ่ 3 ใบ (ความรัก • มีคนในใจ/มีคู่): ความรู้สึกเรา ➔ ความรู้สึกอีกฝ่าย ➔ แนวโน้มในอนาคต",
-  career: "🎴 ตำราเรียงไพ่ 3 ใบ (การงาน): อดีต ➔ ปัจจุบัน ➔ อนาคต",
-  finance: "🎴 ตำราเรียงไพ่ 3 ใบ (การเงิน): เหตุ (อดีต) ➔ ผล (ปัจจุบัน) ➔ สรุป (อนาคต)",
-  health: "🎴 ตำราเรียงไพ่ 3 ใบ (สุขภาพ): เหตุ ➔ ผล ➔ สรุป"
+  love_single: "🎴 ลำดับการเปิดไพ่ 3 ใบ (ความรัก • คนโสด): อดีต ➔ ปัจจุบัน ➔ แนวโน้มในอนาคต",
+  love_couple: "🎴 ลำดับการเปิดไพ่ 3 ใบ (ความรัก • มีคนในใจ/มีคู่): ความรู้สึกเรา ➔ ความรู้สึกอีกฝ่าย ➔ แนวโน้มในอนาคต",
+  career: "🎴 ลำดับการเปิดไพ่ 3 ใบ (การงาน): อดีต ➔ ปัจจุบัน ➔ อนาคต",
+  finance: "🎴 ลำดับการเปิดไพ่ 3 ใบ (การเงิน): เหตุ (อดีต) ➔ ผล (ปัจจุบัน) ➔ สรุป (อนาคต)",
+  health: "🎴 ลำดับการเปิดไพ่ 3 ใบ (สุขภาพ): เหตุ ➔ ผล ➔ สรุป"
 };
 
 class TarotApp {
@@ -1271,10 +1271,6 @@ class TarotApp {
 
   getCardDomainText(card, isReversed, category, lang = "th", posIdx = 0) {
     const aspect = isReversed ? card.reversed : card.upright;
-    const ragHit = (window.ragEngine && typeof window.ragEngine.retrieveCardInsight === "function")
-      ? window.ragEngine.retrieveCardInsight(card.id, card.name_en, card.name_th, category, this.loveStatus)
-      : null;
-
     const deepPosContext = this.buildPositionDeepContext(card, isReversed, category, posIdx, lang);
 
     if (category === "love") {
@@ -1288,15 +1284,13 @@ class TarotApp {
         ? (isSingle ? (aspect.love.single[lang] || aspect.love[lang]) : (aspect.love.couple[lang] || aspect.love[lang]))
         : (aspect.love[lang] || "");
 
-      const ragSentence = ragHit ? `<p class="domain-sub-expansion"><span class="expansion-tag">📖 ขยายความเชิงลึก:</span> ${ragHit.insight}</p>` : "";
-      const plainCombined = `${directStatusText} ${deepPosContext}${ragHit ? ` (${ragHit.insight})` : ""}`;
+      const plainCombined = `${directStatusText} ${deepPosContext}`;
 
       return {
         headerLabel,
         fullHtml: `
-          <p class="domain-main-paragraph">${directStatusText}</p>
+          <p class="domain-lead-meaning">${directStatusText}</p>
           <p class="domain-pos-context">${deepPosContext}</p>
-          ${ragSentence}
         `,
         plainText: plainCombined,
         shortText: directStatusText
@@ -1306,15 +1300,13 @@ class TarotApp {
     const domainNames = { career: "การงานและธุรกิจ", finance: "การเงินและโชคลาภ", health: "สุขภาพและพลังงานชีวิต" };
     const headerLabel = `คำทำนายเจาะลึกด้าน${domainNames[category] || "ดวงชะตา"}`;
     const raw = (aspect[category] && aspect[category][lang]) ? aspect[category][lang] : aspect.career[lang];
-    const ragSentence = ragHit ? `<p class="domain-sub-expansion"><span class="expansion-tag">📖 ขยายความเชิงลึก:</span> ${ragHit.insight}</p>` : "";
-    const plainCombined = `${raw} ${deepPosContext}${ragHit ? ` (${ragHit.insight})` : ""}`;
+    const plainCombined = `${raw} ${deepPosContext}`;
 
     return {
       headerLabel,
       fullHtml: `
-        <p class="domain-main-paragraph">${raw}</p>
+        <p class="domain-lead-meaning">${raw}</p>
         <p class="domain-pos-context">${deepPosContext}</p>
-        ${ragSentence}
       `,
       plainText: plainCombined,
       shortText: raw
@@ -1359,14 +1351,14 @@ class TarotApp {
       : "";
 
     if (this.printMetaLine) {
-      this.printMetaLine.textContent = `หมวดหมู่เฉพาะด้าน: ${domainName}${loveStatusBadge} • ตำราเรียงไพ่ 3 ใบ: ${spreadFormula} • วันที่: ${nowStr}`;
+      this.printMetaLine.textContent = `หมวดหมู่เฉพาะด้าน: ${domainName}${loveStatusBadge} • ลำดับหน้าไพ่: ${spreadFormula} • วันที่: ${nowStr}`;
     }
 
     if (this.resultsQuestionRecap) {
       this.resultsQuestionRecap.innerHTML = `
         <span>✦ หมวดหมู่: </span><strong style="color:var(--gold-primary);">${domainName}${loveStatusBadge}</strong>
         <span style="margin: 0 0.6rem; opacity:0.5;">•</span>
-        <span>ตำราเรียงไพ่ 3 ใบ: </span><strong style="color:#fde68a;">${spreadFormula}</strong>
+        <span>ลำดับหน้าไพ่: </span><strong style="color:#fde68a;">${spreadFormula}</strong>
       `;
     }
 
@@ -1420,7 +1412,7 @@ class TarotApp {
       }, index * 480 + 280);
     });
 
-    // 2. Render Modern, Non-Redundant 3-Card Domain Predictions (ไม่มีสารเตือนใจท้ายไพ่รายใบ เพราะย้ายไปรวมในบทสรุปจัดเต็ม)
+    // 2. Render Modern, Non-Redundant 3-Card Domain Predictions
     const domainIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿" };
     const domainIcon = domainIcons[this.category] || "✨";
 
@@ -1455,6 +1447,7 @@ class TarotApp {
         image: card.image,
         isReversed: item.isReversed,
         positionTitle: posLabel,
+        domainHeaderLabel: domainInfo.headerLabel,
         domainMeaning: domainInfo.plainText,
         shortMeaning: domainInfo.shortText,
         advice: aspect.advice[this.lang]
@@ -1484,7 +1477,7 @@ class TarotApp {
           </div>
         </div>
 
-        <div class="pos-domain-prediction-block">
+        <div class="pos-domain-prediction-block modern-prediction-block">
           <div class="prediction-block-header">
             <span class="prediction-icon">${domainIcon}</span>
             <h5 class="prediction-title">${domainInfo.headerLabel}</h5>
@@ -1498,7 +1491,7 @@ class TarotApp {
       this.interpretationsFeed.appendChild(cardCard);
     });
 
-    // 3. Render Comprehensive Master Verdict & Action Blueprint (รวมคำแนะนำจากไพ่ทั้ง 3 ใบไว้ในบทสรุปอย่างจุใจ)
+    // 3. Render Unified Summary & Analysis + Recommendations & Precautions (ไม่แยกเข็มทิศซ้ำซ้อน และไม่อ้างตำรา)
     const verdictResult = this.renderDirectVerdict();
 
     // Save structured reading payload for Social Share Info Card, PDF, and Admin Backoffice
@@ -1515,7 +1508,6 @@ class TarotApp {
       cards: payloadCards,
       verdictBadge: verdictResult.badgeText,
       verdictPlain: verdictResult.plainText,
-      masterGuidanceList: verdictResult.masterGuidanceList,
       doAction: verdictResult.doAction,
       dontAction: verdictResult.dontAction,
       luckyBoost: verdictResult.luckyBoost
@@ -1563,69 +1555,26 @@ class TarotApp {
       this.verdictBadge.textContent = badgeText;
     }
     if (this.verdictTitle) {
-      this.verdictTitle.textContent = "บทสรุปคำพยากรณ์ฉบับสมบูรณ์ & เข็มทิศคำแนะนำปฏิบัติ";
+      this.verdictTitle.textContent = "บทสรุปวิเคราะห์ดวงชะตา & คำแนะนำ";
     }
 
     const verdictData = this.generateConciseVerdictText(verdictType);
-    const ragSynthesis = (window.ragEngine && typeof window.ragEngine.retrieveSpreadSynthesis === "function")
-      ? window.ragEngine.retrieveSpreadSynthesis(this.drawnCards, this.category, this.loveStatus)
-      : null;
 
-    // รวบรวมคำแนะนำจากไพ่ทั้ง 3 ใบมาสังเคราะห์เป็นเข็มทิศนำทางในส่วนสรุป (แทนการแปะท้ายไพ่รายใบ)
-    const guidanceStageTitles = this.getGuidanceStageTitles();
-    const masterGuidanceList = this.drawnCards.map((item, idx) => {
+    // รวบรวมคำแนะนำจากหน้าไพ่มาผสานรวมในส่วนคำแนะนำโดยตรง (ไม่แยกเป็นหัวข้อเข็มทิศให้สับสน)
+    const cardsGuidanceSentences = this.drawnCards.map((item) => {
       const c = item.card;
       const aspect = item.isReversed ? c.reversed : c.upright;
-      const adviceText = aspect.advice[this.lang] || "";
-      const stageTitle = guidanceStageTitles[idx] || `แนวทางจากไพ่ใบที่ ${idx + 1}`;
-      return {
-        step: idx + 1,
-        cardName: c.name_th,
-        stageTitle,
-        adviceText
-      };
-    });
+      return aspect.advice[this.lang] || "";
+    }).filter(Boolean);
+
+    const combinedDoAction = `${verdictData.doAction} โดยแนวทางสำคัญในการก้าวต่อไปคือ ${cardsGuidanceSentences.join(" • ")} ${verdictData.luckyBoost}`;
 
     if (this.verdictContent) {
-      const guidanceHtml = masterGuidanceList.map(g => `
-        <div class="master-guidance-item">
-          <div class="mg-step-badge">${g.step}</div>
-          <div class="mg-body">
-            <div class="mg-head">
-              <strong>${g.stageTitle}</strong>
-              <span class="mg-card-tag">จากไพ่ ${g.cardName}</span>
-            </div>
-            <p class="mg-text">${g.adviceText}</p>
-          </div>
-        </div>
-      `).join("");
-
-      const ragSynthHtml = ragSynthesis
-        ? `<div class="rag-insight-callout" style="margin-top:1rem;">
-             <div class="rag-insight-head">📚 บทวิเคราะห์เชื่อมโยงตามตำราพยากรณ์ (${ragSynthesis.docTitle})</div>
-             <p class="rag-insight-text">${ragSynthesis.insight}</p>
-           </div>`
-        : "";
-
       this.verdictContent.innerHTML = `
         <div class="verdict-storyline-card">
-          <div class="storyline-eyebrow">✦ 1. บทวิเคราะห์เชื่อมโยงเส้นทางดวงชะตาทั้ง 3 ตำแหน่ง ✦</div>
-          <p class="storyline-lead">${verdictData.plainText}</p>
-          <p class="storyline-deep">${verdictData.deepNarrative}</p>
-          ${ragSynthHtml}
-        </div>
-
-        <div class="master-guidance-section">
-          <div class="mg-section-header">
-            <span class="mg-section-icon">🧭</span>
-            <div>
-              <h4>2. เข็มทิศคำแนะนำเจาะลึกจากหน้าไพ่ทั้ง 3 ใบ</h4>
-              <p>ถอดรหัสคำแนะนำจากไพ่ทุกใบเพื่อเป็นแนวทางรับมือและต่อยอดอนาคตให้คุ้มค่าที่สุด</p>
-            </div>
-          </div>
-          <div class="master-guidance-grid">
-            ${guidanceHtml}
-          </div>
+          <div class="verdict-sub-section-title">🔮 สรุปและวิเคราะห์ดวงชะตา</div>
+          <p class="storyline-lead" style="margin-bottom:0.85rem; line-height:1.85; color:#f8fafc;">${verdictData.plainText}</p>
+          <p class="storyline-deep" style="margin:0; line-height:1.85; color:#e2e8f0;">${verdictData.deepNarrative}</p>
         </div>
       `;
     }
@@ -1633,16 +1582,18 @@ class TarotApp {
     if (this.verdictActionsSummary) {
       this.verdictActionsSummary.innerHTML = `
         <div class="do-box modern-action-card">
-          <div class="mac-head">✅ สิ่งที่ควรลงมือทำเพื่อเปิดดวงรับโชค (Do's)</div>
-          <p>${verdictData.doAction}</p>
+          <div class="action-card-head">
+            <span class="action-card-icon">✅</span>
+            <strong style="margin:0;">คำแนะนำและแนวทางที่ควรทำ</strong>
+          </div>
+          <p style="margin:0; line-height:1.78;">${combinedDoAction}</p>
         </div>
         <div class="dont-box modern-action-card">
-          <div class="mac-head">⚠️ ข้อควรระวังและสิ่งที่ควรหลีกเลี่ยง (Don'ts)</div>
-          <p>${verdictData.dontAction}</p>
-        </div>
-        <div class="lucky-box modern-action-card full-span-card">
-          <div class="mac-head">✨ เคล็ดลับเสริมพลังงานมงคล & การปรับคลื่นจิตประจำหน้าไพ่</div>
-          <p>${verdictData.luckyBoost}</p>
+          <div class="action-card-head">
+            <span class="action-card-icon">⚠️</span>
+            <strong style="margin:0;">ข้อควรระวัง</strong>
+          </div>
+          <p style="margin:0; line-height:1.78;">${verdictData.dontAction}</p>
         </div>
       `;
     }
@@ -1651,8 +1602,7 @@ class TarotApp {
       verdictType,
       badgeText,
       plainText: `${verdictData.plainText} ${verdictData.deepNarrative}`,
-      masterGuidanceList,
-      doAction: verdictData.doAction,
+      doAction: combinedDoAction,
       dontAction: verdictData.dontAction,
       luckyBoost: verdictData.luckyBoost
     };
