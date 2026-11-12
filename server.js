@@ -40,7 +40,7 @@ function ensureDb() {
       codes: [
         {
           code: "TAROT99",
-          customerName: "ลูกค้าแพ็ก 1 (ดูดวงไพ่ทาโรต์)",
+          customerName: "",
           fastworkOrder: "FW-PACK1",
           mode: "tarot",
           lockedCategory: "",
@@ -72,7 +72,7 @@ function ensureDb() {
         },
         {
           code: "SIAMSI99",
-          customerName: "ลูกค้าแพ็ก 2 (เสี่ยงเซียมซี)",
+          customerName: "",
           fastworkOrder: "FW-PACK2",
           mode: "siamsi",
           lockedCategory: "",
@@ -104,7 +104,7 @@ function ensureDb() {
         },
         {
           code: "COMBO99",
-          customerName: "ลูกค้าแพ็ก 3 (ดูดวง + เสี่ยงเซียมซี)",
+          customerName: "",
           fastworkOrder: "FW-PACK3",
           mode: "combo",
           lockedCategory: "",
@@ -229,6 +229,7 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 409, { error: "รหัสโค้ดนี้มีอยู่ในระบบแล้ว กรุณาใช้รหัสอื่น" });
     }
     body.code = cleanCode;
+    delete body.customerName;
     db.codes.unshift(body);
     writeDb(db);
     return sendJson(res, 201, { codeObj: body });

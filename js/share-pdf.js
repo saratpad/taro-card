@@ -209,8 +209,7 @@ class ShareAndPdfEngine {
       day: "numeric"
     });
     const codeTag = readingData.code ? `รหัสโค้ด: ${readingData.code}` : "";
-    const seekerTag = readingData.customerName ? `เจ้าชะตา: ${readingData.customerName}` : "";
-    const metaLine = [seekerTag, codeTag, dateStr].filter(Boolean).join("   •   ");
+    const metaLine = [codeTag, dateStr].filter(Boolean).join("   •   ");
 
     ctx.fillStyle = "#bae6fd";
     ctx.font = "400 19px 'Prompt', sans-serif";
@@ -547,14 +546,12 @@ class ShareAndPdfEngine {
       .filter(Boolean)
       .join("\n");
 
-    const seekerLine = readingData.customerName ? `👤 ผู้รับคำทำนาย: ${readingData.customerName}\n` : "";
     const loveStatusLine = readingData.category === "love"
       ? `💞 สถานะหัวใจ: ${readingData.loveStatus === "couple" ? "คนมีคนในใจ / มีคนคุย / มีคู่" : "คนโสด"}\n`
       : "";
     const luckyLine = readingData.luckyBoost ? `• การเสริมดวงมงคล: ${readingData.luckyBoost}\n` : "";
 
     return `✨ ผลคำทำนายดวงชะตา "เซียมซีทาโรต์" (SIAMSI TAROT • ORACLE) ✨\n` +
-      seekerLine +
       `🏷️ หมวดหมู่ที่เลือกดู: ด้าน${readingData.categoryName}\n` +
       loveStatusLine +
       `🌟 แนวโน้มดวงชะตา: ${readingData.verdictBadge}\n\n` +
@@ -843,7 +840,6 @@ class ShareAndPdfEngine {
       day: "numeric"
     });
     const metaText = [
-      readingData.customerName ? `เจ้าชะตา: ${readingData.customerName}` : null,
       readingData.code ? `รหัสโค้ด: ${readingData.code}` : null,
       `วันที่พยากรณ์: ${dateStr}`
     ].filter(Boolean).join("   •   ");

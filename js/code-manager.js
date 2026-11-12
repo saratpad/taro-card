@@ -77,7 +77,7 @@ class CodeManager {
       const sampleCodes = [
         {
           code: "TAROT99",
-          customerName: "ลูกค้าแพ็ก 1 (ดูดวงไพ่ทาโรต์)",
+          customerName: "",
           fastworkOrder: "FW-PACK1",
           mode: "tarot",
           lockedCategory: "",
@@ -109,7 +109,7 @@ class CodeManager {
         },
         {
           code: "SIAMSI99",
-          customerName: "ลูกค้าแพ็ก 2 (เสี่ยงเซียมซี)",
+          customerName: "",
           fastworkOrder: "FW-PACK2",
           mode: "siamsi",
           lockedCategory: "",
@@ -141,7 +141,7 @@ class CodeManager {
         },
         {
           code: "COMBO99",
-          customerName: "ลูกค้าแพ็ก 3 (ดูดวง + เสี่ยงเซียมซี)",
+          customerName: "",
           fastworkOrder: "FW-PACK3",
           mode: "combo",
           lockedCategory: "",
@@ -298,7 +298,7 @@ class CodeManager {
 
     const newCodeObj = {
       code: codeStr,
-      customerName: customerName.trim() || "ลูกค้า Fastwork",
+      customerName: "",
       fastworkOrder: fastworkOrder.trim() || "-",
       mode: cleanMode,
       lockedCategory: lockedCategory || "",
@@ -617,7 +617,6 @@ class CodeManager {
     try {
       const minPayload = {
         c: codeObj.code,
-        n: codeObj.customerName || "",
         o: codeObj.fastworkOrder || "",
         m: codeObj.mode || "tarot",
         l: codeObj.lockedCategory || "",
@@ -643,7 +642,7 @@ class CodeManager {
         if (parsed && String(parsed.c).toUpperCase() === cleanCode) {
           return this._normalizeCodeObj({
             code: cleanCode,
-            customerName: parsed.n || "ลูกค้า Fastwork",
+            customerName: "",
             fastworkOrder: parsed.o || "-",
             mode: ["tarot", "siamsi", "combo"].includes(parsed.m) ? parsed.m : "tarot",
             lockedCategory: parsed.l || "",
@@ -673,7 +672,7 @@ class CodeManager {
     if (inferredMode) {
       return this._normalizeCodeObj({
         code: cleanCode,
-        customerName: "ลูกค้าผู้รับคำทำนาย",
+        customerName: "",
         fastworkOrder: "-",
         mode: inferredMode,
         lockedCategory: "",

@@ -636,7 +636,7 @@ class TarotApp {
     const codeObj = res.codeObj;
     this.activeCode = codeObj.code;
     this.activeCodeObj = codeObj;
-    this.seekerName = codeObj.customerName || "";
+    this.seekerName = "";
     window.codeManager.saveActiveSessionCode(codeObj.code);
 
     window.mysticAudio.playCrystalBell(784, 1.4);
@@ -648,9 +648,9 @@ class TarotApp {
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
     if (this.activeCodeBanner) {
       this.activeCodeBanner.style.display = "inline-flex";
-      const labelMap = { tarot: "แพ็ก 1: ดูดวงไพ่ทาโรต์", siamsi: "แพ็ก 2: เสี่ยงเซียมซี", combo: "แพ็ก 3: ดูดวง + เซียมซี" };
+      const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "แพ็กคู่" };
       if (this.activeCodeText) {
-        this.activeCodeText.textContent = `${codeObj.code} (${labelMap[codeObj.mode] || "ดูดวง"})`;
+        this.activeCodeText.textContent = `🔑 ${codeObj.code} • ${shortLabelMap[codeObj.mode] || "ดูดวง"}`;
       }
       if (this.activeCodeExpiry) {
         this.activeCodeExpiry.textContent = window.codeManager.getRemainingTimeText(codeObj, this.lang);
@@ -692,8 +692,8 @@ class TarotApp {
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.add("active");
 
-    if (this.comboWelcomeTitle && codeObj.customerName) {
-      this.comboWelcomeTitle.textContent = `ยินดีต้อนรับคุณ ${codeObj.customerName} สู่แพ็กเกจคู่พิเศษ`;
+    if (this.comboWelcomeTitle) {
+      this.comboWelcomeTitle.textContent = `ยินดีต้อนรับสู่แพ็กเกจคู่พิเศษ (ไพ่ทาโรต์ + เซียมซี)`;
     }
 
     const tarotDone = (codeObj.tarotDrawCount || 0) >= 1 && !!codeObj.tarotResult;
@@ -791,9 +791,7 @@ class TarotApp {
       }
     }
     this.spreadCount = 3;
-    if (readingResult.customerName) {
-      this.seekerName = readingResult.customerName;
-    }
+    this.seekerName = "";
 
     this.drawnCards = readingResult.cards.map((savedCard, idx) => {
       const found = TAROT_CARDS.find(c => c.id === savedCard.id) || TAROT_CARDS[idx];
@@ -1319,12 +1317,7 @@ class TarotApp {
     const positions = this.getPositions();
 
     if (this.resultsSeekerGreeting) {
-      if (this.seekerName) {
-        this.resultsSeekerGreeting.innerHTML = `<span>✨</span> ${dict.reading_for_user.replace("{name}", `<strong style="color:var(--gold-primary);">${this.seekerName}</strong>`)}`;
-        this.resultsSeekerGreeting.style.display = "inline-flex";
-      } else {
-        this.resultsSeekerGreeting.style.display = "none";
-      }
+      this.resultsSeekerGreeting.style.display = "none";
     }
 
     const nowStr = new Date().toLocaleDateString(this.lang === "th" ? "th-TH" : "en-US", {
@@ -1334,9 +1327,7 @@ class TarotApp {
     });
 
     if (this.printSeekerLine) {
-      this.printSeekerLine.textContent = this.seekerName
-        ? `ผู้รับคำทำนาย: ${this.seekerName} ${this.activeCode ? `(รหัสโค้ด: ${this.activeCode})` : ""}`
-        : `รหัสพยากรณ์: ${this.activeCode || "เซียมซีทาโรต์"}`;
+      this.printSeekerLine.textContent = `รหัสพยากรณ์: ${this.activeCode || "เซียมซีทาโรต์"}`;
     }
     const spreadFormulaMap = {
       love_single: "อดีต ➔ ปัจจุบัน ➔ แนวโน้มในอนาคต",
@@ -1498,7 +1489,7 @@ class TarotApp {
     this.currentReadingPayload = {
       mode: "tarot",
       code: this.activeCode || "",
-      customerName: this.seekerName || "",
+      customerName: "",
       category: this.category,
       loveStatus: this.category === "love" ? this.loveStatus : "",
       categoryName: `${domainName}${loveStatusBadge}`,

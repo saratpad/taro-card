@@ -135,16 +135,6 @@
       <form id="create-code-form" class="create-code-form" autocomplete="off">
         <div class="form-row-grid">
           <div class="admin-field">
-            <label for="input-customer-name">👤 ชื่อลูกค้า (Fastwork)</label>
-            <input type="text" id="input-customer-name" placeholder="เช่น คุณพลอย / คุณมินทร์" required />
-          </div>
-
-          <div class="admin-field">
-            <label for="input-order-id">🏷️ เลขออเดอร์ Fastwork / หมายเหตุ</label>
-            <input type="text" id="input-order-id" placeholder="เช่น FW-8821" />
-          </div>
-
-          <div class="admin-field">
             <label for="select-service-mode">📦 แพ็กเกจบริการ / ศาสตร์พยากรณ์</label>
             <select id="select-service-mode">
               <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)</option>
@@ -162,6 +152,11 @@
               <option value="finance">💰 ล็อกหมวด: การเงิน</option>
               <option value="health">🌿 ล็อกหมวด: สุขภาพ</option>
             </select>
+          </div>
+
+          <div class="admin-field">
+            <label for="input-order-id">🏷️ เลขออเดอร์ Fastwork / หมายเหตุ (ไม่บังคับ)</label>
+            <input type="text" id="input-order-id" placeholder="เช่น FW-8821" />
           </div>
 
           <div class="admin-field">
@@ -199,16 +194,16 @@
       </div>
     </section>
 
-    <!-- 3. Code Management & Real-Time Log Table -->
+    <!-- 3. Code Management & Real-Time Log Table (Compact & Collapsible Details) -->
     <section class="admin-panel-card">
       <div class="panel-header table-header-bar">
         <div>
-          <h2>📋 รายการโค้ดดูดวง & Log การใช้งานของลูกค้า</h2>
-          <p>ติดตามว่าลูกค้าเข้าระบบหรือยัง สุ่มไพ่ใบไหน แชร์หรือยัง และกดดาวน์โหลดไฟล์ PDF / รูป Info เพื่อส่งให้ลูกค้าแบบแมนนวลได้ทันที</p>
+          <h2>📋 รายการโค้ดดูดวง & สถานะการใช้งาน (กะทัดรัด • คลิกดูรายละเอียดรายโค้ด)</h2>
+          <p>แสดงรายการโค้ดแบบแถวเล็กเพื่อดูได้หลายโค้ดพร้อมกัน (ไม่จัดเก็บชื่อลูกค้า) คลิก <strong>"▾ รายละเอียด"</strong> เพื่อดูผลไพ่ เวลา Log และโหลด PDF</p>
         </div>
 
         <div class="table-filters">
-          <input type="search" id="admin-search-input" class="admin-search-input" placeholder="🔍 ค้นหารหัสโค้ด, ชื่อลูกค้า, ออเดอร์..." />
+          <input type="search" id="admin-search-input" class="admin-search-input" placeholder="🔍 ค้นหารหัสโค้ด หรือเลขออเดอร์..." />
           <select id="admin-filter-mode" class="admin-filter-select">
             <option value="all">ทุกแพ็กเกจ / ทุกศาสตร์</option>
             <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
@@ -226,15 +221,13 @@
       </div>
 
       <div class="admin-table-responsive">
-        <table class="admin-codes-table">
+        <table class="admin-codes-table compact-codes-table">
           <thead>
             <tr>
-              <th>รหัสโค้ด / ลูกค้า</th>
-              <th>บริการที่เข้าถึง</th>
-              <th>อายุโค้ด (1 วัน)</th>
-              <th>Log สถานะการใช้งาน</th>
-              <th>ผลคำทำนายที่ลูกค้าสุ่มได้</th>
-              <th>ดาวน์โหลด PDF / จัดการแมนนวล</th>
+              <th>รหัสโค้ด / ออเดอร์</th>
+              <th>แพ็กเกจ</th>
+              <th>สถานะย่อ & อายุโค้ด</th>
+              <th>จัดการด่วน & รายละเอียด (ซ่อนไว้)</th>
             </tr>
           </thead>
           <tbody id="admin-codes-tbody">

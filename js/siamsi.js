@@ -1079,19 +1079,11 @@ class SiamsiApp {
     // Scroll to top of results smoothly
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Seeker Name greeting
-    const rawSeeker = (this.seekerNameInput && typeof this.seekerNameInput.value === "string") ? this.seekerNameInput.value.trim() : "";
-    const seekerName = rawSeeker || (this.app ? this.app.seekerName : "");
+    // Seeker greeting (no customer name stored)
     if (this.resultSeekerGreeting) {
-      if (isEn) {
-        this.resultSeekerGreeting.textContent = seekerName 
-          ? `Heavenly Oracle for "${seekerName}"`
-          : "Heavenly Oracle for the Honored Seeker";
-      } else {
-        this.resultSeekerGreeting.textContent = seekerName 
-          ? `ชะตาแห่งสวรรค์สำหรับคุณ "${seekerName}"`
-          : "ชะตาแห่งสวรรค์สำหรับท่านผู้ขอพร";
-      }
+      this.resultSeekerGreeting.textContent = isEn
+        ? "Heavenly Oracle for the Honored Seeker"
+        : "ชะตาแห่งสวรรค์สำหรับท่านผู้ขอพร";
     }
 
     // Number badge (เบอร์ 00 - 99 & ใบที่ 1 - 100)
@@ -1521,7 +1513,7 @@ ${poem}
     return {
       mode: "siamsi",
       code: (this.app && this.app.activeCode) ? this.app.activeCode : "",
-      customerName: (this.app && this.app.seekerName) ? this.app.seekerName : "",
+      customerName: "",
       deck: this.currentDeck,
       deckName,
       signNumber: sign.number,

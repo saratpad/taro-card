@@ -203,28 +203,32 @@ body {
 
 .altar-seal-wrapper {
   position: relative;
-  width: 116px;
-  height: 116px;
+  width: clamp(158px, 20vw, 188px);
+  height: clamp(158px, 20vw, 188px);
+  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
-  margin: 0 auto 1.6rem;
+  margin: 0 auto 1.8rem;
 }
 
 .mystic-circle {
-  width: 116px;
-  height: 116px;
+  width: 100%;
+  height: 100%;
+  max-width: 188px;
+  max-height: 188px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   position: relative;
   display: grid;
   place-items: center;
   margin: 0 auto;
-  box-shadow: 0 0 32px var(--purple-glow), 0 0 22px rgba(243, 207, 122, 0.35);
+  box-shadow: 0 0 38px var(--purple-glow), 0 0 26px rgba(243, 207, 122, 0.42);
 }
 
 .mystic-circle::before {
   content: "";
   position: absolute;
-  inset: -7px;
+  inset: -9px;
   border-radius: 50%;
   border: 2px dashed var(--gold-primary);
   box-sizing: border-box;
@@ -236,9 +240,9 @@ body {
 .mystic-circle::after {
   content: "";
   position: absolute;
-  inset: -14px;
+  inset: -18px;
   border-radius: 50%;
-  border: 1.5px dotted rgba(56, 189, 248, 0.7);
+  border: 1.5px dotted rgba(56, 189, 248, 0.75);
   box-sizing: border-box;
   transform-origin: 50% 50%;
   animation: rotate-seal 18s linear infinite reverse;
@@ -3800,44 +3804,45 @@ body {
 .active-code-banner {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  background: linear-gradient(135deg, rgba(245, 197, 66, 0.16), rgba(88, 28, 135, 0.35));
-  border: 1px solid rgba(245, 197, 66, 0.55);
+  gap: 0.45rem;
+  background: rgba(12, 22, 56, 0.85);
+  border: 1px solid rgba(243, 207, 122, 0.45);
   border-radius: 9999px;
-  padding: 0.35rem 0.5rem 0.35rem 0.9rem;
-  box-shadow: 0 0 18px rgba(245, 197, 66, 0.2);
+  padding: 0.24rem 0.45rem 0.24rem 0.65rem;
+  box-shadow: 0 0 12px rgba(243, 207, 122, 0.14);
 }
 
 .code-pill-icon {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
 }
 
 .code-pill-info {
   display: flex;
-  flex-direction: column;
-  line-height: 1.2;
+  align-items: center;
+  gap: 0.4rem;
+  line-height: 1.1;
 }
 
 .code-pill-id {
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--gold-primary);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .code-pill-Sub {
-  font-size: 0.7rem;
-  color: #fde68a;
+  font-size: 0.68rem;
+  color: #cbd5e1;
 }
 
 .btn-change-code {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(245, 197, 66, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(243, 207, 122, 0.35);
   color: var(--text-main);
   font-family: var(--font-thai);
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  padding: 0.3rem 0.7rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 9999px;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -3865,9 +3870,10 @@ body {
 
 .gate-sacred-emblem {
   position: relative;
-  width: 146px;
-  height: 146px;
-  margin: 0.5rem auto 1.6rem;
+  width: clamp(150px, 18vw, 174px);
+  height: clamp(150px, 18vw, 174px);
+  aspect-ratio: 1 / 1;
+  margin: 0.5rem auto 1.7rem;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -4717,10 +4723,10 @@ body {
 }
 
 .brand-logo-frame {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  box-shadow: 0 0 16px rgba(243, 207, 122, 0.45), 0 0 24px rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 18px rgba(243, 207, 122, 0.5), 0 0 26px rgba(56, 189, 248, 0.32);
   display: inline-grid;
   place-items: center;
   flex-shrink: 0;
@@ -4761,27 +4767,27 @@ body {
 .altar-stationary-logo {
   position: absolute;
   inset: 0;
-  width: 116px;
-  height: 116px;
-  max-width: 116px;
-  max-height: 116px;
+  width: 100%;
+  height: 100%;
+  max-width: 188px;
+  max-height: 188px;
   margin: auto;
   border-radius: 50%;
-  border: 2px solid var(--gold-primary);
-  box-shadow: 0 0 24px rgba(243, 207, 122, 0.48);
+  border: 2.5px solid var(--gold-primary);
+  box-shadow: 0 0 30px rgba(243, 207, 122, 0.55), 0 0 42px rgba(56, 189, 248, 0.32);
   object-fit: cover;
   object-position: center center;
   z-index: 2;
 }
 
 .code-pill-logo-img {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
   object-position: center center;
-  border: 1.5px solid var(--gold-primary);
-  box-shadow: 0 0 10px rgba(243, 207, 122, 0.45);
+  border: 1px solid var(--gold-primary);
+  box-shadow: 0 0 8px rgba(243, 207, 122, 0.4);
   flex-shrink: 0;
 }
 
