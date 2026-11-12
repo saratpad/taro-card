@@ -1515,16 +1515,18 @@ body {
 }
 
 .verdict-actions-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  width: 100%;
 }
 
 .do-box, .dont-box {
+  width: 100%;
   border-radius: var(--radius-md);
-  padding: 1rem 1.2rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  padding: 1.2rem 1.45rem;
+  font-size: 1rem;
+  line-height: 1.78;
 }
 
 .do-box {
@@ -2199,9 +2201,9 @@ body {
   }
 
   .verdict-actions-summary {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.5cm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.45cm !important;
   }
 
   .do-box, .dont-box {
@@ -4579,9 +4581,37 @@ body {
   color: #6ee7b7;
 }
 
-.combo-service-icon {
-  font-size: 2.5rem;
-  line-height: 1;
+.combo-service-logo-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 18px rgba(243, 207, 122, 0.45), 0 0 24px rgba(56, 189, 248, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.combo-service-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+.siamsi-banner-logo-frame {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 0.25rem;
+  box-shadow: 0 0 22px rgba(243, 207, 122, 0.55), 0 0 30px rgba(56, 189, 248, 0.35);
+}
+
+#screen-siamsi-result .altar-seal-wrapper {
+  margin: 0 auto 1rem;
 }
 
 .combo-service-option h3 {
@@ -5258,7 +5288,110 @@ body {
   margin: 0;
 }
 
+/* ปุ่มกดแชร์ตรงไปยัง Facebook, Instagram (IG), TikTok, LINE, X */
+.direct-social-platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.modal-platforms-grid {
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.btn-platform-share {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  font-family: var(--font-thai);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.btn-platform-share:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #fff1be;
+}
+
+.btn-platform-share .plat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-platform-share .plat-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.btn-platform-share .plat-text strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.btn-platform-share .plat-text small {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-platform-share.plat-facebook {
+  background: linear-gradient(135deg, #1877F2 0%, #0b57d0 100%);
+  box-shadow: 0 6px 18px rgba(24, 119, 242, 0.38);
+}
+
+.btn-platform-share.plat-instagram {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  box-shadow: 0 6px 18px rgba(220, 39, 67, 0.38);
+}
+
+.btn-platform-share.plat-tiktok {
+  background: linear-gradient(135deg, #0f172a 0%, #111827 55%, #3b0764 100%);
+  border-color: #25f4ee;
+  box-shadow: -2px -2px 12px rgba(37, 244, 238, 0.35), 2px 2px 12px rgba(254, 44, 85, 0.42);
+}
+
+.btn-platform-share.plat-tiktok .plat-icon {
+  background: linear-gradient(135deg, rgba(37, 244, 238, 0.22), rgba(254, 44, 85, 0.25));
+  color: #ffffff;
+  filter: drop-shadow(-1px -1px 0 #25f4ee) drop-shadow(1px 1px 0 #fe2c55);
+}
+
+.btn-platform-share.plat-line {
+  background: linear-gradient(135deg, #06C755 0%, #03983e 100%);
+  box-shadow: 0 6px 18px rgba(6, 199, 85, 0.35);
+}
+
+.btn-platform-share.plat-x {
+  background: linear-gradient(135deg, #1e293b 0%, #090d16 100%);
+  border-color: rgba(148, 163, 184, 0.45);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
 @media (max-width: 640px) {
+  .direct-social-platforms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .btn-social-share-modern {
     flex-wrap: wrap;
     padding: 1rem;

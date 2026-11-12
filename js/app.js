@@ -556,6 +556,15 @@ class TarotApp {
       });
     }
 
+    // Direct Social Platform Share Buttons (Facebook, Instagram, TikTok, LINE, X)
+    document.querySelectorAll(".btn-platform-share").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const platform = btn.getAttribute("data-share-platform") || "facebook";
+        const modeHint = btn.getAttribute("data-share-mode") || "active";
+        await this.shareToSocialPlatform(platform, modeHint);
+      });
+    });
+
     // Card Zoom Modal Close
     if (this.modalCloseBtn) {
       this.modalCloseBtn.addEventListener("click", () => this.closeModal());
@@ -1864,6 +1873,61 @@ class TarotApp {
     // Desktop fallback: download the Info Card PNG and copy full text to clipboard
     await window.shareAndPdfEngine.downloadInfoImageFile(payload);
     this.showToast("🖼️ ดาวน์โหลดรูป Info Card และคัดลอกคำทำนายเต็มให้แล้ว! นำไปโพสต์ได้เลย");
+  }
+
+  async shareToSocialPlatform(platform, modeHint = "active") {
+    let payload = null;
+    if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
+      payload = this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign);
+    } else if (modeHint === "tarot" && this.currentReadingPayload) {
+      payload = this.currentReadingPayload;
+    } else {
+      payload = window.shareAndPdfEngine.currentReadingData ||
+        this.currentReadingPayload ||
+        (this.siamsiApp && this.siamsiApp.currentSign ? this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign) : null);
+    }
+    if (!payload) return;
+
+    await this.openSocialShareStudio(payload);
+
+    const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(fullCaption);
+      }
+    } catch (e) {}
+
+    if (this.activeCode) {
+      window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้ากดแชร์ผลคำทำนายไปยัง ${platform.toUpperCase()}`);
+    }
+
+    // Download the Info Card PNG so user can attach it immediately on Facebook / IG / TikTok / LINE / X
+    await window.shareAndPdfEngine.downloadInfoImageFile(payload);
+
+    const shareUrl = window.location.origin + window.location.pathname;
+    const shortSummary = payload.mode === "siamsi"
+      ? `🎋 ผลคำทำนายเซียมซีทาโรต์ เบอร์ ${payload.signNumber} (${payload.signTitle || ""}) — "${payload.oneLine || ""}" #เซียมซีทาโรต์ #ดูดวง`
+      : `🔮 ผลคำทำนายไพ่ทาโรต์ 3 ใบ หมวด${payload.categoryName || "ดวงชะตา"}: ${(payload.cards || []).map(c => c.name_th).join(" • ")} (${payload.verdictBadge || ""}) #เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์`;
+
+    if (platform === "facebook") {
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shortSummary)}`;
+      window.open(fbUrl, "_blank", "noopener,noreferrer");
+      this.showToast("📘 บันทึกรูป Info Card + คัดลอกคำทำนายเต็มแล้ว! กดวางโพสต์ลง Facebook ได้เลย");
+    } else if (platform === "instagram") {
+      window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+      this.showToast("📸 บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! เลือกรูปโพสต์ลง IG Story / Feed แล้ววางแคปชันได้เลย");
+    } else if (platform === "tiktok") {
+      window.open("https://www.tiktok.com/upload", "_blank", "noopener,noreferrer");
+      this.showToast("🎵 บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! อัปโหลดรูปลง TikTok แล้ววางแคปชันได้เลย");
+    } else if (platform === "line") {
+      const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shortSummary)}`;
+      window.open(lineUrl, "_blank", "noopener,noreferrer");
+      this.showToast("💚 บันทึกรูป Info Card + คัดลอกคำทำนายเต็มสำหรับแชร์ลง LINE เรียบร้อยแล้ว!");
+    } else if (platform === "x") {
+      const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shortSummary)}`;
+      window.open(xUrl, "_blank", "noopener,noreferrer");
+      this.showToast("𝕏 บันทึกรูป Info Card + เปิดหน้าโพสต์ X เรียบร้อยแล้ว!");
+    }
   }
 
   async downloadDirectPDF(readingPayload) {
