@@ -184,14 +184,33 @@ class AdminBackoffice {
 
     // Admin Passcode Save
     if (this.inputAdminPasscode && window.codeManager && typeof window.codeManager.getAdminPasscode === "function") {
-      this.inputAdminPasscode.value = window.codeManager.getAdminPasscode();
+      const currentPass = window.codeManager.getAdminPasscode();
+      this.inputAdminPasscode.value = currentPass;
+      const hintEl = document.querySelector(".pass-hint-pill");
+      if (hintEl) {
+        hintEl.innerHTML = `รหัสปัจจุบัน: <strong>${currentPass}</strong> (หรือ <strong>ADMIN99</strong>)`;
+      }
+      this.inputAdminPasscode.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (this.btnSaveAdminPasscode) this.btnSaveAdminPasscode.click();
+        }
+      });
     }
     if (this.btnSaveAdminPasscode) {
       this.btnSaveAdminPasscode.addEventListener("click", () => {
-        const val = this.inputAdminPasscode ? this.inputAdminPasscode.value.trim() : "ADMIN99";
+        const rawVal = this.inputAdminPasscode ? this.inputAdminPasscode.value.trim() : "";
+        if (!rawVal) {
+          this.showToast("⚠️ กรุณาระบุรหัสผ่านแอดมินที่ต้องการตั้ง");
+          return;
+        }
         if (window.codeManager && typeof window.codeManager.setAdminPasscode === "function") {
-          const saved = window.codeManager.setAdminPasscode(val);
+          const saved = window.codeManager.setAdminPasscode(rawVal) || rawVal.toUpperCase();
           if (this.inputAdminPasscode) this.inputAdminPasscode.value = saved;
+          const hintEl = document.querySelector(".pass-hint-pill");
+          if (hintEl) {
+            hintEl.innerHTML = `รหัสปัจจุบัน: <strong>${saved}</strong> (หรือ <strong>ADMIN99</strong>)`;
+          }
           this.showToast(`🔐 บันทึกรหัสผ่านเข้าหน้าแอดมินเป็น "${saved}" เรียบร้อยแล้ว!`);
         }
       });
@@ -407,11 +426,24 @@ class AdminBackoffice {
     this.renderTable();
   }
 
+  isDemoCode(codeObjOrStr) {
+    if (window.codeManager && typeof window.codeManager.isDemoCode === "function") {
+      return window.codeManager.isDemoCode(codeObjOrStr);
+    }
+    const codeStr = typeof codeObjOrStr === "string" ? codeObjOrStr : (codeObjOrStr && codeObjOrStr.code ? codeObjOrStr.code : "");
+    return ["TAROT99", "SIAMSI99", "COMBO99"].includes(String(codeStr).trim().toUpperCase());
+  }
+
+  getCustomerCodes() {
+    return (this.codes || []).filter(c => !this.isDemoCode(c));
+  }
+
   renderStats() {
-    const total = this.codes.length;
-    const accessed = this.codes.filter(c => c.logs && c.logs.accessCount > 0).length;
-    const drawn = this.codes.filter(c => (c.drawCount > 0 && c.readingResult) || c.tarotResult || c.siamsiResult).length;
-    const sharedOrPdf = this.codes.filter(c => c.logs && (c.logs.shareCount > 0 || c.logs.pdfDownloadCount > 0)).length;
+    const customerCodes = this.getCustomerCodes();
+    const total = customerCodes.length;
+    const accessed = customerCodes.filter(c => c.logs && c.logs.accessCount > 0).length;
+    const drawn = customerCodes.filter(c => (c.drawCount > 0 && c.readingResult) || c.tarotResult || c.siamsiResult).length;
+    const sharedOrPdf = customerCodes.filter(c => c.logs && (c.logs.shareCount > 0 || c.logs.pdfDownloadCount > 0)).length;
 
     if (this.statTotal) this.statTotal.textContent = total;
     if (this.statAccessed) this.statAccessed.textContent = accessed;
@@ -489,7 +521,10 @@ class AdminBackoffice {
     const modeFilter = this.filterMode ? this.filterMode.value : "all";
     const statusFilter = this.filterStatus ? this.filterStatus.value : "all";
 
-    const filtered = this.codes.filter(c => {
+    // ไม่รวมโค้ดทดสอบ (TAROT99, SIAMSI99, COMBO99) ในตาราง Log ของลูกค้า
+    const customerCodes = this.getCustomerCodes();
+
+    const filtered = customerCodes.filter(c => {
       if (modeFilter !== "all" && c.mode !== modeFilter) return false;
       const effStatus = this.getEffectiveStatus(c);
       if (statusFilter !== "all" && effStatus !== statusFilter) return false;

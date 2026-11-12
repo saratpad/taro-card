@@ -250,21 +250,39 @@ class CodeManager {
   }
 
   /**
+   * ตรวจสอบว่าเป็นโค้ดทดสอบระบบ (TAROT99, SIAMSI99, COMBO99) หรือไม่
+   */
+  isDemoCode(codeOrObj) {
+    if (!codeOrObj) return false;
+    const codeStr = typeof codeOrObj === "string" ? codeOrObj : (codeOrObj.code || "");
+    const clean = String(codeStr).trim().toUpperCase();
+    return clean === "TAROT99" || clean === "SIAMSI99" || clean === "COMBO99";
+  }
+
+  /**
    * ตรวจสอบว่ารหัสที่กรอกเป็นรหัสผ่านเข้าหน้าแอดมินหลังบ้านหรือไม่
    */
   getAdminPasscode() {
     try {
-      return localStorage.getItem("siamsi_tarot_admin_passcode_v1") || "ADMIN99";
+      const val = localStorage.getItem("siamsi_tarot_admin_passcode_v1");
+      if (val && val.trim() && val.trim().toLowerCase() !== "undefined" && val.trim().toLowerCase() !== "null") {
+        return val.trim().toUpperCase();
+      }
+      return "ADMIN99";
     } catch (e) {
       return "ADMIN99";
     }
   }
 
   setAdminPasscode(newPass) {
-    if (!newPass || !newPass.trim()) return;
+    const raw = (newPass !== undefined && newPass !== null) ? String(newPass).trim() : "";
+    const clean = (raw && raw.toLowerCase() !== "undefined" && raw.toLowerCase() !== "null")
+      ? raw.toUpperCase()
+      : "ADMIN99";
     try {
-      localStorage.setItem("siamsi_tarot_admin_passcode_v1", newPass.trim().toUpperCase());
+      localStorage.setItem("siamsi_tarot_admin_passcode_v1", clean);
     } catch (e) {}
+    return clean;
   }
 
   isAdminPasscode(rawCode) {
