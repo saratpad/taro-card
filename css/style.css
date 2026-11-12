@@ -203,21 +203,22 @@ body {
 
 .altar-seal-wrapper {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: 116px;
+  height: 116px;
+  display: grid;
+  place-items: center;
   margin: 0 auto 1.6rem;
 }
 
 .mystic-circle {
-  width: 136px;
-  height: 136px;
+  width: 116px;
+  height: 116px;
   border-radius: 50%;
   position: relative;
   display: grid;
   place-items: center;
   margin: 0 auto;
-  box-shadow: 0 0 36px var(--purple-glow), 0 0 24px rgba(243, 207, 122, 0.35);
+  box-shadow: 0 0 32px var(--purple-glow), 0 0 22px rgba(243, 207, 122, 0.35);
 }
 
 .mystic-circle::before {
@@ -4262,12 +4263,36 @@ body {
 
 .climax-magic-seal {
   position: relative;
-  width: 144px;
-  height: 144px;
+  width: clamp(200px, 28vmin, 248px);
+  height: clamp(200px, 28vmin, 248px);
+  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
-  margin: 0 auto 1.6rem;
+  margin: 0 auto 3.2rem;
   border-radius: 50%;
+}
+
+.climax-magic-seal::before {
+  content: "";
+  position: absolute;
+  inset: -48px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(243, 207, 122, 0.48);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  box-shadow: 0 0 65px rgba(168, 85, 247, 0.42);
+  animation: rotate-seal 14s linear infinite;
+  pointer-events: none;
+}
+
+.climax-magic-seal::after {
+  content: "";
+  position: absolute;
+  inset: -68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(243, 207, 122, 0.24) 0%, rgba(56, 189, 248, 0.16) 45%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .climax-ring {
@@ -4276,19 +4301,21 @@ body {
   box-sizing: border-box;
   transform-origin: 50% 50%;
   pointer-events: none;
+  z-index: 2;
 }
 
 .climax-ring.ring-outer {
-  inset: -8px;
-  border: 2px dashed var(--gold-primary);
-  box-shadow: 0 0 40px rgba(243, 207, 122, 0.55);
-  animation: rotate-seal 8s linear infinite;
+  inset: -16px;
+  border: 2.5px dashed var(--gold-primary);
+  box-shadow: 0 0 45px rgba(243, 207, 122, 0.65), inset 0 0 24px rgba(243, 207, 122, 0.3);
+  animation: rotate-seal 9s linear infinite;
 }
 
 .climax-ring.ring-middle {
-  inset: -16px;
-  border: 1.5px dotted rgba(56, 189, 248, 0.85);
-  animation: rotate-seal 6s linear infinite reverse;
+  inset: -32px;
+  border: 2px dotted rgba(56, 189, 248, 0.9);
+  box-shadow: 0 0 55px rgba(56, 189, 248, 0.45);
+  animation: rotate-seal 6.5s linear infinite reverse;
 }
 
 .climax-core-icon {
@@ -4297,14 +4324,14 @@ body {
 }
 
 .climax-title {
-  font-size: 1.65rem;
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
   color: var(--gold-primary);
-  text-shadow: 0 0 20px rgba(245, 197, 66, 0.6);
-  margin-bottom: 0.4rem;
+  text-shadow: 0 0 24px rgba(245, 197, 66, 0.65);
+  margin-bottom: 0.45rem;
 }
 
 .climax-sub {
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   color: var(--text-muted);
 }
 
@@ -4732,13 +4759,19 @@ body {
 }
 
 .altar-stationary-logo {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 116px;
+  height: 116px;
+  max-width: 116px;
+  max-height: 116px;
+  margin: auto;
   border-radius: 50%;
   border: 2px solid var(--gold-primary);
   box-shadow: 0 0 24px rgba(243, 207, 122, 0.48);
   object-fit: cover;
   object-position: center center;
+  z-index: 2;
 }
 
 .code-pill-logo-img {
@@ -4755,8 +4788,10 @@ body {
 .climax-core-logo {
   width: 100%;
   height: 100%;
+  max-width: 248px;
+  max-height: 248px;
   border-radius: 50%;
-  box-shadow: 0 0 35px rgba(243, 207, 122, 0.75), 0 0 50px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 50px rgba(243, 207, 122, 0.8), 0 0 85px rgba(56, 189, 248, 0.55);
   position: relative;
   z-index: 3;
   display: grid;
