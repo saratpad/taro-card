@@ -289,18 +289,12 @@ class CodeManager {
     const now = Date.now();
     const expiresAt = now + (Number(durationHours) || 24) * 60 * 60 * 1000;
 
-    let customDiscName = "";
-    if (!["tarot", "siamsi", "combo"].includes(cleanMode) && window.disciplineManager) {
-      const disc = window.disciplineManager.getDisciplineById(cleanMode);
-      if (disc) customDiscName = disc.name;
-    }
-
     const modeDescMap = {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี (1 ครั้ง)",
       combo: "แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
     };
-    const modeDesc = modeDescMap[cleanMode] || `แพ็กเกจศาสตร์พยากรณ์: ${customDiscName || cleanMode} (1 ครั้ง)`;
+    const modeDesc = modeDescMap[cleanMode] || modeDescMap.tarot;
 
     const newCodeObj = {
       code: codeStr,

@@ -601,7 +601,6 @@ class TarotApp {
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
-    if (this.customDiscContainer) this.customDiscContainer.style.display = "none";
     if (this.activeCodeBanner) this.activeCodeBanner.style.display = "none";
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
   }
@@ -644,22 +643,14 @@ class TarotApp {
 
     // Hide Access Gate
     if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
-    if (this.customDiscContainer) this.customDiscContainer.style.display = "none";
-
-    const customDisc = window.disciplineManager ? window.disciplineManager.getDisciplineById(codeObj.mode) : null;
 
     // Show Active Code Header Pill & STRICTLY hide top mode switcher so unrelated menus never appear
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
     if (this.activeCodeBanner) {
       this.activeCodeBanner.style.display = "inline-flex";
-      const iconMap = { tarot: "🔮", siamsi: "🎋", combo: "🌟" };
       const labelMap = { tarot: "แพ็ก 1: ดูดวงไพ่ทาโรต์", siamsi: "แพ็ก 2: เสี่ยงเซียมซี", combo: "แพ็ก 3: ดูดวง + เซียมซี" };
-      if (this.activeCodeModeIcon) {
-        this.activeCodeModeIcon.textContent = customDisc ? (customDisc.icon || "✨") : (iconMap[codeObj.mode] || "🔮");
-      }
       if (this.activeCodeText) {
-        const modeTitle = customDisc ? customDisc.name_th : (labelMap[codeObj.mode] || "ดูดวง");
-        this.activeCodeText.textContent = `${codeObj.code} (${modeTitle})`;
+        this.activeCodeText.textContent = `${codeObj.code} (${labelMap[codeObj.mode] || "ดูดวง"})`;
       }
       if (this.activeCodeExpiry) {
         this.activeCodeExpiry.textContent = window.codeManager.getRemainingTimeText(codeObj, this.lang);
@@ -677,12 +668,7 @@ class TarotApp {
       this.btnSiamsiGoCombo.style.display = codeObj.mode === "combo" ? "inline-flex" : "none";
     }
 
-    // Route according to the packages or custom discipline:
-    if (customDisc) {
-      this.openCustomDisciplineForCode(codeObj, customDisc);
-      return;
-    }
-
+    // Route according to the 3 packages:
     // 1. Package 3 (combo): Show the Service Selector Screen first!
     if (codeObj.mode === "combo") {
       this.showComboSelector(codeObj);
@@ -697,129 +683,6 @@ class TarotApp {
 
     // 3. Package 1 (tarot): Go directly to Tarot 3-card
     this.openTarotServiceForCode(codeObj);
-  }
-
-  openCustomDisciplineForCode(codeObj, disc) {
-    if (!this.customDiscContainer || !disc) return;
-    if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
-    if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
-    if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
-    this.customDiscContainer.style.display = "block";
-
-    const alreadyUsed = (codeObj.drawCount || 0) >= 1 && codeObj.readingResult;
-    const renderCustomResult = (resPayload) => {
-      this.currentReadingPayload = resPayload;
-      this.customDiscContainer.innerHTML = `
-        <div class="intention-card glass-panel" style="max-width:780px; margin: 1.5rem auto;">
-          <div class="ritual-exclusive-banner">
-            <span class="ritual-banner-badge">${disc.icon || "✨"} ${disc.name_th} • ผลคำทำนายศักดิ์สิทธิ์</span>
-          </div>
-          <h2 class="hero-title" style="margin-top:0.6rem;">${disc.icon || "✨"} ผลพยากรณ์${disc.name_th}</h2>
-          <p class="hero-subtitle">ผู้รับคำทำนาย: <strong style="color:var(--gold-primary);">${codeObj.customerName || "ผู้มีจิตศรัทธา"}</strong> (รหัส ${codeObj.code})</p>
-          <div style="display:grid; gap:1rem; margin:1.4rem 0; text-align:left;">
-            ${(resPayload.cards || []).map((c, idx) => `
-              <div class="pos-reading-card" style="padding:1.2rem;">
-                <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-                  <span class="pos-number-badge">${idx + 1}</span>
-                  <strong style="color:var(--gold-bright); font-size:1.05rem;">${c.positionTitle || `ตำแหน่งที่ ${idx + 1}`}: ${c.name_th}</strong>
-                </div>
-                <p style="color:var(--text-main); line-height:1.7; margin:0.4rem 0;">${c.domainMeaning}</p>
-                <div style="margin-top:0.5rem; font-size:0.9rem; color:var(--gold-primary);">✨ คำแนะนำ: “${c.advice || "ตั้งสติและลงมือทำด้วยความมั่นใจ"}”</div>
-              </div>
-            `).join("")}
-          </div>
-          <div class="direct-verdict-box glass-panel" style="margin-top:1rem; text-align:left;">
-            <span class="verdict-badge favorable">${resPayload.verdictBadge || "✨ สรุปคำพยากรณ์"}</span>
-            <p style="margin-top:0.65rem; line-height:1.75;">${resPayload.verdictPlain || ""}</p>
-          </div>
-          <div class="luxury-share-panel" style="margin-top:1.5rem;">
-            <button type="button" class="btn-social-hero-cta" id="btn-custom-disc-share">
-              <span class="social-cta-glow"></span>
-              <span class="social-cta-icon-ring">📲</span>
-              <span class="social-cta-text-group">
-                <span class="social-cta-main">แชร์ Info Card กราฟิก & คำทำนายลงโซเชียล</span>
-                <span class="social-cta-sub">บันทึกรูปสรุปคำทำนายสวยหรู + คัดลอกคำทำนายเต็ม</span>
-              </span>
-              <span class="social-cta-arrow">➔</span>
-            </button>
-            <div class="secondary-Utility-actions">
-              <button type="button" class="btn-action secondary-btn" id="btn-custom-disc-pdf">📄 ดาวน์โหลดไฟล์ PDF</button>
-            </div>
-          </div>
-        </div>
-      `;
-      const shareBtn = document.getElementById("btn-custom-disc-share");
-      if (shareBtn) shareBtn.addEventListener("click", () => this.openSocialShareStudio(resPayload));
-      const pdfBtn = document.getElementById("btn-custom-disc-pdf");
-      if (pdfBtn) pdfBtn.addEventListener("click", () => this.downloadDirectPDF(resPayload));
-    };
-
-    if (alreadyUsed) {
-      renderCustomResult(codeObj.readingResult);
-      return;
-    }
-
-    this.customDiscContainer.innerHTML = `
-      <div class="intention-card glass-panel" style="max-width:680px; margin: 1.5rem auto;">
-        <div class="ritual-exclusive-banner">
-          <span class="ritual-banner-badge">${disc.icon || "✨"} ศาสตร์พยากรณ์พิเศษ: ${disc.name_th}</span>
-        </div>
-        <h2 class="hero-title" style="margin-top:0.6rem;">${disc.icon || "✨"} ${disc.name_th}</h2>
-        <p class="hero-subtitle">${disc.description || "ตั้งจิตอธิษฐานถึงสิ่งที่ต้องการถาม แล้วกดปุ่มเปิดคำพยากรณ์"}</p>
-        <button type="button" class="btn-primary-ritual" id="btn-draw-custom-disc" style="margin-top:1.4rem;">
-          <span class="btn-glow"></span>
-          <span class="btn-icon">${disc.icon || "✨"}</span>
-          <span>อธิษฐานจิตและเปิดคำทำนาย (${disc.drawCount || 3} ตำแหน่ง)</span>
-        </button>
-      </div>
-    `;
-
-    const drawBtn = document.getElementById("btn-draw-custom-disc");
-    if (drawBtn) {
-      drawBtn.addEventListener("click", async () => {
-        window.mysticAudio.playSuccessOracle();
-        const pool = Array.isArray(disc.items) && disc.items.length > 0 ? [...disc.items] : [];
-        const shuffled = pool.sort(() => Math.random() - 0.5);
-        const count = Math.min(disc.drawCount || 3, shuffled.length || 3);
-        const positions = Array.isArray(disc.positions) ? disc.positions : ["อดีต / เหตุ", "ปัจจุบัน / ผล", "อนาคต / สรุป"];
-        const chosenCards = [];
-        for (let i = 0; i < count; i++) {
-          const it = shuffled[i] || { name: `สัญลักษณ์ที่ ${i + 1}`, meaning: "พลังงานแห่งการเปลี่ยนแปลงที่ดี", advice: "ตั้งสติและเปิดรับโอกาสใหม่" };
-          chosenCards.push({
-            id: `custom_${i}`,
-            name_th: it.name,
-            name_en: it.name,
-            image: "assets/logo.jpg",
-            isReversed: false,
-            positionTitle: positions[i] || `ตำแหน่งที่ ${i + 1}`,
-            domainMeaning: it.meaning,
-            shortMeaning: it.meaning,
-            advice: it.advice || "ใช้สติและปัญญาในการดำเนินชีวิต"
-          });
-        }
-        const nowStr = new Date().toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
-        const payload = {
-          mode: "tarot",
-          customDisciplineId: disc.id,
-          customDisciplineName: disc.name_th,
-          code: codeObj.code,
-          customerName: codeObj.customerName || "",
-          category: "custom",
-          categoryName: disc.name_th,
-          spreadFormula: positions.slice(0, count).join(" ➔ "),
-          timestamp: Date.now(),
-          dateText: nowStr,
-          cards: chosenCards,
-          verdictBadge: `✨ บทสรุป${disc.name_th}`,
-          verdictPlain: `จากศาสตร์ ${disc.name_th} ทั้ง ${count} ตำแหน่ง (${chosenCards.map(c => c.name_th).join(" ➔ ")}) พลังงานชี้แนะให้คุณเชื่อมั่นในสัญชาตญาณและลงมือทำตามจังหวะเวลาที่เหมาะสม`,
-          doAction: chosenCards[0] ? chosenCards[0].advice : "เปิดใจรับโอกาสใหม่",
-          dontAction: "อย่าลังเลหรือยึดติดกับความกังวลเดิมๆ"
-        };
-        const updated = await window.codeManager.recordReadingDraw(codeObj.code, payload);
-        if (updated) this.activeCodeObj = updated;
-        renderCustomResult(payload);
-      });
-    }
   }
 
   showComboSelector(codeObj) {
@@ -1346,52 +1209,114 @@ class TarotApp {
   }
 
   // =========================================================================
-  // RESULTS & CONCISE DOMAIN-FOCUSED INTERPRETATION (NO DUPLICATION)
+  // RESULTS & DEEP, NON-REPETITIVE INTERPRETATION + GRAND MASTER SUMMARY
   // =========================================================================
 
-  getCardDomainText(card, isReversed, category, lang = "th") {
+  buildPositionDeepContext(card, isReversed, category, posIdx, lang = "th") {
+    const aspect = isReversed ? card.reversed : card.upright;
+    const kws = (aspect.keywords && aspect.keywords[lang]) ? aspect.keywords[lang] : [];
+    const kwText = kws.slice(0, 3).join(" • ");
+    const cardName = lang === "th" ? card.name_th : card.name_en;
+
+    if (category === "love") {
+      if (this.loveStatus === "single") {
+        if (posIdx === 0) {
+          return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "อดีตของคนโสด" สะท้อนถึงรากฐานประสบการณ์ความรักที่ผ่านมาซึ่งหล่อหลอมมุมมองหัวใจของคุณ พลังงานของ "${kwText}" บ่งบอกว่าสิ่งที่ผ่านพ้นมาแล้วคือบทเรียนสำคัญที่ช่วยให้คุณรู้จักคุณค่าของตัวเองและคัดกรองคนที่เหมาะสมได้ดีขึ้น`;
+        }
+        if (posIdx === 1) {
+          return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "สถานการณ์หัวใจและเสน่ห์ปัจจุบันของคนโสด" บ่งบอกถึงคลื่นพลังงานรอบตัวคุณในเวลานี้ ซึ่งโดดเด่นเรื่อง "${kwText}" เป็นจังหวะที่ออร่าและบุคลิกของคุณสะท้อนสภาวะจิตใจภายในออกมาอย่างชัดเจนต่อผู้คนที่ได้พบเจอ`;
+        }
+        return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "แนวโน้มความรักในอนาคตของคนโสด" ชี้ถึงทิศทางความรักบทถัดไปที่กำลังเคลื่อนเข้ามาหาคุณ โดยมีหัวใจสำคัญอยู่ที่ "${kwText}" ซึ่งจะเป็นตัวกำหนดจังหวะการได้พบเจอหรือพัฒนาความสัมพันธ์ครั้งใหม่`;
+      }
+
+      // มีคนในใจ / มีคนคุย / มีคู่
+      if (posIdx === 0) {
+        return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "ความรู้สึกและมุมมองของคุณ" สะท้อนสภาวะจิตใจลึกๆ ที่คุณมีต่อความสัมพันธ์นี้ พลังงานของ "${kwText}" เผยให้เห็นความปรารถนา ความทุ่มเท หรือสิ่งที่คุณกำลังให้ความสำคัญเป็นอันดับแรกในหัวใจ`;
+      }
+      if (posIdx === 1) {
+        return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "ความรู้สึกและมุมมองของอีกฝ่าย" ช่วยถอดรหัสความในใจและท่าทีของเขาที่มีต่อคุณในระยะนี้ พลังงานของ "${kwText}" อธิบายเหตุผลเบื้องหลังการกระทำ คำพูด หรือจังหวะการแสดงออกของเขาได้อย่างชัดเจน`;
+      }
+      return `เมื่อไพ่ ${cardName} ปรากฏในตำแหน่ง "แนวโน้มความสัมพันธ์ในอนาคต" เป็นจุดบรรจบของพลังงานทั้งสองฝ่าย โดยมีแกนหลักคือ "${kwText}" ซึ่งบ่งชี้ถึงพัฒนาการและทิศทางความชัดเจนของความสัมพันธ์ในระยะถัดไป`;
+    }
+
+    if (category === "career") {
+      if (posIdx === 0) {
+        return `ในตำแหน่ง "รากฐานและที่มาของการงาน" ไพ่ ${cardName} สะท้อนถึงต้นทุนความสามารถ ผลงาน หรือสถานการณ์ก่อนหน้าที่ปูทางมาถึงจุดนี้ โดยมีพลังของ "${kwText}" เป็นตัวขับเคลื่อนหลัก`;
+      }
+      if (posIdx === 1) {
+        return `ในตำแหน่ง "สถานการณ์การงานปัจจุบัน" ไพ่ ${cardName} ชี้ให้เห็นบรรยากาศการทำงาน ภารกิจสำคัญ หรือโจทย์ตรงหน้าที่คุณกำลังบริหารจัดการอยู่ ซึ่งเกี่ยวข้องกับ "${kwText}" โดยตรง`;
+      }
+      return `ในตำแหน่ง "แนวโน้มและผลลัพธ์การงานในอนาคต" ไพ่ ${cardName} บ่งบอกถึงทิศทางความก้าวหน้า โอกาสใหม่ หรือผลสำเร็จที่กำลังจะปรากฏชัดขึ้นภายใต้พลังงานของ "${kwText}"`;
+    }
+
+    if (category === "finance") {
+      if (posIdx === 0) {
+        return `ในตำแหน่ง "เหตุและรากฐานทางการเงิน" ไพ่ ${cardName} อธิบายถึงที่มาของกระแสเงิน พฤติกรรมการบริหารจัดการ หรือการตัดสินใจทางการเงินในช่วงที่ผ่านมา (${kwText})`;
+      }
+      if (posIdx === 1) {
+        return `ในตำแหน่ง "ผลลัพธ์และสภาพคล่องปัจจุบัน" ไพ่ ${cardName} สะท้อนจังหวะการหมุนเวียนของรายรับ-รายจ่าย และสภาวะทางการเงินที่คุณกำลังสัมผัสอยู่ในขณะนี้ (${kwText})`;
+      }
+      return `ในตำแหน่ง "บทสรุปและแนวโน้มการเงินในอนาคต" ไพ่ ${cardName} ชี้เป้าทิศทางโชคลาภ ผลตอบแทน และความมั่นคงทางการเงินที่กำลังจะตามมา (${kwText})`;
+    }
+
+    // สุขภาพ (health)
+    if (posIdx === 0) {
+      return `ในตำแหน่ง "เหตุและพฤติกรรมสะสมด้านสุขภาพ" ไพ่ ${cardName} สะท้อนรูปแบบการใช้ชีวิต การพักผ่อน หรือการใช้พลังงานสะสมในช่วงที่ผ่านมา (${kwText})`;
+    }
+    if (posIdx === 1) {
+      return `ในตำแหน่ง "ผลลัพธ์และสภาวะร่างกาย-จิตใจปัจจุบัน" ไพ่ ${cardName} บ่งบอกสัญญาณของร่างกายและระดับพลังงานชีวิตในปัจจุบัน (${kwText})`;
+    }
+    return `ในตำแหน่ง "บทสรุปและแนวโน้มการฟื้นฟูสุขภาพ" ไพ่ ${cardName} ชี้ทิศทางการดูแลตัวเองและพลังการฟื้นฟูร่างกาย-จิตใจในระยะถัดไป (${kwText})`;
+  }
+
+  getCardDomainText(card, isReversed, category, lang = "th", posIdx = 0) {
     const aspect = isReversed ? card.reversed : card.upright;
     const ragHit = (window.ragEngine && typeof window.ragEngine.retrieveCardInsight === "function")
       ? window.ragEngine.retrieveCardInsight(card.id, card.name_en, card.name_th, category, this.loveStatus)
       : null;
-    const ragHtml = ragHit
-      ? `<div class="rag-insight-callout">
-           <div class="rag-insight-head">📚 เกร็ดตำราพยากรณ์ (${ragHit.docTitle})</div>
-           <p class="rag-insight-text">${ragHit.insight}</p>
-         </div>`
-      : "";
-    const ragPlain = ragHit ? ` [ตำราเสริม: ${ragHit.insight}]` : "";
+
+    const deepPosContext = this.buildPositionDeepContext(card, isReversed, category, posIdx, lang);
 
     if (category === "love") {
-      if (aspect.love && aspect.love.single && aspect.love.couple) {
-        const base = aspect.love[lang] || "";
-        const isSingle = this.loveStatus === "single";
-        const statusTitle = isSingle ? "💫 คำทำนายความรัก (สำหรับคนโสด)" : "💑 คำทำนายความรัก (มีคนในใจ / มีคนคุย / มีคู่)";
-        const specificText = isSingle ? (aspect.love.single[lang] || "") : (aspect.love.couple[lang] || "");
-        return {
-          fullHtml: `
-            <p class="domain-main-paragraph">${base}</p>
-            <div class="love-status-focused-box ${isSingle ? 'status-single' : 'status-couple'}">
-              <div class="love-status-head"><strong>${statusTitle}</strong></div>
-              <p class="love-status-text">${specificText}</p>
-            </div>
-            ${ragHtml}
-          `,
-          plainText: `${base} (${isSingle ? 'คนโสด' : 'ความสัมพันธ์'}: ${specificText})${ragPlain}`,
-          shortText: specificText || base
-        };
-      }
+      const isSingle = this.loveStatus === "single";
+      const headerLabel = isSingle
+        ? "💫 คำทำนายความรัก (สำหรับคนโสด)"
+        : "💑 คำทำนายความรัก (สำหรับคนมีคนในใจ / มีคนคุย / มีคู่)";
+
+      // เลือกคำทำนายที่ตรงสถานะโดยตรง ไม่แสดงซ้ำซ้อน 2 กล่อง
+      const directStatusText = (aspect.love && aspect.love.single && aspect.love.couple)
+        ? (isSingle ? (aspect.love.single[lang] || aspect.love[lang]) : (aspect.love.couple[lang] || aspect.love[lang]))
+        : (aspect.love[lang] || "");
+
+      const ragSentence = ragHit ? `<p class="domain-sub-expansion"><span class="expansion-tag">📖 ขยายความเชิงลึก:</span> ${ragHit.insight}</p>` : "";
+      const plainCombined = `${directStatusText} ${deepPosContext}${ragHit ? ` (${ragHit.insight})` : ""}`;
+
       return {
-        fullHtml: `<p class="domain-main-paragraph">${aspect.love[lang]}</p>${ragHtml}`,
-        plainText: `${aspect.love[lang]}${ragPlain}`,
-        shortText: aspect.love[lang]
+        headerLabel,
+        fullHtml: `
+          <p class="domain-main-paragraph">${directStatusText}</p>
+          <p class="domain-pos-context">${deepPosContext}</p>
+          ${ragSentence}
+        `,
+        plainText: plainCombined,
+        shortText: directStatusText
       };
     }
 
+    const domainNames = { career: "การงานและธุรกิจ", finance: "การเงินและโชคลาภ", health: "สุขภาพและพลังงานชีวิต" };
+    const headerLabel = `คำทำนายเจาะลึกด้าน${domainNames[category] || "ดวงชะตา"}`;
     const raw = (aspect[category] && aspect[category][lang]) ? aspect[category][lang] : aspect.career[lang];
+    const ragSentence = ragHit ? `<p class="domain-sub-expansion"><span class="expansion-tag">📖 ขยายความเชิงลึก:</span> ${ragHit.insight}</p>` : "";
+    const plainCombined = `${raw} ${deepPosContext}${ragHit ? ` (${ragHit.insight})` : ""}`;
+
     return {
-      fullHtml: `<p class="domain-main-paragraph">${raw}</p>${ragHtml}`,
-      plainText: `${raw}${ragPlain}`,
+      headerLabel,
+      fullHtml: `
+        <p class="domain-main-paragraph">${raw}</p>
+        <p class="domain-pos-context">${deepPosContext}</p>
+        ${ragSentence}
+      `,
+      plainText: plainCombined,
       shortText: raw
     };
   }
@@ -1399,7 +1324,6 @@ class TarotApp {
   renderResults() {
     const dict = I18N[this.lang];
     const domainName = I18N[this.lang]["cat_" + this.category] || I18N[this.lang].cat_love;
-    const spreadName = dict.spread_3_name;
     const positions = this.getPositions();
 
     if (this.resultsSeekerGreeting) {
@@ -1431,7 +1355,7 @@ class TarotApp {
     };
     const spreadFormula = spreadFormulaMap[this.getSpreadKey()] || "อดีต ➔ ปัจจุบัน ➔ อนาคต";
     const loveStatusBadge = this.category === "love"
-      ? (this.loveStatus === "single" ? " (สถานะ: คนโสด)" : " (สถานะ: ไม่โสด / มีคนในใจ)")
+      ? (this.loveStatus === "single" ? " (สำหรับคนโสด)" : " (สำหรับคนมีคนในใจ / มีคู่)")
       : "";
 
     if (this.printMetaLine) {
@@ -1440,7 +1364,7 @@ class TarotApp {
 
     if (this.resultsQuestionRecap) {
       this.resultsQuestionRecap.innerHTML = `
-        <span>🔮 หมวดหมู่: </span><strong style="color:var(--gold-primary);">${domainName}${loveStatusBadge}</strong>
+        <span>✦ หมวดหมู่: </span><strong style="color:var(--gold-primary);">${domainName}${loveStatusBadge}</strong>
         <span style="margin: 0 0.6rem; opacity:0.5;">•</span>
         <span>ตำราเรียงไพ่ 3 ใบ: </span><strong style="color:#fde68a;">${spreadFormula}</strong>
       `;
@@ -1496,16 +1420,15 @@ class TarotApp {
       }, index * 480 + 280);
     });
 
-    // 2. Render Clean, Focused 3-Card Domain Predictions
+    // 2. Render Modern, Non-Redundant 3-Card Domain Predictions (ไม่มีสารเตือนใจท้ายไพ่รายใบ เพราะย้ายไปรวมในบทสรุปจัดเต็ม)
     const domainIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿" };
-    const domainIcon = domainIcons[this.category] || "🔮";
-    const predictionHeader = dict.domain_prediction_label.replace("{domain}", domainName);
+    const domainIcon = domainIcons[this.category] || "✨";
 
     if (this.positionsSectionTitle) {
-      this.positionsSectionTitle.textContent = dict.positions_section_title.replace("{domain}", domainName);
+      this.positionsSectionTitle.textContent = `${dict.positions_section_title.replace("{domain}", domainName)}${loveStatusBadge}`;
     }
     if (this.positionsSectionSubtitle) {
-      this.positionsSectionSubtitle.textContent = dict.positions_section_sub;
+      this.positionsSectionSubtitle.textContent = "เจาะลึกความหมายตามตำแหน่งไพ่แต่ละใบอย่างละเอียด ชัดเจน ไม่วกวนซ้ำซ้อน";
     }
 
     this.interpretationsFeed.innerHTML = "";
@@ -1520,7 +1443,10 @@ class TarotApp {
       const posLabel = positions[index][this.lang];
       const safeImg = encodeURI(card.image);
 
-      const domainInfo = this.getCardDomainText(card, item.isReversed, this.category, this.lang);
+      const domainInfo = this.getCardDomainText(card, item.isReversed, this.category, this.lang, index);
+      const pillLabel = this.category === "love"
+        ? (this.loveStatus === "single" ? "💫 ความรัก (คนโสด)" : "💑 ความรัก (มีคนในใจ/มีคู่)")
+        : `${domainIcon} ด้าน${domainName}`;
 
       payloadCards.push({
         id: card.id,
@@ -1534,14 +1460,14 @@ class TarotApp {
         advice: aspect.advice[this.lang]
       });
 
-      const cardCard = document.createElement("div");
-      cardCard.className = "pos-reading-card";
+      const cardCard = document.createElement("article");
+      cardCard.className = "pos-reading-card modern-pos-card";
       cardCard.innerHTML = `
         <div class="pos-reading-header">
           <div class="pos-number-badge">${index + 1}</div>
           <div class="pos-title-wrap">
             <h4 class="pos-title">${posLabel}</h4>
-            <span class="pos-domain-pill">${domainIcon} ด้าน${domainName}</span>
+            <span class="pos-domain-pill">${pillLabel}</span>
           </div>
         </div>
 
@@ -1561,18 +1487,10 @@ class TarotApp {
         <div class="pos-domain-prediction-block">
           <div class="prediction-block-header">
             <span class="prediction-icon">${domainIcon}</span>
-            <h5 class="prediction-title">${predictionHeader}</h5>
+            <h5 class="prediction-title">${domainInfo.headerLabel}</h5>
           </div>
           <div class="prediction-text-content">
             ${domainInfo.fullHtml}
-          </div>
-        </div>
-
-        <div class="pos-advice-block">
-          <div class="advice-icon">✨</div>
-          <div class="advice-content">
-            <span class="advice-label">${dict.card_advice_label}</span>
-            <span class="advice-text">“${aspect.advice[this.lang]}”</span>
           </div>
         </div>
       `;
@@ -1580,7 +1498,7 @@ class TarotApp {
       this.interpretationsFeed.appendChild(cardCard);
     });
 
-    // 3. Render Concise Verdict & Actionable Do/Don't
+    // 3. Render Comprehensive Master Verdict & Action Blueprint (รวมคำแนะนำจากไพ่ทั้ง 3 ใบไว้ในบทสรุปอย่างจุใจ)
     const verdictResult = this.renderDirectVerdict();
 
     // Save structured reading payload for Social Share Info Card, PDF, and Admin Backoffice
@@ -1597,8 +1515,10 @@ class TarotApp {
       cards: payloadCards,
       verdictBadge: verdictResult.badgeText,
       verdictPlain: verdictResult.plainText,
+      masterGuidanceList: verdictResult.masterGuidanceList,
       doAction: verdictResult.doAction,
-      dontAction: verdictResult.dontAction
+      dontAction: verdictResult.dontAction,
+      luckyBoost: verdictResult.luckyBoost
     };
   }
 
@@ -1643,7 +1563,7 @@ class TarotApp {
       this.verdictBadge.textContent = badgeText;
     }
     if (this.verdictTitle) {
-      this.verdictTitle.textContent = dict.verdict_box_title;
+      this.verdictTitle.textContent = "บทสรุปคำพยากรณ์ฉบับสมบูรณ์ & เข็มทิศคำแนะนำปฏิบัติ";
     }
 
     const verdictData = this.generateConciseVerdictText(verdictType);
@@ -1651,24 +1571,78 @@ class TarotApp {
       ? window.ragEngine.retrieveSpreadSynthesis(this.drawnCards, this.category, this.loveStatus)
       : null;
 
+    // รวบรวมคำแนะนำจากไพ่ทั้ง 3 ใบมาสังเคราะห์เป็นเข็มทิศนำทางในส่วนสรุป (แทนการแปะท้ายไพ่รายใบ)
+    const guidanceStageTitles = this.getGuidanceStageTitles();
+    const masterGuidanceList = this.drawnCards.map((item, idx) => {
+      const c = item.card;
+      const aspect = item.isReversed ? c.reversed : c.upright;
+      const adviceText = aspect.advice[this.lang] || "";
+      const stageTitle = guidanceStageTitles[idx] || `แนวทางจากไพ่ใบที่ ${idx + 1}`;
+      return {
+        step: idx + 1,
+        cardName: c.name_th,
+        stageTitle,
+        adviceText
+      };
+    });
+
     if (this.verdictContent) {
+      const guidanceHtml = masterGuidanceList.map(g => `
+        <div class="master-guidance-item">
+          <div class="mg-step-badge">${g.step}</div>
+          <div class="mg-body">
+            <div class="mg-head">
+              <strong>${g.stageTitle}</strong>
+              <span class="mg-card-tag">จากไพ่ ${g.cardName}</span>
+            </div>
+            <p class="mg-text">${g.adviceText}</p>
+          </div>
+        </div>
+      `).join("");
+
       const ragSynthHtml = ragSynthesis
-        ? `<div class="rag-insight-callout" style="margin-top:0.75rem;">
-             <div class="rag-insight-head">📖 วิเคราะห์เชื่อมโยงตำราพยากรณ์ RAG (${ragSynthesis.docTitle})</div>
+        ? `<div class="rag-insight-callout" style="margin-top:1rem;">
+             <div class="rag-insight-head">📚 บทวิเคราะห์เชื่อมโยงตามตำราพยากรณ์ (${ragSynthesis.docTitle})</div>
              <p class="rag-insight-text">${ragSynthesis.insight}</p>
            </div>`
         : "";
-      this.verdictContent.innerHTML = `<p>${verdictData.plainText}</p>${ragSynthHtml}`;
+
+      this.verdictContent.innerHTML = `
+        <div class="verdict-storyline-card">
+          <div class="storyline-eyebrow">✦ 1. บทวิเคราะห์เชื่อมโยงเส้นทางดวงชะตาทั้ง 3 ตำแหน่ง ✦</div>
+          <p class="storyline-lead">${verdictData.plainText}</p>
+          <p class="storyline-deep">${verdictData.deepNarrative}</p>
+          ${ragSynthHtml}
+        </div>
+
+        <div class="master-guidance-section">
+          <div class="mg-section-header">
+            <span class="mg-section-icon">🧭</span>
+            <div>
+              <h4>2. เข็มทิศคำแนะนำเจาะลึกจากหน้าไพ่ทั้ง 3 ใบ</h4>
+              <p>ถอดรหัสคำแนะนำจากไพ่ทุกใบเพื่อเป็นแนวทางรับมือและต่อยอดอนาคตให้คุ้มค่าที่สุด</p>
+            </div>
+          </div>
+          <div class="master-guidance-grid">
+            ${guidanceHtml}
+          </div>
+        </div>
+      `;
     }
+
     if (this.verdictActionsSummary) {
       this.verdictActionsSummary.innerHTML = `
-        <div class="do-box">
-          <strong>✅ ${dict.verdict_do}</strong>
-          <span>${verdictData.doAction}</span>
+        <div class="do-box modern-action-card">
+          <div class="mac-head">✅ สิ่งที่ควรลงมือทำเพื่อเปิดดวงรับโชค (Do's)</div>
+          <p>${verdictData.doAction}</p>
         </div>
-        <div class="dont-box">
-          <strong>⚠️ ${dict.verdict_dont}</strong>
-          <span>${verdictData.dontAction}</span>
+        <div class="dont-box modern-action-card">
+          <div class="mac-head">⚠️ ข้อควรระวังและสิ่งที่ควรหลีกเลี่ยง (Don'ts)</div>
+          <p>${verdictData.dontAction}</p>
+        </div>
+        <div class="lucky-box modern-action-card full-span-card">
+          <div class="mac-head">✨ เคล็ดลับเสริมพลังงานมงคล & การปรับคลื่นจิตประจำหน้าไพ่</div>
+          <p>${verdictData.luckyBoost}</p>
         </div>
       `;
     }
@@ -1676,121 +1650,195 @@ class TarotApp {
     return {
       verdictType,
       badgeText,
-      plainText: ragSynthesis ? `${verdictData.plainText} (${ragSynthesis.insight})` : verdictData.plainText,
+      plainText: `${verdictData.plainText} ${verdictData.deepNarrative}`,
+      masterGuidanceList,
       doAction: verdictData.doAction,
-      dontAction: verdictData.dontAction
+      dontAction: verdictData.dontAction,
+      luckyBoost: verdictData.luckyBoost
     };
   }
 
+  getGuidanceStageTitles() {
+    if (this.category === "love") {
+      if (this.loveStatus === "single") {
+        return [
+          "การปลดล็อกหัวใจและบทเรียนจากอดีต",
+          "การบริหารเสน่ห์และการวางตัวในปัจจุบัน",
+          "กุญแจสำคัญในการเปิดรับความรักครั้งใหม่"
+        ];
+      }
+      return [
+        "การดูแลจิตใจและการสื่อสารจากฝั่งของคุณ",
+        "วิธีเข้าถึงหัวใจและรับมือกับท่าทีของอีกฝ่าย",
+        "แนวทางประคับประคองความสัมพันธ์สู่อนาคต"
+      ];
+    }
+    if (this.category === "career") {
+      return [
+        "การต่อยอดจากต้นทุนและประสบการณ์เดิม",
+        "กลยุทธ์การจัดการงานและโอกาสตรงหน้า",
+        "เข็มทิศสร้างความก้าวหน้าและผลสำเร็จระยะยาว"
+      ];
+    }
+    if (this.category === "finance") {
+      return [
+        "การปรับวินัยและรากฐานทางการเงิน",
+        "การบริหารสภาพคล่องและกระแสเงินสดปัจจุบัน",
+        "แนวทางต่อยอดความมั่งคั่งและเปิดรับโชคลาภ"
+      ];
+    }
+    return [
+      "การปรับเปลี่ยนพฤติกรรมสะสมเดิม",
+      "การฟื้นฟูสมดุลร่างกายและจิตใจในปัจจุบัน",
+      "แนวทางดูแลสุขภาพเชิงป้องกันในระยะยาว"
+    ];
+  }
+
   generateConciseVerdictText(verdictType) {
-    const c1 = this.drawnCards[0] ? this.drawnCards[0].card.name_th : "";
-    const c2 = this.drawnCards[1] ? this.drawnCards[1].card.name_th : "";
-    const outcome = this.drawnCards[this.drawnCards.length - 1] || this.drawnCards[0];
-    const outcomeName = outcome ? outcome.card.name_th : "";
+    const c1Obj = this.drawnCards[0] ? this.drawnCards[0].card : null;
+    const c2Obj = this.drawnCards[1] ? this.drawnCards[1].card : null;
+    const c3Obj = this.drawnCards[2] ? this.drawnCards[2].card : null;
+    const c1 = c1Obj ? c1Obj.name_th : "";
+    const c2 = c2Obj ? c2Obj.name_th : "";
+    const outcomeName = c3Obj ? c3Obj.name_th : c1;
+
+    const k1 = c1Obj ? (this.drawnCards[0].isReversed ? c1Obj.reversed.keywords.th[0] : c1Obj.upright.keywords.th[0]) : "";
+    const k2 = c2Obj ? (this.drawnCards[1].isReversed ? c2Obj.reversed.keywords.th[0] : c2Obj.upright.keywords.th[0]) : "";
+    const k3 = c3Obj ? (this.drawnCards[2].isReversed ? c3Obj.reversed.keywords.th[0] : c3Obj.upright.keywords.th[0]) : "";
 
     if (this.category === "love") {
       if (this.loveStatus === "single") {
         if (verdictType === "favorable") {
           return {
-            plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) พลังงานหัวใจของคุณสดใสและมีเสน่ห์ดึงดูดสูงมาก มีเกณฑ์ได้พบเจอคนถูกใจหรือคนที่ศีลเสมอกันเข้ามาพัฒนาความสัมพันธ์อย่างอบอุ่น`,
-            doAction: "เปิดโอกาสให้ตัวเองได้พบปะสังคมใหม่ๆ ดูแลบุคลิกภาพให้สดใส และพร้อมเปิดใจรับความรักที่ดี",
-            dontAction: "อย่ายึดติดกับความผิดหวังในอดีต หรือปิดกั้นตัวเองเพราะกลัวการเริ่มต้นใหม่"
+            plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) เส้นทางหัวใจของคุณกำลังก้าวผ่านจากจังหวะ "${k1}" ในอดีต เข้าสู่สภาวะปัจจุบันที่มีพลังของ "${k2}" และกำลังเปิดประตูสู่แนวโน้มอนาคตที่โดดเด่นด้วย "${k3}" ดวงความรักของคนโสดเปิดกว้างและมีเสน่ห์ดึงดูดสูงมาก`,
+            deepNarrative: `การเรียงตัวของไพ่ชุดนี้ยืนยันว่าช่วงเวลาที่หัวใจต้องโดดเดี่ยวหรือคลุมเครือกำลังคลี่คลายลง พลังงานในปัจจุบันส่งผลให้คุณมีความมั่นใจและมีออร่าที่ดึงดูดคนที่มีทัศนคติหรือไลฟ์สไตล์สอดคล้องกันเข้ามาในชีวิต โดยมีเกณฑ์ได้พบเจอผ่านสังคมการทำงาน การเดินทาง หรือคนแนะนำให้รู้จัก และพัฒนาความสัมพันธ์ได้อย่างอบอุ่นมั่นคง`,
+            doAction: "เปิดโอกาสให้ตัวเองได้ก้าวเข้าสู่สังคมหรือกิจกรรมใหม่ๆ ดูแลบุคลิกภาพให้สดใส ยิ้มแย้มเปิดรับบทสนทนา และกล้าที่จะเปิดใจเรียนรู้คนที่เข้ามาด้วยทัศนคติเชิงบวก",
+            dontAction: "อย่านำความผิดหวังหรือแผลใจในอดีตมาตั้งกำแพงตัดสินคนใหม่ที่เพิ่งเข้ามา และอย่าเร่งรัดกดดันตัวเองจนเสียความเป็นธรรมชาติ",
+            luckyBoost: `เสริมพลังเสน่ห์คนโสดจากไพ่ ${outcomeName}: จัดพื้นที่ห้องนอนให้โปร่งสบายเปิดรับแสงธรรมชาติ สวมใส่เสื้อผ้าโทนสีสว่างหรือสีมงคลที่เสริมความมั่นใจ และตั้งจิตอธิษฐานถึงคุณลักษณะของคู่ที่เกื้อกูลกัน`
           };
         } else if (verdictType === "challenging") {
           return {
-            plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) ช่วงนี้ควรให้เวลาหัวใจได้พักฟื้นและคัดกรองคนที่เข้ามาอย่างรอบคอบ อย่าเพิ่งรีบทุ่มเทใจให้คนที่ยังไม่ชัดเจน`,
-            doAction: "โฟกัสกับการสร้างความสุขและคุณค่าในตัวเอง ดูความสม่ำเสมอของคนที่เข้ามาในระยะยาว",
-            dontAction: "อย่าเหงาจนรีบคว้าคนที่ยังไม่จริงใจ หรือกลับไปวนลูปเดิมที่ทำให้เสียใจ"
+            plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) เส้นทางหัวใจเดินทางจาก "${k1}" มาสู่จังหวะ "${k2}" และส่งสัญญาณเตือนเรื่อง "${k3}" ในอนาคต ช่วงนี้เป็นจังหวะที่คนโสดควรให้ความสำคัญกับการคัดกรองคนและดูแลหัวใจตัวเองเป็นอันดับแรก`,
+            deepNarrative: `หน้าไพ่สะท้อนว่าลึกๆ แล้วคุณอาจยังมีเรื่องราวในอดีตที่ตกค้าง หรือคนที่มีเกณฑ์เข้ามาในช่วงนี้ยังมีความไม่ชัดเจนบางอย่างซ่อนอยู่ การไม่รีบร้อนตกลงปลงใจแต่ใช้เวลาสังเกตความสม่ำเสมอและการกระทำระยะยาว จะช่วยปกป้องหัวใจของคุณจากความสัมพันธ์ที่เหนื่อยเปล่า และเตรียมพื้นที่ให้พร้อมสำหรับคนที่คู่ควรจริงๆ`,
+            doAction: "โฟกัสกับการพัฒนาคุณค่าในตัวเอง สร้างความสุขจากสิ่งที่รัก และใช้เวลาดูความจริงใจของคนที่เข้ามาให้รอบด้านก่อนมอบใจ",
+            dontAction: "อย่าให้ความเหงาผลักดันให้รีบคว้าคนที่ยังไม่ชัดเจน หรือกลับไปวนลูปความสัมพันธ์แบบเดิมที่เคยทำให้คุณเสียพลังงานชีวิต",
+            luckyBoost: `เสริมพลังคุ้มครองหัวใจจากไพ่ ${outcomeName}: หมั่นเติมพลังบวกให้ตัวเองด้วยการพักผ่อนริมน้ำหรือธรรมชาติ เคลียร์ของใช้หรือความทรงจำเก่าๆ ที่ทำให้หม่นหมองออกจากพื้นที่ส่วนตัว`
           };
         }
         return {
-          plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) ความรักของคนโสดจะค่อยๆ พัฒนาจากมิตรภาพหรือคนใกล้ตัว เป็นจังหวะที่ดีในการทำความรู้จักกันแบบค่อยเป็นค่อยไป`,
-          doAction: "เริ่มจากการเป็นเพื่อนที่คุยกันสบายใจ ค่อยๆ เรียนรู้นิสัยใจคอกันตามธรรมชาติ",
-          dontAction: "อย่าเพิ่งตั้งกำแพงสูงเกินไป หรือเร่งรัดสถานะเร็วเกินจังหวะเวลา"
+          plainText: `จากหน้าไพ่คนโสดทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) พลังงานความรักเคลื่อนตัวจาก "${k1}" สู่ "${k2}" และค่อยๆ พัฒนาไปสู่ "${k3}" ความรักของคนโสดในช่วงนี้จะเติบโตจากมิตรภาพและความสบายใจแบบค่อยเป็นค่อยไป`,
+          deepNarrative: `ไพ่ทั้ง 3 ใบบอกว่าความรักครั้งต่อไปไม่ได้มาในรูปแบบฉาบฉวยหวือหวา แต่จะค่อยๆ ก่อตัวขึ้นจากการพูดคุยที่ถูกคอ การช่วยเหลือเกื้อกูลกัน หรือการได้รู้จักกันในฐานะเพื่อนและกัลยาณมิตรก่อน ยิ่งคุณปล่อยให้ทุกอย่างดำเนินไปตามจังหวะธรรมชาติ ความสัมพันธ์จะยิ่งมั่นคงและปลอดภัยสำหรับหัวใจ`,
+          doAction: "เริ่มต้นทำความรู้จักคนใหม่ๆ ในฐานะเพื่อนที่ปรึกษา คุยกันด้วยความสบายใจ และค่อยๆ เรียนรู้นิสัยใจคอตามจังหวะเวลา",
+          dontAction: "อย่าเพิ่งปิดกั้นคนที่เข้ามาแบบเงียบๆ หรือเรียบง่าย และอย่าเพิ่งด่วนสรุปตัดสินใครจากความประทับใจแรกเพียงอย่างเดียว",
+          luckyBoost: `เสริมดวงความรักคนโสดจากไพ่ ${outcomeName}: เปิดรับบทสนทนาใหม่ๆ ด้วยรอยยิ้มและความเป็นกันเอง ทำบุญหรือแบ่งปันน้ำใจให้ผู้อื่นเพื่อเปิดกระแสเมตตามหานิยม`
         };
       }
 
-      // ไม่โสด / มีคนคุย / มีคนในใจ / มีคู่: ความรู้สึกเรา ➔ ความรู้สึกอีกฝ่าย ➔ แนวโน้มในอนาคต
+      // ไม่โสด / มีคนคุย / มีคนในใจ / มีคู่
       if (verdictType === "favorable") {
         return {
-          plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) พลังงานความรู้สึกของทั้งสองฝ่ายสอดคล้องและเกื้อหนุนกันอย่างดี ความสัมพันธ์มีเกณฑ์พัฒนาไปสู่ความชัดเจน มั่นคง และเข้าใจกันลึกซึ้งยิ่งขึ้น`,
-          doAction: "เปิดใจสื่อสารความรู้สึกดีๆ อย่างจริงใจ แสดงความใส่ใจสม่ำเสมอ และเชื่อมั่นในกันและกัน",
-          dontAction: "อย่าเก็บเรื่องเล็กน้อยมาคิดระแวงไปเอง หรือประชดประชันให้อีกฝ่ายเสียกำลังใจ"
+          plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) พลังงานหัวใจของคุณที่เปี่ยมด้วย "${k1}" สอดรับกับความรู้สึกของอีกฝ่ายที่มี "${k2}" ส่งผลให้ทิศทางความสัมพันธ์ก้าวไปสู่ "${k3}" อย่างงดงามและมั่นคง`,
+          deepNarrative: `เมื่ออ่านเชื่อมโยงทั้ง 3 ตำแหน่ง จะเห็นได้ชัดว่าความรู้สึกของทั้งสองฝ่ายมีแรงดึงดูดและความปรารถนาดีที่ตรงกัน แม้บางช่วงอาจมีจังหวะการแสดงออกที่ต่างกันบ้าง แต่แก่นแท้ของความสัมพันธ์กำลังพัฒนาไปสู่ความเข้าใจที่ลึกซึ้งขึ้น มีเกณฑ์ได้รับความชัดเจน การขยับสถานะ หรือการวางแผนอนาคตที่อบอุ่นร่วมกัน`,
+          doAction: "เปิดใจสื่อสารความรู้สึกดีๆ อย่างตรงไปตรงมา แสดงความใส่ใจอย่างสม่ำเสมอ และสร้างช่วงเวลาคุณภาพร่วมกันเพื่อกระชับความผูกพัน",
+          dontAction: "อย่าเก็บความสงสัยเล็กๆ น้อยๆ ไปคิดปรุงแต่งเองโดยไม่ถามไถ่ และอย่าประชดประชันเมื่ออีกฝ่ายยุ่งหรือแสดงออกไม่ทันใจ",
+          luckyBoost: `เสริมดวงความสัมพันธ์จากไพ่ ${outcomeName}: ชวนกันเปลี่ยนบรรยากาศไปทานอาหารมื้อพิเศษหรือเดินทางท่องเที่ยวพักผ่อน และใช้คำพูดชื่นชมให้กำลังใจกันและกันเสมอ`
         };
       } else if (verdictType === "challenging") {
         return {
-          plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) เตือนว่าความรู้สึกของทั้งสองฝ่ายยังมีจุดเปราะบางหรือมุมมองที่ไม่ตรงกัน ควรใช้สติและเวลาในการปรับความเข้าใจ อย่าเพิ่งเร่งรัดเอาคำตอบตอนอารมณ์ตึงเครียด`,
-          doAction: "เว้นพื้นที่ให้ต่างฝ่ายได้ทบทวนใจตัวเอง รับฟังเหตุผลของอีกฝ่ายด้วยความใจเย็น",
-          dontAction: "อย่าใช้อารมณ์กดดัน คาดคั้น หรือตัดสินใจประชดรักด้วยความวู่วาม"
+          plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) สะท้อนว่าฝั่งของคุณอยู่ในสภาวะ "${k1}" ในขณะที่อีกฝ่ายมีพลังงานของ "${k2}" จึงต้องระมัดระวังจังหวะ "${k3}" ในอนาคตอันใกล้นี้`,
+          deepNarrative: `หน้าไพ่ชี้ให้เห็นว่าความต้องการหรือจังหวะอารมณ์ของทั้งสองฝ่ายในช่วงนี้ยังจูนกันไม่ติด 100% อาจมีความกดดันสะสม ความเข้าใจคลาดเคลื่อน หรือระยะห่างที่เกิดจากภาระหน้าที่ การใช้ความใจเย็นและให้พื้นที่แก่กันและกันจะช่วยคลี่คลายความตึงเครียดได้ดีกว่าการเร่งรัดเอาคำตอบในทันที`,
+          doAction: "เว้นระยะให้ต่างฝ่ายได้ทบทวนอารมณ์ของตัวเอง รับฟังเหตุผลของอีกฝ่ายโดยไม่ตัดสิน และใช้ความนุ่มนวลในการพูดคุยเรื่องสำคัญ",
+          dontAction: "ห้ามใช้อารมณ์กดดัน คาดคั้น หรือพูดจาประชดประชันท้าทายความสัมพันธ์ในขณะที่อารมณ์กำลังคุกรุ่นเด็ดขาด",
+          luckyBoost: `เคล็ดลับปรับสมดุลความรักจากไพ่ ${outcomeName}: ผ่อนคลายความคาดหวังลงชั่วคราว หันมาดูแลความสุขของตัวเองให้เต็มอิ่ม เมื่อพลังงานของคุณนิ่งและเย็นลง อีกฝ่ายจะค่อยๆ เปิดใจเข้าหาเอง`
         };
       }
       return {
-        plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) ทิศทางความรักอยู่ในจังหวะค่อยเป็นค่อยไป ผลลัพธ์ในอนาคตขึ้นอยู่กับการเปิดใจปรับตัวและการกระทำของทั้งสองฝ่ายในระยะนี้`,
-        doAction: "สร้างบรรยากาศที่สบายใจ พูดคุยกันอย่างตรงไปตรงมาและให้เกียรติความรู้สึกของกันและกัน",
-        dontAction: "อย่าด่วนสรุปตัดสินความรู้สึกของอีกฝ่ายจากอารมณ์ชั่ววูบ"
+        plainText: `จากหน้าไพ่ความสัมพันธ์ทั้ง 3 ใบ (ความรู้สึกเรา: ${c1} ➔ ความรู้สึกอีกฝ่าย: ${c2} ➔ แนวโน้มในอนาคต: ${outcomeName}) ความรู้สึกของคุณ ("${k1}") และความรู้สึกของอีกฝ่าย ("${k2}") กำลังปรับจูนเข้าหากันเพื่อมุ่งไปสู่ "${k3}" ในอนาคต`,
+        deepNarrative: `ความสัมพันธ์นี้อยู่ในจังหวะของการเรียนรู้และปรับตัวเข้าหากัน ผลลัพธ์ในอนาคตขึ้นอยู่กับการกระทำและการเปิดใจสื่อสารของทั้งสองฝ่ายในปัจจุบัน หากลดความกังวลและเน้นสร้างความสบายใจเวลาอยู่ด้วยกัน ความสัมพันธ์จะค่อยๆ ชัดเจนและแข็งแรงขึ้นตามลำดับ`,
+        doAction: "รักษาความสม่ำเสมอ สร้างบรรยากาศการพูดคุยที่ผ่อนคลายและเป็นพื้นที่ปลอดภัยให้แก่กันและกัน",
+        dontAction: "อย่าด่วนสรุปความรู้สึกของอีกฝ่ายจากท่าทีภายนอกเพียงชั่วคราว และอย่านำเรื่องเก่ามาเล่าใหม่",
+        luckyBoost: `เสริมพลังความเข้าอกเข้าใจจากไพ่ ${outcomeName}: เน้นการเป็นผู้ฟังที่ดีและส่งมอบความปรารถนาดีอย่างจริงใจโดยไม่กดดันเรื่องเวลา`
       };
     }
 
     if (this.category === "career") {
       if (verdictType === "favorable") {
         return {
-          plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) ดวงการงานโดดเด่นมาก มีเกณฑ์ได้รับโอกาสสำคัญ เลื่อนขั้น หรือทำโปรเจกต์สำเร็จตามเป้าหมาย ความสามารถของคุณจะได้รับการยอมรับอย่างชัดเจน`,
-          doAction: "เดินหน้าลงมือทำอย่างเต็มที่ แสดงความเป็นมืออาชีพ และคว้าโอกาสที่เข้ามาทันที",
-          dontAction: "อย่าลังเลจนเสียจังหวะ และอย่าละเลยรายละเอียดในเอกสารสำคัญ"
+          plainText: `จากหน้าไพ่การงานทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ อนาคต: ${outcomeName}) เส้นทางอาชีพของคุณต่อยอดจาก "${k1}" สู่จังหวะปัจจุบัน "${k2}" และกำลังพุ่งทะยานสู่ "${k3}" อย่างมั่นคงและโดดเด่น`,
+          deepNarrative: `ความทุ่มเทและประสบการณ์ที่คุณสั่งสมมาในอดีตกำลังออกดอกออกผลอย่างชัดเจนในปัจจุบัน และเปิดทางไปสู่ความสำเร็จก้าวสำคัญในอนาคต มีเกณฑ์ได้รับความไว้วางใจจากผู้ใหญ่ การเลื่อนขั้น การปิดดีลสำคัญ หรือการขยับขยายโปรเจกต์ที่สร้างชื่อเสียงและผลตอบแทนที่คุ้มค่า`,
+          doAction: "เดินหน้าลงมือทำตามแผนที่วางไว้ด้วยความมั่นใจ แสดงศักยภาพความเป็นผู้นำ และคว้าโอกาสใหม่ที่เข้ามาทันที",
+          dontAction: "อย่าลังเลหรือถ่อมตัวจนปล่อยให้โอกาสสำคัญหลุดมือ และอย่าละเลยรายละเอียดในสัญญาหรือเอกสารสำคัญ",
+          luckyBoost: `เสริมพลังความสำเร็จด้านการงานจากไพ่ ${outcomeName}: จัดโต๊ะทำงานให้เป็นระเบียบโปร่งโล่ง เปิดรับแสงสว่าง และเริ่มต้นวันด้วยการจดลำดับเป้าหมายสำคัญ 3 ข้อเสมอ`
         };
       } else if (verdictType === "challenging") {
         return {
-          plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) การงานช่วงนี้มีแรงกดดันหรือขั้นตอนที่ล่าช้า ต้องใช้ความรอบคอบและอดทนในการแก้ไขปัญหาเฉพาะหน้าไปทีละเปลาะ`,
-          doAction: "วางแผนสำรอง ตรวจสอบงานและเอกสารให้รัดกุม และรักษาความสัมพันธ์ที่ดีกับทีม",
-          dontAction: "อย่าวู่วามตัดสินใจเปลี่ยนงานหรือปะทะอารมณ์ในที่ทำงานโดยไม่จำเป็น"
+          plainText: `จากหน้าไพ่การงานทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ อนาคต: ${outcomeName}) สะท้อนการเปลี่ยนผ่านจาก "${k1}" มาเผชิญโจทย์ "${k2}" ในปัจจุบัน และเตือนให้วางแผนรับมือ "${k3}" ในระยะถัดไปอย่างรอบคอบ`,
+          deepNarrative: `ช่วงนี้การงานอาจมีบททดสอบด้านเวลา ขั้นตอนที่ซับซ้อน หรือแรงกดดันจากสภาพแวดล้อมรอบข้าง แต่หน้าไพ่ชี้ว่าปัญหานี้สามารถแก้ไขได้ด้วยการจัดระบบงานใหม่และการสื่อสารที่รัดกุม การมีแผนสำรองและไม่ใช้อารมณ์ตัดสินใจจะช่วยให้คุณพลิกวิกฤตเป็นโอกาสพิสูจน์ฝีมือได้สำเร็จ`,
+          doAction: "ตรวจสอบรายละเอียดงานและเอกสารทุกชิ้นให้รัดกุม วางแผนสำรองล่วงหน้า และประสานงานกับทีมด้วยความชัดเจนเป็นลายลักษณ์อักษร",
+          dontAction: "อย่าวู่วามตัดสินใจลาออกหรือเปลี่ยนแผนกะทันหันด้วยอารมณ์ชั่ววูบ และหลีกเลี่ยงการปะทะคารมในที่ทำงาน",
+          luckyBoost: `เสริมพลังความมั่นคงในการทำงานจากไพ่ ${outcomeName}: พักสายตาและสูดลมหายใจลึกๆ ก่อนตัดสินใจเรื่องยากๆ และขอคำปรึกษาจากผู้เชี่ยวชาญที่มีประสบการณ์`
         };
       }
       return {
-        plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) การงานอยู่ในเกณฑ์ทรงตัวและก้าวหน้าได้ด้วยความสม่ำเสมอ ยิ่งวางแผนเป็นระบบมากเท่าไหร่ ผลลัพธ์จะยิ่งมั่นคง`,
-        doAction: "จัดลำดับความสำคัญของงาน พัฒนาทักษะเพิ่มเติม และขอคำปรึกษาจากผู้เชี่ยวชาญ",
-        dontAction: "อย่าปล่อยให้งานคั่งค้างหรือผลัดวันประกันพรุ่ง"
+        plainText: `จากหน้าไพ่การงานทั้ง 3 ใบ (อดีต: ${c1} ➔ ปัจจุบัน: ${c2} ➔ อนาคต: ${outcomeName}) ทิศทางการงานพัฒนาจาก "${k1}" สู่ "${k2}" และมุ่งหน้าสู่ "${k3}" ด้วยความมั่นคงตามลำดับขั้นตอน`,
+        deepNarrative: `ดวงการงานของคุณอยู่ในจังหวะของการสร้างรากฐานและพัฒนาทักษะให้แข็งแกร่ง ยิ่งคุณรักษามาตรฐานความรับผิดชอบและทำงานอย่างเป็นระบบมากเท่าไร ผลลัพธ์ในอนาคตก็จะยิ่งมั่นคงและเปิดทางสู่โอกาสที่ใหญ่ขึ้นในจังหวะเวลาที่เหมาะสม`,
+        doAction: "จัดลำดับความสำคัญของงาน พัฒนาทักษะเฉพาะทางเพิ่มเติม และรักษามาตรฐานผลงานให้สม่ำเสมอ",
+        dontAction: "อย่าปล่อยให้งานคั่งค้างสะสม หรือทำงานแบบไร้ทิศทางโดยไม่กำหนดกรอบเวลา",
+        luckyBoost: `เสริมพลังความก้าวหน้าจากไพ่ ${outcomeName}: เรียนรู้เทคโนโลยีหรือทักษะใหม่ๆ เพิ่มเติม และสร้างเครือข่ายกัลยาณมิตรในสายงาน`
       };
     }
 
     if (this.category === "finance") {
       if (verdictType === "favorable") {
         return {
-          plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) กระแสการเงินคล่องตัวดีมาก มีเกณฑ์ได้รับผลตอบแทน รายได้พิเศษ หรือโชคลาภจากสิ่งที่ลงทุนลงแรงไว้`,
-          doAction: "แบ่งเก็บออมทันทีที่ได้รายรับ และต่อยอดการลงทุนในสิ่งที่ศึกษามาอย่างดี",
-          dontAction: "อย่าใช้จ่ายตามอารมณ์ฟุ่มเฟือยเพียงเพราะเห็นว่าเงินเข้ามือดี"
+          plainText: `จากหน้าไพ่การเงินทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) กระแสการเงินเชื่อมต่อจาก "${k1}" สู่ "${k2}" และเปิดทางรับโชคลาภความมั่งคั่ง "${k3}" อย่างชัดเจน`,
+          deepNarrative: `การบริหารจัดการหรือสิ่งที่คุณได้ลงทุนลงแรงไว้ในอดีตกำลังส่งผลบวกต่อสภาพคล่องในปัจจุบัน และมีแนวโน้มเติบโตต่อเนื่องในอนาคต มีเกณฑ์ได้รับเงินก้อน ผลกำไร รายได้เสริม หรือโชคลาภทางการเงินที่ช่วยให้ฐานะการเงินมั่งคั่งและมั่นคงยิ่งขึ้น`,
+          doAction: "แบ่งสัดส่วนรายรับเพื่อการออมและต่อยอดการลงทุนในสินทรัพย์ที่มีความมั่นคงทันทีที่เงินเข้ามือ",
+          dontAction: "อย่าใช้จ่ายตามอารมณ์หรือซื้อของฟุ่มเฟือยเกินความจำเป็นเพียงเพราะเห็นว่ากระแสเงินกำลังไหลเข้าดี",
+          luckyBoost: `เสริมพลังเรียกทรัพย์จากไพ่ ${outcomeName}: จัดกระเป๋าสตางค์ให้เป็นระเบียบเรียบร้อย แยกธนบัตรเรียงตามมูลค่า และแบ่งปันทำบุญตามกำลังเพื่อเปิดกระแสทานบารมี`
         };
       } else if (verdictType === "challenging") {
         return {
-          plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) เตือนให้ระวังรายจ่ายกะทันหันหรือเงินตึงมือในช่วงสั้นๆ ควรชะลอการลงทุนที่มีความเสี่ยงสูงไว้ก่อน`,
-          doAction: "ทำบัญชีรายรับ-รายจ่ายอย่างรัดกุม และสำรองเงินสดไว้เผื่อกรณีฉุกเฉิน",
-          dontAction: "ห้ามให้ใครหยิบยืมเงิน ค้ำประกัน หรือเสี่ยงโชคเกินตัวเด็ดขาด"
+          plainText: `จากหน้าไพ่การเงินทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) เตือนให้เห็นผลต่อเนื่องจาก "${k1}" สู่ "${k2}" และต้องวางแผนรัดกุมเพื่อรับมือ "${k3}" ในอนาคต`,
+          deepNarrative: `หน้าไพ่ส่งสัญญาณให้ระมัดระวังรายจ่ายแฝง รายจ่ายฉุกเฉิน หรือการหมุนเงินที่อาจตึงมือในช่วงสั้นๆ การชะลอการลงทุนที่มีความเสี่ยงสูงและกลับมาอุดรูรั่วทางการเงินตั้งแต่วันนี้ จะช่วยให้คุณผ่านพ้นจังหวะนี้ไปได้อย่างปลอดภัยไร้หนี้สินพอกพูน`,
+          doAction: "ทำบัญชีรายรับ-รายจ่ายอย่างละเอียด ตัดค่าใช้จ่ายที่ไม่จำเป็นออก และกันเงินสำรองฉุกเฉินไว้เป็นอันดับแรก",
+          dontAction: "ห้ามให้ผู้อื่นหยิบยืมเงิน ห้ามเซ็นค้ำประกัน และงดการเสี่ยงโชคหรือลงทุนตามคำชักชวนที่เกินตัวเด็ดขาด",
+          luckyBoost: `เคล็ดลับแก้เคล็ดการเงินจากไพ่ ${outcomeName}: ชำระบิลหรือหนี้สินตรงเวลา และตั้งเป้าหมายการออมแบบอัตโนมัติแม้เป็นจำนวนเงินเล็กน้อยเพื่อสร้างวินัยใหม่`
         };
       }
       return {
-        plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) การเงินอยู่ในระดับสมดุล พอหมุนเวียนใช้จ่ายได้ราบรื่นหากรักษาวินัยทางการเงินอย่างต่อเนื่อง`,
-        doAction: "วางแผนการใช้จ่ายล่วงหน้า และมองหาช่องทางสร้างรายได้เสริมจากความถนัด",
-        dontAction: "อย่าก่อหนี้ก้อนใหม่ที่ไม่จำเป็นในช่วงนี้"
+        plainText: `จากหน้าไพ่การเงินทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) กระแสการเงินเคลื่อนจาก "${k1}" สู่ "${k2}" และสรุปจบที่ "${k3}" ในเกณฑ์สมดุลและหมุนเวียนได้ดี`,
+        deepNarrative: `สถานะการเงินโดยรวมมีความมั่นคงในระดับที่ควบคุมได้ รายรับและรายจ่ายสอดคล้องกัน หากคุณวางแผนงบประมาณล่วงหน้าและมองหาช่องทางสร้างรายได้เสริมจากทักษะที่มี จะช่วยให้การเงินเติบโตอย่างต่อเนื่อง`,
+        doAction: "วางแผนงบประมาณรายเดือนอย่างชัดเจน และต่อยอดทักษะที่มีเพื่อสร้างช่องทางรายได้เสริม",
+        dontAction: "อย่าก่อภาระผ่อนชำระก้อนใหม่ที่ยังไม่จำเป็นในช่วงนี้",
+        luckyBoost: `เสริมดวงการเงินสมดุลจากไพ่ ${outcomeName}: จดบันทึกเป้าหมายทางการเงินระยะสั้นและระยะยาวให้ชัดเจนเพื่อดึงดูดโอกาสใหม่ๆ`
       };
     }
 
-    // Health
+    // สุขภาพ (health)
     if (verdictType === "favorable") {
       return {
-        plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) พลังงานสุขภาพแข็งแรงและมีแนวโน้มฟื้นตัวดีเยี่ยม ทั้งร่างกายและจิตใจมีความสดชื่นสมดุล`,
-        doAction: "รักษาวินัยการออกกำลังกาย พักผ่อนให้เพียงพอ และรับประทานอาหารที่มีประโยชน์",
-        dontAction: "อย่าโหมงานหนักติดต่อกันจนลืมเวลาพักผ่อน"
+        plainText: `จากหน้าไพ่สุขภาพทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) พลังงานชีวิตส่งผลจาก "${k1}" สู่ "${k2}" และมุ่งสู่สภาวะสมดุลแข็งแรง "${k3}"`,
+        deepNarrative: `ทั้งร่างกายและจิตใจของคุณมีเกณฑ์ฟื้นฟูและกลับมามีชีวิตชีวาอย่างเต็มเปี่ยม อาการเหนื่อยล้าหรือความกังวลก่อนหน้าจะค่อยๆ คลี่คลายลง เป็นจังหวะที่ดีเยี่ยมในการเริ่มต้นดูแลสุขภาพเชิงรุกเพื่อความแข็งแรงในระยะยาว`,
+        doAction: "รักษาวินัยการออกกำลังกายสม่ำเสมอ พักผ่อนให้เพียงพอ และเลือกรับประทานอาหารที่สดใหม่มีประโยชน์",
+        dontAction: "อย่าโหมงานหนักติดต่อกันจนละเลยสัญญาณเตือนพื้นฐานของร่างกาย",
+        luckyBoost: `เสริมพลังสุขภาพจากไพ่ ${outcomeName}: รับแสงแดดอ่อนๆ ยามเช้า ฝึกหายใจลึกๆ และดื่มน้ำสะอาดให้เพียงพอตลอดวัน`
       };
     } else if (verdictType === "challenging") {
       return {
-        plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) เตือนให้ใส่ใจเรื่องความเครียดสะสม การพักผ่อนไม่เพียงพอ หรืออาการออฟฟิศซินโดรม/โรคประจำตัว`,
-        doAction: "จัดสรรเวลาพักผ่อนให้มากขึ้น ผ่อนคลายความเครียด และตรวจเช็กร่างกายเมื่อมีสัญญาณเตือน",
-        dontAction: "อย่าฝืนร่างกายเมื่อรู้สึกอ่อนล้า และหลีกเลี่ยงความประมาทในการเดินทาง"
+        plainText: `จากหน้าไพ่สุขภาพทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) สะท้อนผลสะสมจาก "${k1}" ที่ส่งผลเป็น "${k2}" ในปัจจุบัน และเตือนให้ดูแลเรื่อง "${k3}" อย่างใกล้ชิด`,
+        deepNarrative: `หน้าไพ่เตือนว่าการใช้พลังงานสะสมหรือความเครียดในช่วงที่ผ่านมาเริ่มส่งสัญญาณผ่านร่างกาย เช่น อาการอ่อนเพลีย นอนไม่หลับ หรือออฟฟิศซินโดรม การหันมาจัดเวลาพักผ่อนและตรวจเช็กสุขภาพตั้งแต่เนิ่นๆ จะช่วยให้ฟื้นตัวได้อย่างรวดเร็ว`,
+        doAction: "จัดสรรเวลาพักผ่อนให้เพียงพอ ผ่อนคลายความเครียดก่อนนอน และพบแพทย์เพื่อตรวจเช็กร่างกายหากมีอาการผิดปกติ",
+        dontAction: "อย่าฝืนร่างกายทำงานหามรุ่งหามค่ำ และหลีกเลี่ยงความประมาทในการเดินทางหรือการใช้ชีวิตประจำวัน",
+        luckyBoost: `เสริมพลังฟื้นฟูกายใจจากไพ่ ${outcomeName}: งดหน้าจอก่อนนอนอย่างน้อย 30 นาที ฟังเพลงบรรเลงผ่อนคลาย และปรับสภาพแวดล้อมห้องนอนให้สงบมืดสนิท`
       };
     }
     return {
-      plainText: `จากหน้าไพ่ทั้ง 3 ใบ (${c1} ➔ ${c2} ➔ ${outcomeName}) สุขภาพโดยรวมอยู่ในเกณฑ์ปานกลาง ร่างกายจะแข็งแรงขึ้นตามการดูแลเอาใจใส่ในชีวิตประจำวัน`,
-      doAction: "ปรับเวลานอนให้เป็นเวลา ดื่มน้ำสะอาดมากๆ และหาเวลาขยับร่างกายสม่ำเสมอ",
-      dontAction: "อย่าละเลยอาการผิดปกติเล็กๆ น้อยๆ ของร่างกาย"
+      plainText: `จากหน้าไพ่สุขภาพทั้ง 3 ใบ (เหตุ: ${c1} ➔ ผลปัจจุบัน: ${c2} ➔ สรุปอนาคต: ${outcomeName}) พลังงานสุขภาพเชื่อมโยงจาก "${k1}" สู่ "${k2}" และสรุปที่ "${k3}" ในเกณฑ์สมดุลตามการดูแลตัวเอง`,
+      deepNarrative: `สุขภาพโดยรวมอยู่ในเกณฑ์ปานกลางที่สามารถฟื้นฟูให้ดีขึ้นได้อย่างชัดเจนหากปรับสมดุลการทำงานและการพักผ่อนให้เหมาะสม ร่างกายพร้อมตอบสนองต่อการดูแลเอาใจใส่ในชีวิตประจำวันเป็นอย่างดี`,
+      doAction: "ปรับเวลานอนให้ตรงเวลา ขยับร่างกายยืดเหยียดกล้ามเนื้อทุกวัน และดูแลสุขภาพจิตให้แจ่มใส",
+      dontAction: "อย่าปล่อยให้ความเครียดสะสมค้างคาข้ามวัน",
+      luckyBoost: `เสริมสมดุลพลังชีวิตจากไพ่ ${outcomeName}: หาเวลาออกไปสูดอากาศบริสุทธิ์ท่ามกลางธรรมชาติในวันหยุด`
     };
   }
 

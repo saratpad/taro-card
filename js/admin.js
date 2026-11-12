@@ -54,16 +54,6 @@ class AdminBackoffice {
     this.ragDocsList = document.getElementById("rag-docs-list");
     this.btnCopyNotebookLmPrompt = document.getElementById("btn-copy-notebooklm-prompt");
 
-    // Add New Discipline Modal Elements
-    this.btnOpenAddDiscipline = document.getElementById("btn-open-add-discipline");
-    this.btnOpenAddDiscipline2 = document.getElementById("btn-open-add-discipline-2");
-    this.btnInlineAddDiscipline = document.getElementById("btn-inline-add-discipline");
-    this.addDisciplineModal = document.getElementById("add-discipline-modal");
-    this.btnCloseDisciplineModal = document.getElementById("btn-close-discipline-modal");
-    this.btnCancelDiscipline = document.getElementById("btn-cancel-discipline");
-    this.addDisciplineForm = document.getElementById("add-discipline-form");
-    this.customDisciplinesGrid = document.getElementById("custom-disciplines-grid");
-
     // Create Code Form
     this.createForm = document.getElementById("create-code-form");
     this.inputCustomerName = document.getElementById("input-customer-name");
@@ -254,31 +244,6 @@ class AdminBackoffice {
         });
       });
     }
-
-    // Add New Divination Discipline Modal Events
-    const openDiscModal = () => {
-      if (this.addDisciplineModal) this.addDisciplineModal.classList.add("active");
-    };
-    const closeDiscModal = () => {
-      if (this.addDisciplineModal) this.addDisciplineModal.classList.remove("active");
-    };
-    if (this.btnOpenAddDiscipline) this.btnOpenAddDiscipline.addEventListener("click", openDiscModal);
-    if (this.btnOpenAddDiscipline2) this.btnOpenAddDiscipline2.addEventListener("click", openDiscModal);
-    if (this.btnInlineAddDiscipline) this.btnInlineAddDiscipline.addEventListener("click", openDiscModal);
-    if (this.btnCloseDisciplineModal) this.btnCloseDisciplineModal.addEventListener("click", closeDiscModal);
-    if (this.btnCancelDiscipline) this.btnCancelDiscipline.addEventListener("click", closeDiscModal);
-    if (this.addDisciplineModal) {
-      this.addDisciplineModal.addEventListener("click", (e) => {
-        if (e.target === this.addDisciplineModal) closeDiscModal();
-      });
-    }
-
-    if (this.addDisciplineForm) {
-      this.addDisciplineForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        this.handleAddNewDiscipline();
-      });
-    }
   }
 
   updateCategoryDropdownForMode(mode) {
@@ -396,7 +361,6 @@ class AdminBackoffice {
       }
     }
 
-    this.renderDisciplinesAndDropdowns();
     this.renderRagKnowledgeBase();
     this.renderStats();
     this.renderTable();
@@ -461,155 +425,6 @@ class AdminBackoffice {
     });
   }
 
-  renderDisciplinesAndDropdowns() {
-    if (!window.disciplineManager) return;
-    const customList = window.disciplineManager.getAllCustomDisciplines();
-
-    // Update Package Dropdown in Create Code Form
-    if (this.selectServiceMode) {
-      const currentVal = this.selectServiceMode.value;
-      let html = `
-        <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)</option>
-        <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (1 ครั้ง)</option>
-        <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (โค้ดพิเศษ ใช้ได้ 2 บริการ อย่างละ 1 ครั้ง)</option>
-      `;
-      customList.forEach(d => {
-        html += `<option value="${d.id}">${d.icon || "✨"} ศาสตร์พิเศษ: ${d.name_th} (${d.drawCount || 3} ตำแหน่ง)</option>`;
-      });
-      this.selectServiceMode.innerHTML = html;
-      if (currentVal) this.selectServiceMode.value = currentVal;
-    }
-
-    // Update Filter Dropdown
-    if (this.filterMode) {
-      const curFilter = this.filterMode.value;
-      let fHtml = `
-        <option value="all">ทุกแพ็กเกจ / ทุกศาสตร์</option>
-        <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
-        <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซี</option>
-        <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี</option>
-      `;
-      customList.forEach(d => {
-        fHtml += `<option value="${d.id}">${d.icon || "✨"} ${d.name_th}</option>`;
-      });
-      this.filterMode.innerHTML = fHtml;
-      if (curFilter) this.filterMode.value = curFilter;
-    }
-
-    // Render Disciplines Grid in Section 5
-    if (this.customDisciplinesGrid) {
-      const builtInCards = `
-        <div class="discipline-item-card builtin">
-          <div class="disc-card-head">
-            <span class="disc-card-icon">🔮</span>
-            <div>
-              <strong>แพ็กเกจ 1: ไพ่ทาโรต์ 78 ใบ (3-Card Spread)</strong>
-              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
-            </div>
-          </div>
-          <p class="disc-card-desc">เรียงไพ่ 3 ใบตามตำรา (ความรักโสด/มีคู่, การงาน, การเงิน, สุขภาพ) พร้อมระบบ RAG เสริมความแม่นยำ</p>
-        </div>
-        <div class="discipline-item-card builtin">
-          <div class="disc-card-head">
-            <span class="disc-card-icon">🎋</span>
-            <div>
-              <strong>แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (2 ตำรา 200 ใบ)</strong>
-              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
-            </div>
-          </div>
-          <p class="disc-card-desc">ตำราหว่องไทซิน 100 ใบ และตำราหลวงพ่อทันใจ 100 ใบ พร้อมระบบเขย่าเซียมซี 3 มิติ</p>
-        </div>
-        <div class="discipline-item-card builtin">
-          <div class="disc-card-head">
-            <span class="disc-card-icon">🌟</span>
-            <div>
-              <strong>แพ็กเกจ 3: แพ็กเกจคู่พิเศษ (ดูดวง + เซียมซี)</strong>
-              <span class="disc-status-tag">เปิดใช้งานหลัก</span>
-            </div>
-          </div>
-          <p class="disc-card-desc">รหัสโค้ดเดียวเข้าใช้บริการได้ทั้งไพ่ทาโรต์ 3 ใบ และเสี่ยงเซียมซี อย่างละ 1 ครั้ง</p>
-        </div>
-      `;
-
-      const customCards = customList.map(d => `
-        <div class="discipline-item-card custom">
-          <div class="disc-card-head">
-            <span class="disc-card-icon">${d.icon || "✨"}</span>
-            <div>
-              <strong>${d.name_th}</strong>
-              <span class="disc-status-tag custom-tag">ศาสตร์ที่เพิ่มใหม่ (${d.drawCount || 3} ตำแหน่ง)</span>
-            </div>
-          </div>
-          <p class="disc-card-desc">${d.description || ""}</p>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.65rem;">
-            <span style="font-size:0.78rem; color:#bae6fd;">จำนวนคำทำนาย: ${(d.items || []).length} รายการ</span>
-            <button type="button" class="btn-row-act btn-danger" data-del-disc="${d.id}">🗑️ ลบศาสตร์นี้</button>
-          </div>
-        </div>
-      `).join("");
-
-      this.customDisciplinesGrid.innerHTML = builtInCards + customCards;
-
-      this.customDisciplinesGrid.querySelectorAll("[data-del-disc]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-del-disc");
-          window.disciplineManager.deleteDiscipline(id);
-          this.renderDisciplinesAndDropdowns();
-          this.showToast("🗑️ ลบศาสตร์พยากรณ์ออกจากระบบแล้ว");
-        });
-      });
-    }
-  }
-
-  handleAddNewDiscipline() {
-    if (!window.disciplineManager) return;
-    const nameThEl = document.getElementById("disc-name-th");
-    const iconEl = document.getElementById("disc-icon");
-    const drawCountEl = document.getElementById("disc-draw-count");
-    const positionsEl = document.getElementById("disc-positions");
-    const descEl = document.getElementById("disc-description");
-    const itemsTextEl = document.getElementById("disc-items-text");
-
-    const name_th = nameThEl ? nameThEl.value.trim() : "";
-    if (!name_th) return;
-
-    const icon = iconEl ? iconEl.value.trim() : "🪐";
-    const drawCount = drawCountEl ? parseInt(drawCountEl.value, 10) : 3;
-    const positions = positionsEl
-      ? positionsEl.value.split(",").map(s => s.trim()).filter(Boolean)
-      : ["อดีต / เหตุ", "ปัจจุบัน / ผล", "อนาคต / สรุป"];
-    const description = descEl ? descEl.value.trim() : "";
-    const rawLines = itemsTextEl ? itemsTextEl.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean) : [];
-    const items = rawLines.map(line => {
-      const parts = line.split("|").map(p => p.trim());
-      return {
-        name: parts[0] || "สัญลักษณ์ศักดิ์สิทธิ์",
-        meaning: parts[1] || "พลังงานแห่งความสำเร็จและการเปลี่ยนแปลงที่ดี",
-        advice: parts[2] || "ตั้งสติและเปิดรับโอกาสใหม่ด้วยความมั่นใจ"
-      };
-    });
-
-    const created = window.disciplineManager.addDiscipline({
-      name_th,
-      icon,
-      drawCount,
-      positions,
-      description,
-      items: items.length > 0 ? items : undefined
-    });
-
-    if (nameThEl) nameThEl.value = "";
-    if (descEl) descEl.value = "";
-    if (itemsTextEl) itemsTextEl.value = "";
-    if (this.addDisciplineModal) this.addDisciplineModal.classList.remove("active");
-
-    this.renderDisciplinesAndDropdowns();
-    if (this.selectServiceMode) {
-      this.selectServiceMode.value = created.id;
-    }
-    this.showToast(`✨ เพิ่มศาสตร์พยากรณ์ใหม่ "${created.name_th}" เรียบร้อยแล้ว! สามารถสร้างโค้ดให้ลูกค้าได้ทันที`);
-  }
-
   formatDateTime(ts) {
     if (!ts) return "-";
     return new Date(ts).toLocaleString("th-TH", {
@@ -672,11 +487,7 @@ class AdminBackoffice {
 
       let modeBadge = `<span class="mode-pill tarot">🔮 แพ็ก 1: ไพ่ทาโรต์ 3 ใบ</span>`;
       let quotaText = `สิทธิ์จับไพ่: ${codeObj.tarotDrawCount || (tarotRes ? 1 : 0)} / 1 ครั้ง`;
-      const customDisc = window.disciplineManager ? window.disciplineManager.getDisciplineById(codeObj.mode) : null;
-      if (customDisc) {
-        modeBadge = `<span class="mode-pill combo">${customDisc.icon || "✨"} ${customDisc.name_th}</span>`;
-        quotaText = `สิทธิ์เปิดคำทำนาย: ${codeObj.drawCount || 0} / 1 ครั้ง`;
-      } else if (codeObj.mode === "siamsi") {
+      if (codeObj.mode === "siamsi") {
         modeBadge = `<span class="mode-pill siamsi">🎋 แพ็ก 2: เสี่ยงเซียมซี</span>`;
         quotaText = `สิทธิ์เซียมซี: ${codeObj.siamsiDrawCount || (siamsiRes ? 1 : 0)} / 1 ครั้ง`;
       } else if (codeObj.mode === "combo") {

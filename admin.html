@@ -13,18 +13,16 @@
   <header class="admin-header">
     <div class="admin-brand">
       <div class="brand-logo-frame" style="width:56px; height:56px;">
+        <span class="logo-orbit-ring" aria-hidden="true"></span>
         <img src="assets/logo.jpg" alt="SIAMSI TAROT" class="brand-logo-img" id="admin-brand-logo-img" />
       </div>
       <div>
         <h1>เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE) — ระบบหลังบ้าน</h1>
-        <p>จัดการโค้ดลูกค้า Fastwork • อัปโหลดตำราพยากรณ์ RAG (NotebookLM) • เพิ่มศาสตร์พยากรณ์ใหม่ • ดาวน์โหลดไฟล์ PDF</p>
+        <p>จัดการโค้ดลูกค้า Fastwork • อัปโหลดตำราพยากรณ์ RAG (NotebookLM) • ตรวจสอบ Log & ดาวน์โหลดไฟล์ PDF</p>
       </div>
     </div>
     <div class="admin-header-actions">
       <span id="sync-mode-badge" class="sync-mode-badge">🟢 ระบบพร้อมใช้งาน</span>
-      <button type="button" id="btn-open-add-discipline" class="btn-admin-secondary" style="border-color:#38bdf8; color:#bae6fd;">
-        <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่
-      </button>
       <a href="#rag-knowledge-section" class="btn-admin-secondary">
         <span>📚</span> อัปโหลดตำรา RAG (NotebookLM)
       </a>
@@ -129,14 +127,9 @@
 
     <!-- 2. Create New Code Box (สำหรับสร้างโค้ดส่งงานลูกค้า Fastwork) -->
     <section class="admin-panel-card create-code-panel">
-      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
-        <div>
-          <h2>✨ สร้างโค้ดดูดวงใหม่สำหรับลูกค้า Fastwork</h2>
-          <p>โค้ดทุกใบจำกัดการสุ่มดูดวง <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
-        </div>
-        <button type="button" id="btn-inline-add-discipline" class="btn-admin-secondary" style="border-color:#38bdf8; color:#bae6fd;">
-          <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่เข้าระบบ
-        </button>
+      <div class="panel-header">
+        <h2>✨ สร้างโค้ดดูดวงใหม่สำหรับลูกค้า Fastwork</h2>
+        <p>โค้ดทุกใบจำกัดการสุ่มดูดวง <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
       </div>
 
       <form id="create-code-form" class="create-code-form" autocomplete="off">
@@ -309,23 +302,6 @@
       </div>
     </section>
 
-    <!-- 5. รายการศาสตร์พยากรณ์ในระบบ & ตั้งค่าโลโก้แบรนด์ -->
-    <section class="admin-panel-card">
-      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-        <div>
-          <h2>🌟 จัดการศาสตร์พยากรณ์ & ธีมโลโก้แบรนด์ (SIAMSI TAROT • ORACLE)</h2>
-          <p>รองรับการเพิ่มศาสตร์พยากรณ์ใหม่ๆ ในอนาคต และปรับแต่งโลโก้/ธีมสีของระบบให้เข้ากับแบรนด์</p>
-        </div>
-        <button type="button" id="btn-open-add-discipline-2" class="btn-admin-primary">
-          <span>➕</span> เพิ่มศาสตร์พยากรณ์ใหม่
-        </button>
-      </div>
-
-      <div id="custom-disciplines-grid" class="custom-disciplines-grid">
-        <!-- Injected by admin.js -->
-      </div>
-    </section>
-
   </main>
 
   <!-- Modal 1: ดูคำทำนายฉบับเต็ม & ประวัติ Log ของโค้ด -->
@@ -333,57 +309,6 @@
     <div class="modal-content-box admin-modal-box">
       <button class="modal-close-btn" id="btn-close-admin-modal">&times;</button>
       <div id="admin-modal-body"></div>
-    </div>
-  </div>
-
-  <!-- Modal 2: เพิ่มศาสตร์พยากรณ์ใหม่ (Add New Divination Discipline) -->
-  <div id="add-discipline-modal" class="modal-overlay">
-    <div class="modal-content-box admin-modal-box" style="max-width:680px;">
-      <button class="modal-close-btn" id="btn-close-discipline-modal">&times;</button>
-      <h2 style="color:var(--gold-primary); margin-bottom:0.35rem;">➕ เพิ่มศาสตร์พยากรณ์ใหม่เข้าระบบ</h2>
-      <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.1rem;">
-        เมื่อเพิ่มศาสตร์ใหม่แล้ว คุณจะสามารถออกรหัสโค้ดให้ลูกค้าเข้าใช้งานศาสตร์นี้ได้ทันที พร้อมรองรับการแชร์รูป Info Card และโหลด PDF อัตโนมัติ
-      </p>
-
-      <form id="add-discipline-form" class="create-code-form">
-        <div class="form-row-grid">
-          <div class="admin-field">
-            <label for="disc-name-th">ชื่อศาสตร์พยากรณ์ (ภาษาไทย)</label>
-            <input type="text" id="disc-name-th" placeholder="เช่น ไพ่ออราเคิลจักรวาล / อักษรรูนส์โบราณ" required />
-          </div>
-          <div class="admin-field">
-            <label for="disc-icon">ไอคอนประจำศาสตร์</label>
-            <input type="text" id="disc-icon" value="🪐" maxlength="4" required />
-          </div>
-          <div class="admin-field">
-            <label for="disc-draw-count">จำนวนไพ่/สัญลักษณ์ที่สุ่มต่อครั้ง</label>
-            <select id="disc-draw-count">
-              <option value="3" selected>3 ตำแหน่ง (มาตรฐาน 3 ใบ)</option>
-              <option value="1">1 ตำแหน่ง (ฟันธงใบเดียว)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="admin-field" style="margin-bottom:0.85rem;">
-          <label for="disc-positions">ชื่อตำแหน่งคำทำนาย (คั่นด้วยเครื่องหมายจุลภาค ,)</label>
-          <input type="text" id="disc-positions" value="อดีต / เหตุ, ปัจจุบัน / ผล, อนาคต / สรุป" />
-        </div>
-
-        <div class="admin-field" style="margin-bottom:0.85rem;">
-          <label for="disc-description">คำอธิบายสำหรับแสดงให้ลูกค้าตั้งจิตอธิษฐาน</label>
-          <input type="text" id="disc-description" placeholder="เช่น ตั้งจิตอธิษฐานถึงสิ่งที่ต้องการถาม แล้วกดเปิดรับสารจากจักรวาล" />
-        </div>
-
-        <div class="admin-field" style="margin-bottom:1rem;">
-          <label for="disc-items-text">รายการคำทำนายประจำศาสตร์ (บรรทัดละ 1 ใบ ในรูปแบบ: <code>ชื่อไพ่ | คำทำนาย | คำแนะนำ</code>)</label>
-          <textarea id="disc-items-text" rows="5" class="fastwork-msg-preview" placeholder="ดวงดาวแห่งโชคลาภ | เกณฑ์ได้รับข่าวดีด้านการเงินและโอกาสใหม่ที่รอคอย | เปิดใจรับข้อเสนอใหม่ด้วยความมั่นใจ&#10;กุญแจแห่งปัญญา | ปัญหาที่ติดขัดจะคลี่คลายด้วยสติและผู้ใหญ่ช่วยเหลือ | ปรึกษาผู้เชี่ยวชาญและวางแผนเป็นขั้นตอน&#10;แสงอรุณรุ่ง | การเริ่มต้นใหม่ที่สดใสทั้งความรักและการงาน | ก้าวออกจากความกังวลเดิมแล้วลงมือทำทันที"></textarea>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
-          <button type="button" id="btn-cancel-discipline" class="btn-admin-secondary">ยกเลิก</button>
-          <button type="submit" class="btn-admin-primary">✨ บันทึกศาสตร์พยากรณ์ใหม่</button>
-        </div>
-      </form>
     </div>
   </div>
 

@@ -243,26 +243,38 @@ class RAGKnowledgeEngine {
   _ensureDefaultCorpus() {
     if (this.documents.length > 0) return;
     const now = Date.now();
-    const starterDocs = [
-      {
-        id: "rag-starter-tarot-rules",
-        title: "คัมภีร์เคล็ดลับการอ่านไพ่ 3 ใบตามตำแหน่ง (อดีต/ความรู้สึกเรา/เหตุ • ปัจจุบัน/ความรู้สึกอีกฝ่าย/ผล • อนาคต/สรุป)",
-        sourceType: "NotebookLM Summary",
-        targetScope: "tarot",
-        createdAt: now,
-        chunksCount: 6,
-        content: `[ความรัก คนโสด] เมื่อไพ่ใบที่ 1 (อดีต) เป็นไพ่ธาตุถ้วยหรือไพ่เมเจอร์ใหญ่ สะท้อนว่าหัวใจผ่านบทเรียนสำคัญที่ทำให้รู้จักคุณค่าของตัวเองมากขึ้น ไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือตัวชี้วัดจังหวะเวลาที่คนใหม่จะก้าวเข้ามา
+    const content = `[ความรัก คนโสด] เมื่อไพ่ใบที่ 1 (อดีต) เป็นไพ่ธาตุถ้วยหรือไพ่เมเจอร์ใหญ่ สะท้อนว่าหัวใจผ่านบทเรียนสำคัญที่ทำให้รู้จักคุณค่าของตัวเองมากขึ้น ไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือตัวชี้วัดจังหวะเวลาที่คนใหม่จะก้าวเข้ามา
 [ความรัก ไม่โสด/มีคนในใจ] ไพ่ใบที่ 1 (ความรู้สึกเรา) แทนท่าทีและสิ่งที่คุณคาดหวังในใจ ส่วนไพ่ใบที่ 2 (ความรู้สึกอีกฝ่าย) แทนความรู้สึกแท้จริงที่เขาอาจไม่ได้พูดออกมาตรงๆ และไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือบทสรุปทิศทางความสัมพันธ์ว่าจะพัฒนาไปในทิศทางใด
 [การงาน] การเรียงแบบ อดีต ➔ ปัจจุบัน ➔ อนาคต ให้ดูน้ำหนักที่ไพ่ใบที่ 2 (สถานการณ์ปัจจุบัน) ควบคู่กับไพ่ใบที่ 3 (อนาคต) เพื่อวางกลยุทธ์รับมือและคว้าโอกาสสำคัญ
 [การเงิน] ตำรา เหตุ ➔ ผล ➔ สรุป เน้นวิเคราะห์ต้นเหตุการใช้จ่ายในใบที่ 1 เพื่อแก้สภาพคล่องในใบที่ 2 และเปิดทางรับโชคลาภหรือผลตอบแทนในใบที่ 3
-[สุขภาพ] ตำรา เหตุ ➔ ผล ➔ สรุป ให้ดูสมดุลธาตุของไพ่ทั้ง 3 ใบ เพื่อปรับพฤติกรรมการพักผ่อนและฟื้นฟูพลังชีวิต`
+[สุขภาพ] ตำรา เหตุ ➔ ผล ➔ สรุป ให้ดูสมดุลธาตุของไพ่ทั้ง 3 ใบ เพื่อปรับพฤติกรรมการพักผ่อนและฟื้นฟูพลังชีวิต`;
+    const chunks = this._splitIntoChunks(content);
+    const starterDocs = [
+      {
+        id: "doc_default_master_tarot",
+        title: "คัมภีร์เคล็ดลับการอ่านไพ่ 3 ใบตามตำแหน่ง (อดีต/ความรู้สึกเรา/เหตุ • ปัจจุบัน/ความรู้สึกอีกฝ่าย/ผล • อนาคต/สรุป)",
+        source: "NotebookLM Summary",
+        sourceType: "NotebookLM Summary",
+        discipline: "tarot",
+        targetScope: "tarot",
+        uploadedAt: now,
+        createdAt: now,
+        chunks,
+        chunksCount: chunks.length,
+        content
       }
     ];
     this._saveDocuments(starterDocs);
   }
 
   getAllDocuments() {
-    return this.documents;
+    return this.documents.map(d => ({
+      ...d,
+      chunks: Array.isArray(d.chunks) ? d.chunks : this._splitIntoChunks(d.content),
+      discipline: d.discipline || d.targetScope || "tarot",
+      source: d.source || d.sourceType || "NotebookLM",
+      uploadedAt: d.uploadedAt || d.createdAt || Date.now()
+    }));
   }
 
   /**
@@ -276,17 +288,23 @@ class RAGKnowledgeEngine {
       .filter(s => s.length >= 15);
   }
 
-  addDocument({ title, content, sourceType = "NotebookLM", targetScope = "all" }) {
+  addDocument({ title, content, source = "NotebookLM", sourceType = "NotebookLM", discipline = "tarot", targetScope = "all" }) {
     if (!content || !content.trim()) {
       throw new Error("กรุณาใส่เนื้อหาสรุปตำรา หรือเลือกไฟล์ที่ต้องการอัปโหลด");
     }
     const chunks = this._splitIntoChunks(content);
+    const scope = discipline || targetScope || "tarot";
+    const now = Date.now();
     const doc = {
-      id: "rag-" + Date.now() + "-" + Math.random().toString(36).substring(2, 6),
+      id: "rag-" + now + "-" + Math.random().toString(36).substring(2, 6),
       title: (title && title.trim()) ? title.trim() : `ตำราพยากรณ์ NotebookLM (${new Date().toLocaleDateString("th-TH")})`,
-      sourceType,
-      targetScope,
-      createdAt: Date.now(),
+      source: source || sourceType,
+      sourceType: source || sourceType,
+      discipline: scope,
+      targetScope: scope,
+      uploadedAt: now,
+      createdAt: now,
+      chunks,
       chunksCount: chunks.length,
       content: content.trim()
     };
@@ -294,6 +312,10 @@ class RAGKnowledgeEngine {
     docs.unshift(doc);
     this._saveDocuments(docs);
     return doc;
+  }
+
+  async uploadKnowledgeDocument(params) {
+    return this.addDocument(params);
   }
 
   deleteDocument(docId) {
@@ -407,101 +429,5 @@ class RAGKnowledgeEngine {
   }
 }
 
-/**
- * ระบบจัดการและเพิ่มศาสตร์พยากรณ์ใหม่ๆ จากหลังบ้าน (Dynamic Oracle Disciplines Manager)
- */
-class DisciplineManager {
-  constructor() {
-    this.customDisciplines = this._loadCustomDisciplines();
-  }
-
-  _loadCustomDisciplines() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY_DISCIPLINES);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {}
-    return [];
-  }
-
-  _saveCustomDisciplines(list) {
-    this.customDisciplines = list;
-    try {
-      localStorage.setItem(STORAGE_KEY_DISCIPLINES, JSON.stringify(list));
-    } catch (e) {}
-  }
-
-  getAllCustomDisciplines() {
-    return this.customDisciplines;
-  }
-
-  getDisciplineById(id) {
-    return this.customDisciplines.find(d => d.id === id) || null;
-  }
-
-  addDiscipline({ id, name, icon = "🌟", description = "", drawCount = 3, positions = [], itemsText = "" }) {
-    if (!name || !name.trim()) {
-      throw new Error("กรุณาระบุชื่อศาสตร์พยากรณ์ใหม่");
-    }
-    const cleanId = (id && id.trim())
-      ? id.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "")
-      : "oracle_" + Date.now().toString(36);
-
-    // Parse itemsText (1 line per card/sign: "ชื่อไพ่/ใบทำนาย | คำทำนาย | คำแนะนำ")
-    const parsedItems = String(itemsText || "")
-      .split(/\n+/)
-      .map(l => l.trim())
-      .filter(Boolean)
-      .map((line, idx) => {
-        const parts = line.split("|").map(s => s.trim());
-        return {
-          id: `${cleanId}_${idx + 1}`,
-          title: parts[0] || `คำทำนายที่ ${idx + 1}`,
-          meaning: parts[1] || parts[0] || "พลังงานแห่งโชคชะตากำลังเปิดทางสู่ความสำเร็จ",
-          advice: parts[2] || "ตั้งสติและลงมือทำด้วยความมั่นใจ"
-        };
-      });
-
-    // If user didn't provide custom items yet, provide 12 starter sacred oracle cards for the new discipline
-    const defaultOracleItems = [
-      { id: "o1", title: "ดวงดาวแห่งการเริ่มต้นใหม่ (The Dawn Star)", meaning: "จังหวะชีวิตกำลังก้าวพ้นความอึดอัด สิ่งที่ริเริ่มไว้จะได้รับการสนับสนุนและเห็นผลลัพธ์ที่ชัดเจน", advice: "กล้าตัดสินใจก้าวออกจากกรอบเดิม" },
-      { id: "o2", title: "กุญแจทองคำแห่งโอกาส (Golden Key)", meaning: "ประตูแห่งโอกาสทางการงานและการเงินกำลังเปิดออก มีเกณฑ์ได้รับข่าวดีหรือความช่วยเหลือจากผู้ใหญ่", advice: "เตรียมความพร้อมและรับฟังข้อเสนอใหม่ๆ" },
-      { id: "o3", title: "พันธสัญญาแห่งหัวใจ (Sacred Soul Bond)", meaning: "ความสัมพันธ์มีความผูกพันลึกซึ้ง มีเกณฑ์ปรับความเข้าใจหรือพบคนที่ศีลเสมอกัน", advice: "สื่อสารด้วยความจริงใจและอ่อนโยน" },
-      { id: "o4", title: "ตาชั่งแห่งกรรมและสมดุล (Karmic Balance)", meaning: "สิ่งที่คุณได้ทุ่มเทลงแรงไปกำลังจะส่งผลตอบแทนกลับมาอย่างยุติธรรมและคุ้มค่า", advice: "รักษาความซื่อสัตย์และวินัยของตนเอง" },
-      { id: "o5", title: "คลื่นแห่งการเปลี่ยนแปลง (Winds of Shift)", meaning: "มีการปรับเปลี่ยนแผนกะทันหันแต่จะนำไปสู่ทิศทางที่ดีกว่าเดิม", advice: "ยืดหยุ่นและปรับตัวตามสถานการณ์อย่างมีสติ" },
-      { id: "o6", title: "คลังสมบัติจักรพรรดิ (Imperial Abundance)", meaning: "กระแสการเงินและโชคลาภโดดเด่น มีเกณฑ์ได้ผลกำไรหรือทรัพย์สินชิ้นใหม่", advice: "บริหารจัดการรายรับและแบ่งออมอย่างเป็นระบบ" }
-    ];
-
-    const posList = Array.isArray(positions) && positions.length > 0
-      ? positions
-      : ["ใบที่ 1: เหตุ / ที่มา", "ใบที่ 2: ปัจจุบัน / สถานการณ์", "ใบที่ 3: แนวโน้มอนาคต / บทสรุป"];
-
-    const newDisc = {
-      id: cleanId,
-      name: name.trim(),
-      icon: (icon && icon.trim()) || "🌟",
-      description: description.trim() || `พยากรณ์ด้วยศาสตร์ ${name.trim()}`,
-      drawCount: Number(drawCount) || 3,
-      positions: posList,
-      items: parsedItems.length > 0 ? parsedItems : defaultOracleItems,
-      createdAt: Date.now()
-    };
-
-    const list = this._loadCustomDisciplines().filter(d => d.id !== cleanId);
-    list.push(newDisc);
-    this._saveCustomDisciplines(list);
-    return newDisc;
-  }
-
-  deleteDiscipline(id) {
-    const list = this._loadCustomDisciplines().filter(d => d.id !== id);
-    this._saveCustomDisciplines(list);
-    return list;
-  }
-}
-
 window.brandThemeEngine = new BrandThemeEngine();
 window.ragEngine = new RAGKnowledgeEngine();
-window.disciplineManager = new DisciplineManager();
