@@ -1272,6 +1272,12 @@ class SiamsiApp {
     });
 
     this.filterAspectCards();
+
+    // เตรียมภาพ Info Card 1 หน้าล่วงหน้า เพื่อให้แชร์บนมือถือผ่าน Share Sheet ได้ทันที
+    if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.ensureInfoAsset === "function") {
+      const prePayload = this.buildSiamsiReadingPayload(sign);
+      window.shareAndPdfEngine.ensureInfoAsset(prePayload).catch(() => {});
+    }
   }
 
   filterAspectCards() {

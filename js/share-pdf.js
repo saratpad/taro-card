@@ -98,131 +98,437 @@ class ShareAndPdfEngine {
   }
 
   /**
-   * สร้างรูป Info Card (1080 x 1560) กราฟิกสวยงาม เข้าใจง่าย เข้าธีมโลโก้ SIAMSI TAROT • ORACLE
-   * มีโลโก้แบรนด์ + รูปไพ่ 3 ใบพร้อมลูกศรเชื่อมโยง + อินโฟกราฟิกคำทำนาย 3 ตำแหน่ง + ฟันธง Do/Don't
+   * ชุดวาดพื้นหลังธีมโหราศาสตร์จักรวาลสุดอลังการและขลัง (1240 x 1754)
+   * ใช้ร่วมกันทั้ง Info Card (.png) และ PDF หน้าเดียว ทุกศาสตร์
    */
-  async generateTarotInfoCard(readingData) {
-    const canvas = document.createElement("canvas");
-    const W = 1080;
-    const H = 1560;
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext("2d");
+  _createGoldGradient(ctx, x1, y1, x2, y2) {
+    const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+    grad.addColorStop(0, "#b7791f");
+    grad.addColorStop(0.25, "#f3cf7a");
+    grad.addColorStop(0.5, "#fff7d6");
+    grad.addColorStop(0.75, "#eab308");
+    grad.addColorStop(1, "#a16207");
+    return grad;
+  }
 
-    // 1. พื้นหลัง Astral Midnight Navy & Cosmic Cyan/Gold เข้าธีมโลโก้ SIAMSI TAROT • ORACLE
+  _drawFourPointStar(ctx, cx, cy, r, fill = "#fff1be", alpha = 0.8) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(0, -r);
+    ctx.quadraticCurveTo(r * 0.16, -r * 0.16, r, 0);
+    ctx.quadraticCurveTo(r * 0.16, r * 0.16, 0, r);
+    ctx.quadraticCurveTo(-r * 0.16, r * 0.16, -r, 0);
+    ctx.quadraticCurveTo(-r * 0.16, -r * 0.16, 0, -r);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  _drawCornerOrnament(ctx, cx, cy, sx, sy) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(sx, sy);
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.88)";
+    ctx.lineWidth = 2.6;
+
+    // กรอบมุมโค้งลายกนกเรขาคณิต 2 ชั้น
+    ctx.beginPath();
+    ctx.moveTo(0, 72);
+    ctx.bezierCurveTo(0, 26, 26, 0, 72, 0);
+    ctx.stroke();
+
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = "rgba(254, 243, 199, 0.55)";
+    ctx.beginPath();
+    ctx.moveTo(12, 54);
+    ctx.bezierCurveTo(12, 24, 24, 12, 54, 12);
+    ctx.stroke();
+
+    // ยอดพุ่มเพชรประจำมุม
+    ctx.fillStyle = "#fff1be";
+    ctx.beginPath();
+    ctx.moveTo(18, 18);
+    ctx.lineTo(30, 8);
+    ctx.lineTo(24, 24);
+    ctx.lineTo(8, 30);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(8, 8, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = "#f3cf7a";
+    ctx.fill();
+    ctx.restore();
+  }
+
+  _drawSacredMysticalBackdrop(ctx, W, H, theme = {}) {
+    const primary = theme.primary || "#f3cf7a";
+    const secondary = theme.secondary || "#38bdf8";
+    const nebula = theme.nebula || "rgba(168, 85, 247, 0.20)";
+
+    // 1. พื้นหลังราตรีจักรวาลลึกหลายชั้น
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#040717");
-    bgGrad.addColorStop(0.45, "#091336");
-    bgGrad.addColorStop(0.8, "#0c1130");
-    bgGrad.addColorStop(1, "#040613");
+    bgGrad.addColorStop(0, "#02040f");
+    bgGrad.addColorStop(0.28, "#081236");
+    bgGrad.addColorStop(0.55, "#130b33");
+    bgGrad.addColorStop(0.82, "#07102f");
+    bgGrad.addColorStop(1, "#020512");
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // แสงออร่า Cyan & Gold ด้านหลัง
-    const radGlowTop = ctx.createRadialGradient(W / 2, 180, 20, W / 2, 180, 480);
-    radGlowTop.addColorStop(0, "rgba(56, 189, 248, 0.24)");
-    radGlowTop.addColorStop(0.5, "rgba(168, 85, 247, 0.14)");
-    radGlowTop.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = radGlowTop;
-    ctx.fillRect(0, 0, W, H);
+    // 2. แสงออร่าและม่านเนบิวลาศักดิ์สิทธิ์
+    const drawGlow = (gx, gy, r0, r1, stops) => {
+      const g = ctx.createRadialGradient(gx, gy, r0, gx, gy, r1);
+      stops.forEach(([pos, col]) => g.addColorStop(pos, col));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    };
 
-    const radGlowCards = ctx.createRadialGradient(W / 2, 540, 40, W / 2, 540, 520);
-    radGlowCards.addColorStop(0, "rgba(243, 207, 122, 0.2)");
-    radGlowCards.addColorStop(0.6, "rgba(56, 189, 248, 0.1)");
-    radGlowCards.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = radGlowCards;
-    ctx.fillRect(0, 0, W, H);
+    drawGlow(W / 2, 160, 20, 620, [
+      [0, "rgba(243, 207, 122, 0.24)"],
+      [0.45, "rgba(56, 189, 248, 0.13)"],
+      [1, "rgba(0, 0, 0, 0)"]
+    ]);
+    drawGlow(W / 2, H * 0.46, 30, 740, [
+      [0, nebula],
+      [0.5, "rgba(56, 189, 248, 0.10)"],
+      [1, "rgba(0, 0, 0, 0)"]
+    ]);
+    drawGlow(W * 0.18, H * 0.84, 10, 500, [
+      [0, "rgba(243, 207, 122, 0.12)"],
+      [1, "rgba(0, 0, 0, 0)"]
+    ]);
+    drawGlow(W * 0.84, H * 0.22, 10, 480, [
+      [0, "rgba(168, 85, 247, 0.14)"],
+      [1, "rgba(0, 0, 0, 0)"]
+    ]);
 
-    // วงแหวนกลุ่มดาวจักรวาล (Astral Geometry)
+    // 3. วงล้อจักรราศีและยันต์ดาราศาสตร์กลางภาพ (Zodiac Mandala & Octagram Seal)
     ctx.save();
-    ctx.translate(W / 2, 520);
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.15)";
-    ctx.lineWidth = 1.8;
-    for (const r of [240, 320, 400]) {
+    const mCx = W / 2;
+    const mCy = Math.round(H * 0.48);
+    ctx.translate(mCx, mCy);
+
+    // วงแหวนซ้อน 5 ชั้น
+    const ringSpecs = [
+      { r: 535, lw: 2.0, col: "rgba(243, 207, 122, 0.18)" },
+      { r: 486, lw: 1.5, col: "rgba(243, 207, 122, 0.22)" },
+      { r: 404, lw: 1.3, col: "rgba(125, 211, 252, 0.16)" },
+      { r: 308, lw: 1.4, col: "rgba(243, 207, 122, 0.15)" },
+      { r: 196, lw: 1.2, col: "rgba(168, 85, 247, 0.20)" }
+    ];
+    ringSpecs.forEach(({ r, lw, col }) => {
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = lw;
       ctx.stroke();
+    });
+
+    // ขีดสเกล 72 องศา + เส้นรัศมี 12 ช่องราศี + เม็ดดาว 12 ทิศ
+    for (let i = 0; i < 72; i++) {
+      const ang = (i * Math.PI * 2) / 72;
+      const isMajor = i % 6 === 0;
+      const rIn = isMajor ? 404 : 472;
+      const rOut = 535;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(ang) * rIn, Math.sin(ang) * rIn);
+      ctx.lineTo(Math.cos(ang) * rOut, Math.sin(ang) * rOut);
+      ctx.strokeStyle = isMajor ? "rgba(243, 207, 122, 0.20)" : "rgba(243, 207, 122, 0.10)";
+      ctx.lineWidth = isMajor ? 1.5 : 0.9;
+      ctx.stroke();
+
+      if (isMajor) {
+        const dotR = 511;
+        const dx = Math.cos(ang + Math.PI / 12) * dotR;
+        const dy = Math.sin(ang + Math.PI / 12) * dotR;
+        this._drawFourPointStar(ctx, dx, dy, 10, primary, 0.28);
+      }
+    }
+
+    // ยันต์แปดทิศศักดิ์สิทธิ์ (Octagram) + หกแฉกด้านใน
+    const drawPoly = (sides, radius, rot, strokeCol) => {
+      ctx.beginPath();
+      for (let i = 0; i <= sides; i++) {
+        const a = rot + (i * Math.PI * 2) / sides;
+        const px = Math.cos(a) * radius;
+        const py = Math.sin(a) * radius;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = strokeCol;
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+    };
+    drawPoly(4, 398, 0, "rgba(243, 207, 122, 0.15)");
+    drawPoly(4, 398, Math.PI / 4, "rgba(243, 207, 122, 0.15)");
+    drawPoly(3, 296, -Math.PI / 2, "rgba(125, 211, 252, 0.14)");
+    drawPoly(3, 296, Math.PI / 2, "rgba(125, 211, 252, 0.14)");
+
+    // กลีบบัวจักรราศี 12 กลีบรอบศูนย์กลาง
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.14)";
+    ctx.lineWidth = 1.2;
+    for (let i = 0; i < 12; i++) {
+      const a = (i * Math.PI * 2) / 12;
+      ctx.save();
+      ctx.rotate(a);
+      ctx.beginPath();
+      ctx.moveTo(0, -196);
+      ctx.quadraticCurveTo(38, -252, 0, -304);
+      ctx.quadraticCurveTo(-38, -252, 0, -196);
+      ctx.stroke();
+      ctx.restore();
     }
     ctx.restore();
 
-    // 2. กรอบทองคำสองชั้นประดับมุม
-    ctx.strokeStyle = "#f3cf7a";
-    ctx.lineWidth = 3.5;
-    this.drawRoundedRect(ctx, 26, 26, W - 52, H - 52, 26);
+    // 4. ดาวประดับท้องฟ้าและกลุ่มดาวทอง (Deterministic Starfield)
+    let seed = 256911;
+    const nextRand = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    for (let i = 0; i < 140; i++) {
+      const sx = 52 + nextRand() * (W - 104);
+      const sy = 52 + nextRand() * (H - 104);
+      const sr = 0.9 + nextRand() * 1.9;
+      const alpha = 0.16 + nextRand() * 0.45;
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+      ctx.fillStyle = i % 3 === 0 ? "#fff1be" : (i % 3 === 1 ? "#bae6fd" : "#e9d5ff");
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // ดาว 4 แฉกทองตามขอบศักดิ์สิทธิ์
+    const starCoords = [
+      [96, 130, 14], [W - 96, 130, 14], [128, 250, 10], [W - 128, 250, 10],
+      [88, H * 0.48, 12], [W - 88, H * 0.48, 12], [94, H - 150, 13], [W - 94, H - 150, 13],
+      [210, 96, 9], [W - 210, 96, 9]
+    ];
+    starCoords.forEach(([x, y, r]) => this._drawFourPointStar(ctx, x, y, r, "#fef3c7", 0.72));
+
+    // 5. กรอบทองคำ 3 ชั้น & ลวดลายประดับมุม 4 ด้าน (Sacred Temple Frame)
+    const goldFrameGrad = this._createGoldGradient(ctx, 20, 20, W - 20, H - 20);
+    ctx.strokeStyle = goldFrameGrad;
+    ctx.lineWidth = 4.5;
+    this.drawRoundedRect(ctx, 24, 24, W - 48, H - 48, 28);
     ctx.stroke();
 
-    ctx.strokeStyle = "rgba(56, 189, 248, 0.38)";
-    ctx.lineWidth = 1.5;
-    this.drawRoundedRect(ctx, 38, 38, W - 76, H - 76, 20);
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.48)";
+    ctx.lineWidth = 1.6;
+    this.drawRoundedRect(ctx, 36, 36, W - 72, H - 72, 22);
     ctx.stroke();
 
-    // 3. วาดโลโก้ SIAMSI TAROT • ORACLE ด้านบนสุด + ชื่อแบรนด์
+    ctx.strokeStyle = secondary === "#22c55e" ? "rgba(52, 211, 153, 0.25)" : "rgba(56, 189, 248, 0.26)";
+    ctx.lineWidth = 1.1;
+    this.drawRoundedRect(ctx, 45, 45, W - 90, H - 90, 18);
+    ctx.stroke();
+
+    // มุมประดับทั้ง 4 มุม
+    this._drawCornerOrnament(ctx, 42, 42, 1, 1);
+    this._drawCornerOrnament(ctx, W - 42, 42, -1, 1);
+    this._drawCornerOrnament(ctx, 42, H - 42, 1, -1);
+    this._drawCornerOrnament(ctx, W - 42, H - 42, -1, -1);
+
+    // ดวงจันทร์เสี้ยวทองบนยอดกรอบบน
+    ctx.save();
+    ctx.translate(W / 2, 48);
+    ctx.fillStyle = "#f3cf7a";
+    ctx.beginPath();
+    ctx.arc(0, 0, 12, 0.25 * Math.PI, 0.75 * Math.PI, true);
+    ctx.arc(0, -4, 9.5, 0.78 * Math.PI, 0.22 * Math.PI, false);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  async _drawSacredHeader(ctx, W, opts = {}) {
     const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
       ? window.brandThemeEngine.getLogoUrl()
       : "assets/logo.jpg";
     const logoImg = await this.loadImage(logoUrl);
 
-    if (logoImg) {
-      const logoSize = 96;
-      const lx = W / 2 - 320;
-      const ly = 56;
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(lx + logoSize / 2, ly + logoSize / 2, logoSize / 2 + 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#f3cf7a";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(lx + logoSize / 2, ly + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(logoImg, lx, ly, logoSize, logoSize);
-      ctx.restore();
-    }
+    // โลโก้ล้อมรัศมีวงแหวนเวทย์กลางบน
+    const logoCx = W / 2;
+    const logoCy = 112;
+    const logoR = 46;
 
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "700 40px 'Prompt', sans-serif";
-    ctx.fillText("SIAMSI TAROT • เซียมซีทาโรต์", W / 2 + 35, 102);
-
-    ctx.fillStyle = "#38bdf8";
-    ctx.font = "500 20px 'Prompt', sans-serif";
-    ctx.fillText("✦ SACRED 3-CARD TAROT & ORACLE INFOGRAPHIC ✦", W / 2 + 35, 136);
-
-    const catIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿" };
-    const spreadText = readingData.spreadFormula ? `  |  ${readingData.spreadFormula}` : "";
-    const domainLabel = `${catIcons[readingData.category] || "🔮"} หมวด${readingData.categoryName || "พยากรณ์"}${spreadText}`;
-
-    // ป้ายหมวดหมู่และสูตรเรียงไพ่ 3 ใบ
-    ctx.fillStyle = "rgba(14, 32, 78, 0.9)";
-    this.drawRoundedRect(ctx, 70, 162, W - 140, 50, 25);
+    ctx.save();
+    const halo = ctx.createRadialGradient(logoCx, logoCy, 20, logoCx, logoCy, 92);
+    halo.addColorStop(0, "rgba(243, 207, 122, 0.45)");
+    halo.addColorStop(0.55, "rgba(56, 189, 248, 0.18)");
+    halo.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(logoCx, logoCy, 92, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.65)";
-    ctx.lineWidth = 1.8;
+
+    // วงแหวนประดับ 8 แฉกรอบโลโก้
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.78)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(logoCx, logoCy, logoR + 9, 0, Math.PI * 2);
     ctx.stroke();
 
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "600 22px 'Prompt', sans-serif";
-    ctx.fillText(domainLabel, W / 2, 195, W - 180);
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI * 2) / 8;
+      this._drawFourPointStar(
+        ctx,
+        logoCx + Math.cos(a) * (logoR + 14),
+        logoCy + Math.sin(a) * (logoR + 14),
+        6,
+        "#fff1be",
+        0.9
+      );
+    }
+
+    if (logoImg) {
+      ctx.beginPath();
+      ctx.arc(logoCx, logoCy, logoR, 0, Math.PI * 2);
+      ctx.fillStyle = "#f3cf7a";
+      ctx.fill();
+      ctx.clip();
+      ctx.drawImage(logoImg, logoCx - logoR, logoCy - logoR, logoR * 2, logoR * 2);
+    }
+    ctx.restore();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#f3cf7a";
+    ctx.font = "700 22px 'Cinzel', 'Prompt', sans-serif";
+    ctx.fillText(opts.eyebrow || "✦ SIAMSI TAROT • SACRED ORACLE ✦", W / 2, 194);
+
+    ctx.fillStyle = "#fff8dc";
+    ctx.font = "700 40px 'Prompt', sans-serif";
+    ctx.fillText(opts.mainTitle || "คำพยากรณ์ดวงชะตา", W / 2, 242, W - 160);
+
+    // ป้ายหมวดหมู่ / ความแม่นยำ ขอบทองวิจิตร
+    if (opts.pillText) {
+      const pillW = Math.min(W - 140, 880);
+      const pillX = (W - pillW) / 2;
+      const pillY = 260;
+      const pillH = 46;
+      const pillGrad = ctx.createLinearGradient(pillX, pillY, pillX + pillW, pillY);
+      pillGrad.addColorStop(0, "rgba(15, 23, 58, 0.92)");
+      pillGrad.addColorStop(0.5, "rgba(35, 22, 74, 0.92)");
+      pillGrad.addColorStop(1, "rgba(15, 23, 58, 0.92)");
+      ctx.fillStyle = pillGrad;
+      this.drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 23);
+      ctx.fill();
+      ctx.strokeStyle = opts.pillBorder || "rgba(243, 207, 122, 0.72)";
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      ctx.fillStyle = opts.pillColor || "#fde68a";
+      ctx.font = "600 21px 'Prompt', sans-serif";
+      ctx.fillText(opts.pillText, W / 2, pillY + 31, pillW - 36);
+    }
+
+    if (opts.metaLine) {
+      ctx.fillStyle = "#bae6fd";
+      ctx.font = "500 18.5px 'Prompt', sans-serif";
+      ctx.fillText(opts.metaLine, W / 2, 334, W - 160);
+    }
+  }
+
+  _drawSacredFooter(ctx, W, H, readingData, tailNote = "SIAMSI TAROT • SACRED ORACLE READING") {
+    const yDiv = H - 88;
+    ctx.save();
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.38)";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(96, yDiv);
+    ctx.lineTo(W / 2 - 26, yDiv);
+    ctx.moveTo(W / 2 + 26, yDiv);
+    ctx.lineTo(W - 96, yDiv);
+    ctx.stroke();
+    this._drawFourPointStar(ctx, W / 2, yDiv, 9, "#f3cf7a", 0.9);
+    ctx.restore();
+
+    const dateStr = (readingData && readingData.dateText) || new Date((readingData && readingData.timestamp) || Date.now()).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    const codeTag = readingData && readingData.code ? ` • รหัสสิทธิ์ ${readingData.code}` : "";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "500 18px 'Prompt', sans-serif";
+    ctx.fillText(`✦ ${tailNote} • วันที่ ${dateStr}${codeTag} ✦`, W / 2, H - 52, W - 140);
+  }
+
+  _drawGlassCard(ctx, x, y, w, h, radius = 18, borderCol = "rgba(243, 207, 122, 0.45)", fillCol = "rgba(8, 14, 38, 0.86)") {
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+    ctx.shadowBlur = 18;
+    ctx.fillStyle = fillCol;
+    this.drawRoundedRect(ctx, x, y, w, h, radius);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.strokeStyle = borderCol;
+    ctx.lineWidth = 1.8;
+    this.drawRoundedRect(ctx, x, y, w, h, radius);
+    ctx.stroke();
+  }
+
+  /**
+   * สร้างรูป Info Card / ใบพยากรณ์หน้าเดียวสำหรับไพ่ทาโรต์ 3 ใบ (1240 x 1754 • Single Page A4 Proportions)
+   */
+  async generateTarotInfoCard(readingData) {
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch (_) {}
+    }
+
+    const canvas = document.createElement("canvas");
+    const W = 1240;
+    const H = 1754;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+
+    this._drawSacredMysticalBackdrop(ctx, W, H, {
+      primary: "#f3cf7a",
+      secondary: "#38bdf8",
+      nebula: "rgba(168, 85, 247, 0.22)"
+    });
+
+    const catIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿" };
+    const rawCatName = String(readingData.categoryName || "พยากรณ์");
+    const hasLoveTag = rawCatName.includes("(");
+    const loveSuffix = (readingData.category === "love" && !hasLoveTag)
+      ? (readingData.loveStatus === "couple" ? " (คนมีคู่/คนคุย)" : " (คนโสด)")
+      : "";
+    const spreadText = readingData.spreadFormula ? `  |  ${readingData.spreadFormula}` : "";
+    const domainLabel = `${catIcons[readingData.category] || "🔮"} หมวด${rawCatName}${loveSuffix}${spreadText}`;
 
     const dateStr = readingData.dateText || new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
       year: "numeric",
-      month: "short",
+      month: "long",
       day: "numeric"
     });
-    const codeTag = readingData.code ? `รหัสโค้ด: ${readingData.code}` : "";
-    const metaLine = [codeTag, dateStr].filter(Boolean).join("   •   ");
+    const metaLine = [readingData.code ? `รหัสโค้ด: ${readingData.code}` : "", `วันที่พยากรณ์: ${dateStr}`].filter(Boolean).join("   •   ");
 
-    ctx.fillStyle = "#bae6fd";
-    ctx.font = "400 19px 'Prompt', sans-serif";
-    ctx.fillText(metaLine, W / 2, 238);
+    await this._drawSacredHeader(ctx, W, {
+      eyebrow: "✦ SIAMSI TAROT • SACRED 3-CARD ORACLE ✦",
+      mainTitle: "ใบคำพยากรณ์ไพ่ทาโรต์ 3 ใบ",
+      pillText: domainLabel,
+      pillBorder: "rgba(243, 207, 122, 0.75)",
+      pillColor: "#fff1be",
+      metaLine
+    });
 
-    // 4. วาดรูปไพ่ทั้ง 3 ใบที่จับได้ พร้อมหมายเลข 1 ➔ 2 ➔ 3
+    // วาดรูปไพ่ทั้ง 3 ใบ พร้อมรัศมีและลูกศรทอง
     const cards = readingData.cards || [];
-    const cardW = 248;
-    const cardH = 405;
-    const gap = 58;
-    const totalCardsW = cards.length * cardW + (cards.length - 1) * gap;
+    const cardW = 250;
+    const cardH = 398;
+    const gap = 74;
+    const totalCardsW = cards.length * cardW + Math.max(0, cards.length - 1) * gap;
     const startX = (W - totalCardsW) / 2;
-    const cardY = 262;
+    const cardY = 354;
 
     const loadedImages = await Promise.all(cards.map(c => this.loadImage(c.image)));
 
@@ -232,31 +538,30 @@ class ShareAndPdfEngine {
       const img = loadedImages[i];
 
       // ป้ายตำแหน่งเหนือไพ่
-      ctx.fillStyle = "rgba(56, 189, 248, 0.18)";
-      this.drawRoundedRect(ctx, x + 6, cardY, cardW - 12, 36, 18);
+      ctx.fillStyle = "rgba(18, 36, 86, 0.92)";
+      this.drawRoundedRect(ctx, x + 8, cardY, cardW - 16, 36, 18);
       ctx.fill();
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.55)";
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = "rgba(243, 207, 122, 0.72)";
+      ctx.lineWidth = 1.4;
       ctx.stroke();
 
+      ctx.textAlign = "center";
       ctx.fillStyle = "#fff1be";
       ctx.font = "700 18px 'Prompt', sans-serif";
       const shortPos = (c.positionTitle || `ใบที่ ${i + 1}`).split("—")[0].trim();
-      ctx.fillText(`${i + 1}. ${shortPos}`, x + cardW / 2, cardY + 24);
+      ctx.fillText(`${i + 1}. ${shortPos}`, x + cardW / 2, cardY + 24, cardW - 28);
 
       const imgBoxY = cardY + 46;
 
-      // ลูกศรเชื่อมระหว่างไพ่
       if (i < cards.length - 1) {
         ctx.fillStyle = "#f3cf7a";
-        ctx.font = "700 30px 'Prompt', sans-serif";
-        ctx.fillText("➔", x + cardW + gap / 2, imgBoxY + cardH / 2);
+        ctx.font = "700 32px 'Prompt', sans-serif";
+        ctx.fillText("➔", x + cardW + gap / 2, imgBoxY + cardH / 2 + 10);
       }
 
-      // เงาและกรอบไพ่
       ctx.save();
-      ctx.shadowColor = "rgba(56, 189, 248, 0.35)";
-      ctx.shadowBlur = 22;
+      ctx.shadowColor = "rgba(243, 207, 122, 0.35)";
+      ctx.shadowBlur = 24;
       ctx.fillStyle = "#08102b";
       this.drawRoundedRect(ctx, x, imgBoxY, cardW, cardH, 16);
       ctx.fill();
@@ -274,247 +579,255 @@ class ShareAndPdfEngine {
           ctx.drawImage(img, x + 6, imgBoxY + 6, cardW - 12, cardH - 12);
         }
         ctx.restore();
+      } else {
+        // Ornate mystic card placeholder when artwork is unavailable
+        ctx.save();
+        ctx.strokeStyle = "rgba(243, 207, 122, 0.48)";
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(x + cardW / 2, imgBoxY + cardH / 2, 58, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x + cardW / 2, imgBoxY + cardH / 2, 42, 0, Math.PI * 2);
+        ctx.stroke();
+        this._drawFourPointStar(ctx, x + cardW / 2, imgBoxY + cardH / 2, 22, "#f3cf7a", 0.85);
+        ctx.restore();
       }
 
-      ctx.strokeStyle = "#f3cf7a";
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = this._createGoldGradient(ctx, x, imgBoxY, x + cardW, imgBoxY + cardH);
+      ctx.lineWidth = 3.2;
       this.drawRoundedRect(ctx, x, imgBoxY, cardW, cardH, 16);
       ctx.stroke();
 
-      // ชื่อไพ่ใต้ภาพ
       ctx.fillStyle = "#ffffff";
-      ctx.font = "700 21px 'Prompt', sans-serif";
-      ctx.fillText(c.name_th || c.name_en, x + cardW / 2, imgBoxY + cardH + 30);
+      ctx.font = "700 22px 'Prompt', sans-serif";
+      ctx.fillText(c.name_th || c.name_en, x + cardW / 2, imgBoxY + cardH + 30, cardW + 30);
 
       ctx.fillStyle = c.isReversed ? "#fca5a5" : "#7dd3fc";
       ctx.font = "600 17px 'Prompt', sans-serif";
       ctx.fillText(c.isReversed ? "[ ไพ่กลับหัว ]" : "[ ไพ่ตั้งตรง ]", x + cardW / 2, imgBoxY + cardH + 54);
     }
 
-    // 5. อินโฟกราฟิกสรุปคำทำนายทั้ง 3 ตำแหน่ง (แยกเป็น 3 การ์ดอ่านง่าย สวยงาม)
-    let itemY = 788;
-    const stepColors = ["#38bdf8", "#a855f7", "#f3cf7a"];
+    // การ์ดความหมายไพ่ 3 ใบ
+    let itemY = 876;
+    const stepColors = ["#38bdf8", "#c084fc", "#f3cf7a"];
+    const cardBoxH = 132;
 
     for (let i = 0; i < cards.length; i++) {
       const c = cards[i];
       const shortPos = (c.positionTitle || `ตำแหน่งที่ ${i + 1}`).split("—")[0].trim();
+      const rawCardName = String(c.name_th || c.name_en || "");
+      const displayCardName = rawCardName.startsWith("ไพ่") ? rawCardName : `ไพ่${rawCardName}`;
 
-      ctx.fillStyle = "rgba(11, 22, 58, 0.92)";
-      this.drawRoundedRect(ctx, 64, itemY, W - 128, 132, 16);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.42)";
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
+      this._drawGlassCard(ctx, 70, itemY, W - 140, cardBoxH, 16, "rgba(243, 207, 122, 0.42)", "rgba(8, 15, 42, 0.88)");
 
-      // แถบสีด้านซ้ายของการ์ดอินโฟกราฟิก
       ctx.fillStyle = stepColors[i % stepColors.length];
-      this.drawRoundedRect(ctx, 64, itemY, 10, 132, 5);
+      this.drawRoundedRect(ctx, 70, itemY, 10, cardBoxH, 5);
       ctx.fill();
 
-      // วงกลมเลขลำดับ 1, 2, 3
       ctx.beginPath();
-      ctx.arc(108, itemY + 38, 20, 0, Math.PI * 2);
+      ctx.arc(116, itemY + 37, 20, 0, Math.PI * 2);
       ctx.fillStyle = stepColors[i % stepColors.length];
       ctx.fill();
       ctx.textAlign = "center";
       ctx.fillStyle = "#040717";
       ctx.font = "700 20px 'Prompt', sans-serif";
-      ctx.fillText(String(i + 1), 108, itemY + 45);
+      ctx.fillText(String(i + 1), 116, itemY + 44);
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#fff1be";
       ctx.font = "700 22px 'Prompt', sans-serif";
-      ctx.fillText(`${shortPos}  •  ไพ่${c.name_th} ${c.isReversed ? "(กลับหัว)" : "(ตั้งตรง)"}`, 142, itemY + 44);
+      ctx.fillText(`${shortPos}  •  ${displayCardName} ${c.isReversed ? "(กลับหัว)" : "(ตั้งตรง)"}`, 152, itemY + 43, W - 260);
 
       ctx.fillStyle = "#f1f5f9";
       ctx.font = "400 19.5px 'Prompt', sans-serif";
-      const lines = this.wrapTextLines(ctx, c.shortMeaning || c.domainMeaning || "", W - 230).slice(0, 2);
-      lines.forEach((line, lIdx) => {
-        ctx.fillText(line, 142, itemY + 78 + lIdx * 27);
+      const meanSrc = c.domainMeaning || c.shortMeaning || c.meaning || c.advice || "";
+      const lines = this.wrapTextLines(ctx, meanSrc, W - 246);
+      const shownLines = lines.slice(0, 2);
+      if (lines.length > 2 && shownLines[1]) {
+        shownLines[1] = shownLines[1].slice(0, Math.max(8, shownLines[1].length - 1)) + "…";
+      }
+      shownLines.forEach((line, lIdx) => {
+        ctx.fillText(line, 152, itemY + 78 + lIdx * 28);
       });
 
-      itemY += 146;
+      itemY += cardBoxH + 12;
     }
 
-    // 6. กล่องฟันธงภาพรวม & แนวทางปฏิบัติ (Info Summary Box)
-    const verdictY = 1236;
-    const vGrad = ctx.createLinearGradient(64, verdictY, W - 64, verdictY + 230);
-    vGrad.addColorStop(0, "rgba(20, 36, 88, 0.95)");
-    vGrad.addColorStop(1, "rgba(38, 20, 78, 0.95)");
-    ctx.fillStyle = vGrad;
-    this.drawRoundedRect(ctx, 64, verdictY, W - 128, 232, 20);
-    ctx.fill();
-    ctx.strokeStyle = "#f3cf7a";
-    ctx.lineWidth = 2.2;
-    ctx.stroke();
+    // กล่องบทสรุปฟันธง & แนวทางปฏิบัติ
+    const verdictY = 1312;
+    const verdictH = 336;
+    const vGrad = ctx.createLinearGradient(70, verdictY, W - 70, verdictY + verdictH);
+    vGrad.addColorStop(0, "rgba(18, 28, 72, 0.93)");
+    vGrad.addColorStop(1, "rgba(38, 18, 76, 0.93)");
+    this._drawGlassCard(ctx, 70, verdictY, W - 140, verdictH, 20, "#f3cf7a", vGrad);
 
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff1be";
-    ctx.font = "700 24px 'Prompt', sans-serif";
-    ctx.fillText(`👑 บทสรุปฟันธง: ${readingData.verdictBadge || ""}`, 94, verdictY + 42);
+    ctx.font = "700 25px 'Prompt', sans-serif";
+    ctx.fillText(`👑 บทสรุปฟันธง: ${readingData.verdictBadge || ""}`, 100, verdictY + 44, W - 200);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "400 19.5px 'Prompt', sans-serif";
-    const vLines = this.wrapTextLines(ctx, readingData.verdictPlain || "", W - 188).slice(0, 2);
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "400 20px 'Prompt', sans-serif";
+    const vAll = this.wrapTextLines(ctx, readingData.verdictPlain || "", W - 210);
+    const vLines = vAll.slice(0, 3);
+    if (vAll.length > 3 && vLines[2]) {
+      vLines[2] = vLines[2].slice(0, Math.max(10, vLines[2].length - 1)) + "…";
+    }
     vLines.forEach((line, idx) => {
-      ctx.fillText(line, 94, verdictY + 76 + idx * 27);
+      ctx.fillText(line, 100, verdictY + 80 + idx * 29);
     });
 
-    // แถบ Do & Don't สั้นกระชับเข้าใจง่าย
+    const guideY = verdictY + 178;
     ctx.fillStyle = "#86efac";
-    ctx.font = "600 18.5px 'Prompt', sans-serif";
-    const doLine = this.wrapTextLines(ctx, `✅ ควรทำ: ${readingData.doAction || ""}`, W - 188)[0] || "";
-    ctx.fillText(doLine, 94, verdictY + 158);
+    ctx.font = "600 19px 'Prompt', sans-serif";
+    const doAll = this.wrapTextLines(ctx, `✅ ควรทำ: ${readingData.doAction || ""}`, W - 210);
+    ctx.fillText(doAll[0] || "", 100, guideY);
+    if (doAll[1]) ctx.fillText(doAll[1], 132, guideY + 26);
 
     ctx.fillStyle = "#fca5a5";
-    ctx.font = "600 18.5px 'Prompt', sans-serif";
-    const dontLine = this.wrapTextLines(ctx, `⚠️ ควรระวัง: ${readingData.dontAction || ""}`, W - 188)[0] || "";
-    ctx.fillText(dontLine, 94, verdictY + 196);
+    ctx.font = "600 19px 'Prompt', sans-serif";
+    const dontY = guideY + (doAll[1] ? 60 : 38);
+    const dontAll = this.wrapTextLines(ctx, `⚠️ ควรระวัง: ${readingData.dontAction || ""}`, W - 210);
+    ctx.fillText(dontAll[0] || "", 100, dontY);
 
-    // Footer
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#7dd3fc";
-    ctx.font = "500 19px 'Prompt', sans-serif";
-    ctx.fillText("✨ อ่านคำทำนายฉบับเต็มต่อในโพสต์ / คอมเมนต์ • SIAMSI TAROT ORACLE ✨", W / 2, H - 46);
+    if (readingData.luckyBoost) {
+      ctx.fillStyle = "#7dd3fc";
+      ctx.font = "600 18.5px 'Prompt', sans-serif";
+      const luckyLine = this.wrapTextLines(ctx, `✨ เสริมดวงมงคล: ${readingData.luckyBoost}`, W - 210)[0] || "";
+      ctx.fillText(luckyLine, 100, verdictY + verdictH - 22);
+    }
 
-    const dataUrl = canvas.toDataURL("image/png");
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+    this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");
+
+    const dataUrl = canvas.toDataURL("image/png", 0.95);
+    const blob = await new Promise(res => canvas.toBlob(res, "image/png", 0.95));
     this.currentInfoDataUrl = dataUrl;
     this.currentInfoBlob = blob;
+    this.currentReadingData = readingData;
     return { dataUrl, blob, canvas };
   }
 
   /**
-   * สร้างรูป Info Card สำหรับเซียมซี (เข้าธีมโลโก้ SIAMSI TAROT • ORACLE)
+   * สร้างรูป Info Card หน้าเดียวสำหรับเซียมซี (1240 x 1754 • ธีมโหราศาสตร์ขลังอลังการ)
    */
   async generateSiamsiInfoCard(readingData) {
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch (_) {}
+    }
+
     const canvas = document.createElement("canvas");
-    const W = 1080;
-    const H = 1420;
+    const W = 1240;
+    const H = 1754;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext("2d");
 
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#040717");
-    bgGrad.addColorStop(0.5, "#0b1538");
-    bgGrad.addColorStop(1, "#050819");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
+    this._drawSacredMysticalBackdrop(ctx, W, H, {
+      primary: "#f3cf7a",
+      secondary: "#fb7185",
+      nebula: "rgba(190, 24, 93, 0.18)"
+    });
 
-    const radGlow = ctx.createRadialGradient(W / 2, 260, 30, W / 2, 260, 500);
-    radGlow.addColorStop(0, "rgba(243, 207, 122, 0.22)");
-    radGlow.addColorStop(0.5, "rgba(56, 189, 248, 0.14)");
-    radGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = radGlow;
-    ctx.fillRect(0, 0, W, H);
+    const dateStr = readingData.dateText || new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    const metaLine = [readingData.code ? `รหัสโค้ด: ${readingData.code}` : "", `วันที่เสี่ยงเซียมซี: ${dateStr}`].filter(Boolean).join("   •   ");
 
-    ctx.strokeStyle = "#f3cf7a";
-    ctx.lineWidth = 4;
-    this.drawRoundedRect(ctx, 30, 30, W - 60, H - 60, 24);
-    ctx.stroke();
+    await this._drawSacredHeader(ctx, W, {
+      eyebrow: "✦ SIAMSI TAROT • SACRED SIAMSI ORACLE ✦",
+      mainTitle: "ใบคำพยากรณ์เซียมซีศักดิ์สิทธิ์",
+      pillText: `🎋 ${readingData.deckName || "ตำราเซียมซีศักดิ์สิทธิ์"}`,
+      pillBorder: "rgba(243, 207, 122, 0.78)",
+      pillColor: "#fff1be",
+      metaLine
+    });
 
-    const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
-      ? window.brandThemeEngine.getLogoUrl()
-      : "assets/logo.jpg";
-    const logoImg = await this.loadImage(logoUrl);
-    if (logoImg) {
-      const logoSize = 92;
-      const lx = W / 2 - 330;
-      const ly = 58;
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(lx + logoSize / 2, ly + logoSize / 2, logoSize / 2 + 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#f3cf7a";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(lx + logoSize / 2, ly + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(logoImg, lx, ly, logoSize, logoSize);
-      ctx.restore();
-    }
+    // ป้ายเหรียญตราเลขเซียมซี & ระดับดวง
+    const numCardY = 356;
+    const numCardH = 148;
+    const plaqueGrad = ctx.createLinearGradient(70, numCardY, W - 70, numCardY + numCardH);
+    plaqueGrad.addColorStop(0, "rgba(69, 10, 26, 0.88)");
+    plaqueGrad.addColorStop(0.5, "rgba(28, 16, 68, 0.92)");
+    plaqueGrad.addColorStop(1, "rgba(69, 10, 26, 0.88)");
+    this._drawGlassCard(ctx, 180, numCardY, W - 360, numCardH, 26, this._createGoldGradient(ctx, 180, numCardY, W - 180, numCardY + numCardH), plaqueGrad);
 
     ctx.textAlign = "center";
     ctx.fillStyle = "#fff1be";
-    ctx.font = "700 40px 'Prompt', sans-serif";
-    ctx.fillText("SIAMSI TAROT • ใบคำทำนายเซียมซี", W / 2 + 35, 106);
+    ctx.font = "700 58px 'Prompt', sans-serif";
+    ctx.fillText(`เซียมซีเบอร์ ${readingData.signNumber}`, W / 2, numCardY + 78);
 
-    ctx.fillStyle = "#38bdf8";
-    ctx.font = "600 25px 'Prompt', sans-serif";
-    ctx.fillText(readingData.deckName || "ตำราเซียมซีศักดิ์สิทธิ์", W / 2 + 35, 148);
+    ctx.fillStyle = "#fde68a";
+    ctx.font = "600 28px 'Prompt', sans-serif";
+    ctx.fillText(`${readingData.signTitle || ""} ${readingData.fortuneLevel ? `(${readingData.fortuneLevel})` : ""}`, W / 2, numCardY + 124, W - 400);
 
-    // ป้ายเลขเซียมซีขนาดใหญ่
-    ctx.fillStyle = "rgba(14, 30, 74, 0.92)";
-    this.drawRoundedRect(ctx, W / 2 - 240, 185, 480, 130, 24);
-    ctx.fill();
-    ctx.strokeStyle = "#f3cf7a";
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
+    // แผ่นจารึกบทกลอนพยากรณ์
+    const poemY = 524;
+    const poemH = 236;
+    this._drawGlassCard(ctx, 70, poemY, W - 140, poemH, 20, "rgba(243, 207, 122, 0.52)", "rgba(8, 15, 42, 0.88)");
 
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "700 62px 'Prompt', sans-serif";
-    ctx.fillText(`เซียมซีเบอร์ ${readingData.signNumber}`, W / 2, 268);
+    ctx.fillStyle = "#f3cf7a";
+    ctx.font = "700 20px 'Prompt', sans-serif";
+    ctx.fillText("✦ จารึกคำกลอนพยากรณ์ ✦", W / 2, poemY + 38);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "600 30px 'Prompt', sans-serif";
-    ctx.fillText(`${readingData.signTitle || ""} (${readingData.fortuneLevel || ""})`, W / 2, 366);
-
-    // บทกลอน
-    ctx.fillStyle = "rgba(8, 16, 44, 0.85)";
-    this.drawRoundedRect(ctx, 76, 405, W - 152, 245, 18);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(56, 189, 248, 0.35)";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "500 23px 'Prompt', sans-serif";
+    ctx.fillStyle = "#fff8dc";
+    ctx.font = "500 25px 'Prompt', sans-serif";
     const poemLines = readingData.poemLines || [];
     poemLines.slice(0, 4).forEach((line, idx) => {
-      ctx.fillText(line, W / 2, 468 + idx * 45);
+      ctx.fillText(line, W / 2, poemY + 84 + idx * 40, W - 190);
     });
 
-    // สรุปคำทำนายเด่นแบบการ์ดอินโฟกราฟิก
+    // สรุปคำพยากรณ์รายด้าน (ครบใน 1 หน้า)
     ctx.textAlign = "left";
     ctx.fillStyle = "#f3cf7a";
-    ctx.font = "700 26px 'Prompt', sans-serif";
-    ctx.fillText("✦ สรุปคำพยากรณ์สำคัญรายด้าน:", 80, 704);
+    ctx.font = "700 25px 'Prompt', sans-serif";
+    ctx.fillText("✦ คำพยากรณ์สำคัญรายด้าน (ฉบับสมบูรณ์ใน 1 หน้า)", 74, 804);
 
-    const aspects = readingData.aspectsSummary || [];
-    let ay = 730;
-    aspects.slice(0, 4).forEach((item, idx) => {
-      ctx.fillStyle = "rgba(12, 24, 62, 0.9)";
-      this.drawRoundedRect(ctx, 76, ay, W - 152, 126, 14);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.35)";
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
+    const aspects = (readingData.aspectsSummary || []).slice(0, 5);
+    const startY = 824;
+    const totalAvailH = 1648 - startY;
+    const gap = 12;
+    const itemCount = Math.max(1, aspects.length);
+    const boxH = Math.min(184, Math.floor((totalAvailH - (itemCount - 1) * gap) / itemCount));
+
+    aspects.forEach((item, idx) => {
+      const ay = startY + idx * (boxH + gap);
+      this._drawGlassCard(ctx, 70, ay, W - 140, boxH, 16, "rgba(243, 207, 122, 0.36)", "rgba(10, 18, 48, 0.88)");
 
       ctx.fillStyle = idx % 2 === 0 ? "#38bdf8" : "#f3cf7a";
-      ctx.font = "700 22px 'Prompt', sans-serif";
-      ctx.fillText(`${item.label}`, 104, ay + 38);
+      this.drawRoundedRect(ctx, 70, ay, 9, boxH, 4.5);
+      ctx.fill();
 
-      ctx.fillStyle = "#f8fafc";
+      ctx.textAlign = "left";
+      ctx.fillStyle = idx % 2 === 0 ? "#7dd3fc" : "#fde68a";
+      ctx.font = "700 23px 'Prompt', sans-serif";
+      ctx.fillText(String(item.label || item.title || "คำพยากรณ์รายด้าน"), 98, ay + 38, W - 210);
+
+      ctx.fillStyle = "#f1f5f9";
       ctx.font = "400 20px 'Prompt', sans-serif";
-      const lines = this.wrapTextLines(ctx, item.text, W - 210).slice(0, 2);
-      lines.forEach((l, i) => ctx.fillText(l, 104, ay + 72 + i * 28));
-      ay += 140;
+      const allLines = this.wrapTextLines(ctx, String(item.text || item.detail || ""), W - 208);
+      const maxLines = boxH >= 170 ? 4 : 3;
+      const lines = allLines.slice(0, maxLines);
+      if (allLines.length > maxLines && lines[maxLines - 1]) {
+        lines[maxLines - 1] = lines[maxLines - 1].slice(0, Math.max(10, lines[maxLines - 1].length - 1)) + "…";
+      }
+      lines.forEach((l, i) => ctx.fillText(l, 98, ay + 74 + i * 28));
     });
 
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#7dd3fc";
-    ctx.font = "500 20px 'Prompt', sans-serif";
-    ctx.fillText("✨ อ่านคำทำนายฉบับเต็มครบทุกด้านในโพสต์ / คอมเมนต์ • SIAMSI TAROT ORACLE ✨", W / 2, H - 48);
+    this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
-    const dataUrl = canvas.toDataURL("image/png");
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+    const dataUrl = canvas.toDataURL("image/png", 0.95);
+    const blob = await new Promise(res => canvas.toBlob(res, "image/png", 0.95));
     this.currentInfoDataUrl = dataUrl;
     this.currentInfoBlob = blob;
+    this.currentReadingData = readingData;
     return { dataUrl, blob, canvas };
   }
 
   /**
-   * สร้างลิงก์สำหรับแชร์ผลคำทำนายโดยตรง เพื่อให้เพื่อนในโซเชียลคลิกเข้ามาดูหน้าคำทำนายชุดเดียวกันได้ทันที
+   * โหลดภาพแบบ Optional สำหรับ HUD ลายมือ
    */
   _loadOptionalImage(src) {
     if (!src) return Promise.resolve(null);
@@ -531,171 +844,169 @@ class ShareAndPdfEngine {
     ctx.drawImage(img, dx, dy, dw, dh);
   }
 
+  /**
+   * สร้างรูป Info Card / คัมภีร์หน้าเดียวสำหรับสแกนลายมือ 2 มือ (1240 x 1754 • ธีมหัตถศาสตร์ขลังอลังการ)
+   */
   async generatePalmInfoCard(readingData) {
-    const W = 1080;
-    const H = 1620;
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch (_) {}
+    }
+
+    const W = 1240;
+    const H = 1754;
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext("2d");
 
-    // 1. Dark Mystic Celestial Background
-    const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, "#050918");
-    bg.addColorStop(0.5, "#101836");
-    bg.addColorStop(1, "#070b1d");
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    // Soft Aura Glow
-    const glow = ctx.createRadialGradient(W / 2, 260, 40, W / 2, 260, 560);
-    glow.addColorStop(0, "rgba(243, 207, 122, 0.16)");
-    glow.addColorStop(1, "rgba(243, 207, 122, 0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, 820);
-
-    // Outer Gold Frame
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.55)";
-    ctx.lineWidth = 3;
-    this.drawRoundedRect(ctx, 26, 26, W - 52, H - 52, 28);
-    ctx.stroke();
-
-    // Header + Brand Logo
-    const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
-      ? window.brandThemeEngine.getLogoUrl()
-      : "assets/logo.jpg";
-    const logoImg = await this._loadOptionalImage(logoUrl);
-    if (logoImg) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(110, 102, 42, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(logoImg, 68, 60, 84, 84);
-      ctx.restore();
-    }
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#f3cf7a";
-    ctx.font = "bold 28px 'Cinzel', 'Prompt', sans-serif";
-    ctx.fillText("SIAMSI TAROT ORACLE • PALMISTRY", W / 2, 88);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 36px 'Prompt', sans-serif";
-    ctx.fillText("ผลวิเคราะห์ลายมือครบ 2 มือ (ซ้าย + ขวา)", W / 2, 134);
+    this._drawSacredMysticalBackdrop(ctx, W, H, {
+      primary: "#f3cf7a",
+      secondary: "#22c55e",
+      nebula: "rgba(56, 189, 248, 0.18)"
+    });
 
     const confVal = Number(readingData.confidence || 92).toFixed(1);
-    ctx.fillStyle = "rgba(16, 185, 129, 0.18)";
-    ctx.strokeStyle = "rgba(52, 211, 153, 0.65)";
-    ctx.lineWidth = 1.6;
-    this.drawRoundedRect(ctx, W / 2 - 190, 154, 380, 40, 20);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#86efac";
-    ctx.font = "600 20px 'Prompt', sans-serif";
-    ctx.fillText(`🎯 ความแม่นยำการตรวจจับ ${confVal}%`, W / 2, 181);
-
-    // 2. Dual-Hand HUD Visual Frames
-    const leftImg = await this._loadOptionalImage(readingData.leftHudDataUrl);
-    const rightImg = await this._loadOptionalImage(readingData.rightHudDataUrl);
-    const cardY = 216;
-    const cardW = 472;
-    const cardH = 370;
-
-    const drawHandBox = (x, label, img) => {
-      ctx.fillStyle = "rgba(9, 14, 32, 0.9)";
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.42)";
-      ctx.lineWidth = 2;
-      this.drawRoundedRect(ctx, x, cardY, cardW, cardH, 20);
-      ctx.fill();
-      ctx.stroke();
-
-      if (img) {
-        this._drawContainImage(ctx, img, x + 16, cardY + 14, cardW - 32, cardH - 64);
-      } else {
-        ctx.fillStyle = "#94a3b8";
-        ctx.font = "500 20px 'Prompt', sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("บันทึกผลสแกนหัตถศาสตร์แล้ว", x + cardW / 2, cardY + cardH / 2);
-      }
-
-      ctx.fillStyle = "#fde68a";
-      ctx.font = "bold 20px 'Prompt', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(label, x + cardW / 2, cardY + cardH - 18);
-    };
-
-    drawHandBox(56, "✋ มือซ้าย • พื้นดวงเดิม", leftImg);
-    drawHandBox(W - 56 - cardW, "🤚 มือขวา • ปัจจุบัน-อนาคต", rightImg);
-
-    // 3. Verdict Box
-    const vY = cardY + cardH + 20;
-    ctx.fillStyle = "rgba(243, 207, 122, 0.1)";
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.35)";
-    ctx.lineWidth = 1.5;
-    this.drawRoundedRect(ctx, 56, vY, W - 112, 92, 16);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "600 21px 'Prompt', sans-serif";
-    const vLines = this.wrapTextLines(ctx, readingData.summaryVerdict || "วิเคราะห์ครบ 2 ฝ่ามือสำเร็จ", W - 156).slice(0, 2);
-    vLines.forEach((line, idx) => {
-      ctx.fillText(line, W / 2, vY + 38 + idx * 30);
-    });
-
-    // 4. Stacked 5-Aspect Highlights
-    const aspects = readingData.aspects || {};
-    const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
-    let curY = vY + 112;
-    const boxH = 156;
-    const gap = 14;
-
-    orderedKeys.forEach((key) => {
-      const asp = aspects[key];
-      if (!asp) return;
-      ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.28)";
-      ctx.lineWidth = 1.5;
-      this.drawRoundedRect(ctx, 56, curY, W - 112, boxH, 16);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#f3cf7a";
-      ctx.font = "bold 22px 'Prompt', sans-serif";
-      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 80, curY + 35);
-
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#86efac";
-      ctx.font = "600 18px 'Prompt', sans-serif";
-      ctx.fillText(asp.grade || "", W - 80, curY + 35);
-
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#e2e8f0";
-      ctx.font = "400 18.5px 'Prompt', sans-serif";
-      const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
-      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 168);
-      const bodyLines = allWrapped.slice(0, 3);
-      if (allWrapped.length > 3 && bodyLines[2]) {
-        bodyLines[2] = bodyLines[2].slice(0, Math.max(10, bodyLines[2].length - 1)) + "…";
-      }
-      bodyLines.forEach((ln, li) => {
-        ctx.fillText(ln, 80, curY + 67 + li * 27);
-      });
-
-      curY += boxH + gap;
-    });
-
-    // Footer
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#cbd5e1";
-    ctx.font = "500 18px 'Prompt', sans-serif";
-    const dateStr = new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
+    const dateStr = readingData.dateText || new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
       year: "numeric",
       month: "long",
       day: "numeric"
     });
-    ctx.fillText(`✦ เซียมซีทาโรต์ (Siamsi Tarot Oracle) • บันทึกผลวิเคราะห์วันที่ ${dateStr} ✦`, W / 2, H - 38);
+    const metaLine = [readingData.code ? `รหัสโค้ด: ${readingData.code}` : "", `วันที่วิเคราะห์ลายมือ: ${dateStr}`].filter(Boolean).join("   •   ");
+
+    await this._drawSacredHeader(ctx, W, {
+      eyebrow: "✦ SIAMSI TAROT • SACRED PALMISTRY ORACLE ✦",
+      mainTitle: "ใบคำพยากรณ์หัตถศาสตร์ 2 มือ (ซ้าย + ขวา)",
+      pillText: `🎯 ความแม่นยำการตรวจจับเส้นลายมือและเนินทั้ง 7 : ${confVal}%`,
+      pillBorder: "rgba(52, 211, 153, 0.72)",
+      pillColor: "#86efac",
+      metaLine
+    });
+
+    // กรอบภาพสแกนฝ่ามือซ้าย + ขวาคู่กันอย่างสง่างาม
+    const leftImg = await this._loadOptionalImage(readingData.leftHudDataUrl);
+    const rightImg = await this._loadOptionalImage(readingData.rightHudDataUrl);
+    const cardY = 346;
+    const cardW = 532;
+    const cardH = 338;
+
+    const drawHandBox = (x, label, subTag, img, accentCol) => {
+      this._drawGlassCard(ctx, x, cardY, cardW, cardH, 20, "rgba(243, 207, 122, 0.56)", "rgba(6, 11, 28, 0.90)");
+
+      // กรอบด้านในสำหรับรูปฝ่ามือ
+      ctx.fillStyle = "#020617";
+      this.drawRoundedRect(ctx, x + 16, cardY + 12, cardW - 32, cardH - 64, 14);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(125, 211, 252, 0.25)";
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      if (img) {
+        this._drawContainImage(ctx, img, x + 18, cardY + 14, cardW - 36, cardH - 68);
+      } else {
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "500 20px 'Prompt', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("บันทึกผลสแกนหัตถศาสตร์แล้ว", x + cardW / 2, cardY + cardH / 2 - 10);
+      }
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = accentCol;
+      ctx.font = "700 21px 'Prompt', sans-serif";
+      ctx.fillText(`${label} • ${subTag}`, x + cardW / 2, cardY + cardH - 18);
+    };
+
+    drawHandBox(70, "✋ มือซ้าย", "พื้นดวงเดิม", leftImg, "#7dd3fc");
+    drawHandBox(W - 70 - cardW, "🤚 มือขวา", "ปัจจุบันและอนาคต", rightImg, "#fde68a");
+
+    // กล่องบทสรุปภาพรวมทั้ง 2 มือ
+    const vY = cardY + cardH + 14;
+    const vH = 96;
+    const vGrad = ctx.createLinearGradient(70, vY, W - 70, vY + vH);
+    vGrad.addColorStop(0, "rgba(24, 34, 78, 0.90)");
+    vGrad.addColorStop(0.5, "rgba(42, 22, 74, 0.90)");
+    vGrad.addColorStop(1, "rgba(24, 34, 78, 0.90)");
+    this._drawGlassCard(ctx, 70, vY, W - 140, vH, 18, "#f3cf7a", vGrad);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff1be";
+    ctx.font = "600 21px 'Prompt', sans-serif";
+    const vAll = this.wrapTextLines(ctx, readingData.summaryVerdict || "วิเคราะห์ครบ 2 ฝ่ามือสำเร็จ", W - 196);
+    const vLines = vAll.slice(0, 2);
+    if (vAll.length > 2 && vLines[1]) {
+      vLines[1] = vLines[1].slice(0, Math.max(10, vLines[1].length - 1)) + "…";
+    }
+    const vStartY = vLines.length === 1 ? vY + 56 : vY + 38;
+    vLines.forEach((line, idx) => {
+      ctx.fillText(line, W / 2, vStartY + idx * 30);
+    });
+
+    // คำพยากรณ์ 5 ด้านสำคัญ (จัดสรรลงตัวใน 1 หน้าเดียว พร้อมบรรทัดมือซ้าย & มือขวาครบไม่ขาดคำ)
+    const aspects = readingData.aspects || {};
+    const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
+    let curY = vY + vH + 14;
+    const boxH = 158;
+    const gap = 10;
+
+    orderedKeys.forEach((key, idx) => {
+      const asp = aspects[key];
+      if (!asp) return;
+
+      this._drawGlassCard(ctx, 70, curY, W - 140, boxH, 16, "rgba(243, 207, 122, 0.38)", "rgba(8, 15, 42, 0.88)");
+
+      ctx.fillStyle = idx % 2 === 0 ? "#f3cf7a" : "#38bdf8";
+      this.drawRoundedRect(ctx, 70, curY, 9, boxH, 4.5);
+      ctx.fill();
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#fde68a";
+      ctx.font = "700 22px 'Prompt', sans-serif";
+      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 96, curY + 32, W - 460);
+
+      if (asp.grade) {
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#86efac";
+        ctx.font = "600 18.5px 'Prompt', sans-serif";
+        ctx.fillText(asp.grade, W - 94, curY + 32, 340);
+      }
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#f1f5f9";
+      ctx.font = "400 18.5px 'Prompt', sans-serif";
+      const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
+      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 200);
+      const hasNote = Boolean(asp.leftNote || asp.rightNote);
+      const maxBody = hasNote ? 2 : 3;
+      const bodyLines = allWrapped.slice(0, maxBody);
+      if (allWrapped.length > maxBody && bodyLines[maxBody - 1]) {
+        bodyLines[maxBody - 1] = bodyLines[maxBody - 1].slice(0, Math.max(10, bodyLines[maxBody - 1].length - 1)) + "…";
+      }
+      bodyLines.forEach((ln, li) => {
+        ctx.fillText(ln, 96, curY + 62 + li * 25);
+      });
+
+      if (hasNote) {
+        const lShort = String(asp.leftNote || "").replace(/^(?:✋|🤚)\s*มือซ้าย\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+        const rShort = String(asp.rightNote || "").replace(/^(?:✋|🤚)\s*มือขวา\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+        if (lShort) {
+          ctx.fillStyle = "#7dd3fc";
+          ctx.font = "500 16px 'Prompt', sans-serif";
+          const lTxt = `✋ มือซ้าย: ${lShort}`;
+          const lLine = this.wrapTextLines(ctx, lTxt, W - 200)[0] || lTxt;
+          ctx.fillText(lLine, 96, curY + 120, W - 200);
+        }
+        if (rShort) {
+          ctx.fillStyle = "#fde68a";
+          ctx.font = "500 16px 'Prompt', sans-serif";
+          const rTxt = `🤚 มือขวา: ${rShort}`;
+          const rLine = this.wrapTextLines(ctx, rTxt, W - 200)[0] || rTxt;
+          ctx.fillText(rLine, 96, curY + 144, W - 200);
+        }
+      }
+
+      curY += boxH + gap;
+    });
+
+    this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • คัมภีร์วิเคราะห์หัตถศาสตร์เฉพาะบุคคล");
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 0.95));
     const dataUrl = canvas.toDataURL("image/png", 0.95);
@@ -703,126 +1014,6 @@ class ShareAndPdfEngine {
     this.currentInfoBlob = blob;
     this.currentReadingData = readingData;
     return { dataUrl, blob, canvas };
-  }
-
-  async generatePalmPdfDetailPages(readingData) {
-    const pages = [];
-    const W = 1240;
-    const H = 1754;
-    const padX = 76;
-    const contentW = W - padX * 2;
-    const maxBottomY = H - 96;
-
-    const createPage = (pageNum) => {
-      const c = document.createElement("canvas");
-      c.width = W;
-      c.height = H;
-      const ctx = c.getContext("2d");
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = "#0f172a";
-      ctx.fillRect(0, 0, W, 94);
-      ctx.fillStyle = "#f3cf7a";
-      ctx.font = "bold 26px 'Prompt', sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("คัมภีร์หัตถศาสตร์ฉบับสมบูรณ์ (วิเคราะห์ครบ 2 มือ)", padX, 58);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#cbd5e1";
-      ctx.font = "500 18px 'Prompt', sans-serif";
-      ctx.fillText(`หน้า ${pageNum + 1}`, W - padX, 58);
-      pages.push(c);
-      return { c, ctx, y: 136 };
-    };
-
-    let pageState = createPage(1);
-    const ensureSpace = (neededH) => {
-      if (pageState.y + neededH > maxBottomY) {
-        pageState = createPage(pages.length + 1);
-      }
-    };
-
-    const { ctx } = pageState;
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#1e293b";
-    ctx.font = "bold 24px 'Prompt', sans-serif";
-    ctx.fillText(`สรุปภาพรวมการวิเคราะห์ (ความแม่นยำ ${Number(readingData.confidence || 92).toFixed(1)}%)`, padX, pageState.y);
-    pageState.y += 38;
-
-    pageState.ctx.font = "400 20px 'Prompt', sans-serif";
-    pageState.ctx.fillStyle = "#334155";
-    const sumLines = this.wrapTextLines(pageState.ctx, readingData.summaryVerdict || "", contentW);
-    sumLines.forEach(ln => {
-      ensureSpace(32);
-      pageState.ctx.fillText(ln, padX, pageState.y);
-      pageState.y += 30;
-    });
-    pageState.y += 22;
-
-    const aspects = readingData.aspects || {};
-    for (const key of ["life", "intellect", "love", "wealth", "guidance"]) {
-      const asp = aspects[key];
-      if (!asp) continue;
-
-      pageState.ctx.font = "400 20px 'Prompt', sans-serif";
-      const mainLines = this.wrapTextLines(pageState.ctx, asp.text || "", contentW - 36);
-      const leftLines = asp.leftNote ? this.wrapTextLines(pageState.ctx, asp.leftNote, contentW - 52) : [];
-      const rightLines = asp.rightNote ? this.wrapTextLines(pageState.ctx, asp.rightNote, contentW - 52) : [];
-
-      const estHeight = 86 + mainLines.length * 30 + (leftLines.length ? leftLines.length * 26 + 24 : 0) + (rightLines.length ? rightLines.length * 26 + 24 : 0) + 28;
-      ensureSpace(Math.min(estHeight, 520));
-
-      const cardTop = pageState.y;
-      const boxFillH = estHeight - 16;
-      pageState.ctx.fillStyle = "#f8fafc";
-      pageState.ctx.strokeStyle = "#cbd5e1";
-      pageState.ctx.lineWidth = 1.6;
-      this.drawRoundedRect(pageState.ctx, padX, cardTop, contentW, boxFillH, 14);
-      pageState.ctx.fill();
-      pageState.ctx.stroke();
-
-      let innerY = cardTop + 40;
-      pageState.ctx.textAlign = "left";
-      pageState.ctx.fillStyle = "#0f172a";
-      pageState.ctx.font = "bold 24px 'Prompt', sans-serif";
-      pageState.ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, padX + 20, innerY);
-
-      pageState.ctx.textAlign = "right";
-      pageState.ctx.fillStyle = "#047857";
-      pageState.ctx.font = "600 18px 'Prompt', sans-serif";
-      pageState.ctx.fillText(asp.grade || "", W - padX - 20, innerY);
-      innerY += 38;
-
-      pageState.ctx.textAlign = "left";
-      pageState.ctx.fillStyle = "#1e293b";
-      pageState.ctx.font = "400 20px 'Prompt', sans-serif";
-      mainLines.forEach(ln => {
-        pageState.ctx.fillText(ln, padX + 20, innerY);
-        innerY += 30;
-      });
-
-      if (leftLines.length) {
-        innerY += 10;
-        pageState.ctx.fillStyle = "#0369a1";
-        pageState.ctx.font = "600 18px 'Prompt', sans-serif";
-        leftLines.forEach(ln => {
-          pageState.ctx.fillText(ln, padX + 28, innerY);
-          innerY += 26;
-        });
-      }
-      if (rightLines.length) {
-        innerY += 8;
-        pageState.ctx.fillStyle = "#92400e";
-        pageState.ctx.font = "600 18px 'Prompt', sans-serif";
-        rightLines.forEach(ln => {
-          pageState.ctx.fillText(ln, padX + 28, innerY);
-          innerY += 26;
-        });
-      }
-
-      pageState.y = cardTop + estHeight;
-    }
-
-    return pages;
   }
 
   buildShareableReadingUrl(readingData) {
@@ -1053,7 +1244,7 @@ class ShareAndPdfEngine {
   }
 
   /**
-   * วาดใบคำทำนายฉบับเต็มลง Canvas ความละเอียดสูง (ดีไซน์โปร่งโล่ง หรูหรา ไม่มีกรอบตารางอึดอัด และข้อความไม่ล้นหน้ากระดาษ 100%)
+   * สร้างไฟล์ PDF หน้าเดียว (Single Page A4 Portrait) จากภาพ Info ธีมโหราศาสตร์ขลังอลังการ (ครบทุกศาสตร์: ไพ่ทาโรต์, เซียมซี, ลายมือ 2 มือ)
    */
   async generateReadingPdfBlob(readingData) {
     if (!readingData) return null;
@@ -1066,8 +1257,7 @@ class ShareAndPdfEngine {
 
     if (readingData.mode === "palm") {
       const { canvas: infoCanvas } = await this.generatePalmInfoCard(readingData);
-      const detailPages = await this.generatePalmPdfDetailPages(readingData);
-      return this.canvasesToPdfBlob([infoCanvas, ...detailPages]);
+      return this.canvasesToPdfBlob([infoCanvas]);
     }
 
     if (readingData.mode === "siamsi") {
@@ -1075,392 +1265,8 @@ class ShareAndPdfEngine {
       return this.canvasesToPdfBlob([infoCanvas]);
     }
 
-    const W = 1240;
-    const textX = 146;
-    const contentW = W - 260; // 980px — มีระยะขอบซ้าย-ขวากว้างขวาง ไม่ล้นกระดาษแน่นอน
-
-    // สร้าง Canvas ชั่วคราวสำหรับคำนวณการตัดบรรทัดและความสูงทั้งหมดล่วงหน้า
-    const measureCanvas = document.createElement("canvas");
-    const mCtx = measureCanvas.getContext("2d");
-
-    const cards = readingData.cards || [];
-    const preparedCards = cards.map((c, idx) => {
-      const orient = c.isReversed ? "ไพ่กลับหัว" : "ไพ่ตั้งตรง";
-      mCtx.font = "700 22px 'Prompt', sans-serif";
-      const titleLines = this.wrapTextLines(
-        mCtx,
-        `${c.positionTitle || `ใบที่ ${idx + 1}`}  •  ไพ่ ${c.name_th} (${orient})`,
-        contentW
-      );
-
-      mCtx.font = "400 20px 'Prompt', sans-serif";
-      const meaningLines = this.wrapTextLines(mCtx, c.domainMeaning || "", contentW);
-
-      const blockHeight = titleLines.length * 32 + 12 + meaningLines.length * 33 + 38;
-      return { card: c, titleLines, meaningLines, blockHeight };
-    });
-
-    // เตรียมข้อความส่วนสรุปและวิเคราะห์ดวงชะตา + คำแนะนำและข้อควรระวัง (ไม่แบ่งเป็นบทวิเคราะห์กับเข็มทิศ และไม่อ้างตำรา)
-    mCtx.font = "700 25px 'Prompt', sans-serif";
-    const summaryHeadingLines = this.wrapTextLines(
-      mCtx,
-      `🔮 สรุปและวิเคราะห์ดวงชะตา (${readingData.verdictBadge || ""})`,
-      contentW
-    );
-
-    mCtx.font = "400 20px 'Prompt', sans-serif";
-    const analysisLines = this.wrapTextLines(mCtx, readingData.verdictPlain || "", contentW);
-
-    const recRawItems = [
-      readingData.doAction ? `• ${readingData.doAction}` : null,
-      ...cards.map(c => (c.advice ? `• จากไพ่ ${c.name_th}: ${c.advice}` : null)),
-      readingData.luckyBoost ? `• เสริมดวงมงคล: ${readingData.luckyBoost}` : null
-    ].filter(Boolean);
-
-    mCtx.font = "400 19.5px 'Prompt', sans-serif";
-    const recWrappedGroups = recRawItems.map(item => this.wrapTextLines(mCtx, item, contentW));
-    const totalRecLines = recWrappedGroups.reduce((acc, g) => acc + g.length, 0);
-
-    const cautionLines = this.wrapTextLines(
-      mCtx,
-      readingData.dontAction ? `• ${readingData.dontAction}` : "",
-      contentW
-    );
-
-    const cardsSectionH = preparedCards.reduce((sum, item) => sum + item.blockHeight, 0);
-    const summarySectionH =
-      summaryHeadingLines.length * 34 +
-      16 +
-      analysisLines.length * 33 +
-      36 +
-      38 + // หัวข้อ คำแนะนำและแนวทางที่ควรทำ
-      totalRecLines * 32 +
-      recWrappedGroups.length * 6 +
-      32 +
-      38 + // หัวข้อ ข้อควรระวัง
-      cautionLines.length * 32;
-
-    // คำนวณความสูงหน้ากระดาษแบบยืดหยุ่นตามเนื้อหาจริง เพื่อให้โปร่งสบายตาและไม่มีวันล้นขอบล่าง
-    const headerAndCardsTopH = 740;
-    const H = Math.max(1754, headerAndCardsTopH + cardsSectionH + summarySectionH + 170);
-
-    const canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext("2d");
-
-    // 1. พื้นหลัง Astral Midnight & Celestial Gold โปร่งหรูหรา
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#05091d");
-    bgGrad.addColorStop(0.45, "#091332");
-    bgGrad.addColorStop(1, "#040716");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    const topGlow = ctx.createRadialGradient(W / 2, 220, 20, W / 2, 220, 620);
-    topGlow.addColorStop(0, "rgba(243, 207, 122, 0.16)");
-    topGlow.addColorStop(0.55, "rgba(56, 189, 248, 0.08)");
-    topGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = topGlow;
-    ctx.fillRect(0, 0, W, H);
-
-    // เส้นขอบหน้ากระดาษบางเฉียบสไตล์ Editorial Luxury (ไม่มีกรอบตารางย่อยด้านใน)
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.55)";
-    ctx.lineWidth = 2;
-    this.drawRoundedRect(ctx, 48, 48, W - 96, H - 96, 20);
-    ctx.stroke();
-
-    // 2. โลโก้ทรงกลมตรงกลางด้านบน + หัวกระดาษจัดกึ่งกลางอย่างสมดุล
-    const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
-      ? window.brandThemeEngine.getLogoUrl()
-      : "assets/logo.jpg";
-    const logoImg = await this.loadImage(logoUrl);
-    if (logoImg) {
-      const logoSize = 96;
-      const lx = W / 2 - logoSize / 2;
-      const ly = 76;
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(W / 2, ly + logoSize / 2, logoSize / 2 + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = "#f3cf7a";
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(W / 2, ly + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(logoImg, lx, ly, logoSize, logoSize);
-      ctx.restore();
-    }
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "700 36px 'Prompt', sans-serif";
-    ctx.fillText("เซียมซีทาโรต์ • SIAMSI TAROT ORACLE", W / 2, 214, W - 180);
-
-    // ป้องกันการซ้ำซ้อนของคำว่า (สำหรับคนโสด) เพราะ readingData.categoryName มีระบุไว้แล้ว
-    const rawCatName = String(readingData.categoryName || "ดวงชะตา");
-    const hasLoveTag = rawCatName.includes("(");
-    const loveSuffix = (readingData.category === "love" && !hasLoveTag)
-      ? (readingData.loveStatus === "couple" ? " (สำหรับคนมีคนในใจ / มีคู่)" : " (สำหรับคนโสด)")
-      : "";
-
-    ctx.fillStyle = "#7dd3fc";
-    ctx.font = "600 22px 'Prompt', sans-serif";
-    ctx.fillText(`คำพยากรณ์ไพ่ทาโรต์ 3 ใบ • ด้าน${rawCatName}${loveSuffix}`, W / 2, 252, W - 180);
-
-    const dateStr = readingData.dateText || new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-    const metaText = [
-      readingData.code ? `รหัสโค้ด: ${readingData.code}` : null,
-      `วันที่พยากรณ์: ${dateStr}`
-    ].filter(Boolean).join("   •   ");
-
-    ctx.fillStyle = "#cbd5e1";
-    ctx.font = "400 18px 'Prompt', sans-serif";
-    ctx.fillText(metaText, W / 2, 286, W - 180);
-
-    // เส้นคั่นประดับดาว
-    const drawOrnamentalDivider = (yPos) => {
-      ctx.save();
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.28)";
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(120, yPos);
-      ctx.lineTo(W / 2 - 28, yPos);
-      ctx.moveTo(W / 2 + 28, yPos);
-      ctx.lineTo(W - 120, yPos);
-      ctx.stroke();
-      ctx.fillStyle = "#f3cf7a";
-      ctx.font = "600 18px 'Prompt', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("✦", W / 2, yPos + 6);
-      ctx.restore();
-    };
-
-    drawOrnamentalDivider(312);
-
-    // 3. แสดงหน้าไพ่ทั้ง 3 ใบแบบไร้กรอบตารางทึบ
-    const loadedImages = await Promise.all(cards.map(c => this.loadImage(c.image)));
-    const cardW = 186;
-    const cardH = 308;
-    const gap = 82;
-    const totalW = cards.length * cardW + (cards.length - 1) * gap;
-    const startX = (W - totalW) / 2;
-    const cardTopY = 348;
-
-    for (let i = 0; i < cards.length; i++) {
-      const c = cards[i];
-      const x = startX + i * (cardW + gap);
-      const img = loadedImages[i];
-
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#f3cf7a";
-      ctx.font = "600 17.5px 'Prompt', sans-serif";
-      const shortPos = (c.positionTitle || `ใบที่ ${i + 1}`).split("—")[0].trim();
-      ctx.fillText(shortPos, x + cardW / 2, cardTopY, cardW + 50);
-
-      const boxY = cardTopY + 14;
-      ctx.save();
-      ctx.shadowColor = "rgba(0, 0, 0, 0.55)";
-      ctx.shadowBlur = 18;
-      ctx.fillStyle = "#08102b";
-      this.drawRoundedRect(ctx, x, boxY, cardW, cardH, 12);
-      ctx.fill();
-      ctx.restore();
-
-      if (img) {
-        ctx.save();
-        this.drawRoundedRect(ctx, x + 4, boxY + 4, cardW - 8, cardH - 8, 9);
-        ctx.clip();
-        if (c.isReversed) {
-          ctx.translate(x + cardW / 2, boxY + cardH / 2);
-          ctx.rotate(Math.PI);
-          ctx.drawImage(img, -(cardW - 8) / 2, -(cardH - 8) / 2, cardW - 8, cardH - 8);
-        } else {
-          ctx.drawImage(img, x + 4, boxY + 4, cardW - 8, cardH - 8);
-        }
-        ctx.restore();
-      }
-
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.85)";
-      ctx.lineWidth = 2;
-      this.drawRoundedRect(ctx, x, boxY, cardW, cardH, 12);
-      ctx.stroke();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "700 18.5px 'Prompt', sans-serif";
-      ctx.fillText(c.name_th || c.name_en, x + cardW / 2, boxY + cardH + 26, cardW + 60);
-
-      ctx.fillStyle = c.isReversed ? "#fca5a5" : "#86efac";
-      ctx.font = "500 15px 'Prompt', sans-serif";
-      ctx.fillText(c.isReversed ? "ไพ่กลับหัว" : "ไพ่ตั้งตรง", x + cardW / 2, boxY + cardH + 48, cardW + 40);
-    }
-
-    drawOrnamentalDivider(736);
-
-    // 4. คำพยากรณ์ไพ่แต่ละใบแบบ Editorial Flow (ไม่มีกรอบกล่องสี่เหลี่ยมล้อมรอบ ใช้เส้น Accent ด้านซ้ายและช่องไฟโปร่งสบายตา)
-    let yCursor = 776;
-    ctx.textAlign = "left";
-
-    for (let i = 0; i < preparedCards.length; i++) {
-      const item = preparedCards[i];
-
-      // วงกลมเลขลำดับ 1, 2, 3
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(112, yCursor - 7, 16, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(243, 207, 122, 0.18)";
-      ctx.fill();
-      ctx.strokeStyle = "#f3cf7a";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#fff1be";
-      ctx.font = "700 17px 'Prompt', sans-serif";
-      ctx.fillText(String(i + 1), 112, yCursor - 1);
-      ctx.restore();
-
-      // หัวข้อตำแหน่งไพ่ (ตัดบรรทัดอัตโนมัติ ไม่ล้นขอบขวา)
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#f3cf7a";
-      ctx.font = "700 22px 'Prompt', sans-serif";
-      item.titleLines.forEach((tLine) => {
-        ctx.fillText(tLine, textX, yCursor, contentW);
-        yCursor += 32;
-      });
-
-      yCursor += 6;
-      const bodyStartY = yCursor - 18;
-
-      // เนื้อหาคำทำนายฉบับเต็ม
-      ctx.fillStyle = "#f1f5f9";
-      ctx.font = "400 20px 'Prompt', sans-serif";
-      item.meaningLines.forEach((mLine) => {
-        ctx.fillText(mLine, textX, yCursor, contentW);
-        yCursor += 33;
-      });
-
-      // เส้น Accent สีทองแนวตั้งด้านซ้ายของย่อหน้า
-      const bodyEndY = yCursor - 14;
-      ctx.save();
-      ctx.strokeStyle = "rgba(243, 207, 122, 0.45)";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(112, bodyStartY);
-      ctx.lineTo(112, Math.max(bodyStartY + 20, bodyEndY));
-      ctx.stroke();
-      ctx.restore();
-
-      // เส้นคั่นบางๆ ระหว่างไพ่แต่ละใบ
-      if (i < preparedCards.length - 1) {
-        yCursor += 10;
-        ctx.save();
-        ctx.strokeStyle = "rgba(148, 163, 184, 0.16)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(textX, yCursor);
-        ctx.lineTo(W - 114, yCursor);
-        ctx.stroke();
-        ctx.restore();
-        yCursor += 28;
-      } else {
-        yCursor += 22;
-      }
-    }
-
-    drawOrnamentalDivider(yCursor);
-    yCursor += 44;
-
-    // 5. ส่วนสรุปและวิเคราะห์ดวงชะตา + คำแนะนำและข้อควรระวัง (โปร่งโล่ง ไร้กรอบตารางอึดอัด)
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#fff1be";
-    ctx.font = "700 25px 'Prompt', sans-serif";
-    summaryHeadingLines.forEach((hLine) => {
-      ctx.fillText(hLine, textX, yCursor, contentW);
-      yCursor += 34;
-    });
-
-    yCursor += 8;
-    const analysisStartY = yCursor - 18;
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "400 20px 'Prompt', sans-serif";
-    analysisLines.forEach((aLine) => {
-      ctx.fillText(aLine, textX, yCursor, contentW);
-      yCursor += 33;
-    });
-
-    ctx.save();
-    ctx.strokeStyle = "rgba(56, 189, 248, 0.55)";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(112, analysisStartY);
-    ctx.lineTo(112, Math.max(analysisStartY + 20, yCursor - 14));
-    ctx.stroke();
-    ctx.restore();
-
-    yCursor += 24;
-
-    // คำแนะนำและแนวทางที่ควรทำ
-    ctx.fillStyle = "#86efac";
-    ctx.font = "700 22px 'Prompt', sans-serif";
-    ctx.fillText("✅ คำแนะนำและแนวทางที่ควรทำ", textX, yCursor, contentW);
-    yCursor += 34;
-
-    const recStartY = yCursor - 18;
-    ctx.fillStyle = "#f1f5f9";
-    ctx.font = "400 19.5px 'Prompt', sans-serif";
-    recWrappedGroups.forEach((group) => {
-      group.forEach((rLine) => {
-        ctx.fillText(rLine, textX, yCursor, contentW);
-        yCursor += 32;
-      });
-      yCursor += 6;
-    });
-
-    ctx.save();
-    ctx.strokeStyle = "rgba(134, 239, 172, 0.55)";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(112, recStartY);
-    ctx.lineTo(112, Math.max(recStartY + 20, yCursor - 18));
-    ctx.stroke();
-    ctx.restore();
-
-    yCursor += 22;
-
-    // ข้อควรระวัง
-    ctx.fillStyle = "#fca5a5";
-    ctx.font = "700 22px 'Prompt', sans-serif";
-    ctx.fillText("⚠️ ข้อควรระวัง", textX, yCursor, contentW);
-    yCursor += 34;
-
-    const cautionStartY = yCursor - 18;
-    ctx.fillStyle = "#ffe4e6";
-    ctx.font = "400 19.5px 'Prompt', sans-serif";
-    cautionLines.forEach((cLine) => {
-      ctx.fillText(cLine, textX, yCursor, contentW);
-      yCursor += 32;
-    });
-
-    ctx.save();
-    ctx.strokeStyle = "rgba(252, 165, 165, 0.55)";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(112, cautionStartY);
-    ctx.lineTo(112, Math.max(cautionStartY + 20, yCursor - 14));
-    ctx.stroke();
-    ctx.restore();
-
-    // Footer
-    ctx.textAlign = "center";
-    ctx.fillStyle = "rgba(186, 230, 253, 0.78)";
-    ctx.font = "400 17px 'Prompt', sans-serif";
-    ctx.fillText("เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE)  •  เอกสารคำพยากรณ์ดวงชะตาเฉพาะบุคคล", W / 2, H - 72, W - 180);
-
-    return this.canvasesToPdfBlob([canvas]);
+    const { canvas: tarotCanvas } = await this.generateTarotInfoCard(readingData);
+    return this.canvasesToPdfBlob([tarotCanvas]);
   }
 
   /**

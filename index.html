@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261113f">
-  <link rel="stylesheet" href="css/responsive.css?v=20261113f">
+  <link rel="stylesheet" href="css/style.css?v=20261114a">
+  <link rel="stylesheet" href="css/responsive.css?v=20261114a">
 </head>
 <body>
 
@@ -1404,147 +1404,127 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- SOCIAL CONNECT & AUTO-POST POPUP MODAL (เด้งล็อกอินเมื่อยังไม่เชื่อมต่อ + โพสต์อัตโนมัติ) -->
+  <!-- SOCIAL POST ASSISTANT MODAL (ผู้ช่วยเตรียมรูป Info + คำทำนาย + เปิดแพลตฟอร์มจริง) -->
   <!-- ===================================================================== -->
   <div id="social-connect-post-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="social-connect-modal-title">
     <div class="modal-content-box social-connect-modal-box" id="social-connect-modal-box" data-platform="facebook">
       <button type="button" class="modal-close-btn" id="btn-close-social-connect-modal" aria-label="ปิดหน้าต่าง">&times;</button>
 
-      <!-- VIEW 1: LOGIN / CONNECT SOCIAL ACCOUNT POPUP -->
+      <!-- VIEW 1: GUIDED DESKTOP / WEBVIEW POST ASSISTANT -->
       <div id="social-connect-login-view" class="social-connect-view">
         <div class="social-connect-brand-header" id="social-connect-brand-header">
           <div class="social-connect-platform-logo" id="social-connect-platform-logo"></div>
-          <span class="social-connect-eyebrow" id="social-connect-eyebrow">ระบบแชร์ & โพสต์โซเชียลมีเดียอัตโนมัติ</span>
-          <h3 id="social-connect-modal-title">เข้าสู่ระบบ Facebook เพื่อแชร์โพสต์อัตโนมัติ</h3>
+          <span class="social-connect-eyebrow" id="social-connect-eyebrow">✨ ผู้ช่วยเตรียมโพสต์โซเชียล 1 คลิก</span>
+          <h3 id="social-connect-modal-title">เตรียมรูป Info & คำทำนายพร้อมโพสต์ลง Facebook แล้ว</h3>
           <p id="social-connect-modal-desc">
-            ระบบจะตรวจสอบการเข้าสู่ระบบกับเซิร์ฟเวอร์ Facebook อย่างถูกต้อง เพื่อให้มั่นใจว่าโพสต์ขึ้นสู่บัญชีของคุณจริง (ไม่โพสต์หลอก)
+            ระบบได้สร้างและดาวน์โหลดภาพ Info Card (.PNG) รวมถึงคัดลอกคำทำนายไว้ให้คุณเรียบร้อยแล้ว กดเปิดแพลตฟอร์มด้านล่างเพื่อวางโพสต์ได้ทันที
           </p>
         </div>
 
-        <!-- Mobile Notice Banner (แจ้งเตือนเมื่อเปิดบนมือถือ) -->
-        <div id="social-mobile-app-banner" class="social-mobile-app-banner" style="display: none;">
-          <span class="mobile-banner-icon">📱</span>
+        <!-- Honest Limitation Notice -->
+        <div id="social-mobile-app-banner" class="social-mobile-app-banner" style="display: flex;">
+          <span class="mobile-banner-icon">ℹ️</span>
           <div class="mobile-banner-text">
-            <strong>ตรวจพบการใช้งานบนมือถือ</strong>
-            <p>ระบบจะขออนุญาตเปิดแอปโซเชียลที่คุณติดตั้งไว้ในเครื่อง เพื่อโพสต์ด้วยบัญชีจริงของคุณโดยตรง</p>
+            <strong id="social-assistant-notice-title">ข้อจำกัดการโพสต์จากเว็บไซต์ (Transparency Notice)</strong>
+            <p id="social-assistant-notice-desc">
+              เว็บไซต์ไม่สามารถสั่งโพสต์อัตโนมัติแทนคุณหรือล็อกอินเข้าบัญชีโซเชียลส่วนตัวได้หากยังไม่ได้เข้าสู่ระบบในเบราว์เซอร์นี้ (หากยังไม่ล็อกอิน ระบบของแพลตฟอร์มจะให้คุณล็อกอินก่อน 1 ครั้ง แล้ววางรูป Info + คำทำนายต่อได้ทันที)
+            </p>
           </div>
         </div>
 
-        <!-- Mini Preview of what will be auto-posted -->
+        <!-- Live Preview of the Info Image & Ready Caption -->
         <div class="social-connect-Attachment-preview">
           <img id="social-login-preview-thumb" src="assets/logo.jpg" alt="Info Card Preview" class="social-login-thumb" />
           <div class="social-login-preview-meta">
-            <span class="preview-pill-ready">✨ แชร์รูป Info Card + ข้อความคำทำนายฉบับเต็ม</span>
+            <span class="preview-pill-ready">✅ บันทึกไฟล์ .PNG + คัดลอกคำทำนายแล้ว</span>
             <strong id="social-login-preview-title">ผลคำทำนายของคุณ</strong>
-            <small id="social-login-preview-sub">ระบบจะเตรียมภาพ Info Card (.PNG) และคัดลอกข้อความคำทำนายที่คุณดูไว้สำหรับโพสต์จริง</small>
+            <small id="social-login-preview-sub">กดปุ่มด้านล่างเพื่อคัดลอกรูปลงคลิปบอร์ด (Ctrl+V) หรือดาวน์โหลดซ้ำได้ทันที</small>
             <p id="social-login-preview-excerpt" class="social-login-preview-excerpt"></p>
           </div>
         </div>
 
-        <!-- Official Platform OAuth / Share Popup (Recommended 100% Real Login) -->
+        <!-- 1-Click Quick Prepare Buttons -->
+        <div class="social-assistant-copy-tools">
+          <button type="button" id="btn-assistant-copy-image" class="btn-secondary-mystic">
+            <span>🖼️</span>
+            <span>คัดลอกรูป Info ลงคลิปบอร์ด</span>
+          </button>
+          <button type="button" id="btn-assistant-copy-caption" class="btn-secondary-mystic">
+            <span>💬</span>
+            <span>คัดลอกคำทำนายเต็ม</span>
+          </button>
+          <button type="button" id="btn-assistant-download-png" class="btn-secondary-mystic">
+            <span>⬇️</span>
+            <span>ดาวน์โหลด Info (.PNG)</span>
+          </button>
+        </div>
+
+        <!-- Full Caption Editor / Reference Box -->
+        <div class="social-assistant-caption-wrap">
+          <label for="social-assistant-caption-box" class="social-assistant-caption-label">ข้อความคำทำนายสำหรับวางในโพสต์:</label>
+          <textarea id="social-assistant-caption-box" class="published-caption-box" rows="3" readonly></textarea>
+        </div>
+
+        <!-- Primary Action: Open Official Platform Page / Share Intent -->
         <div class="social-official-login-cta">
           <button type="button" id="btn-open-official-share-popup" class="btn-official-oauth-login">
-            <span class="oauth-icon">🖼️</span>
+            <span class="oauth-icon">🚀</span>
             <span class="oauth-text-wrap">
-              <strong id="btn-open-official-share-text">เปิดหน้าโพสต์ Facebook พร้อมรูป Info & คำทำนาย</strong>
-              <small id="btn-open-official-share-sub">บันทึกรูป Info (.PNG) + คัดลอกคำทำนายไว้ให้วางโพสต์ได้ทันที</small>
+              <strong id="btn-open-official-share-text">เปิดหน้า Facebook เพื่อวางโพสต์รูป Info + คำทำนาย ↗</strong>
+              <small id="btn-open-official-share-sub">เปิดหน้าแพลตฟอร์มจริง (หากยังไม่ล็อกอิน กรุณาล็อกอินในหน้าต่างนั้นแล้วกด Ctrl+V / แนบไฟล์ .PNG)</small>
             </span>
           </button>
         </div>
 
-        <div class="social-connect-or-divider">
-          <span>หรือกรอกบัญชีและรหัสผ่านเพื่อตรวจสอบในหน้านี้</span>
-        </div>
-
-        <form id="social-connect-login-form" class="social-connect-form" autocomplete="on">
-          <div class="social-form-field">
-            <label for="social-login-identifier" id="social-login-identifier-label">อีเมล / เบอร์โทรศัพท์ / ชื่อผู้ใช้ (Username)</label>
-            <input
-              type="text"
-              id="social-login-identifier"
-              class="social-form-input"
-              placeholder="กรอกอีเมล เบอร์โทรศัพท์ หรือชื่อผู้ใช้บัญชีของคุณ..."
-              autocomplete="username"
-              required
-            />
-          </div>
-
-          <div class="social-form-field">
-            <label for="social-login-password">รหัสผ่าน (Password)</label>
-            <div class="social-password-wrap">
-              <input
-                type="password"
-                id="social-login-password"
-                class="social-form-input"
-                placeholder="กรอกรหัสผ่านเพื่อตรวจสอบกับระบบโซเชียล..."
-                autocomplete="current-password"
-                required
-              />
-              <button type="button" class="btn-toggle-pw" id="btn-toggle-social-pw" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
-            </div>
-            <span class="social-field-hint">ระบบจะตรวจสอบความถูกต้องของรหัสผ่านจริง ก่อนโพสต์ไปยังฟีดของคุณ</span>
-          </div>
-
-          <div class="social-form-options-row">
-            <label class="social-remember-label">
-              <input type="checkbox" id="social-login-remember" checked />
-              <span>จดจำการเชื่อมต่อบัญชีนี้ สำหรับแชร์ครั้งต่อไป</span>
-            </label>
-            <select id="social-login-privacy" class="social-privacy-select" aria-label="ตั้งค่าความเป็นส่วนตัวของโพสต์">
-              <option value="public">🌍 สาธารณะ (Public)</option>
-              <option value="friends">👥 เฉพาะเพื่อน (Friends)</option>
-              <option value="private">🔒 เฉพาะฉัน (Only Me)</option>
-            </select>
-          </div>
-
-          <div id="social-login-error" class="social-login-error" style="display: none;"></div>
-
-          <button type="submit" id="btn-submit-social-login" class="btn-social-submit-login">
-            <span>🔐</span>
-            <span id="btn-submit-social-login-text">ตรวจสอบรหัส & ให้ระบบโพสต์ลง Facebook ทันที</span>
+        <div class="social-assistant-footer-links">
+          <button type="button" id="btn-assistant-view-history" class="btn-mini-asset">
+            📜 ดูประวัติการแชร์ของคุณ
           </button>
-        </form>
+          <button type="button" id="btn-assistant-try-native" class="btn-mini-asset" style="display: none;">
+            📲 ลองเปิดเมนูแชร์ของเครื่องอีกครั้ง
+          </button>
+        </div>
       </div>
 
-      <!-- VIEW 2: AUTO-POSTING PROGRESS STATE -->
+      <!-- VIEW 2: PROGRESS STATE -->
       <div id="social-posting-progress-view" class="social-connect-view" style="display: none;">
         <div class="social-posting-progress-box">
           <div class="social-posting-spinner-ring" id="social-posting-spinner-icon"></div>
-          <h3 id="social-posting-title">กำลังตรวจสอบและโพสต์ผลคำทำนาย...</h3>
-          <p id="social-posting-step-text">กำลังตรวจสอบรหัสผ่านกับเซิร์ฟเวอร์แพลตฟอร์มและเตรียมส่งข้อมูล...</p>
+          <h3 id="social-posting-title">กำลังเตรียมภาพ Info Card & คำทำนาย...</h3>
+          <p id="social-posting-step-text">กำลังสร้างภาพ 1 หน้าความละเอียดสูงและคัดลอกข้อความลงคลิปบอร์ด...</p>
           <div class="social-posting-bar-track">
             <div class="social-posting-bar-fill" id="social-posting-bar-fill"></div>
           </div>
         </div>
       </div>
 
-      <!-- VIEW 3: AUTO-POST COMPLETED & LIVE FEED PREVIEW -->
+      <!-- VIEW 3: SHARE HISTORY & ASSET PREVIEW -->
       <div id="social-post-success-view" class="social-connect-view" style="display: none;">
         <div class="social-post-success-header">
-          <span class="social-post-success-badge">✅ ยืนยันโพสต์จริงบนระบบแล้ว (VERIFIED POST)</span>
-          <h3 id="social-post-success-title">ระบบแชร์และโพสต์ไปยัง Facebook เรียบร้อยแล้ว!</h3>
+          <span class="social-post-success-badge">📜 ประวัติการเตรียมแชร์ & เปิดแพลตฟอร์มโซเชียล</span>
+          <h3 id="social-post-success-title">รายการแชร์รูป Info & คำทำนายของคุณ</h3>
           <div class="social-connected-account-bar">
-            <span id="social-post-connected-pill" class="connected-account-pill">🟢 เชื่อมต่อบัญชี: -</span>
+            <span id="social-post-connected-pill" class="connected-account-pill">✨ พร้อมภาพ Info + คำทำนาย</span>
             <button type="button" id="btn-switch-social-account" class="btn-switch-social-account">
-              🔄 สลับบัญชี / ล็อกอินใหม่
+              🖼️ กลับหน้าผู้ช่วยเตรียมโพสต์
             </button>
           </div>
         </div>
 
-        <!-- Live Post Card Preview showing the exact post published by the system -->
+        <!-- Asset Preview Card -->
         <div class="social-published-card-preview">
           <div class="published-card-top">
             <div class="published-user-avatar" id="published-platform-avatar">FB</div>
             <div class="published-user-meta">
-              <strong id="published-account-name">ผู้ใช้งาน</strong>
-              <small id="published-time-privacy">โพสต์อัตโนมัติเมื่อสักครู่ • 🌍 สาธารณะ</small>
+              <strong id="published-account-name">ผู้ช่วยแชร์โซเชียล</strong>
+              <small id="published-time-privacy">เตรียมไฟล์ Info PNG + คำทำนายครบชุด</small>
             </div>
-            <span class="published-status-tag">โพสต์สำเร็จ ✓</span>
+            <span class="published-status-tag">พร้อมโพสต์ ✓</span>
           </div>
 
           <div class="published-card-body-grid">
             <div class="published-img-col">
-              <img id="social-post-result-img" src="assets/logo.jpg" alt="Posted Info Card" />
+              <img id="social-post-result-img" src="assets/logo.jpg" alt="Prepared Info Card" />
               <div class="published-quick-tools">
                 <button type="button" id="btn-copy-posted-info-img" class="btn-mini-asset">🖼️ คัดลอกรูป</button>
                 <button type="button" id="btn-download-posted-info-img" class="btn-mini-asset">⬇️ โหลด PNG</button>
@@ -1558,11 +1538,11 @@
           </div>
         </div>
 
-        <!-- Post Checker & Links Section (ผู้ใช้กดตรวจสอบโพสต์จริงได้ทันที) -->
+        <!-- History & Platform Shortcuts -->
         <div class="social-post-success-actions">
           <button type="button" id="btn-open-platform-window" class="btn-mystic-primary btn-full-width">
-            <span>🔍</span>
-            <span id="btn-open-platform-window-text">เปิดดูโพสต์จริงบน Facebook ทันที ↗</span>
+            <span>🚀</span>
+            <span id="btn-open-platform-window-text">เปิดหน้า Facebook เพื่อดู/โพสต์ ↗</span>
           </button>
 
           <button type="button" id="btn-open-shared-reading-url" class="btn-secondary-mystic btn-full-width">
@@ -1570,10 +1550,10 @@
             <span>เปิดดูใบคำทำนายฉบับเต็มในระบบอีกครั้ง ↗</span>
           </button>
 
-          <!-- Verified Posts History Container -->
+          <!-- Recorded Share History Container -->
           <div class="verified-posts-history-section">
             <div class="verified-posts-header">
-              <span>📜 รายการโพสต์ที่แชร์แล้ว (<span id="verified-posts-count">0</span>)</span>
+              <span>📜 ประวัติการส่งแชร์จากอุปกรณ์นี้ (<span id="verified-posts-count">0</span>)</span>
             </div>
             <div class="verified-posts-list" id="verified-posts-list"></div>
           </div>
@@ -1618,14 +1598,14 @@
   <script src="js/palm-data.js"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261113f"></script>
+  <script src="js/palm-scanner.js?v=20261114a"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/rag-engine.js"></script>
   <script src="js/code-manager.js?v=20261113d"></script>
-  <script src="js/share-pdf.js?v=20261113f"></script>
-  <script src="js/siamsi.js"></script>
-  <script src="js/app.js?v=20261113f"></script>
+  <script src="js/share-pdf.js?v=20261114a"></script>
+  <script src="js/siamsi.js?v=20261114a"></script>
+  <script src="js/app.js?v=20261114a"></script>
 
 </body>
 </html>
