@@ -768,6 +768,7 @@ class PalmApp {
     this.activeHudHand = "right";
     this.isEntitlementLocked = false;
     this.pendingDuplicateScan = null;
+    this.pendingUnclearRetryStep = null;
     this.savedLockedData = null;
 
     this.initDOM();
@@ -826,6 +827,9 @@ class PalmApp {
     this.hand1DescEl = document.getElementById("palm-hand1-desc");
     this.btnScanSecondHand = document.getElementById("btn-palm-scan-second-hand");
     this.btnScanSecondLabel = document.getElementById("btn-palm-scan-second-label");
+    this.btnRetakeCurrentScan = document.getElementById("btn-palm-retake-scan");
+    this.btnRetakeCurrentLabel = document.getElementById("btn-palm-retake-scan-label");
+    this.btnUploadRetryScan = document.getElementById("btn-palm-upload-retry");
     this.btnOverrideHand = document.getElementById("btn-palm-override-hand");
     this.btnOverrideLabel = document.getElementById("btn-palm-override-label");
     this.btnRestartBoth = document.getElementById("btn-palm-restart-both");
@@ -947,6 +951,15 @@ class PalmApp {
     // Dual-Hand Flow Actions
     if (this.btnScanSecondHand) {
       this.btnScanSecondHand.addEventListener("click", () => this.resumeCameraForSecondHand());
+    }
+    if (this.btnRetakeCurrentScan) {
+      this.btnRetakeCurrentScan.addEventListener("click", () => this.retakeCurrentPalmStep());
+    }
+    if (this.btnUploadRetryScan && this.fileInput) {
+      this.btnUploadRetryScan.addEventListener("click", () => {
+        this.fileInput.value = "";
+        this.fileInput.click();
+      });
     }
     if (this.btnOverrideHand) {
       this.btnOverrideHand.addEventListener("click", () => this.confirmDuplicateAsMissingHand());
@@ -1608,13 +1621,24 @@ class PalmApp {
 
     if (!this.scanResult || this.scanResult.ok === false) {
       this.isScanning = false;
-      const errMsg = (this.scanResult && this.scanResult.message) || "ไม่พบฝ่ามือชัดเจนในภาพ กรุณาวางฝ่ามือในที่แสงสว่างและกางนิ้วเล็กน้อย";
-      if (window.taroApp && typeof window.taroApp.showToast === "function") {
-        window.taroApp.showToast(errMsg);
-      } else {
-        alert(errMsg);
-      }
-      this.resumeCaptureOrStep2();
+      this.showBlurryScanPrompt(
+        this.scanResult,
+        imageSource,
+        (this.dualScans.left || this.dualScans.right) ? 2 : 1,
+        this.assessScanClarity(this.scanResult)
+      );
+      return;
+    }
+
+    const clarity = this.assessScanClarity(this.scanResult);
+    if (!clarity.isClear) {
+      this.isScanning = false;
+      this.showBlurryScanPrompt(
+        this.scanResult,
+        imageSource,
+        (this.dualScans.left || this.dualScans.right) ? 2 : 1,
+        clarity
+      );
       return;
     }
 
@@ -1623,6 +1647,163 @@ class PalmApp {
 
     this.isScanning = false;
     await this.handleCompletedSingleScan(this.scanResult, imageSource);
+  }
+
+  assessScanClarity(scanRes) {
+    if (!scanRes || scanRes.ok === false) {
+      return {
+        isClear: false,
+        reason: (scanRes && scanRes.reason) || "no_hand",
+        message: (scanRes && scanRes.message) || "ไม่พบฝ่ามือชัดเจนในภาพ กรุณาวางฝ่ามือในที่แสงสว่างและกางนิ้วเล็กน้อย",
+        coreDetected: 0,
+        totalDetected: 0,
+        sharpness: 0,
+        confPct: 0
+      };
+    }
+    const lines = scanRes.lines || {};
+    const coreDetected = ["life", "head", "heart"].filter(k => lines[k] && lines[k].detected).length;
+    const allKeys = ["life", "head", "heart", "fate", "sun", "mercury"];
+    const totalDetected = allKeys.filter(k => lines[k] && lines[k].detected).length;
+    const sharpness = Number((scanRes.quality && scanRes.quality.sharpness) || 0);
+    const confPct = Number((scanRes.confidence && scanRes.confidence.percentage) || 0);
+
+    const tooFewLines = coreDetected < 2 || totalDetected < 2;
+    const tooBlurry = sharpness < 1.25;
+    const lowConf = confPct < 56;
+    const isClear = !tooFewLines && !tooBlurry && !lowConf;
+
+    let message = "";
+    if (tooFewLines) {
+      message = `ภาพถ่ายไม่ชัด ทำให้ตรวจพบเส้นลายฝ่ามือเพียง ${totalDetected} เส้น (ต้องการเส้นหลักอย่างน้อย 2 เส้นขึ้นไป)`;
+    } else if (tooBlurry) {
+      message = `ภาพถ่ายเบลอหรือไม่คมชัดพอ (ความคมชัดภาพ ${sharpness.toFixed(2)}) กรุณาถือมือนิ่งและให้กล้องโฟกัสที่ฝ่ามือก่อนถ่ายอีกครั้ง`;
+    } else if (lowConf) {
+      message = `ความคมชัดของการสแกนยังไม่เพียงพอ (${Math.round(confPct)}%) แนะนำให้ถ่ายภาพอีกครั้ง`;
+    }
+
+    return {
+      isClear,
+      reason: tooFewLines ? "no_creases" : (tooBlurry ? "blurry" : (lowConf ? "low_confidence" : "ok")),
+      message,
+      coreDetected,
+      totalDetected,
+      sharpness,
+      confPct
+    };
+  }
+
+  showBlurryScanPrompt(scanRes, imageSource, stepNum = 1, clarity = null) {
+    this.stopCamera();
+    this.isCapturing = false;
+    this.isScanning = false;
+    this.pendingUnclearRetryStep = stepNum;
+    if (this.fileInput) this.fileInput.value = "";
+
+    if (this.screenScanning) this.screenScanning.classList.remove("active");
+    if (this.screenResult) this.screenResult.classList.remove("active");
+    if (this.screenCapture) this.screenCapture.classList.add("active");
+
+    const previewUrl = (scanRes && scanRes.ok !== false && imageSource)
+      ? (this._renderOffscreenHud(scanRes, imageSource, 360, 0.72) || imageSource.src || "")
+      : ((imageSource && imageSource.src) || "");
+
+    const existingHand = this.dualScans.left ? "left" : (this.dualScans.right ? "right" : null);
+    const targetHand = stepNum === 2 && existingHand
+      ? (existingHand === "left" ? "right" : "left")
+      : this.currentHand;
+    const targetThai = targetHand === "left" ? "มือซ้าย" : "มือขวา";
+
+    if (this.hand1DoneCard) {
+      this.hand1DoneCard.classList.add("warning-state", "blurry-state");
+      this.hand1DoneCard.style.display = "block";
+    }
+    if (this.hand1ThumbImg) {
+      if (previewUrl) {
+        this.hand1ThumbImg.src = previewUrl;
+        this.hand1ThumbImg.style.display = "block";
+      } else {
+        this.hand1ThumbImg.style.display = "none";
+      }
+    }
+
+    const reasonMsg = (clarity && clarity.message)
+      || (scanRes && scanRes.message)
+      || "ภาพถ่ายไม่ชัด ทำให้ตรวจไม่พบลายฝ่ามือในภาพ";
+
+    if (this.hand1BadgeEl) {
+      this.hand1BadgeEl.textContent = "⚠️ ภาพถ่ายไม่ชัด — ตรวจไม่พบลายฝ่ามือชัดเจน";
+    }
+    if (this.hand1TitleEl) {
+      this.hand1TitleEl.textContent = `กรุณาถ่ายภาพ${stepNum === 2 ? targetThai : "ฝ่ามือ"}ใหม่อีกครั้ง`;
+    }
+    if (this.hand1DescEl) {
+      this.hand1DescEl.textContent = `${reasonMsg} กรุณาวางฝ่ามือในที่แสงสว่างพอ กางนิ้วเล็กน้อย ถือมือนิ่งให้เห็นร่องลายมือชัด แล้วกด "ถ่ายภาพอีกครั้ง"`;
+    }
+
+    if (this.btnScanSecondHand) this.btnScanSecondHand.style.display = "none";
+    if (this.btnOverrideHand) this.btnOverrideHand.style.display = "none";
+    if (this.btnRetakeCurrentScan) {
+      this.btnRetakeCurrentScan.style.display = "inline-flex";
+      this.btnRetakeCurrentScan.classList.remove("btn-secondary-mystic");
+      this.btnRetakeCurrentScan.classList.add("btn-mystic-primary");
+    }
+    if (this.btnRetakeCurrentLabel) {
+      this.btnRetakeCurrentLabel.textContent = "📸 ถ่ายภาพอีกครั้ง";
+    }
+    if (this.btnUploadRetryScan) {
+      this.btnUploadRetryScan.style.display = "inline-flex";
+    }
+    if (this.btnRestartBoth) {
+      this.btnRestartBoth.style.display = existingHand ? "inline-flex" : "none";
+    }
+
+    if (window.taroApp && typeof window.taroApp.showToast === "function") {
+      window.taroApp.showToast("⚠️ ภาพถ่ายไม่ชัด ตรวจไม่พบลายฝ่ามือ — กดปุ่ม 'ถ่ายภาพอีกครั้ง'");
+    }
+    if (this.hand1DoneCard && this.hand1DoneCard.scrollIntoView) {
+      this.hand1DoneCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  retakeCurrentPalmStep() {
+    this.playSound("playClick");
+    const wasBlurry = Boolean(this.pendingUnclearRetryStep);
+    const hasStep1 = Boolean(this.dualScans.left || this.dualScans.right);
+
+    if (!wasBlurry && this.scanStep === 2 && hasStep1) {
+      this.dualScans = { left: null, right: null };
+      this.capturedImages = { left: null, right: null };
+      this.hudThumbs = { left: "", right: "" };
+      this.hudFullUrls = { left: "", right: "" };
+      this.scanStep = 1;
+      this.pendingDuplicateScan = null;
+      this._updateDualStepBanner(1, null);
+    }
+
+    this.pendingUnclearRetryStep = null;
+    if (this.fileInput) this.fileInput.value = "";
+    if (this.hand1DoneCard) {
+      this.hand1DoneCard.style.display = "none";
+      this.hand1DoneCard.classList.remove("warning-state", "blurry-state");
+    }
+    if (this.btnScanSecondHand) this.btnScanSecondHand.style.display = "inline-flex";
+    if (this.btnRetakeCurrentScan) this.btnRetakeCurrentScan.style.display = "none";
+    if (this.btnUploadRetryScan) this.btnUploadRetryScan.style.display = "none";
+
+    if (this.screenResult) this.screenResult.classList.remove("active");
+    if (this.screenScanning) this.screenScanning.classList.remove("active");
+    if (this.screenCapture) this.screenCapture.classList.add("active");
+
+    const firstHand = this.dualScans.left ? "left" : (this.dualScans.right ? "right" : null);
+    const targetHand = firstHand ? (firstHand === "left" ? "right" : "left") : this.currentHand;
+    this.isCapturing = false;
+    this.isScanning = false;
+    this.setHand(targetHand);
+    this.startCamera(this.cameraFacing || "environment");
+    if (this.cameraContainer && this.cameraContainer.scrollIntoView) {
+      this.cameraContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   startNewPalmSession(codeObj = null) {
@@ -1635,12 +1816,14 @@ class PalmApp {
     this.scanResult = null;
     this.capturedImage = null;
     this.pendingDuplicateScan = null;
+    this.pendingUnclearRetryStep = null;
     this.savedLockedData = null;
     this._nextScanForcedHand = null;
     this.isCapturing = false;
     this.isScanning = false;
     this.scanStep = 1;
     this.activeHudHand = "right";
+    if (this.fileInput) this.fileInput.value = "";
 
     const isCodeBound = Boolean((codeObj && codeObj.code) || (window.taroApp && window.taroApp.activeCode));
     const alreadyDone = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
@@ -1652,9 +1835,13 @@ class PalmApp {
 
     if (this.hand1DoneCard) {
       this.hand1DoneCard.style.display = "none";
-      this.hand1DoneCard.classList.remove("warning-state");
+      this.hand1DoneCard.classList.remove("warning-state", "blurry-state");
     }
+    if (this.btnScanSecondHand) this.btnScanSecondHand.style.display = "inline-flex";
+    if (this.btnRetakeCurrentScan) this.btnRetakeCurrentScan.style.display = "none";
+    if (this.btnUploadRetryScan) this.btnUploadRetryScan.style.display = "none";
     if (this.btnOverrideHand) this.btnOverrideHand.style.display = "none";
+    if (this.btnRestartBoth) this.btnRestartBoth.style.display = "inline-flex";
     this._updateDualStepBanner(1, null);
     this.setHand("right");
     this.startCamera(this.cameraFacing || "environment");
@@ -1792,7 +1979,7 @@ class PalmApp {
       if (this.screenCapture) this.screenCapture.classList.add("active");
 
       if (this.hand1DoneCard) {
-        this.hand1DoneCard.classList.remove("warning-state");
+        this.hand1DoneCard.classList.remove("warning-state", "blurry-state");
         this.hand1DoneCard.style.display = "block";
       }
       if (this.hand1ThumbImg) {
@@ -1804,7 +1991,19 @@ class PalmApp {
       if (this.hand1DescEl) {
         this.hand1DescEl.textContent = `ระบบตรวจจับ${detectedThai}เรียบร้อย (ความชัด ${confPct}%) เพื่อเปรียบเทียบพื้นดวงเดิมและปัจจุบันให้คำพยากรณ์ครบทุกด้าน`;
       }
+      this.pendingUnclearRetryStep = null;
+      if (this.btnScanSecondHand) this.btnScanSecondHand.style.display = "inline-flex";
+      if (this.btnRetakeCurrentScan) {
+        this.btnRetakeCurrentScan.style.display = "inline-flex";
+        this.btnRetakeCurrentScan.classList.remove("btn-mystic-primary");
+        this.btnRetakeCurrentScan.classList.add("btn-secondary-mystic");
+      }
+      if (this.btnRetakeCurrentLabel) {
+        this.btnRetakeCurrentLabel.textContent = "📸 ถ่ายภาพมือข้างนี้ใหม่";
+      }
+      if (this.btnUploadRetryScan) this.btnUploadRetryScan.style.display = "none";
       if (this.btnOverrideHand) this.btnOverrideHand.style.display = "none";
+      if (this.btnRestartBoth) this.btnRestartBoth.style.display = "inline-flex";
       if (this.btnScanSecondLabel) this.btnScanSecondLabel.textContent = `พร้อมแล้ว — เปิดกล้องสแกน${otherThai}`;
 
       if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.0);
@@ -1834,10 +2033,16 @@ class PalmApp {
       if (this.screenResult) this.screenResult.classList.remove("active");
       if (this.screenCapture) this.screenCapture.classList.add("active");
 
+      this.pendingUnclearRetryStep = null;
       if (this.hand1DoneCard) {
+        this.hand1DoneCard.classList.remove("blurry-state");
         this.hand1DoneCard.classList.add("warning-state");
         this.hand1DoneCard.style.display = "block";
       }
+      if (this.btnScanSecondHand) this.btnScanSecondHand.style.display = "inline-flex";
+      if (this.btnRetakeCurrentScan) this.btnRetakeCurrentScan.style.display = "none";
+      if (this.btnUploadRetryScan) this.btnUploadRetryScan.style.display = "none";
+      if (this.btnRestartBoth) this.btnRestartBoth.style.display = "inline-flex";
       if (this.hand1BadgeEl) this.hand1BadgeEl.textContent = `⚠️ ภาพที่สแกนล่าสุดตรวจพบเป็น ${existingThai} ซ้ำ`;
       if (this.hand1TitleEl) this.hand1TitleEl.textContent = `กรุณานำ "${missingThai}" อีกข้างมาสแกน (หรือกดยืนยันหากถ่ายถูกข้างแล้ว)`;
       if (this.hand1DescEl) {
@@ -1845,7 +2050,7 @@ class PalmApp {
       }
       if (this.btnOverrideHand) this.btnOverrideHand.style.display = "inline-flex";
       if (this.btnOverrideLabel) this.btnOverrideLabel.textContent = `✓ ยืนยันใช้ภาพนี้เป็น${missingThai}`;
-      if (this.btnScanSecondLabel) this.btnScanSecondLabel.textContent = `📷 เปิดกล้องสแกน${missingThai}ใหม่`;
+      if (this.btnScanSecondLabel) this.btnScanSecondLabel.textContent = `📷 ถ่ายภาพ${missingThai}อีกครั้ง`;
       if (window.taroApp && typeof window.taroApp.showToast === "function") {
         window.taroApp.showToast(`⚠️ ตรวจพบ${existingThai}ซ้ำ กรุณาสแกน${missingThai}หรือกดยืนยัน`);
       }
@@ -2035,6 +2240,14 @@ class PalmApp {
 
     // แสดงคำทำนาย 5 ด้านเรียงทีละด้านอ่านง่ายในมือถือ
     this.renderReadingAspects();
+
+    // เตรียมภาพ Info Card ล่วงหน้าเพื่อให้กดแชร์แพลตฟอร์มโซเชียลได้ทันที
+    if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.ensureInfoAsset === "function") {
+      const payload = this.buildPalmSharePayload();
+      if (payload) {
+        window.shareAndPdfEngine.ensureInfoAsset(payload).catch(() => {});
+      }
+    }
 
     if (window.mysticAudio) {
       window.mysticAudio.playCrystalBell(1046.5, 1.6);

@@ -154,6 +154,126 @@
   .modal-content-box {
     padding: 1.5rem 1.1rem;
   }
+
+  /* ========================================================================
+   * MOBILE READABILITY & FONT SIZE BOOST (เพิ่มขนาดตัวอักษรให้อ่านชัดบนมือถือ)
+   * ======================================================================== */
+  body {
+    font-size: 16.5px;
+    line-height: 1.72;
+  }
+
+  .verdict-title {
+    font-size: 1.38rem;
+  }
+
+  .verdict-content,
+  .grand-summary-text,
+  .prediction-text-content,
+  .guidance-quote,
+  .advice-text,
+  .story-content p,
+  .aspect-summary-callout,
+  .aspect-deep-detail p,
+  .palm-result-desc,
+  .aspect-text {
+    font-size: 1.06rem;
+    line-height: 1.82;
+  }
+
+  .prediction-title,
+  .aspect-title,
+  .aspect-title-wrap h4 {
+    font-size: 1.16rem;
+    line-height: 1.45;
+  }
+
+  .do-box,
+  .dont-box,
+  .do-box strong,
+  .dont-box strong,
+  .love-status-focused-box .love-status-text,
+  .aspect-hand-note {
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .palm-dual-step-banner,
+  #palm-dual-step-banner {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .palm-hand1-done-card p,
+  #palm-hand1-desc,
+  .hand1-done-badge {
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  #palm-hand1-title {
+    font-size: 1.12rem;
+    line-height: 1.48;
+  }
+
+  .btn-mystic-primary,
+  .btn-secondary-mystic,
+  .btn-palm-shutter {
+    font-size: 1.04rem;
+    min-height: 48px;
+  }
+
+  .btn-platform-share strong {
+    font-size: 1rem;
+  }
+
+  .btn-platform-share small {
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+
+  .chip-layer,
+  .btn-hud-hand,
+  .confidence-pill,
+  .hand-type-pill {
+    font-size: 0.9rem;
+    padding: 0.46rem 0.84rem;
+  }
+
+  .palm-guide-hint {
+    font-size: 0.96rem;
+    padding: 0.62rem 0.85rem;
+    line-height: 1.5;
+  }
+
+  .palm-camera-fallback p,
+  .palm-selector-label {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .hand-btn-text strong {
+    font-size: 1.04rem;
+  }
+
+  .hand-btn-text small {
+    font-size: 0.88rem;
+  }
+
+  .btn-check-posts-link {
+    font-size: 0.9rem;
+  }
+
+  .mystic-text-input,
+  .gemini-textarea,
+  .share-caption-textarea,
+  .social-login-field input,
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 16px;
+    line-height: 1.65;
+  }
 }
 
 @media (max-width: 640px) {

@@ -178,7 +178,7 @@ const SOCIAL_PLATFORMS_META = {
     shortCode: "FB",
     idLabel: "อีเมล หรือ เบอร์โทรศัพท์บัญชี Facebook",
     idPlaceholder: "กรอกอีเมล หรือเบอร์โทรศัพท์ที่ใช้ล็อกอิน Facebook...",
-    defaultActionText: "คลิกเพื่อโพสต์อัตโนมัติ",
+    defaultActionText: "เข้า Facebook (ภาพ Info + คำทำนาย)",
     svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>`
   },
   instagram: {
@@ -186,7 +186,7 @@ const SOCIAL_PLATFORMS_META = {
     shortCode: "IG",
     idLabel: "ชื่อผู้ใช้ (Username) / อีเมล / เบอร์โทรศัพท์ IG",
     idPlaceholder: "กรอกชื่อผู้ใช้ @username, อีเมล หรือเบอร์โทรศัพท์ IG...",
-    defaultActionText: "คลิกเพื่อโพสต์ลง IG",
+    defaultActionText: "เข้า IG (ภาพ Info + คำทำนาย)",
     svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>`
   },
   tiktok: {
@@ -194,7 +194,7 @@ const SOCIAL_PLATFORMS_META = {
     shortCode: "TT",
     idLabel: "ชื่อผู้ใช้ TikTok / อีเมล / เบอร์โทรศัพท์",
     idPlaceholder: "กรอกชื่อผู้ใช้ @tiktok, อีเมล หรือเบอร์โทรศัพท์...",
-    defaultActionText: "คลิกเพื่อโพสต์ TikTok",
+    defaultActionText: "เข้า TikTok (ภาพ Info + คำทำนาย)",
     svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>`
   },
   line: {
@@ -202,7 +202,7 @@ const SOCIAL_PLATFORMS_META = {
     shortCode: "LINE",
     idLabel: "อีเมล หรือ เบอร์โทรศัพท์ที่ผูกกับบัญชี LINE",
     idPlaceholder: "กรอกอีเมล หรือเบอร์โทรศัพท์บัญชี LINE...",
-    defaultActionText: "คลิกเพื่อแชร์เข้า LINE",
+    defaultActionText: "เข้า LINE (ภาพ Info + คำทำนาย)",
     svg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314z"/></svg>`
   },
   x: {
@@ -210,7 +210,7 @@ const SOCIAL_PLATFORMS_META = {
     shortCode: "X",
     idLabel: "ชื่อผู้ใช้ (@username) หรือ อีเมลบัญชี X",
     idPlaceholder: "กรอก @username หรืออีเมลบัญชี X...",
-    defaultActionText: "คลิกเพื่อโพสต์ทวีต",
+    defaultActionText: "เข้า X (ภาพ Info + คำทำนาย)",
     svg: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`
   }
 };
@@ -233,6 +233,8 @@ class TarotApp {
 
     this.activeSocialPlatform = "facebook";
     this.activeSocialPayload = null;
+    this._mobileFallbackTimer = null;
+    this._mobileVisibilityCleanup = null;
 
     this.initDOM();
     this.bindEvents();
@@ -418,6 +420,7 @@ class TarotApp {
     this.btnCloseSocialConnectDone = document.getElementById("btn-close-social-connect-done");
     this.btnCheckPostsTarot = document.getElementById("btn-check-posts-tarot");
     this.btnCheckPostsSiamsi = document.getElementById("btn-check-posts-siamsi");
+    this.btnCheckPostsPalm = document.getElementById("btn-check-posts-palm");
 
     // Card Detail Modal
     this.modal = document.getElementById("card-detail-modal");
@@ -775,6 +778,12 @@ class TarotApp {
     if (this.btnCheckPostsSiamsi) {
       this.btnCheckPostsSiamsi.addEventListener("click", () => {
         const payload = this.siamsiApp && this.siamsiApp.currentSign ? this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign) : null;
+        this.openPostVerificationHistoryModal(payload);
+      });
+    }
+    if (this.btnCheckPostsPalm) {
+      this.btnCheckPostsPalm.addEventListener("click", () => {
+        const payload = window.palmApp ? window.palmApp.buildPalmSharePayload() : this.activeSocialPayload;
         this.openPostVerificationHistoryModal(payload);
       });
     }
@@ -2368,6 +2377,10 @@ class TarotApp {
       this.shareStudioSubtitle.textContent = "ระบบจะแชร์ทั้ง \"ภาพ Info Card\" และ \"ข้อความคำทำนายที่คุณดูไว้\" เพื่อโพสต์หรือส่งให้เพื่อนได้ทันที (ไม่ใช่แค่แชร์ลิงก์เว็บแอป)";
     }
 
+    if (window.shareAndPdfEngine.currentInfoDataUrl && this.shareInfoPreviewImg) {
+      this.shareInfoPreviewImg.src = window.shareAndPdfEngine.currentInfoDataUrl;
+    }
+
     if (this.shareModal) {
       this.shareModal.classList.add("active");
     }
@@ -2378,6 +2391,11 @@ class TarotApp {
     }
 
     await this.ensureInfoCardGenerated(payload);
+    if (this.shareInfoPreviewImg && this.shareInfoPreviewImg.decode) {
+      try {
+        await this.shareInfoPreviewImg.decode();
+      } catch (_) {}
+    }
   }
 
   async executeNativeShareWithInfoAndCaption() {
@@ -2438,14 +2456,55 @@ class TarotApp {
     await this.shareToSocialPlatform("facebook", payload.mode || "active");
   }
 
-  async shareViaMobileAppPermission(platform, payload) {
-    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
-    await this.ensureInfoCardGenerated(payload);
-
+  getDirectPlatformShareTargets(platform, payload) {
     const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
-    const shareTitle = this.getShareTitleForPayload(payload);
     const shortReadingText = this.buildShortReadingShareText(payload, 250);
-    const infoFile = await window.shareAndPdfEngine.createInfoCardFile(payload);
+    const lineIntentText = this.truncateCaptionForIntent(fullCaption, 500);
+    const isMobile = this.isMobileDevice();
+
+    let appUri = "";
+    let webUrl = "https://www.facebook.com/";
+
+    if (platform === "line") {
+      appUri = `line://msg/text/${encodeURIComponent(lineIntentText)}`;
+      webUrl = `https://line.me/R/share?text=${encodeURIComponent(lineIntentText)}`;
+    } else if (platform === "facebook") {
+      appUri = "fb://composer";
+      webUrl = isMobile ? "https://m.facebook.com/" : "https://www.facebook.com/";
+    } else if (platform === "x") {
+      appUri = `twitter://post?message=${encodeURIComponent(shortReadingText)}`;
+      webUrl = `https://x.com/intent/post?text=${encodeURIComponent(shortReadingText)}`;
+    } else if (platform === "instagram") {
+      appUri = "instagram://camera";
+      webUrl = "https://www.instagram.com/";
+    } else if (platform === "tiktok") {
+      appUri = "snssdk1233://";
+      webUrl = isMobile ? "https://www.tiktok.com/" : "https://www.tiktok.com/tiktokstudio/upload";
+    }
+
+    return {
+      appUri,
+      webUrl,
+      fullCaption,
+      shortReadingText
+    };
+  }
+
+  clearPendingMobileShareFallback() {
+    if (this._mobileFallbackTimer) {
+      clearTimeout(this._mobileFallbackTimer);
+      this._mobileFallbackTimer = null;
+    }
+    if (typeof this._mobileVisibilityCleanup === "function") {
+      this._mobileVisibilityCleanup();
+      this._mobileVisibilityCleanup = null;
+    }
+  }
+
+  async shareViaMobileAppPermission(platform, payload, preTargets = null) {
+    const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
+    const targets = preTargets || this.getDirectPlatformShareTargets(platform, payload);
+    const { appUri, webUrl, fullCaption } = targets;
 
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2453,74 +2512,31 @@ class TarotApp {
       }
     } catch (_) {}
 
-    // 1. ใช้ Native Share Level 2 (ไฟล์รูป Info Card .PNG + ข้อความคำทำนายเต็ม โดยไม่แนบ URL มาบังภาพ) สำหรับทุกแพลตฟอร์มบนมือถือ
-    if (navigator.share && infoFile) {
-      const fileShareData = {
-        title: shareTitle,
-        text: fullCaption,
-        files: [infoFile]
-      };
-      const canShareFiles = !navigator.canShare || navigator.canShare({ files: [infoFile] }) || navigator.canShare(fileShareData);
-      if (canShareFiles) {
-        try {
-          await navigator.share(fileShareData);
-          this.recordPostHistory(platform, "Mobile App Account", "public", payload, "mobile");
-          if (this.activeCode) {
-            window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าแชร์รูป Info Card + คำทำนายไปยัง ${meta.name} ผ่านมือถือ`);
-          }
-          try {
-            fetch("/api/social/post", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                platform,
-                account: "Mobile App Account",
-                privacy: "public",
-                device: "mobile",
-                code: this.activeCode || "",
-                mode: payload.mode || "tarot",
-                hasInfoImage: true,
-                caption: fullCaption
-              })
-            }).catch(() => {});
-          } catch (_) {}
-          this.showToast(`✅ แชร์รูป Info Card พร้อมคำทำนายไปยัง ${meta.name} เรียบร้อยแล้ว!`);
-          return;
-        } catch (err) {
-          if (err.name === "AbortError") return;
-        }
-      }
-    }
-
-    // 2. หากเบราว์เซอร์มือถือไม่รองรับแนบไฟล์ตรง: บันทึกรูป Info Card ลงเครื่องให้ทันที + คัดลอกคำทำนายเต็ม และเปิดแอปโดยส่งเนื้อหาคำทำนายจริง (ไม่ใช่ sharer.php?u= ลิงก์เว็บ)
+    await this.ensureInfoCardGenerated(payload);
     await window.shareAndPdfEngine.downloadInfoImageFile(payload);
 
-    let appUri = "";
-    let webFallback = "";
-    const lineIntentText = this.truncateCaptionForIntent(fullCaption, 500);
-
-    if (platform === "line") {
-      appUri = `line://msg/text/${encodeURIComponent(lineIntentText)}`;
-      webFallback = `https://line.me/R/share?text=${encodeURIComponent(lineIntentText)}`;
-    } else if (platform === "facebook") {
-      appUri = "fb://composer";
-      webFallback = "https://m.facebook.com/";
-    } else if (platform === "x") {
-      appUri = `twitter://post?message=${encodeURIComponent(shortReadingText)}`;
-      webFallback = `https://x.com/intent/post?text=${encodeURIComponent(shortReadingText)}`;
-    } else if (platform === "instagram") {
-      appUri = "instagram://camera";
-      webFallback = "https://www.instagram.com/";
-    } else if (platform === "tiktok") {
-      appUri = "snssdk1233://";
-      webFallback = "https://www.tiktok.com/";
+    // บน LINE และ X ข้อความถูกใส่ใน URL intent ให้แล้ว จึงลองคัดลอกรูป Info ลงคลิปบอร์ดเสริมอีกชั้น
+    if (platform === "line" || platform === "x") {
+      try {
+        await window.shareAndPdfEngine.copyInfoImageToClipboard(payload);
+      } catch (_) {}
     }
 
-    this.showToast(`🖼️ บันทึกรูป Info + คัดลอกคำทำนายแล้ว! เปิด ${meta.name} แนบรูปและวางข้อความโพสต์ได้เลย`);
+    this.lastDirectShareLaunch = {
+      platform,
+      device: "mobile",
+      appUri,
+      webUrl,
+      hasInfoImage: true,
+      captionLength: fullCaption.length,
+      timestamp: Date.now()
+    };
 
-    this.recordPostHistory(platform, "Mobile App Account", "public", payload, "mobile");
+    this.showToast(`🖼️ บันทึกรูป Info + คัดลอกคำทำนายแล้ว! กำลังเข้าสู่ ${meta.name}...`);
+
+    this.recordPostHistory(platform, "Mobile App", "public", payload, "mobile");
     if (this.activeCode) {
-      window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าบันทึกรูป Info + คัดลอกคำทำนายเพื่อโพสต์ลง ${meta.name}`);
+      window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าเข้าแชร์ภาพ Info + คำทำนายไปยัง ${meta.name} (Mobile)`);
     }
 
     try {
@@ -2529,7 +2545,7 @@ class TarotApp {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           platform,
-          account: "Mobile App Account",
+          account: "Direct Platform Share",
           privacy: "public",
           device: "mobile",
           code: this.activeCode || "",
@@ -2540,13 +2556,35 @@ class TarotApp {
       }).catch(() => {});
     } catch (_) {}
 
-    const start = Date.now();
-    window.location.href = appUri;
-    setTimeout(() => {
-      if (Date.now() - start < 2200 && webFallback) {
-        window.open(webFallback, "_blank");
+    // เข้าสู่แพลตฟอร์มที่เลือกโดยตรง (ไม่ออกเมนูแชร์รวมของเครื่อง เพื่อให้เข้าแอป/หน้านั้นทันที)
+    // ล้าง timer fallback เดิมก่อนเสมอ ป้องกันเปิดหน้าต่างแพลตฟอร์มก่อนหน้าค้างข้ามจังหวะ
+    this.clearPendingMobileShareFallback();
+
+    let appOpened = false;
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        appOpened = true;
       }
-    }, 1500);
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
+    this._mobileVisibilityCleanup = () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+
+    const start = Date.now();
+    try {
+      if (appUri) {
+        window.location.href = appUri;
+      }
+    } catch (_) {}
+
+    this._mobileFallbackTimer = setTimeout(() => {
+      this.clearPendingMobileShareFallback();
+      if (!this.isMobileDevice()) return;
+      if (!appOpened && document.visibilityState !== "hidden" && Date.now() - start < 2400 && webUrl) {
+        window.open(webUrl, "_blank", "noopener,noreferrer");
+      }
+    }, 1300);
   }
 
   async shareToSocialPlatform(platform, modeHint = "active") {
@@ -2554,7 +2592,7 @@ class TarotApp {
 
     let payload = null;
     if (modeHint === "palm" && window.palmApp) {
-      payload = this.activeSocialPayload || window.palmApp.buildPalmSharePayload();
+      payload = window.palmApp.buildPalmSharePayload() || this.activeSocialPayload;
     } else if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
       payload = this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign);
     } else if (modeHint === "tarot" && this.currentReadingPayload) {
@@ -2569,16 +2607,18 @@ class TarotApp {
     this.activeSocialPlatform = platform;
     this.activeSocialPayload = payload;
 
-    // 1. ตรวจสอบว่าเปิดบนมือถือหรือไม่
-    // หากเปิดในมือถือ ผู้ใช้มีแอปโซเชียลอยู่แล้ว ให้ขออนุญาตเปิดแอปเพื่อโพสต์โดยตรง
+    this.clearPendingMobileShareFallback();
+
+    const targets = this.getDirectPlatformShareTargets(platform, payload);
+
+    // 1. มือถือ: เตรียมภาพ Info PNG + คัดลอกคำทำนาย แล้วเปิดแอป/แพลตฟอร์มนั้นโดยตรงทันที
     if (this.isMobileDevice()) {
-      await this.shareViaMobileAppPermission(platform, payload);
+      await this.shareViaMobileAppPermission(platform, payload, targets);
       return;
     }
 
-    // 2. หากเปิดบนคอมพิวเตอร์ หรืออุปกรณ์ที่ไม่มีแอปโซเชียล ให้เข้าสู่หน้าต่าง Login ตรวจสอบรหัสผ่านจริง
-    await this.ensureInfoCardGenerated(payload);
-    this.showSocialLoginPopupView(platform, payload);
+    // 2. คอมพิวเตอร์: เปิดหน้าแพลตฟอร์มที่เลือกทันที (ป้องกัน popup blocker) พร้อมบันทึกรูป Info + คัดลอกคำทำนาย
+    await this.openCenteredPlatformSharePopup(platform, payload, targets);
   }
 
   showSocialLoginPopupView(platform, payload) {
@@ -2841,60 +2881,66 @@ class TarotApp {
     this.renderVerifiedPostsHistory();
   }
 
-  async openCenteredPlatformSharePopup(platform, readingPayload = null) {
+  async openCenteredPlatformSharePopup(platform, readingPayload = null, preTargets = null) {
     const payload = readingPayload || this.activeSocialPayload || this.currentReadingPayload;
     if (!payload) return;
 
     const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
-    await this.ensureInfoCardGenerated(payload);
+    const targets = preTargets || this.getDirectPlatformShareTargets(platform, payload);
+    const { webUrl, fullCaption } = targets;
 
-    const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
-    const shortReadingText = this.buildShortReadingShareText(payload, 250);
+    // 1. เปิดหน้าแพลตฟอร์มโซเชียลที่เลือกทันทีในจังหวะคลิก (หลีกเลี่ยง sharer.php ที่แนบได้แค่ลิงก์เว็บ และไม่ติด popup blocker)
+    const w = 780;
+    const h = 760;
+    const left = Math.max(0, Math.round((window.screen.width - w) / 2));
+    const top = Math.max(0, Math.round((window.screen.height - h) / 2));
+    const popup = window.open(
+      webUrl,
+      `SiamSiSocialShare_${platform}`,
+      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
 
-    // 1. คัดลอกข้อความคำทำนายฉบับเต็ม + บันทึกรูป Info Card (.PNG) ลงเครื่องอัตโนมัติ
-    // เพื่อให้ผู้ใช้แนบรูป Info และวางคำทำนายได้ทันที ไม่ใช่แค่เปิดลิงก์เว็บแอป
+    this.lastDirectShareLaunch = {
+      platform,
+      device: "desktop",
+      appUri: targets.appUri,
+      webUrl,
+      hasInfoImage: true,
+      captionLength: fullCaption.length,
+      popupOpened: Boolean(popup),
+      timestamp: Date.now()
+    };
+
+    // 2. คัดลอกคำทำนายฉบับเต็ม + สร้างและบันทึกรูป Info Card (.PNG) ลงเครื่องให้อัตโนมัติ
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(fullCaption);
       }
     } catch (_) {}
+
+    await this.ensureInfoCardGenerated(payload);
     await window.shareAndPdfEngine.downloadInfoImageFile(payload);
 
-    // 2. เปิดหน้าสร้างโพสต์ของแพลตฟอร์มโดยตรง (หลีกเลี่ยง sharer.php?u=... หรือ lineit?url=... ที่ล็อกให้แชร์ได้แค่การ์ดลิงก์เว็บ)
-    const lineIntentText = this.truncateCaptionForIntent(fullCaption, 500);
-    let targetUrl = "https://www.facebook.com/";
-    if (platform === "facebook") {
-      targetUrl = "https://www.facebook.com/";
-    } else if (platform === "line") {
-      targetUrl = `https://line.me/R/share?text=${encodeURIComponent(lineIntentText)}`;
-    } else if (platform === "x") {
-      targetUrl = `https://x.com/intent/post?text=${encodeURIComponent(shortReadingText)}`;
-    } else if (platform === "instagram") {
-      targetUrl = "https://www.instagram.com/";
-    } else if (platform === "tiktok") {
-      targetUrl = "https://www.tiktok.com/tiktokstudio/upload";
+    if (platform === "line" || platform === "x") {
+      try {
+        await window.shareAndPdfEngine.copyInfoImageToClipboard(payload);
+      } catch (_) {}
     }
 
-    const w = 720;
-    const h = 760;
-    const left = Math.max(0, Math.round((window.screen.width - w) / 2));
-    const top = Math.max(0, Math.round((window.screen.height - h) / 2));
-    const popup = window.open(
-      targetUrl,
-      `SiamSiSocialShare_${platform}`,
-      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
-    );
+    this.showToast(`🖼️ บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! เปิด ${meta.name} ให้คุณวางข้อความและแนบรูปโพสต์ได้เลย`);
 
-    this.showToast(`🖼️ บันทึกรูป Info Card + คัดลอกคำทำนายแล้ว! แนบรูปและกดวางข้อความโพสต์บน ${meta.name} ได้เลย`);
+    this.recordPostHistory(platform, "Direct Share", "public", payload, "desktop");
+    if (this.activeCode) {
+      window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าเข้าแชร์รูป Info Card + คำทำนายไปยัง ${meta.name}`);
+    }
 
-    // บันทึก API log ว่าเตรียมรูป Info + คำทำนายแล้ว
     try {
       fetch("/api/social/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           platform,
-          account: "Official Composer",
+          account: "Direct Platform Share",
           privacy: "public",
           device: "desktop",
           code: this.activeCode || "",
@@ -2904,21 +2950,6 @@ class TarotApp {
         })
       }).catch(() => {});
     } catch (_) {}
-
-    // ติดตามหน้าต่าง Popup เพื่อตรวจสอบเมื่อผู้ใช้โพสต์รูป Info + คำทำนายสำเร็จ
-    const checkTimer = setInterval(() => {
-      try {
-        if (!popup || popup.closed) {
-          clearInterval(checkTimer);
-          this.recordPostHistory(platform, "Official Account", "public", payload, "desktop");
-          this.showPostSuccessView(platform, "Official Account", "public", payload);
-          this.showToast(`✅ บันทึกประวัติการแชร์รูป Info + คำทำนายไปยัง ${meta.name} เรียบร้อยแล้ว!`);
-          if (this.activeCode) {
-            window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าแชร์รูป Info Card + คำทำนายไปยัง ${meta.name}`);
-          }
-        }
-      } catch (_) {}
-    }, 1000);
   }
 
   async downloadDirectPDF(readingPayload) {
