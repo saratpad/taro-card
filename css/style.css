@@ -6248,7 +6248,12 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1); /* Mirror for natural user webcam, adjusted on phone */
+  transform: none;
+  transition: transform 0.25s ease;
+}
+
+.palm-camera-video.is-mirrored {
+  transform: scaleX(-1); /* Mirror only for front/user selfie camera */
 }
 
 /* Alignment Reticle Overlay */
@@ -6434,6 +6439,337 @@ body {
   border-color: #38bdf8;
   background: rgba(56, 189, 248, 0.1);
   color: #38bdf8;
+}
+
+/* ==========================================================================
+   ANATOMICAL HAND GUIDE SVG & LIVE ALIGNMENT STATES
+   ========================================================================== */
+
+.palm-camera-wrapper {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.palm-camera-wrapper[data-detect-state="adjusting"] {
+  border-color: rgba(245, 158, 11, 0.85);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.72), 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+.palm-camera-wrapper[data-detect-state="steady"] {
+  border-color: #22c55e;
+  border-width: 2.5px;
+  box-shadow: inset 0 0 28px rgba(34, 197, 94, 0.22), 0 0 30px rgba(34, 197, 94, 0.55);
+}
+
+.palm-alignment-reticle {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.palm-hand-guide-svg {
+  position: absolute;
+  top: 13%;
+  bottom: 17%;
+  left: 6%;
+  right: 6%;
+  width: 88%;
+  height: 70%;
+  pointer-events: none;
+  transition: transform 0.3s ease, filter 0.25s ease;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.35));
+}
+
+.palm-alignment-reticle[data-hand="left"] .palm-hand-guide-svg {
+  transform: scaleX(-1);
+}
+
+.guide-hand-fill {
+  fill: rgba(56, 189, 248, 0.045);
+  stroke: none;
+  transition: fill 0.25s ease;
+}
+
+.guide-hand-outline {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.82);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8 6;
+  transition: stroke 0.25s ease, stroke-dasharray 0.25s ease, stroke-width 0.25s ease;
+}
+
+.guide-palm-zone {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.38);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  transition: stroke 0.25s ease;
+}
+
+.guide-crease-hint {
+  fill: none;
+  stroke: rgba(243, 207, 122, 0.28);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+  transition: stroke 0.25s ease;
+}
+
+.guide-tip-ring {
+  fill: rgba(56, 189, 248, 0.14);
+  stroke: rgba(56, 189, 248, 0.72);
+  stroke-width: 1.5;
+  transition: stroke 0.25s ease, fill 0.25s ease;
+}
+
+/* Corner Frame Brackets */
+.reticle-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: rgba(56, 189, 248, 0.75);
+  border-style: solid;
+  pointer-events: none;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+.reticle-corner.corner-tl { top: 12px; left: 12px; border-width: 2.5px 0 0 2.5px; border-top-left-radius: 6px; }
+.reticle-corner.corner-tr { top: 12px; right: 12px; border-width: 2.5px 2.5px 0 0; border-top-right-radius: 6px; }
+.reticle-corner.corner-bl { bottom: 64px; left: 12px; border-width: 0 0 2.5px 2.5px; border-bottom-left-radius: 6px; }
+.reticle-corner.corner-br { bottom: 64px; right: 12px; border-width: 0 2.5px 2.5px 0; border-bottom-right-radius: 6px; }
+
+/* Adjusting State (Amber) */
+.palm-alignment-reticle[data-detect-state="adjusting"] .palm-hand-guide-svg {
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.45));
+}
+.palm-alignment-reticle[data-detect-state="adjusting"] .guide-hand-fill {
+  fill: rgba(245, 158, 11, 0.08);
+}
+.palm-alignment-reticle[data-detect-state="adjusting"] .guide-hand-outline,
+.palm-alignment-reticle[data-detect-state="adjusting"] .guide-tip-ring {
+  stroke: rgba(251, 191, 36, 0.92);
+}
+.palm-alignment-reticle[data-detect-state="adjusting"] .reticle-corner {
+  border-color: rgba(251, 191, 36, 0.9);
+}
+
+/* Steady / Aligned State (Vibrant GREEN + Solid Pulse) */
+.palm-alignment-reticle[data-detect-state="steady"] .palm-hand-guide-svg {
+  filter: drop-shadow(0 0 14px rgba(34, 197, 94, 0.78));
+  animation: palmSteadyPulse 1s ease-in-out infinite;
+}
+.palm-alignment-reticle[data-detect-state="steady"] .guide-hand-fill {
+  fill: rgba(34, 197, 94, 0.14);
+}
+.palm-alignment-reticle[data-detect-state="steady"] .guide-hand-outline {
+  stroke: #22c55e;
+  stroke-width: 3.6;
+  stroke-dasharray: none;
+}
+.palm-alignment-reticle[data-detect-state="steady"] .guide-palm-zone {
+  stroke: rgba(74, 222, 128, 0.72);
+}
+.palm-alignment-reticle[data-detect-state="steady"] .guide-crease-hint {
+  stroke: rgba(134, 239, 172, 0.52);
+}
+.palm-alignment-reticle[data-detect-state="steady"] .guide-tip-ring {
+  fill: rgba(34, 197, 94, 0.3);
+  stroke: #4ade80;
+}
+.palm-alignment-reticle[data-detect-state="steady"] .reticle-corner {
+  border-color: #22c55e;
+  transform: scale(1.06);
+}
+
+@keyframes palmSteadyPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.018); }
+}
+
+.palm-alignment-reticle[data-hand="left"][data-detect-state="steady"] .palm-hand-guide-svg {
+  animation: palmSteadyPulseLeft 1s ease-in-out infinite;
+}
+
+@keyframes palmSteadyPulseLeft {
+  0%, 100% { transform: scaleX(-1) scale(1); }
+  50% { transform: scaleX(-1) scale(1.018); }
+}
+
+/* Live Status Banner & Steady Countdown Bar */
+.palm-guide-hint {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 4;
+  background: rgba(2, 6, 23, 0.84);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: center;
+  pointer-events: none;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.palm-guide-hint[data-detect-state="adjusting"] {
+  border-color: rgba(251, 191, 36, 0.75);
+  background: rgba(28, 25, 23, 0.88);
+  color: #fef3c7;
+}
+
+.palm-guide-hint[data-detect-state="steady"] {
+  border-color: rgba(34, 197, 94, 0.9);
+  background: rgba(5, 46, 22, 0.9);
+  color: #dcfce7;
+  box-shadow: 0 4px 18px rgba(34, 197, 94, 0.35);
+}
+
+.palm-guide-status-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.palm-guide-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+  flex-shrink: 0;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.palm-guide-hint[data-detect-state="adjusting"] .palm-guide-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.85);
+}
+
+.palm-guide-hint[data-detect-state="steady"] .palm-guide-dot {
+  background: #22c55e;
+  box-shadow: 0 0 10px #4ade80;
+}
+
+.palm-steady-progress-wrap {
+  margin-top: 6px;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  overflow: hidden;
+  display: none;
+}
+
+.palm-guide-hint[data-detect-state="steady"] .palm-steady-progress-wrap {
+  display: block;
+}
+
+.palm-steady-progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  transition: width 0.14s linear;
+}
+
+/* Camera Tools & Auto-Capture Toggle Pill */
+.palm-camera-tools {
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.btn-tool-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 38px;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  background: rgba(15, 23, 42, 0.78);
+  color: #cbd5e1;
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--font-thai);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.btn-tool-pill.active {
+  border-color: rgba(34, 197, 94, 0.75);
+  background: rgba(6, 78, 59, 0.82);
+  color: #dcfce7;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.32);
+}
+
+/* Camera Fallback Overlay */
+.palm-camera-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: rgba(2, 6, 23, 0.88);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: #e2e8f0;
+}
+
+.palm-camera-fallback .fallback-icon {
+  font-size: 2.2rem;
+}
+
+.palm-camera-fallback p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+  max-width: 280px;
+}
+
+.palm-camera-fallback .fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+/* Shutter Flash */
+.palm-capture-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease-out;
+}
+
+.palm-capture-flash.flashing {
+  opacity: 0.65;
+}
+
+/* Guarantee shutter button top clickability on desktop & mobile */
+.btn-palm-shutter {
+  position: relative;
+  z-index: 6;
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
 }
 
 /* ==========================================================================

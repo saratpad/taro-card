@@ -522,6 +522,17 @@ class PalmScannerEngine {
 // UI Controller สำหรับโหมดสแกนลายมือ (PalmApp)
 class PalmApp {
   constructor() {
+    this.cameraFacing = "environment";
+    this.autoCaptureEnabled = true;
+    this.cameraStatus = "idle";
+    this.isCapturing = false;
+    this._liveTimer = null;
+    this._liveBusy = false;
+    this._liveCanvas = null;
+    this.detectState = "searching";
+    this.steadySince = 0;
+    this.prevPalmAnchor = null;
+    this.missFrames = 0;
     this.engine = new PalmScannerEngine();
     this.stream = null;
     this.currentHand = "right";
@@ -554,6 +565,16 @@ class PalmApp {
     this.cameraContainer = document.getElementById("palm-camera-container");
     this.cameraReticle = document.getElementById("palm-camera-reticle");
     this.btnCapturePhoto = document.getElementById("btn-palm-capture-photo");
+    this.guideHintBox = document.getElementById("palm-guide-hint");
+    this.guideTextEl = document.getElementById("palm-guide-text");
+    this.steadyProgressBar = document.getElementById("palm-steady-progress-bar");
+    this.captureFlashEl = document.getElementById("palm-capture-flash");
+    this.cameraFallbackEl = document.getElementById("palm-camera-fallback");
+    this.cameraFallbackMsgEl = document.getElementById("palm-camera-fallback-msg");
+    this.btnRetryCamera = document.getElementById("btn-palm-retry-camera");
+    this.btnFallbackUpload = document.getElementById("btn-palm-fallback-upload");
+    this.btnToggleAutoCapture = document.getElementById("btn-palm-toggle-autocapture");
+    this.autoCaptureLabel = document.getElementById("palm-autocapture-label");
     this.btnSwitchCamera = document.getElementById("btn-palm-switch-camera");
     this.btnToggleTorch = document.getElementById("btn-palm-toggle-torch");
     this.btnHandToggleLeft = document.getElementById("btn-palm-hand-left");
@@ -608,6 +629,15 @@ class PalmApp {
     // Capture & Camera Buttons
     if (this.btnCapturePhoto) {
       this.btnCapturePhoto.addEventListener("click", () => this.captureCameraFrame());
+    }
+    if (this.btnRetryCamera) {
+      this.btnRetryCamera.addEventListener("click", () => this.startCamera(this.cameraFacing || "environment"));
+    }
+    if (this.btnFallbackUpload && this.fileInput) {
+      this.btnFallbackUpload.addEventListener("click", () => this.fileInput.click());
+    }
+    if (this.btnToggleAutoCapture) {
+      this.btnToggleAutoCapture.addEventListener("click", () => this.toggleAutoCapture());
     }
     if (this.btnSwitchCamera) {
       this.btnSwitchCamera.addEventListener("click", () => this.switchCameraFacing());
@@ -699,6 +729,53 @@ class PalmApp {
     }
   }
 
+  playSound(methodName, ...args) {
+    try {
+      const audio = window.mysticAudio;
+      if (audio && typeof audio[methodName] === "function") {
+        audio[methodName](...args);
+      }
+    } catch (_) {}
+  }
+
+  flashShutter() {
+    if (!this.captureFlashEl) return;
+    this.captureFlashEl.classList.add("flashing");
+    setTimeout(() => {
+      if (this.captureFlashEl) this.captureFlashEl.classList.remove("flashing");
+    }, 180);
+  }
+
+  toggleAutoCapture() {
+    this.autoCaptureEnabled = !this.autoCaptureEnabled;
+    if (this.btnToggleAutoCapture) {
+      this.btnToggleAutoCapture.classList.toggle("active", this.autoCaptureEnabled);
+    }
+    if (this.autoCaptureLabel) {
+      this.autoCaptureLabel.textContent = this.autoCaptureEnabled ? "อัตโนมัติ: เปิด" : "อัตโนมัติ: ปิด";
+    }
+    this.steadySince = 0;
+    this.playSound("playClick");
+    if (window.taroApp && typeof window.taroApp.showToast === "function") {
+      window.taroApp.showToast(
+        this.autoCaptureEnabled
+          ? "⚡ เปิดถ่ายภาพอัตโนมัติเมื่อวางฝ่ามือตรงกรอบแล้ว"
+          : "📸 ปิดถ่ายอัตโนมัติแล้ว (กดปุ่มถ่ายภาพด้วยตนเอง)"
+      );
+    }
+  }
+
+  setDetectUI(state, message, progressPct = 0) {
+    this.detectState = state || "searching";
+    if (this.cameraContainer) this.cameraContainer.setAttribute("data-detect-state", this.detectState);
+    if (this.cameraReticle) this.cameraReticle.setAttribute("data-detect-state", this.detectState);
+    if (this.guideHintBox) this.guideHintBox.setAttribute("data-detect-state", this.detectState);
+    if (this.guideTextEl && message) this.guideTextEl.textContent = message;
+    if (this.steadyProgressBar) {
+      this.steadyProgressBar.style.width = `${Math.max(0, Math.min(100, progressPct))}%`;
+    }
+  }
+
   setHand(hand) {
     this.currentHand = hand;
     if (this.btnHandToggleLeft) this.btnHandToggleLeft.classList.toggle("active", hand === "left");
@@ -706,48 +783,93 @@ class PalmApp {
     if (this.cameraReticle) {
       this.cameraReticle.setAttribute("data-hand", hand);
     }
-    if (window.mysticAudio) window.mysticAudio.playClick();
+    this.steadySince = 0;
+    this.prevPalmAnchor = null;
+    const handLabel = hand === "left" ? "ซ้าย" : "ขวา";
+    this.setDetectUI("searching", `วางฝ่ามือ${handLabel}ให้ตรงรูปมือ กางนิ้วเล็กน้อย`, 0);
+    this.playSound("playClick");
   }
 
-  async startCamera(facingMode = "environment") {
+  async startCamera(facingMode) {
+    const targetFacing = facingMode || this.cameraFacing || "environment";
+    this.cameraFacing = targetFacing;
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.warn("Camera not supported on this browser/environment.");
+      this.cameraStatus = "error";
+      this._showCameraFallback("เบราว์เซอร์นี้ไม่รองรับการเปิดกล้องโดยตรง (หรือไม่ได้เปิดผ่าน HTTPS) กรุณาเลือกรูปภาพจากเครื่อง");
       return false;
     }
+
     try {
       this.stopCamera();
+      this.cameraStatus = "starting";
+      this._hideCameraFallback();
+
       const constraints = {
         video: {
-          facingMode: { ideal: facingMode },
+          facingMode: { ideal: targetFacing },
           width: { ideal: 1280 },
           height: { ideal: 960 }
         },
         audio: false
       };
-      this.stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (this.video) {
-        this.video.srcObject = this.stream;
-        await this.video.play();
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (_) {
+        this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       }
+
+      const track = this.stream && this.stream.getVideoTracks ? this.stream.getVideoTracks()[0] : null;
+      const settings = track && track.getSettings ? track.getSettings() : {};
+      const actualFacing = settings.facingMode || "";
+      this._captureMirrored = actualFacing === "user" || (!actualFacing && targetFacing === "user");
+
+      if (this.video) {
+        this.video.classList.toggle("is-mirrored", !!this._captureMirrored);
+        this.video.srcObject = this.stream;
+        try {
+          await this.video.play();
+        } catch (playErr) {
+          console.warn("Video play notice:", playErr);
+        }
+      }
+
+      this.cameraStatus = "ready";
+      const handLabel = this.currentHand === "left" ? "ซ้าย" : "ขวา";
+      this.setDetectUI("searching", `วางฝ่ามือ${handLabel}ให้ตรงรูปมือ กางนิ้วเล็กน้อย`, 0);
+
+      if (window.PalmMediaPipe && typeof window.PalmMediaPipe.warmup === "function") {
+        Promise.resolve(window.PalmMediaPipe.warmup()).catch(() => {});
+      }
+      this.startLiveMonitor();
       return true;
     } catch (err) {
-      console.warn("Could not start camera with constraints:", err);
-      // Fallback to basic video
-      try {
-        this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        if (this.video) {
-          this.video.srcObject = this.stream;
-          await this.video.play();
-        }
-        return true;
-      } catch (e) {
-        console.warn("Camera access denied or unavailable:", e);
-        return false;
-      }
+      console.warn("Camera access denied or unavailable:", err);
+      this.cameraStatus = "error";
+      const isDenied = err && (err.name === "NotAllowedError" || err.name === "PermissionDeniedError");
+      this._showCameraFallback(
+        isDenied
+          ? "ไม่ได้รับอนุญาตให้ใช้กล้อง กรุณากดอนุญาตกล้องที่แถบเบราว์เซอร์ แล้วกด \"เปิดกล้องอีกครั้ง\""
+          : "ไม่พบกล้องที่พร้อมใช้งาน หรือกล้องถูกใช้งานโดยแอปอื่นอยู่"
+      );
+      return false;
     }
   }
 
+  _showCameraFallback(msg) {
+    if (this.cameraFallbackMsgEl && msg) this.cameraFallbackMsgEl.textContent = msg;
+    if (this.cameraFallbackEl) this.cameraFallbackEl.style.display = "flex";
+    this.setDetectUI("searching", "ยังไม่ได้เปิดกล้อง — กดเปิดกล้องอีกครั้งหรือเลือกรูปภาพ", 0);
+  }
+
+  _hideCameraFallback() {
+    if (this.cameraFallbackEl) this.cameraFallbackEl.style.display = "none";
+  }
+
   stopCamera() {
+    this.stopLiveMonitor();
+    this.torchOn = false;
+    if (this.btnToggleTorch) this.btnToggleTorch.classList.remove("active");
     if (this.stream) {
       this.stream.getTracks().forEach(t => t.stop());
       this.stream = null;
@@ -755,12 +877,283 @@ class PalmApp {
     if (this.video) {
       this.video.srcObject = null;
     }
+    this.cameraStatus = "idle";
+  }
+
+  startLiveMonitor() {
+    this.stopLiveMonitor();
+    if (!this.stream || !this.video) return;
+    this.steadySince = 0;
+    this.prevPalmAnchor = null;
+    this.missFrames = 0;
+    this._scheduleNextLiveCheck(250);
+  }
+
+  stopLiveMonitor() {
+    if (this._liveTimer) {
+      clearTimeout(this._liveTimer);
+      this._liveTimer = null;
+    }
+    this._liveBusy = false;
+    this.steadySince = 0;
+    this.prevPalmAnchor = null;
+    this.missFrames = 0;
+  }
+
+  _scheduleNextLiveCheck(delayMs = 180) {
+    if (this._liveTimer) clearTimeout(this._liveTimer);
+    this._liveTimer = setTimeout(() => this._runLiveCheck(), delayMs);
+  }
+
+  async _runLiveCheck() {
+    this._liveTimer = null;
+    const captureVisible = this.container && this.container.style.display !== "none"
+      && this.screenCapture && this.screenCapture.classList.contains("active");
+    if (!captureVisible || !this.stream || this.isScanning || this.isCapturing) {
+      return;
+    }
+    if (!this.video || this.video.readyState < 2 || !this.video.videoWidth || !this.video.videoHeight) {
+      this._scheduleNextLiveCheck(220);
+      return;
+    }
+    if (this._liveBusy) {
+      this._scheduleNextLiveCheck(180);
+      return;
+    }
+
+    this._liveBusy = true;
+    try {
+      await this.evaluateLiveFrame();
+    } catch (_) {
+      // keep camera preview smooth even if a single analysis tick fails
+    } finally {
+      this._liveBusy = false;
+      const stillVisible = this.container && this.container.style.display !== "none"
+        && this.screenCapture && this.screenCapture.classList.contains("active");
+      if (stillVisible && this.stream && !this.isScanning && !this.isCapturing) {
+        this._scheduleNextLiveCheck(170);
+      }
+    }
+  }
+
+  async evaluateLiveFrame() {
+    const vw = this.video.videoWidth;
+    const vh = this.video.videoHeight;
+    const maxSide = 224;
+    const scale = Math.min(1, maxSide / Math.max(vw, vh));
+    const lw = Math.max(64, Math.round(vw * scale));
+    const lh = Math.max(64, Math.round(vh * scale));
+
+    if (!this._liveCanvas) this._liveCanvas = document.createElement("canvas");
+    if (this._liveCanvas.width !== lw) this._liveCanvas.width = lw;
+    if (this._liveCanvas.height !== lh) this._liveCanvas.height = lh;
+
+    const lctx = this._liveCanvas.getContext("2d", { willReadFrequently: true });
+    lctx.save();
+    if (this._captureMirrored) {
+      lctx.translate(lw, 0);
+      lctx.scale(-1, 1);
+    }
+    lctx.drawImage(this.video, 0, 0, lw, lh);
+    lctx.restore();
+
+    let verdict = null;
+    if (window.PalmMediaPipe && typeof window.PalmMediaPipe.isReady === "function" && window.PalmMediaPipe.isReady()) {
+      const mp = await window.PalmMediaPipe.detectFromCanvas(this._liveCanvas, lw, lh, 320);
+      if (mp && Array.isArray(mp.landmarks) && mp.landmarks.length >= 21) {
+        verdict = this._assessMediaPipeHand(mp.landmarks, lw, lh);
+      }
+    }
+
+    if (!verdict && window.PalmVision && typeof window.PalmVision.skinMask === "function") {
+      const imgData = lctx.getImageData(0, 0, lw, lh);
+      verdict = this._assessSkinHand(imgData.data, lw, lh);
+    }
+
+    const handLabel = this.currentHand === "left" ? "ซ้าย" : "ขวา";
+    if (!verdict || verdict.state === "searching") {
+      this.missFrames++;
+      if (this.missFrames > 2) {
+        this.steadySince = 0;
+        this.prevPalmAnchor = null;
+        this.setDetectUI("searching", `วางฝ่ามือ${handLabel}ให้ตรงรูปมือ กางนิ้วเล็กน้อย`, 0);
+      }
+      return;
+    }
+
+    if (verdict.state === "adjusting") {
+      this.missFrames++;
+      if (this.missFrames > 2) {
+        this.steadySince = 0;
+        this.prevPalmAnchor = verdict.anchor || null;
+        this.setDetectUI("adjusting", verdict.hint, 0);
+      }
+      return;
+    }
+
+    // Aligned hand detected! Verify stability before auto-capture
+    this.missFrames = 0;
+    const now = performance.now();
+    const anchor = verdict.anchor;
+    let moved = false;
+    if (this.prevPalmAnchor && anchor) {
+      const delta = Math.hypot(anchor.cx - this.prevPalmAnchor.cx, anchor.cy - this.prevPalmAnchor.cy)
+        + Math.abs((anchor.size || 0) - (this.prevPalmAnchor.size || 0));
+      if (delta > 0.045) moved = true;
+    }
+    this.prevPalmAnchor = anchor;
+
+    if (moved || !this.steadySince) {
+      this.steadySince = now;
+    }
+
+    const HOLD_MS = 1200;
+    const elapsed = now - this.steadySince;
+    const pct = Math.min(100, Math.round((elapsed / HOLD_MS) * 100));
+
+    if (!this.autoCaptureEnabled) {
+      this.setDetectUI("steady", "✅ ตรวจพบฝ่ามือตรงกรอบแล้ว! กดปุ่มถ่ายภาพได้เลย", 100);
+      return;
+    }
+
+    if (elapsed < HOLD_MS) {
+      const secLeft = Math.max(0.1, (HOLD_MS - elapsed) / 1000).toFixed(1);
+      this.setDetectUI(
+        "steady",
+        `✅ ตรวจพบฝ่ามือตรงกรอบ! ทำมือนิ่งค้างไว้ (${secLeft} วิ)...`,
+        pct
+      );
+      return;
+    }
+
+    // Steady hold completed -> auto-capture!
+    this.setDetectUI("steady", "📸 กำลังบันทึกภาพฝ่ามืออัตโนมัติ!", 100);
+    this.playSound("playCrystalBell", 880, 0.35);
+    await this.captureCameraFrame();
+  }
+
+  _assessMediaPipeHand(landmarks, w, h) {
+    let minX = 1, maxX = 0, minY = 1, maxY = 0;
+    for (let i = 0; i < 21; i++) {
+      const nx = landmarks[i].x / w;
+      const ny = landmarks[i].y / h;
+      if (nx < minX) minX = nx;
+      if (nx > maxX) maxX = nx;
+      if (ny < minY) minY = ny;
+      if (ny > maxY) maxY = ny;
+    }
+    const handW = maxX - minX;
+    const handH = maxY - minY;
+    const palmIds = [0, 5, 9, 13, 17];
+    let pcx = 0, pcy = 0;
+    for (const id of palmIds) {
+      pcx += landmarks[id].x / w;
+      pcy += landmarks[id].y / h;
+    }
+    pcx /= palmIds.length;
+    pcy /= palmIds.length;
+
+    const wrist = { x: landmarks[0].x / w, y: landmarks[0].y / h };
+    const midMcp = { x: landmarks[9].x / w, y: landmarks[9].y / h };
+    const anchor = { cx: pcx, cy: pcy, size: handH };
+
+    // Orientation check (upright hand, wrist below knuckles)
+    if (wrist.y < midMcp.y + 0.06) {
+      return { state: "adjusting", hint: "🔄 ตั้งฝ่ามือตรง ให้ปลายนิ้วชี้ขึ้นด้านบน", anchor };
+    }
+    // Crop margin check
+    if (minX < 0.025 || maxX > 0.975 || minY < 0.02 || maxY > 0.985) {
+      return { state: "adjusting", hint: "🖐️ ถอยออกเล็กน้อย ให้เห็นฝ่ามือและปลายนิ้วครบในกรอบ", anchor };
+    }
+    // Scale check
+    if (handH < 0.36 || handW < 0.20) {
+      return { state: "adjusting", hint: "🔍 ขยับฝ่ามือเข้าใกล้กล้องอีกนิด", anchor };
+    }
+    if (handH > 0.92) {
+      return { state: "adjusting", hint: "🔍 ขยับฝ่ามือออกห่างกล้องเล็กน้อย", anchor };
+    }
+    // Center check
+    if (pcx < 0.27 || pcx > 0.73 || pcy < 0.28 || pcy > 0.78) {
+      return { state: "adjusting", hint: "↔️ เลื่อนฝ่ามือมาวางไว้ตรงกลางรูปมือ", anchor };
+    }
+    // Open palm check (at least 3 of 4 fingers extended farther from wrist than MCP)
+    const pairs = [[8, 5], [12, 9], [16, 13], [20, 17]];
+    let extended = 0;
+    for (const [tipId, mcpId] of pairs) {
+      const tipDist = Math.hypot(landmarks[tipId].x / w - wrist.x, landmarks[tipId].y / h - wrist.y);
+      const mcpDist = Math.hypot(landmarks[mcpId].x / w - wrist.x, landmarks[mcpId].y / h - wrist.y);
+      if (tipDist > mcpDist * 1.25) extended++;
+    }
+    if (extended < 3) {
+      return { state: "adjusting", hint: "✋ แบฝ่ามือและกางนิ้วออกเล็กน้อย", anchor };
+    }
+    return { state: "steady", anchor };
+  }
+
+  _assessSkinHand(rgba, w, h) {
+    const sm = window.PalmVision.skinMask(rgba, w, h);
+    const total = w * h;
+    const areaRatio = sm.area / total;
+    if (areaRatio < 0.06) return { state: "searching" };
+    if (areaRatio > 0.64) {
+      return { state: "adjusting", hint: "🔍 ขยับฝ่ามือออกห่างกล้องเล็กน้อย" };
+    }
+
+    let minX = w, maxX = -1, minY = h, maxY = -1;
+    let sumX = 0, sumY = 0;
+    let centerHits = 0, centerTotal = 0;
+    let topEdgeHits = 0;
+    const cxMin = Math.floor(w * 0.22), cxMax = Math.ceil(w * 0.78);
+    const cyMin = Math.floor(h * 0.14), cyMax = Math.ceil(h * 0.88);
+    const topBandY = Math.max(4, Math.floor(h * 0.05));
+
+    for (let y = 0; y < h; y++) {
+      const row = y * w;
+      const inCy = y >= cyMin && y <= cyMax;
+      for (let x = 0; x < w; x++) {
+        const inBox = inCy && x >= cxMin && x <= cxMax;
+        if (inBox) centerTotal++;
+        if (!sm.mask[row + x]) continue;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        sumX += x;
+        sumY += y;
+        if (inBox) centerHits++;
+        if (y < topBandY) topEdgeHits++;
+      }
+    }
+
+    const nMinX = minX / w, nMaxX = maxX / w;
+    const nMinY = minY / h;
+    const boxW = (maxX - minX) / w;
+    const boxH = (maxY - minY) / h;
+    const cx = (sumX / sm.area) / w;
+    const cy = (sumY / sm.area) / h;
+    const anchor = { cx, cy, size: boxH };
+
+    if (topEdgeHits > w * topBandY * 0.45 || nMinY < 0.02 || nMinX < 0.02 || nMaxX > 0.98) {
+      return { state: "adjusting", hint: "🖐️ ขยับมือเข้ามาด้านในกรอบ ให้พ้นขอบภาพ", anchor };
+    }
+    if (boxH < 0.36 || boxW < 0.18) {
+      return { state: "adjusting", hint: "🔍 ขยับฝ่ามือเข้าใกล้กล้องอีกนิด", anchor };
+    }
+    if (cx < 0.28 || cx > 0.72 || cy < 0.28 || cy > 0.76) {
+      return { state: "adjusting", hint: "↔️ เลื่อนฝ่ามือมาวางไว้ตรงกลางรูปมือ", anchor };
+    }
+    const aspect = boxW / Math.max(0.01, boxH);
+    const fillInCenter = centerHits / Math.max(1, sm.area);
+    if (aspect < 0.32 || aspect > 1.05 || fillInCenter < 0.65) {
+      return { state: "adjusting", hint: "✋ ตั้งฝ่ามือตรงให้พอดีกับกรอบรูปมือ", anchor };
+    }
+    return { state: "steady", anchor };
   }
 
   async switchCameraFacing() {
     this.cameraFacing = this.cameraFacing === "user" ? "environment" : "user";
+    this.playSound("playClick");
     await this.startCamera(this.cameraFacing);
-    if (window.mysticAudio) window.mysticAudio.playClick();
   }
 
   async toggleCameraTorch() {
@@ -777,25 +1170,56 @@ class PalmApp {
     }
   }
 
-  captureCameraFrame() {
-    if (!this.video || !this.video.videoWidth) {
-      // If camera not ready, offer sample demo or file picker
-      if (this.fileInput) this.fileInput.click();
+  async captureCameraFrame() {
+    if (this.isScanning || this.isCapturing) return;
+    if (!this.video || this.video.readyState < 2 || !this.video.videoWidth || !this.video.videoHeight) {
+      // Camera not active yet — try waking/starting camera instead of dead click
+      this.setDetectUI("searching", "กำลังเชื่อมต่อกล้อง กรุณาอนุญาตการเข้าถึงกล้อง...", 0);
+      await this.startCamera(this.cameraFacing || "environment");
+      if (!this.video || !this.video.videoWidth) {
+        if (window.taroApp && typeof window.taroApp.showToast === "function") {
+          window.taroApp.showToast("ยังไม่พบสัญญาณกล้อง กรุณาอนุญาตกล้องหรือกดเลือกรูปภาพจากเครื่อง");
+        }
+      }
       return;
     }
-    if (window.mysticAudio) window.mysticAudio.playWhoosh();
+    this.isCapturing = true;
+    this.stopLiveMonitor();
+    this.flashShutter();
+    this.playSound("playCardFlip");
+    const maxSide = 1440;
+    const vw = this.video.videoWidth;
+    const vh = this.video.videoHeight;
+    const scale = Math.min(1, maxSide / Math.max(vw, vh));
     const c = document.createElement("canvas");
-    c.width = this.video.videoWidth;
-    c.height = this.video.videoHeight;
+    c.width = Math.max(1, Math.round(vw * scale));
+    c.height = Math.max(1, Math.round(vh * scale));
     const ctx = c.getContext("2d");
-    ctx.drawImage(this.video, 0, 0);
+    if (this.cameraFacing === "user") {
+      ctx.translate(c.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(this.video, 0, 0, c.width, c.height);
 
+    const dataUrl = c.toDataURL("image/jpeg", 0.95);
+    if (!dataUrl || dataUrl === "data:,") {
+      this.isCapturing = false;
+      return;
+    }
     const img = new Image();
     img.onload = () => {
+      this.isCapturing = false;
       this.capturedImage = img;
       this.startScanningProcess(img);
     };
-    img.src = c.toDataURL("image/jpeg", 0.95);
+    img.onerror = () => {
+      this.isCapturing = false;
+      if (window.taroApp && typeof window.taroApp.showToast === "function") {
+        window.taroApp.showToast("เกิดข้อผิดพลาดในการจับภาพ กรุณาลองอีกครั้ง");
+      }
+      this.startLiveMonitor();
+    };
+    img.src = dataUrl;
   }
 
   loadFile(file) {
@@ -1367,17 +1791,18 @@ class PalmApp {
 
   async recalibrateScan() {
     if (!this.capturedImage) return;
-    if (window.mysticAudio) window.mysticAudio.playWhoosh();
+    this.playSound("playCardFlip");
     this.startScanningProcess(this.capturedImage);
   }
 
   resetToCaptureScreen() {
     this.scanResult = null;
     this.capturedImage = null;
+    this.isCapturing = false;
     if (this.screenResult) this.screenResult.classList.remove("active");
     if (this.screenScanning) this.screenScanning.classList.remove("active");
     if (this.screenCapture) this.screenCapture.classList.add("active");
-    this.startCamera();
+    this.startCamera(this.cameraFacing || "environment");
   }
 
   copyReadingToClipboard() {
