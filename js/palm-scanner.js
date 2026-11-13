@@ -32,17 +32,16 @@ class PalmScannerEngine {
     const hand = options.hand || "right";
     const brightness = Number(options.brightness || 0);
     const contrast = Number(options.contrast || 0);
-    const sensitivity = Number(options.sensitivity || 3); // 1-5
+    const sensitivity = Math.max(1, Math.min(5, Number(options.sensitivity || 3)));
 
-    // 1. ปรับขนาดภาพให้อยู่ในความละเอียดที่เหมาะสมสำหรับการประมวลผล Sub-pixel
-    const maxDim = 1200;
+    const maxDim = 960;
     let sw = sourceMedia.videoWidth || sourceMedia.naturalWidth || sourceMedia.width;
     let sh = sourceMedia.videoHeight || sourceMedia.naturalHeight || sourceMedia.height;
     if (!sw || !sh) {
       sw = 800; sh = 1000;
     }
 
-    let scale = Math.min(maxDim / Math.max(sw, sh), 1.0);
+    const scale = Math.min(maxDim / Math.max(sw, sh), 1.0);
     const w = Math.round(sw * scale);
     const h = Math.round(sh * scale);
 
@@ -50,42 +49,74 @@ class PalmScannerEngine {
     this.canvas.height = h;
     this.ctx.drawImage(sourceMedia, 0, 0, w, h);
 
-    // 2. ปรับแต่ง Brightness & Contrast หากมีการ Calibrate
     if (brightness !== 0 || contrast !== 0) {
       this.applyImageAdjustments(this.ctx, w, h, brightness, contrast);
     }
 
-    // 3. วิเคราะห์คุณภาพภาพ (Exposure, Contrast, Sharpness)
-    const quality = this.evaluateImageQuality(this.ctx, w, h);
+    const imgData = this.ctx.getImageData(0, 0, w, h);
 
-    // 4. คำนวณจุดอ้างอิงทางกายวิภาคของฝ่ามือ (Anatomical Anchors)
-    const anchors = this.calculateAnatomicalAnchors(w, h, hand);
+    // 1. ตรวจจับจุดกระดูก 21 จุดด้วย MediaPipe ก่อน (ถ้าโหลดพร้อม) เพื่อให้ทนต่อมือเอียงและพื้นหลังซับซ้อน
+    let mpResult = null;
+    if (window.PalmMediaPipe && typeof window.PalmMediaPipe.detectFromCanvas === "function") {
+      mpResult = await window.PalmMediaPipe.detectFromCanvas(this.canvas, w, h, 5500);
+    }
 
-    // 5. ประมวลผลดึงรอยย่นลึกด้วย Multi-Directional Ridge Detector
-    const ridgeMap = this.extractMultiDirectionalRidges(this.ctx, w, h, sensitivity);
+    // 2. วิเคราะห์ร่องรอยลายมือจริงด้วย PalmVision (Hessian + Orientation-Aware Dijkstra)
+    const vision = window.PalmVision.analyzePalm(imgData.data, w, h, {
+      sensitivity,
+      landmarks: mpResult ? mpResult.landmarks : null,
+      landmarkMethod: mpResult ? "mediapipe" : undefined
+    });
 
-    // 6. จำแนกและลากเส้นเวกเตอร์ของเส้นหลัก 6 เส้น (Line Tracing & Geometry Measurement)
-    const lines = this.tracePalmPrimaryLines(ridgeMap, w, h, anchors, hand, sensitivity);
+    if (!vision || !vision.ok) {
+      return {
+        ok: false,
+        reason: (vision && vision.reason) || "no_hand",
+        message: (vision && vision.message) || "ไม่พบฝ่ามือในภาพ กรุณาวางฝ่ามือในที่แสงสว่างและกางนิ้วเล็กน้อย",
+        width: w,
+        height: h
+      };
+    }
 
-    // 7. วิเคราะห์เนินทั้ง 7 (The 7 Palm Mounts)
-    const mounts = this.analyzePalmMounts(this.ctx, w, h, anchors, hand);
+    const anchors = this.buildAnchorsFromVision(vision, w, h);
+    const lines = this.convertVisionLines(vision, w, h);
+    const mounts = this.buildMountsFromVision(vision);
 
-    // 8. คำนวณค่าความแม่นยำในการตรวจจับ (Overall Accuracy & Confidence Score)
-    const confidence = this.calculateScanConfidence(quality, lines, mounts);
+    const meanLum = vision.quality.meanLuminance || 128;
+    const sharp = vision.quality.sharpness || 0;
+    const isGoodLighting = meanLum >= 75 && meanLum <= 215 && sharp >= 2.2;
+    const lumScore = Math.max(0, 100 - Math.abs(meanLum - 135) * 0.65);
+    const sharpScore = Math.min(100, sharp * 14);
+    const quality = {
+      width: w,
+      height: h,
+      brightness: meanLum,
+      sharpness: sharp,
+      palmLengthPx: vision.quality.palmLengthPx,
+      skinRatio: vision.quality.skinRatio,
+      isGoodLighting,
+      overallScore: Math.round(lumScore * 0.45 + sharpScore * 0.55)
+    };
 
-    // 9. สังเคราะห์ผลการทำนายตามคัมภีร์หัตถศาสตร์ (Interpretation Report)
+    const confidence = this.calculateScanConfidence(quality, lines, mounts, vision);
+    const detectedHand = vision.handedness || hand;
     const reading = this.interpretPalmReading(lines, mounts, hand, confidence);
 
     return {
+      ok: true,
       width: w,
       height: h,
       hand,
+      detectedHand,
+      landmarkMethod: vision.landmarkMethod,
       quality,
       anchors,
       lines,
       mounts,
       confidence,
       reading,
+      debug: vision.debug,
+      elapsedMs: vision.elapsedMs,
       scannedAt: Date.now()
     };
   }
@@ -178,291 +209,234 @@ class PalmScannerEngine {
   /**
    * ดึงแผนที่รอยย่นลายมือ (Ridge & Crease Map) ด้วย Multi-directional Filter
    */
-  extractMultiDirectionalRidges(ctx, w, h, sensitivity) {
-    const srcData = ctx.getImageData(0, 0, w, h);
-    const src = srcData.data;
-    const gray = new Uint8Array(w * h);
-
-    // 1. แปลงเป็น Gray & Negative Contrast (รอยย่นที่มืดกว่าจะกลายเป็นค่าความสว่างสูง)
-    for (let i = 0; i < src.length; i += 4) {
-      const idx = i >> 2;
-      const lum = (299 * src[i] + 587 * src[i + 1] + 114 * src[i + 2]) / 1000;
-      gray[idx] = Math.round(255 - lum);
-    }
-
-    // 2. Multi-Directional Line Filtering (คำนวณการเปลี่ยนแปลงความเข้มใน 4 แนวหลัก: แนวนอน, แนวตั้ง, แนวเฉียงซ้าย, แนวเฉียงขวา)
-    const ridges = new Float32Array(w * h);
-    const step = 2; // คำนวณแบบสเกลเหมาะสม
-
-    const sensFactor = 0.8 + (sensitivity * 0.25); // ปรับตาม Sensitivity slider
-
-    for (let y = 3; y < h - 3; y += step) {
-      for (let x = 3; x < w - 3; x += step) {
-        const idx = y * w + x;
-        const center = gray[idx];
-
-        // แนวนอน (ตรวจเส้นแนวนอน เช่น เส้นหัวใจ และเส้นสมองส่วนต้น)
-        const dH = Math.max(0, (center * 2) - gray[idx - w * 2] - gray[idx + w * 2]);
-        // แนวตั้ง (ตรวจเส้นแนวตั้ง เช่น เส้นวาสนา และเส้นอาทิตย์)
-        const dV = Math.max(0, (center * 2) - gray[idx - 2] - gray[idx + 2]);
-        // แนวเฉียง (ตรวจเส้นโค้ง เช่น เส้นชีวิต)
-        const dD1 = Math.max(0, (center * 2) - gray[idx - w * 2 - 2] - gray[idx + w * 2 + 2]);
-        const dD2 = Math.max(0, (center * 2) - gray[idx - w * 2 + 2] - gray[idx + w * 2 - 2]);
-
-        const maxDiff = Math.max(dH, dV, dD1, dD2);
-        ridges[idx] = maxDiff * sensFactor;
+  buildAnchorsFromVision(vision, w, h) {
+    const lm = vision.landmarks || [];
+    const f = vision.frame;
+    const toPt = (idx, fallbackU, fallbackV) => {
+      if (lm[idx] && isFinite(lm[idx].x) && isFinite(lm[idx].y)) {
+        return { x: Math.round(lm[idx].x), y: Math.round(lm[idx].y) };
       }
-    }
-
+      const p = f.toImg(fallbackU, fallbackV);
+      return { x: Math.round(p.x), y: Math.round(p.y) };
+    };
+    const palmQuad = [
+      f.toImg(0, 0), f.toImg(1, 0), f.toImg(1, 1), f.toImg(0, 1)
+    ].map(p => ({ x: Math.round(p.x), y: Math.round(p.y) }));
+    const xs = palmQuad.map(p => p.x);
+    const ys = palmQuad.map(p => p.y);
     return {
-      width: w,
-      height: h,
-      data: ridges,
-      sampleVal: (x, y) => {
-        const ix = Math.max(0, Math.min(w - 1, Math.round(x)));
-        const iy = Math.max(0, Math.min(h - 1, Math.round(y)));
-        return ridges[iy * w + ix] || 0;
-      }
+      wrist: toPt(0, 0.5, 0),
+      thumbCmc: toPt(1, 0.85, 0.2),
+      thumbMcp: toPt(2, 0.96, 0.45),
+      thumbWebbing: (() => {
+        const p = f.toImg(0.92, 0.72);
+        return { x: Math.round(p.x), y: Math.round(p.y) };
+      })(),
+      indexKnuckle: toPt(5, 0.84, 1),
+      middleKnuckle: toPt(9, 0.60, 1),
+      ringKnuckle: toPt(13, 0.36, 1),
+      pinkyKnuckle: toPt(17, 0.14, 1),
+      palmCenter: (() => {
+        const p = f.toImg(0.5, 0.52);
+        return { x: Math.round(p.x), y: Math.round(p.y), name: "ที่ราบอังคารกลางฝ่ามือ" };
+      })(),
+      palmBounds: {
+        left: Math.max(0, Math.min(...xs)),
+        right: Math.min(w, Math.max(...xs)),
+        top: Math.max(0, Math.min(...ys)),
+        bottom: Math.min(h, Math.max(...ys))
+      },
+      palmQuad,
+      landmarks: lm,
+      landmarkMethod: vision.landmarkMethod,
+      handedness: vision.handedness
     };
   }
 
-  /**
-   * ลากเส้นและตรวจวัดเรขาคณิตของเส้นหลักทั้ง 6 เส้น
-   */
-  tracePalmPrimaryLines(ridgeMap, w, h, anchors, hand, sensitivity) {
-    const isLeft = hand === "left";
-    const mx = anchors.mirrorX;
-
-    // --- 1. เส้นชีวิต (Life Line) ---
-    // เริ่มระหว่างนิ้วชี้กับโป้ง โอบล้อมเนินศุกร์ลงสู่ข้อมือ
-    const lifeStart = { x: anchors.thumbWebbing.x, y: anchors.thumbWebbing.y - (h * 0.02) };
-    const lifeMid = { x: w * mx(0.38), y: h * 0.62 };
-    const lifeEnd = { x: w * mx(0.42), y: h * 0.84 };
-
-    const lifePoints = this.traceVectorPath(ridgeMap, lifeStart, lifeMid, lifeEnd, 22, anchors, w, h);
-    const lifeMetrics = this.measureLineMetrics(lifePoints, "life", w, h);
-
-    // --- 2. เส้นสมอง (Head Line) ---
-    // เริ่มต้นจุดเดียวหรือใกล้กับเส้นชีวิต พาดขวางไปหาเนินจันทร์
-    const headStart = { x: anchors.thumbWebbing.x + (w * mx(0.01)), y: anchors.thumbWebbing.y + (h * 0.01) };
-    const headMid = { x: w * mx(0.52), y: h * 0.48 };
-    const headEnd = { x: w * mx(0.78), y: h * 0.58 };
-
-    const headPoints = this.traceVectorPath(ridgeMap, headStart, headMid, headEnd, 20, anchors, w, h);
-    const headMetrics = this.measureLineMetrics(headPoints, "head", w, h);
-
-    // --- 3. เส้นหัวใจ (Heart Line) ---
-    // เริ่มใต้นิ้วก้อย พาดเฉียงขึ้นไปหาโคนนิ้วชี้ (เนินพฤหัส) หรือนิ้วกลาง (เนินเสาร์)
-    const heartStart = { x: anchors.pinkyKnuckle.x - (w * mx(0.02)), y: anchors.pinkyKnuckle.y + (h * 0.06) };
-    const heartMid = { x: w * mx(0.55), y: h * 0.32 };
-    const heartEnd = { x: anchors.indexKnuckle.x + (w * mx(0.04)), y: anchors.indexKnuckle.y + (h * 0.06) };
-
-    const heartPoints = this.traceVectorPath(ridgeMap, heartStart, heartMid, heartEnd, 22, anchors, w, h);
-    const heartMetrics = this.measureLineMetrics(heartPoints, "heart", w, h);
-
-    // --- 4. เส้นวาสนา (Fate Line) ---
-    // แนวตั้งจากข้อมือหรือกลางฝ่ามือพุ่งขึ้นหานิ้วกลาง
-    const fateStart = { x: w * mx(0.50), y: h * 0.82 };
-    const fateMid = { x: w * mx(0.51), y: h * 0.52 };
-    const fateEnd = { x: anchors.middleKnuckle.x, y: anchors.middleKnuckle.y + (h * 0.08) };
-
-    const fatePoints = this.traceVectorPath(ridgeMap, fateStart, fateMid, fateEnd, 18, anchors, w, h);
-    const fateMetrics = this.measureLineMetrics(fatePoints, "fate", w, h);
-
-    // --- 5. เส้นอาทิตย์ (Sun Line) ---
-    // แนวตั้งใต้นิ้วนาง
-    const sunStart = { x: w * mx(0.66), y: h * 0.60 };
-    const sunMid = { x: w * mx(0.67), y: h * 0.45 };
-    const sunEnd = { x: anchors.ringKnuckle.x, y: anchors.ringKnuckle.y + (h * 0.07) };
-
-    const sunPoints = this.traceVectorPath(ridgeMap, sunStart, sunMid, sunEnd, 14, anchors, w, h);
-    const sunMetrics = this.measureLineMetrics(sunPoints, "sun", w, h);
-
-    // --- 6. เส้นพุธ / สุขภาพ (Mercury Line) ---
-    // แนวเฉียงไปหานิ้วก้อย
-    const mercStart = { x: w * mx(0.58), y: h * 0.74 };
-    const mercMid = { x: w * mx(0.72), y: h * 0.52 };
-    const mercEnd = { x: anchors.pinkyKnuckle.x, y: anchors.pinkyKnuckle.y + (h * 0.09) };
-
-    const mercPoints = this.traceVectorPath(ridgeMap, mercStart, mercMid, mercEnd, 14, anchors, w, h);
-    const mercMetrics = this.measureLineMetrics(mercPoints, "mercury", w, h);
-
-    return {
-      life: { id: "life", points: lifePoints, metrics: lifeMetrics },
-      head: { id: "head", points: headPoints, metrics: headMetrics },
-      heart: { id: "heart", points: heartPoints, metrics: heartMetrics },
-      fate: { id: "fate", points: fatePoints, metrics: fateMetrics },
-      sun: { id: "sun", points: sunPoints, metrics: sunMetrics },
-      mercury: { id: "mercury", points: mercPoints, metrics: mercMetrics }
-    };
-  }
-
-  /**
-   * สร้าง Bezier Vector Path พร้อม Snap หาจุดร่องรอยย่นจริงในภาพ
-   */
-  traceVectorPath(ridgeMap, pStart, pMid, pEnd, segments, anchors, w, h) {
-    const points = [];
-    const searchRadius = Math.round(w * 0.025); // รัศมีค้นหาร่องรอยย่นรอบแนวสมมติ
-
-    for (let i = 0; i <= segments; i++) {
-      const t = i / segments;
-      // Quadratic Bezier Interpolation
-      const bx = (1 - t) * (1 - t) * pStart.x + 2 * (1 - t) * t * pMid.x + t * t * pEnd.x;
-      const by = (1 - t) * (1 - t) * pStart.y + 2 * (1 - t) * t * pMid.y + t * t * pEnd.y;
-
-      // ปรับจูน Snap หาจุดร่องจริงที่เข้มที่สุดในบริเวณนั้น
-      let bestX = bx;
-      let bestY = by;
-      let maxRidge = -1;
-
-      for (let dy = -searchRadius; dy <= searchRadius; dy += 2) {
-        for (let dx = -searchRadius; dx <= searchRadius; dx += 2) {
-          const rVal = ridgeMap.sampleVal(bx + dx, by + dy);
-          if (rVal > maxRidge) {
-            maxRidge = rVal;
-            bestX = bx + dx;
-            bestY = by + dy;
-          }
-        }
+  convertVisionLines(vision, w, h) {
+    const pv = window.PalmVision;
+    const keys = ["life", "head", "heart", "fate", "sun", "mercury"];
+    const out = {};
+    for (const key of keys) {
+      const vl = (vision.lines && vision.lines[key]) || { id: key, detected: false, points: [], uv: [], lengthRatio: 0, coverage: 0, depth: 0, gaps: 0, confidence: 0 };
+      const traits = pv && pv.lineTraits ? pv.lineTraits(key, vl) : { detected: Boolean(vl.detected) };
+      const pts = (vl.points || []).map((p, idx, arr) => ({
+        x: Math.round(p.x * 10) / 10,
+        y: Math.round(p.y * 10) / 10,
+        intensity: Math.round((vl.depth || 0) * 100),
+        t: arr.length > 1 ? idx / (arr.length - 1) : 0
+      }));
+      let totalPixels = 0;
+      for (let i = 1; i < pts.length; i++) {
+        totalPixels += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
       }
-
-      // ผสมน้ำหนักระหว่างเส้นเฉลี่ยทางกายวิภาคและรอยจริงเพื่อไม่ให้เส้นกระโดด
-      const finalX = Math.round(bx * 0.35 + bestX * 0.65);
-      const finalY = Math.round(by * 0.35 + bestY * 0.65);
-      const intensity = Math.min(100, Math.round(maxRidge * 1.5));
-
-      points.push({ x: finalX, y: finalY, intensity, t });
+      const metrics = this.buildLineMetrics(vl, traits, totalPixels);
+      out[key] = {
+        id: key,
+        detected: Boolean(vl.detected),
+        points: pts,
+        uv: vl.uv || [],
+        traits,
+        metrics
+      };
     }
-
-    return points;
+    return out;
   }
 
-  /**
-   * วัดขนาด ความยาว ความลึก และลักษณะเฉพาะของเส้น
-   */
-  measureLineMetrics(points, lineId, w, h) {
-    let totalLength = 0;
-    let sumIntensity = 0;
-
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-      totalLength += dist;
-      sumIntensity += p1.intensity;
+  buildLineMetrics(vl, traits, totalPixels) {
+    const depthPct = Math.round((vl.depth || 0) * 100);
+    const lengthPct = Math.min(100, Math.round((vl.lengthRatio || 0) * 100));
+    const coveragePct = Math.round((vl.coverage || 0) * 100);
+    let continuity = "ไม่พบร่องเส้นชัดในภาพนี้";
+    if (vl.detected) {
+      continuity = vl.gaps === 0
+        ? "คมชัดต่อเนื่อง"
+        : (vl.gaps <= 2 ? "ต่อเนื่องดี (มีร่องแยกเล็กน้อย)" : "เส้นขาดช่วงหลายจุด");
     }
-    sumIntensity += points[points.length - 1].intensity;
-    const avgDepth = Math.round(sumIntensity / points.length);
 
-    // ปรับเทียบความยาวเทียบกับสเกลฝ่ามือ (Relative Palm Scale %)
-    const refScale = Math.hypot(w * 0.5, h * 0.6);
-    const lengthPct = Math.min(100, Math.round((totalLength / refScale) * 100));
-
-    // ตรวจหาลักษณะเฉพาะ (Special Markings & Continuity)
-    let continuity = avgDepth > 35 ? "คมชัดต่อเนื่อง" : "เส้นละเอียดบาง";
-    let specialTrait = "";
-
-    if (lineId === "life") {
-      specialTrait = lengthPct > 70 ? "โค้งโอบล้อมกว้าง พลังชีวิตแข็งแกร่ง" : "พลังงานกระชับ ปรับตัวไว";
-      if (avgDepth > 65) specialTrait += " • ลึกชัดเจนดั่งคมมีด";
-    } else if (lineId === "head") {
-      specialTrait = lengthPct > 65 ? "ยาวพาดข้ามฝ่ามือ ปัญญาเฉียบแหลม" : "คิดเร็ว ทำเร็ว มุ่งเน้นผลลัพธ์";
-      specialTrait += " • ปลายโค้งงดงาม";
-    } else if (lineId === "heart") {
-      specialTrait = "ทอดจรดเนินพฤหัส จิตใจมั่นคง ซื่อสัตย์";
-      if (avgDepth > 55) specialTrait += " • มีบารมีและเสน่ห์เมตตา";
-    } else if (lineId === "fate") {
-      const hasLine = avgDepth > 28;
-      specialTrait = hasLine ? "มีเส้นวาสนาเด่นชัด สร้างตัวสำเร็จมั่นคง" : "วาสนายืดหยุ่น ทำงานได้หลากหลายช่องทาง";
-    } else if (lineId === "sun") {
-      const hasLine = avgDepth > 25;
-      specialTrait = hasLine ? "มีเส้นเกียรติยศชื่อเสียง เป็นที่ยอมรับในสังคม" : "ความสำเร็จสร้างได้ด้วยผลงาน";
-    } else if (lineId === "mercury") {
-      specialTrait = "การสื่อสารและไหวพริบคล่องตัว";
+    let specialTrait = "ร่องเส้นยังค่อนข้างบางหรือจางในภาพถ่ายนี้";
+    if (vl.detected) {
+      if (vl.id === "life") {
+        specialTrait = traits.reachesWrist
+          ? "ลากยาวต่อเนื่องสู่ข้อมือ โครงสร้างพลังชีวิตสมบูรณ์"
+          : "ช่วงครึ่งบนเด่นชัด พลังชีวิตคล่องตัวปรับตัวเก่ง";
+        if (traits.arc === "wide") specialTrait += " • โค้งโอบเนินศุกร์กว้าง";
+        if (depthPct >= 55 && vl.gaps === 0) specialTrait += " • ร่องลึกคมชัด";
+      } else if (vl.id === "head") {
+        specialTrait = traits.slope === "curved_moon"
+          ? "ปลายเส้นโน้มลาดสู่เนินจันทร์ เด่นด้านจินตนาการและสัญชาตญาณ"
+          : "แนวเส้นพาดค่อนข้างตรง เด่นด้านตรรกะและการวิเคราะห์เป็นระบบ";
+        if (lengthPct >= 62) specialTrait += " • เส้นยาวพาดกว้าง";
+      } else if (vl.id === "heart") {
+        if (traits.endTarget === "jupiter") specialTrait = "ปลายเส้นมุ่งสู่เนินพฤหัส (ใต้นิ้วชี้) รักจริงจัง มีอุดมคติ";
+        else if (traits.endTarget === "between") specialTrait = "ปลายเส้นเข้าสู่ง่ามนิ้วชี้-นิ้วกลาง สมดุลระหว่างเหตุผลและหัวใจ";
+        else specialTrait = "ปลายเส้นหยุดใต้เนินเสาร์ (ใต้นิ้วกลาง) รักมั่นคงเน้นความรับผิดชอบ";
+        if (depthPct >= 58) specialTrait += " • ร่องลึกชัดเจน";
+      } else if (vl.id === "fate") {
+        const origMap = { wrist: "ฐานข้อมือ", moon: "เนินจันทร์", life: "แนบเส้นชีวิต" };
+        specialTrait = `ตรวจพบเส้นวาสนาชัดเจน (จุดตั้งต้นแถว${origMap[traits.origin] || "กลางฝ่ามือ"})`;
+      } else if (vl.id === "sun") {
+        specialTrait = "ตรวจพบเส้นอาทิตย์ใต้นิ้วนาง ส่งเสริมชื่อเสียง ผลงาน และรสนิยม";
+      } else if (vl.id === "mercury") {
+        specialTrait = "ตรวจพบเส้นพุธเฉียงสู่นิ้วก้อย เด่นด้านไหวพริบและการเจรจาสื่อสาร";
+      }
     }
 
     return {
-      lengthPixels: Math.round(totalLength),
+      lengthPixels: Math.round(totalPixels),
       lengthPercentage: lengthPct,
-      depthScore: avgDepth,
+      coveragePercentage: coveragePct,
+      depthScore: depthPct,
+      gaps: vl.gaps || 0,
       continuity,
       specialTrait,
-      confidenceScore: Math.min(99.4, 94.0 + (avgDepth * 0.05))
+      confidenceScore: Number((vl.confidence || 0).toFixed(1))
     };
   }
 
-  /**
-   * วิเคราะห์เนินทั้ง 7 บนฝ่ามือ (The 7 Palm Mounts)
-   */
-  analyzePalmMounts(ctx, w, h, anchors, hand) {
-    const isLeft = hand === "left";
-    const mx = anchors.mirrorX;
-
-    const mountCenters = {
-      jupiter: { x: w * mx(0.32), y: h * 0.28, radius: Math.round(w * 0.07) },
-      saturn: { x: w * mx(0.50), y: h * 0.26, radius: Math.round(w * 0.07) },
-      sun: { x: w * mx(0.68), y: h * 0.28, radius: Math.round(w * 0.07) },
-      mercury: { x: w * mx(0.82), y: h * 0.35, radius: Math.round(w * 0.06) },
-      venus: { x: w * mx(0.26), y: h * 0.65, radius: Math.round(w * 0.12) },
-      moon: { x: w * mx(0.78), y: h * 0.72, radius: Math.round(w * 0.11) },
-      mars: { x: w * mx(0.52), y: h * 0.52, radius: Math.round(w * 0.09) }
+  buildMountsFromVision(vision) {
+    const kb = (window.PALM_KNOWLEDGE_BASE && window.PALM_KNOWLEDGE_BASE.mounts) || {};
+    const statusTextMap = {
+      full: "เนินอวบอิ่มเต็ม • พลังงานเด่นชัด",
+      moderate: "เนินสมส่วนสมดุล • ราบรื่นปกติ",
+      flat: "เนินค่อนข้างราบ • พลังงานแนวดิ่งสงบ"
     };
-
+    const vm = vision.mounts || {};
+    const out = {};
+    for (const id of ["jupiter", "saturn", "sun", "mercury", "venus", "moon", "mars"]) {
+      const m = vm[id] || { id, x: 0, y: 0, fullness: 55, status: "moderate" };
+      const kbm = kb[id] || {};
+      const status = m.status || "moderate";
+      out[id] = {
+        id,
+        name: kbm.name || id,
+        symbol: kbm.symbol || "✦",
+        x: m.x,
+        y: m.y,
+        fullness: m.fullness,
+        status,
+        statusText: statusTextMap[status] || statusTextMap.moderate,
+        meaning: (kbm.interpretation && kbm.interpretation[status]) || kbm.meaning || ""
+      };
+    }
+    return out;
+  }
+  buildMountsFromVision(vision) {
+    const kb = (window.PALM_KNOWLEDGE_BASE && window.PALM_KNOWLEDGE_BASE.mounts) || {};
+    const statusLabelMap = {
+      full: "เนินอวบอิ่มสมบูรณ์ (โดดเด่น)",
+      moderate: "เนินสมส่วนพอดี",
+      flat: "เนินค่อนข้างราบ"
+    };
+    const vm = vision.mounts || {};
+    const rad = Math.max(18, Math.round((vision.frame ? vision.frame.palmWidth : 280) * 0.085));
     const results = {};
-    const kb = window.PALM_KNOWLEDGE_BASE ? window.PALM_KNOWLEDGE_BASE.mounts : {};
-
-    for (const [key, mount] of Object.entries(mountCenters)) {
-      // สุ่มวัดความสว่างและคอนทราสต์บริเวณเนินเพื่อประเมินความอวบอิ่ม
-      const sample = ctx.getImageData(mount.x - 10, mount.y - 10, 20, 20).data;
-      let totalL = 0;
-      for (let i = 0; i < sample.length; i += 4) {
-        totalL += (299 * sample[i] + 587 * sample[i + 1] + 114 * sample[i + 2]) / 1000;
-      }
-      const avgL = totalL / (sample.length / 4);
-
-      let fullness = "moderate";
-      let fullnessLabel = "เนินสมส่วนพอดี";
-      if (avgL > 140) {
-        fullness = "full";
-        fullnessLabel = "เนินอวบอิ่มสมบูรณ์ (โดดเด่น)";
-      } else if (avgL < 90) {
-        fullness = "flat";
-        fullnessLabel = "เนินค่อนข้างราบ";
-      }
-
-      const meta = kb[key] || {};
-      results[key] = {
-        id: key,
-        name: meta.name || key,
-        center: { x: mount.x, y: mount.y },
-        radius: mount.radius,
+    for (const id of ["jupiter", "saturn", "sun", "mercury", "venus", "moon", "mars"]) {
+      const m = vm[id] || { id, x: 0, y: 0, fullness: 55, status: "moderate" };
+      const meta = kb[id] || {};
+      const fullness = m.status || "moderate";
+      const fullnessLabel = statusLabelMap[fullness] || statusLabelMap.moderate;
+      results[id] = {
+        id,
+        name: meta.name || id,
+        center: { x: m.x, y: m.y },
+        radius: rad,
         fullness,
+        fullnessScore: m.fullness,
         fullnessLabel,
         symbol: meta.symbol || "✦",
         meaning: meta.meaning || "",
         interpretation: (meta.interpretation && meta.interpretation[fullness]) || fullnessLabel
       };
     }
-
     return results;
   }
 
   /**
-   * คำนวณค่าความแม่นยำในการสแกน (Overall Scan Confidence)
+   * คำนวณค่าความแม่นยำจริงจากการตรวจพบเส้นและจุด Landmark
    */
-  calculateScanConfidence(quality, lines, mounts) {
-    const base = quality.isGoodLighting ? 96.5 : 91.0;
-    const lScore = lines.life.metrics.depthScore > 40 ? 1.2 : 0.6;
-    const hScore = lines.head.metrics.depthScore > 40 ? 1.0 : 0.5;
-    const htScore = lines.heart.metrics.depthScore > 40 ? 1.0 : 0.5;
+  calculateScanConfidence(quality, lines, mounts, vision) {
+    const reqKeys = ["life", "head", "heart"];
+    const optKeys = ["fate", "sun", "mercury"];
+    let reqSum = 0, reqN = 0, optSum = 0, optN = 0, detectedCount = 0;
 
-    const overall = Math.min(99.4, Number((base + lScore + hScore + htScore).toFixed(1)));
+    for (const k of reqKeys) {
+      if (lines[k]) {
+        if (lines[k].detected) detectedCount++;
+        reqSum += lines[k].metrics ? (lines[k].metrics.confidenceScore || 0) : 0;
+        reqN++;
+      }
+    }
+    for (const k of optKeys) {
+      if (lines[k] && lines[k].detected) {
+        detectedCount++;
+        optSum += lines[k].metrics ? (lines[k].metrics.confidenceScore || 0) : 0;
+        optN++;
+      }
+    }
+
+    const reqAvg = reqN ? reqSum / reqN : 45;
+    const optAvg = optN ? optSum / optN : reqAvg * 0.88;
+    const methodBonus = vision && vision.landmarkMethod === "mediapipe" ? 3.5 : 0;
+    const qualityAdj = quality && quality.overallScore ? Math.max(-5, Math.min(4, (quality.overallScore - 65) * 0.08)) : 0;
+    const overall = Number(Math.max(40, Math.min(99.2, reqAvg * 0.72 + optAvg * 0.28 + methodBonus + qualityAdj)).toFixed(1));
+
+    const methodTag = vision && vision.landmarkMethod === "mediapipe"
+      ? "MediaPipe 21 จุด"
+      : "Offline Skin-CV";
+    const label = overall >= 88
+      ? `ความแม่นยำสูง (${methodTag} • ล็อกร่องเส้นตรง)`
+      : overall >= 70
+        ? `ความแม่นยำดี (${methodTag} • ตรวจพบ ${detectedCount} เส้น)`
+        : `ความชัดระดับพอใช้ — แนะนำปรับแสงหรือลองถ่ายใหม่ (${methodTag})`;
+
     return {
       percentage: overall,
-      label: overall >= 98.0 ? "ความแม่นยำระดับยอดเยี่ยม (Sub-pixel Calibrated)" : "ความแม่นยำสูง (High Precision Verified)",
-      featuresDetected: 6,
-      mountsIdentified: 7,
-      isReliable: true
+      label,
+      landmarkMethod: (vision && vision.landmarkMethod) || "skin-geometry",
+      featuresDetected: detectedCount,
+      mountsIdentified: Object.keys(mounts || {}).length || 7,
+      isReliable: overall >= 62 && detectedCount >= 2
     };
   }
 
@@ -471,41 +445,66 @@ class PalmScannerEngine {
    */
   interpretPalmReading(lines, mounts, hand, confidence) {
     const kb = window.PALM_KNOWLEDGE_BASE || {};
+    const kbLines = kb.lines || {};
     const handMeta = (kb.hands && kb.hands[hand]) || { name: hand === "left" ? "มือซ้าย" : "มือขวา" };
 
+    const findVar = (lineId, pred, fallback) => {
+      const l = kbLines[lineId];
+      if (!l || !Array.isArray(l.variations)) return fallback || "";
+      const hit = l.variations.find(pred);
+      return hit ? hit.meaning : (fallback || "");
+    };
+
     // 1. ด้านวาสนาชีวิตและพลังกาย (Life & Vitality)
-    const lifeL = lines.life.metrics;
+    const life = lines.life || {};
+    const lifeL = life.metrics || {};
+    const lT = life.traits || {};
     const venusM = mounts.venus;
-    const lifeText = `เส้นชีวิตของท่าน${lifeL.lengthPercentage > 60 ? "ทอดยาวต่อเนื่องลงสู่ข้อมือ" : "สมส่วนกระชับ"} (${lifeL.specialTrait}) ` +
-      `ควบคู่กับ${venusM.name}ที่${venusM.fullnessLabel} บ่งบอกถึงพลังชีวิตที่เปี่ยมล้น ร่างกายมีภูมิต้านทานดี หากเจ็บป่วยจะฟื้นตัวได้รวดเร็ว ` +
-      `เป็นคนจิตใจโอบอ้อมอารี รักครอบครัวและคนใกล้ชิด`;
+    const lifeMeaning = !life.detected
+      ? "เส้นชีวิตในภาพนี้ค่อนข้างละเอียดบาง จึงตรวจจับได้บางส่วน"
+      : lT.arc === "wide"
+        ? findVar("life", v => v.name.includes("กว้าง"), lifeL.specialTrait)
+        : findVar("life", v => v.name.includes("แคบ") || v.name.includes("สั้น"), lifeL.specialTrait);
+    const lifeText = `${life.detected ? `เส้นชีวิต${lifeL.specialTrait}` : "ตรวจจับเส้นชีวิตได้บางส่วน"} ควบคู่กับ${venusM.name}ที่${venusM.fullnessLabel} — ${lifeMeaning}`;
 
     // 2. ด้านสติปัญญาและการงาน (Intellect & Career)
-    const headL = lines.head.metrics;
+    const head = lines.head || {};
+    const headL = head.metrics || {};
+    const hdT = head.traits || {};
     const saturnM = mounts.saturn;
-    const intellectText = `เส้นสมองของท่าน${headL.lengthPercentage > 60 ? "ยาวพาดผ่านกลางฝ่ามืออย่างคมชัด" : "ชัดเจนและได้รูป"} (${headL.specialTrait}) ` +
-      `สะท้อนความคิดที่มีตรรกะและเหตุผล ควบคู่กับจินตนาการสร้างสรรค์ที่ยอดเยี่ยม เมื่อจับคู่กับ${saturnM.name}ที่${saturnM.fullnessLabel} ` +
-      `ทำให้เป็นคนคิดรอบคอบ วางแผนงานมีระบบ มีสมาธิจดจ่อสูง เหมาะกับงานบริหาร งานวางกลยุทธ์ หรืองานสร้างสรรค์ที่ต้องใช้ความคิดเฉพาะตัว`;
+    const headMeaning = !head.detected
+      ? "เส้นสมองในภาพนี้เห็นไม่ชัดเจนตลอดสาย"
+      : findVar("head", v => v.type === hdT.slope, headL.specialTrait);
+    const intellectText = `${head.detected ? `เส้นสมอง${headL.specialTrait}` : "ตรวจจับเส้นสมองได้บางส่วน"} เมื่อจับคู่กับ${saturnM.name}ที่${saturnM.fullnessLabel} — ${headMeaning}`;
 
     // 3. ด้านความรักและจิตใจ (Love & Emotion)
-    const heartL = lines.heart.metrics;
+    const heart = lines.heart || {};
+    const heartL = heart.metrics || {};
+    const hT = heart.traits || {};
     const jupiterM = mounts.jupiter;
-    const loveText = `เส้นหัวใจ${heartL.specialTrait} ปลายเส้นทอดสู่เนินพฤหัสอย่างสง่างาม ` +
-      `บอกถึงความจริงใจ ซื่อสัตย์ และให้เกียรติคู่ครอง มีความเมตตาเอื้อเฟื้อต่อผู้อื่น มักเป็นที่รักและได้รับความไว้วางใจจากคนรอบตัว ` +
-      `ชีวิตรักเน้นความมั่นคง ความเข้าใจซึ่งกันและกัน ไม่ชอบความฉาบฉวย`;
+    const heartMeaning = !heart.detected
+      ? "เส้นหัวใจค่อนข้างบางในมุมแสงของภาพนี้"
+      : findVar("heart", v => v.target === (hT.endTarget === "jupiter" ? "jupiter" : hT.endTarget === "saturn" ? "saturn" : "between"), heartL.specialTrait);
+    const loveText = `${heart.detected ? `เส้นหัวใจ${heartL.specialTrait}` : "ตรวจจับเส้นหัวใจได้บางส่วน"} ร่วมกับ${jupiterM.name} (${jupiterM.fullnessLabel}) — ${heartMeaning}`;
 
     // 4. ด้านโชคลาภ การเงิน และเกียรติยศ (Wealth & Fortune)
-    const fateL = lines.fate.metrics;
-    const sunL = lines.sun.metrics;
+    const fate = lines.fate || {};
+    const sun = lines.sun || {};
     const sunM = mounts.sun;
-    const wealthText = `เส้นวาสนา${fateL.specialTrait} ประกอบกับ${sunM.name} (${sunM.meaning}) ที่${sunM.fullnessLabel} ` +
-      `บ่งบอกว่าชีวิตของท่านเป็นผู้ที่สร้างความสำเร็จได้ด้วยลำแข้งและความพยายามของตนเองอย่างแท้จริง ยิ่งมุ่งมั่นจะยิ่งเห็นผลตอบแทนงอกเงย ` +
-      `มีเกณฑ์ได้รับการยอมรับ ได้ชื่อเสียง และมีโชคลาภเข้ามาเป็นระยะ`;
+    const fateText = fate.detected
+      ? `${fate.metrics.specialTrait} (${findVar("fate", v => v.place === (fate.traits && fate.traits.origin), "")})`
+      : "ไม่พบเส้นวาสนาหลักชัดเจนในภาพ (บ่งบอกเส้นทางชีวิตที่ยืดหยุ่น สร้างโอกาสได้หลายทางตามจังหวะเวลา)";
+    const sunText = sun.detected ? `และตรวจพบเส้นอาทิตย์ (${sun.metrics.specialTrait})` : "ส่วนเส้นอาทิตย์ยังไม่ปรากฏเข้มชัด";
+    const wealthText = `${fateText} ${sunText} ประกอบกับ${sunM.name}ที่${sunM.fullnessLabel}`;
 
     // 5. คำแนะนำเสริมดวงชะตา (Guidance)
-    const guidanceText = `ตามหลักหัตถศาสตร์ ${handMeta.name} ของท่านมีเกณฑ์ชะตาที่สมบูรณ์พร้อม ` +
-      `ข้อแนะนำคือควรหมั่นฝึกสมาธิ ผ่อนคลายสายตาและสมอง ไม่แบกรับภาระของคนอื่นมากจนเกินไป การทำบุญช่วยเหลือผู้ยากไร้หรือสนับสนุนการศึกษา ` +
-      `จะยิ่งช่วยเปิดทางให้เส้นอาทิตย์และเส้นวาสนาเปล่งประกายความสำเร็จยิ่งขึ้น`;
+    const mercury = lines.mercury || {};
+    const mercNote = mercury.detected
+      ? `นอกจากนี้ยังตรวจพบเส้นพุธ (${mercury.metrics.specialTrait}) เสริมไหวพริบการเจรจาและสุขภาพ`
+      : "เส้นสุขภาพ/เส้นพุธเรียบสงบ สื่อถึงจังหวะชีวิตที่ปรับสมดุลได้ดี";
+    const guidanceText = `ตามหลักหัตถศาสตร์${handMeta.name} (${handMeta.focus || "ภาพรวมดวงชะตา"}) ${mercNote} ควรดูแลสุขภาพพักผ่อนให้สมดุล ฝึกสมาธิ และเสริมบุญด้านปัญญา/การให้ทานเพื่อเกื้อหนุนโชคลาภระยะยาว`;
+
+    const summaryVerdict = `สแกน${handMeta.name}ตรวจพบเส้นชัด ${confidence.featuresDetected}/6 เส้นหลัก (${confidence.landmarkMethod === "mediapipe" ? "MediaPipe 21 จุด" : "Skin-CV"} • ความแม่นยำ ${confidence.percentage}%) • ${lifeL.specialTrait}`;
 
     return {
       handType: hand,
@@ -515,34 +514,34 @@ class PalmScannerEngine {
           icon: "🌟",
           title: "วาสนาชีวิต สุขภาพ และพลังกาย",
           text: lifeText,
-          grade: "ดีเยี่ยม (พลังงานเต็มเปี่ยม)"
+          grade: life.detected ? (lifeL.depthScore >= 55 ? "ชัดเจนแข็งแกร่ง" : "สมดุลคล่องตัว") : "เส้นบางละเอียด"
         },
         intellect: {
           icon: "🧠",
           title: "สติปัญญา การงาน และการตัดสินใจ",
           text: intellectText,
-          grade: "ปัญญาเฉียบแหลม (คิดลึกซึ้ง)"
+          grade: head.detected ? (hdT.slope === "curved_moon" ? "คิดสร้างสรรค์" : "ตรรกะเฉียบคม") : "รอประมวลผลชัดขึ้น"
         },
         love: {
           icon: "💖",
           title: "ความรัก ความสัมพันธ์ และจิตใจ",
           text: loveText,
-          grade: "มั่นคง จริงใจ (เมตตามหานิยม)"
+          grade: heart.detected ? (hT.endTarget === "jupiter" ? "จริงใจอุดมคติ" : "รักมั่นคง") : "เส้นละเอียดบาง"
         },
         wealth: {
           icon: "💰",
           title: "โชคลาภ การเงิน และเกียรติยศ",
           text: wealthText,
-          grade: "สร้างตัวสำเร็จ (วาสนามั่นคง)"
+          grade: fate.detected || sun.detected ? "วาสนาสร้างด้วยตนเอง" : "ดวงยืดหยุ่นเปิดกว้าง"
         },
         guidance: {
           icon: "🌿",
           title: "คำแนะนำเสริมสิริมงคล",
           text: guidanceText,
-          grade: "ดวงชะตาสว่างไสว"
+          grade: "แนวทางเกื้อหนุนชีวิต"
         }
       },
-      summaryVerdict: `ผลการสแกนฝ่ามือ${handMeta.name} พบโครงสร้างเส้นสายมงคล 6 เส้นหลักคมชัดระดับ ${confidence.percentage}% เส้นชีวิตและเส้นสมองเกื้อหนุนให้เป็นคนคิดการใหญ่และมีพลังขับเคลื่อนสูง วาสนาสำเร็จด้วยตนเอง`
+      summaryVerdict
     };
   }
 }
@@ -556,11 +555,16 @@ class PalmApp {
     this.capturedImage = null;
     this.scanResult = null;
     this.activeLayer = "all"; // all, life, head, heart, fate, sun, mercury, mounts
+    this.showSkeletonOverlay = false;
+    this.showRidgeOverlay = false;
     this.isScanning = false;
     this.torchOn = false;
 
     this.initDOM();
     this.initEvents();
+    if (window.PalmMediaPipe && typeof window.PalmMediaPipe.warmup === "function") {
+      window.PalmMediaPipe.warmup();
+    }
   }
 
   initDOM() {
@@ -598,6 +602,8 @@ class PalmApp {
     this.confidenceValue = document.getElementById("palm-confidence-val");
     this.handInfoPill = document.getElementById("palm-hand-info-pill");
     this.layerFilterChips = document.querySelectorAll("[data-palm-layer]");
+    this.btnToggleSkeleton = document.getElementById("btn-palm-toggle-skeleton");
+    this.btnToggleRidge = document.getElementById("btn-palm-toggle-ridge");
     this.activeLineDetailBox = document.getElementById("palm-active-line-detail");
 
     // Calibration Sliders
@@ -680,6 +686,21 @@ class PalmApp {
           this.renderResultHUD();
           this.updateActiveLineDetail(this.activeLayer);
         });
+      });
+    }
+
+    if (this.btnToggleSkeleton) {
+      this.btnToggleSkeleton.addEventListener("click", () => {
+        this.showSkeletonOverlay = !this.showSkeletonOverlay;
+        this.btnToggleSkeleton.classList.toggle("active", this.showSkeletonOverlay);
+        this.renderResultHUD();
+      });
+    }
+    if (this.btnToggleRidge) {
+      this.btnToggleRidge.addEventListener("click", () => {
+        this.showRidgeOverlay = !this.showRidgeOverlay;
+        this.btnToggleRidge.classList.toggle("active", this.showRidgeOverlay);
+        this.renderResultHUD();
       });
     }
 
@@ -820,50 +841,78 @@ class PalmApp {
 
   loadSamplePalmDemo() {
     if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.2);
-    // สร้าง Canvas ตัวอย่างฝ่ามือความละเอียดสูงสำหรับทดสอบระบบสแกน
+    // สร้างภาพตัวอย่างฝ่ามือ (นิ้ว 5 นิ้ว + ข้อมือ + โทนสีผิวจริง + ร่องเส้นหลัก) ให้ระบบ CV ตรวจจับได้จริง
+    const w = 720, h = 960;
+    const isLeft = this.currentHand === "left";
+    const mx = (x) => (isLeft ? w - x : x);
     const demoCanvas = document.createElement("canvas");
-    demoCanvas.width = 900;
-    demoCanvas.height = 1200;
+    demoCanvas.width = w;
+    demoCanvas.height = h;
     const ctx = demoCanvas.getContext("2d");
 
-    // พื้นหลังฝ่ามือโทนธรรมชาติ
-    const bgGrad = ctx.createRadialGradient(450, 600, 100, 450, 600, 550);
-    bgGrad.addColorStop(0, "#f5cfb5");
-    bgGrad.addColorStop(0.5, "#e8be9f");
-    bgGrad.addColorStop(1, "#c99c7d");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 900, 1200);
+    ctx.fillStyle = "#3f4654";
+    ctx.fillRect(0, 0, w, h);
 
-    // รูปร่างฝ่ามือและรอยย่นธรรมชาติ
-    ctx.strokeStyle = "rgba(139, 90, 60, 0.45)";
-    ctx.lineWidth = 4;
-    ctx.lineCap = "round";
+    const skinGrad = ctx.createRadialGradient(mx(w * 0.50), h * 0.65, 30, mx(w * 0.50), h * 0.65, 360);
+    skinGrad.addColorStop(0, "#e6b39c");
+    skinGrad.addColorStop(0.75, "#d4987f");
+    skinGrad.addColorStop(1, "#bc7d66");
 
-    // เส้นชีวิต (Life line)
+    const drawDigit = (x1, y1, x2, y2, radius) => {
+      ctx.save();
+      ctx.strokeStyle = skinGrad;
+      ctx.lineWidth = radius * 2;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(mx(x1), y1);
+      ctx.lineTo(mx(x2), y2);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    // ข้อมือ + ตัวฝ่ามือ
+    ctx.fillStyle = skinGrad;
     ctx.beginPath();
-    ctx.moveTo(250, 480);
-    ctx.quadraticCurveTo(360, 720, 420, 1020);
-    ctx.stroke();
+    ctx.rect(mx(isLeft ? w * 0.66 : w * 0.33), h * 0.85, w * 0.33, h * 0.15);
+    ctx.fill();
 
-    // เส้นสมอง (Head line)
     ctx.beginPath();
-    ctx.moveTo(260, 490);
-    ctx.quadraticCurveTo(520, 580, 750, 690);
-    ctx.stroke();
+    ctx.moveTo(mx(w * 0.23), h * 0.50);
+    ctx.bezierCurveTo(mx(w * 0.21), h * 0.70, mx(w * 0.28), h * 0.86, mx(w * 0.34), h * 0.89);
+    ctx.lineTo(mx(w * 0.65), h * 0.89);
+    ctx.bezierCurveTo(mx(w * 0.76), h * 0.81, mx(w * 0.79), h * 0.64, mx(w * 0.72), h * 0.46);
+    ctx.bezierCurveTo(mx(w * 0.55), h * 0.42, mx(w * 0.35), h * 0.44, mx(w * 0.23), h * 0.50);
+    ctx.closePath();
+    ctx.fill();
 
-    // เส้นหัวใจ (Heart line)
-    ctx.beginPath();
-    ctx.moveTo(760, 390);
-    ctx.quadraticCurveTo(520, 390, 330, 300);
-    ctx.stroke();
+    // นิ้วก้อย นาง กลาง ชี้ โป้ง (แยกช่องนิ้วให้ skin-geometry & MediaPipe จับได้ชัด)
+    drawDigit(w * 0.26, h * 0.50, w * 0.24, h * 0.20, 26); // pinky
+    drawDigit(w * 0.38, h * 0.46, w * 0.37, h * 0.09, 29); // ring
+    drawDigit(w * 0.50, h * 0.44, w * 0.50, h * 0.04, 31); // middle
+    drawDigit(w * 0.63, h * 0.46, w * 0.63, h * 0.10, 30); // index
+    drawDigit(w * 0.70, h * 0.72, w * 0.86, h * 0.42, 34); // thumb
 
-    // เส้นวาสนา (Fate line)
-    ctx.strokeStyle = "rgba(139, 90, 60, 0.35)";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(460, 1000);
-    ctx.quadraticCurveTo(465, 650, 470, 320);
-    ctx.stroke();
+    // ร่องรอยเส้นหลักตามพิกัดฝ่ามือจริง (u: ขอบก้อย→ขอบชี้, v: ข้อมือ→โคนนิ้ว)
+    const S = (u, v) => [mx(w * (0.24 + u * 0.48)), h * (0.87 - v * 0.39)];
+    const drawCrease = (pts, width, alpha) => {
+      ctx.save();
+      ctx.strokeStyle = `rgba(92, 42, 32, ${alpha})`;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.shadowColor = "rgba(70, 30, 22, 0.45)";
+      ctx.shadowBlur = 4;
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.stroke();
+      ctx.restore();
+    };
+    drawCrease([S(0.03, 0.70), S(0.32, 0.79), S(0.60, 0.90), S(0.79, 1.01)], 5.2, 0.62); // heart
+    drawCrease([S(0.92, 0.72), S(0.69, 0.64), S(0.43, 0.56), S(0.12, 0.45)], 4.8, 0.56); // head
+    drawCrease([S(0.92, 0.72), S(0.75, 0.61), S(0.67, 0.40), S(0.69, 0.10)], 5.4, 0.60); // life
+    drawCrease([S(0.50, 0.08), S(0.50, 0.42), S(0.54, 0.78)], 4.0, 0.48);                // fate
+    drawCrease([S(0.34, 0.46), S(0.34, 0.68), S(0.36, 0.84)], 3.2, 0.40);                // sun
 
     const img = new Image();
     img.onload = () => {
@@ -883,20 +932,17 @@ class PalmApp {
     if (this.screenScanning) this.screenScanning.classList.add("active");
 
     const steps = [
-      { text: "กำลังตรวจจับตำแหน่งฝ่ามือและจุดกระดูก (Hand Contour & Skeleton Detection)...", pct: 25 },
-      { text: "กำลังปรับปรุงความคมชัดระดับลึก (Adaptive Contrast & Ridge Extraction)...", pct: 50 },
-      { text: "กำลังสแกนและแยกเส้นลายมือหลัก 6 เส้น (Life, Head, Heart, Fate, Sun, Mercury)...", pct: 75 },
-      { text: "กำลังวัดสัดส่วน เรขาคณิต และเนินทั้ง 7 (Measuring Palm Geometry & 7 Mounts)...", pct: 90 },
-      { text: "เปรียบเทียบกับคัมภีร์หัตถศาสตร์ไทย-สากล สำเร็จเรียบร้อย!", pct: 100 }
+      { text: "กำลังตรวจจับตำแหน่งฝ่ามือและจุดกระดูก 21 ข้อ (MediaPipe / Skin-CV)...", pct: 35 },
+      { text: "กำลังสกัดร่องรอยลายมือแบบ Multi-Scale Hessian & Orientation Alignment...", pct: 70 }
     ];
 
     for (let i = 0; i < steps.length; i++) {
       if (this.scanStepText) this.scanStepText.textContent = steps[i].text;
       if (this.scanProgressBar) this.scanProgressBar.style.width = `${steps[i].pct}%`;
-      if (window.mysticAudio && i % 2 === 0) {
-        window.mysticAudio.playCrystalBell(520 + (i * 120), 0.6);
+      if (window.mysticAudio && i === 0) {
+        window.mysticAudio.playCrystalBell(560, 0.5);
       }
-      await new Promise(r => setTimeout(r, 480));
+      await new Promise(r => setTimeout(r, 180));
     }
 
     // ประมวลผลด้วย Engine จริง
@@ -911,27 +957,59 @@ class PalmApp {
       sensitivity
     });
 
+    if (!this.scanResult || this.scanResult.ok === false) {
+      this.isScanning = false;
+      const errMsg = (this.scanResult && this.scanResult.message) || "ไม่พบฝ่ามือชัดเจนในภาพ กรุณาวางฝ่ามือในที่แสงสว่างและกางนิ้วเล็กน้อย";
+      if (window.taroApp && typeof window.taroApp.showToast === "function") {
+        window.taroApp.showToast(errMsg);
+      } else {
+        alert(errMsg);
+      }
+      this.resetToCaptureScreen();
+      return;
+    }
+
+    if (this.scanStepText) this.scanStepText.textContent = "ตรวจวัดความลึก ความยาว และเนินทั้ง 7 สำเร็จเรียบร้อย!";
+    if (this.scanProgressBar) this.scanProgressBar.style.width = "100%";
+
+    if (window.codeManager && window.taroApp && window.taroApp.activeCode && typeof window.codeManager.recordReadingDraw === "function") {
+      try {
+        window.codeManager.recordReadingDraw(window.taroApp.activeCode, {
+          mode: "palm",
+          hand: this.scanResult.hand,
+          confidence: this.scanResult.confidence ? this.scanResult.confidence.percentage : 0,
+          summary: this.scanResult.reading ? this.scanResult.reading.summaryVerdict : ""
+        });
+      } catch (_) {}
+    }
+
     this.isScanning = false;
     this.showResultScreen();
   }
 
   showResultScreen() {
-    if (!this.scanResult) return;
+    if (!this.scanResult || this.scanResult.ok === false) return;
 
     if (this.screenScanning) this.screenScanning.classList.remove("active");
     if (this.screenCapture) this.screenCapture.classList.remove("active");
     if (this.screenResult) this.screenResult.classList.add("active");
 
-    // อัปเดตค่าความแม่นยำ
-    if (this.confidenceValue) {
-      this.confidenceValue.textContent = `${this.scanResult.confidence.percentage}%`;
-    }
+    const conf = this.scanResult.confidence;
     if (this.confidenceBadge) {
-      this.confidenceBadge.textContent = `🎯 ${this.scanResult.confidence.label}`;
+      this.confidenceBadge.innerHTML = `🎯 ${conf.label} (<strong id="palm-confidence-val">${conf.percentage}%</strong>)`;
+      this.confidenceValue = document.getElementById("palm-confidence-val");
     }
     if (this.handInfoPill) {
-      const hMeta = this.scanResult.reading.handMeta;
-      this.handInfoPill.textContent = `✋ ${hMeta.name} (${this.currentHand === "left" ? "ชะตากำเนิด" : "ชะตาปัจจุบัน"})`;
+      const hMeta = this.scanResult.reading.handMeta || {};
+      const detLabel = this.scanResult.detectedHand === "left" ? "มือซ้าย" : "มือขวา";
+      const matchNote = this.scanResult.detectedHand && this.scanResult.detectedHand !== this.currentHand
+        ? ` • ภาพตรวจพบ: ${detLabel}`
+        : "";
+      this.handInfoPill.textContent = `✋ ${hMeta.name || (this.currentHand === "left" ? "มือซ้าย" : "มือขวา")}${matchNote}`;
+    }
+    if (this.summaryVerdictText) {
+      const meth = this.scanResult.landmarkMethod === "mediapipe" ? "MediaPipe 21 จุด" : "Offline Skin-CV";
+      this.summaryVerdictText.textContent = `ตรวจพบเส้นชัดเจน ${conf.featuresDetected} จาก 6 เส้นหลัก (${meth} • ใช้เวลา ${this.scanResult.elapsedMs || 0} ms) พร้อมคำทำนายจากคัมภีร์หัตถศาสตร์`;
     }
 
     // เรนเดอร์ Canvas ภาพลายมือพร้อมเส้นเวกเตอร์ HUD
@@ -960,9 +1038,19 @@ class PalmApp {
     // 1. วาดภาพจริงของฝ่ามือ
     ctx.drawImage(this.capturedImage, 0, 0, res.width, res.height);
 
-    // 2. เคลือบฟิล์ม Mystic Dark เพื่อให้เส้นนีออนเด่นชัด
-    ctx.fillStyle = "rgba(4, 7, 20, 0.42)";
+    // 2. เคลือบฟิล์ม Mystic Dark เพื่อให้เส้นเวกเตอร์เด่นชัด
+    ctx.fillStyle = "rgba(4, 7, 20, 0.34)";
     ctx.fillRect(0, 0, res.width, res.height);
+
+    // 2b. แผนที่ร่องลายมือจาก Hessian (ถอด/เปิดดูได้)
+    if (this.showRidgeOverlay && res.debug && res.debug.ridge) {
+      this.drawRidgeOverlay(ctx, res.debug);
+    }
+
+    // 2c. กรอบฝ่ามือและจุดกระดูก 21 ข้อ (MediaPipe / Skin-CV)
+    if (this.showSkeletonOverlay && res.anchors) {
+      this.drawSkeletonOverlay(ctx, res.anchors);
+    }
 
     // 3. วาดเส้นลายมือตาม Layer ที่เลือก
     const kb = window.PALM_KNOWLEDGE_BASE ? window.PALM_KNOWLEDGE_BASE.lines : {};
@@ -972,20 +1060,35 @@ class PalmApp {
 
     linesToDraw.forEach(lineKey => {
       const lineData = res.lines[lineKey];
-      if (!lineData || !lineData.points || lineData.points.length === 0) return;
+      if (!lineData || !lineData.points || lineData.points.length < 2) return;
+      if (this.activeLayer === "all" && !lineData.detected) return;
 
       const meta = kb[lineKey] || { color: "#38bdf8", name: lineKey };
       const pts = lineData.points;
 
+      if (!lineData.detected) {
+        ctx.save();
+        ctx.strokeStyle = meta.color;
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 6]);
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.stroke();
+        ctx.restore();
+        return;
+      }
+
       // Glow Effect ภายนอก
       ctx.save();
       ctx.strokeStyle = meta.color;
-      ctx.lineWidth = 10;
+      ctx.lineWidth = this.activeLayer === lineKey ? 10 : 8;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
       ctx.shadowColor = meta.color;
-      ctx.shadowBlur = 18;
-      ctx.globalAlpha = 0.45;
+      ctx.shadowBlur = 14;
+      ctx.globalAlpha = 0.4;
 
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
@@ -998,11 +1101,11 @@ class PalmApp {
       // เส้นเวกเตอร์คมชัดภายใน
       ctx.save();
       ctx.strokeStyle = meta.color;
-      ctx.lineWidth = 3.5;
+      ctx.lineWidth = this.activeLayer === lineKey ? 4.2 : 3.2;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
       ctx.shadowColor = "#ffffff";
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 5;
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
       for (let i = 1; i < pts.length; i++) {
@@ -1014,10 +1117,10 @@ class PalmApp {
       [pts[0], pts[Math.floor(pts.length / 2)], pts[pts.length - 1]].forEach(p => {
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = meta.color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.8;
         ctx.stroke();
       });
 
@@ -1030,7 +1133,11 @@ class PalmApp {
       ctx.font = "bold 13px 'Prompt', sans-serif";
       const textW = ctx.measureText(labelText).width;
       ctx.beginPath();
-      ctx.roundRect(midPoint.x - (textW / 2) - 6, midPoint.y - 18, textW + 12, 22, 6);
+      if (ctx.roundRect) {
+        ctx.roundRect(midPoint.x - (textW / 2) - 6, midPoint.y - 18, textW + 12, 22, 6);
+      } else {
+        ctx.rect(midPoint.x - (textW / 2) - 6, midPoint.y - 18, textW + 12, 22);
+      }
       ctx.fill();
       ctx.stroke();
 
@@ -1068,6 +1175,76 @@ class PalmApp {
     }
   }
 
+  drawRidgeOverlay(ctx, debug) {
+    const c = debug.crop;
+    if (!c || !c.w || !c.h) return;
+    const tmp = document.createElement("canvas");
+    tmp.width = c.w;
+    tmp.height = c.h;
+    const tctx = tmp.getContext("2d");
+    const img = tctx.createImageData(c.w, c.h);
+    const d = img.data;
+    const r = debug.ridge;
+    for (let i = 0; i < r.length; i++) {
+      const val = r[i];
+      if (val < 0.08) continue;
+      const q = i * 4;
+      const intensity = Math.min(255, Math.round(val * 255));
+      d[q] = 120 + Math.round(intensity * 0.5);
+      d[q + 1] = 240;
+      d[q + 2] = 255;
+      d[q + 3] = Math.min(220, Math.round(val * 230));
+    }
+    tctx.putImageData(img, 0, 0);
+    ctx.save();
+    ctx.drawImage(tmp, c.x, c.y, c.w / c.scale, c.h / c.scale);
+    ctx.restore();
+  }
+
+  drawSkeletonOverlay(ctx, anchors) {
+    ctx.save();
+    if (anchors.palmQuad && anchors.palmQuad.length === 4) {
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.72)";
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(anchors.palmQuad[0].x, anchors.palmQuad[0].y);
+      for (let i = 1; i < 4; i++) ctx.lineTo(anchors.palmQuad[i].x, anchors.palmQuad[i].y);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    const lm = anchors.landmarks || [];
+    const pairs = [
+      [0, 1], [1, 2], [2, 3], [3, 4],
+      [0, 5], [5, 6], [6, 7], [7, 8],
+      [0, 17], [5, 9], [9, 13], [13, 17],
+      [9, 10], [10, 11], [11, 12],
+      [13, 14], [14, 15], [15, 16],
+      [17, 18], [18, 19], [19, 20]
+    ];
+    ctx.strokeStyle = "rgba(250, 204, 21, 0.85)";
+    ctx.lineWidth = 2;
+    for (const [a, b] of pairs) {
+      if (!lm[a] || !lm[b]) continue;
+      ctx.beginPath();
+      ctx.moveTo(lm[a].x, lm[a].y);
+      ctx.lineTo(lm[b].x, lm[b].y);
+      ctx.stroke();
+    }
+    for (let i = 0; i < lm.length; i++) {
+      const p = lm[i];
+      if (!p) continue;
+      const isCore = i === 0 || i === 5 || i === 9 || i === 13 || i === 17;
+      ctx.fillStyle = isCore ? "#facc15" : "#fef08a";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, isCore ? 5 : 3.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   updateActiveLineDetail(layerKey) {
     if (!this.activeLineDetailBox || !this.scanResult) return;
 
@@ -1075,30 +1252,35 @@ class PalmApp {
     const kbLines = window.PALM_KNOWLEDGE_BASE ? window.PALM_KNOWLEDGE_BASE.lines : {};
 
     if (layerKey === "all") {
+      const mini = (id, name, color) => {
+        const l = res.lines[id] || {};
+        const m = l.metrics || {};
+        const stat = l.detected ? `${m.confidenceScore || 0}%` : "ไม่ชัดเจน";
+        return `
+          <div class="line-mini-badge" style="border-left: 3px solid ${color}; opacity:${l.detected ? 1 : 0.72};">
+            <strong>${name}:</strong> ${m.specialTrait || "-"} (${stat})
+          </div>`;
+      };
       this.activeLineDetailBox.innerHTML = `
         <div class="line-detail-summary-grid">
-          <div class="line-mini-badge" style="border-left: 3px solid #10b981;">
-            <strong>เส้นชีวิต:</strong> ${res.lines.life.metrics.specialTrait} (${res.lines.life.metrics.confidenceScore.toFixed(1)}%)
-          </div>
-          <div class="line-mini-badge" style="border-left: 3px solid #06b6d4;">
-            <strong>เส้นสมอง:</strong> ${res.lines.head.metrics.specialTrait} (${res.lines.head.metrics.confidenceScore.toFixed(1)}%)
-          </div>
-          <div class="line-mini-badge" style="border-left: 3px solid #ec4899;">
-            <strong>เส้นหัวใจ:</strong> ${res.lines.heart.metrics.specialTrait} (${res.lines.heart.metrics.confidenceScore.toFixed(1)}%)
-          </div>
-          <div class="line-mini-badge" style="border-left: 3px solid #eab308;">
-            <strong>เส้นวาสนา:</strong> ${res.lines.fate.metrics.specialTrait} (${res.lines.fate.metrics.confidenceScore.toFixed(1)}%)
-          </div>
+          ${mini("life", "เส้นชีวิต", "#10b981")}
+          ${mini("head", "เส้นสมอง", "#06b6d4")}
+          ${mini("heart", "เส้นหัวใจ", "#ec4899")}
+          ${mini("fate", "เส้นวาสนา", "#eab308")}
         </div>
       `;
       return;
     }
 
     if (layerKey === "mounts") {
+      const topMounts = Object.values(res.mounts || {})
+        .filter(m => m.fullness === "full")
+        .map(m => `${m.name} (${m.fullnessScore || "-"}%)`)
+        .join(", ") || "สมดุลทุกเนิน";
       this.activeLineDetailBox.innerHTML = `
         <div class="mounts-detail-summary">
-          <strong>ตรวจวัดตำแหน่งเนินบนฝ่ามือครบ 7 เนิน:</strong>
-          <p>เนินพฤหัส (เกียรติยศ), เนินเสาร์ (สติปัญญา), เนินอาทิตย์ (ชื่อเสียง), เนินพุธ (เจรจาค้าขาย), เนินศุกร์ (พลังชีวิต), เนินจันทร์ (จินตนาการ), เนินอังคาร (ความกล้าหาญ)</p>
+          <strong>ตรวจวัดตำแหน่งเนินบนฝ่ามือครบ 7 เนิน (ตำแหน่งอ้างอิงตาม Landmark จริง):</strong>
+          <p>เนินเด่นพิเศษในภาพนี้: <strong>${topMounts}</strong></p>
         </div>
       `;
       return;
@@ -1107,18 +1289,23 @@ class PalmApp {
     const line = res.lines[layerKey];
     const meta = kbLines[layerKey] || { name: layerKey, color: "#f3cf7a", description: "" };
     if (!line) return;
+    const m = line.metrics || {};
+    const statusBadge = line.detected
+      ? `ความแม่นยำวัดจริง: ${Number(m.confidenceScore || 0).toFixed(1)}%`
+      : `ไม่พบร่องเส้นชัดเจนในภาพ (${Number(m.confidenceScore || 0).toFixed(0)}%)`;
 
     this.activeLineDetailBox.innerHTML = `
       <div class="line-focused-card" style="border-color: ${meta.color};">
         <div class="focused-header">
           <span class="focused-title" style="color: ${meta.color};">✦ ${meta.name} (${meta.enName || ""})</span>
-          <span class="focused-accuracy">ความแม่นยำ: ${line.metrics.confidenceScore.toFixed(1)}%</span>
+          <span class="focused-accuracy">${statusBadge}</span>
         </div>
         <p class="focused-desc">${meta.description || ""}</p>
         <div class="focused-stats">
-          <span>ความลึกชัด: <strong>${line.metrics.depthScore}%</strong></span>
-          <span>ความยาวเทียบสัดส่วน: <strong>${line.metrics.lengthPercentage}%</strong></span>
-          <span>ลักษณะ: <strong>${line.metrics.specialTrait}</strong></span>
+          <span>ความต่อเนื่อง: <strong>${m.coveragePercentage || 0}%</strong></span>
+          <span>ความลึกชัด: <strong>${m.depthScore || 0}%</strong></span>
+          <span>ความยาวเทียบฝ่ามือ: <strong>${m.lengthPercentage || 0}%</strong></span>
+          <span>ลักษณะที่วัดได้: <strong>${m.specialTrait || "-"}</strong></span>
         </div>
       </div>
     `;
