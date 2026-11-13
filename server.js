@@ -377,10 +377,15 @@ const server = http.createServer(async (req, res) => {
           const cNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
           detail = `ลูกค้าเปิดไพ่ทาโรต์ 3 ใบ หมวด${readingResult.categoryName || readingResult.category}: ${cNames}`;
         } else if (readingResult.mode === "palm") {
-          codeObj.palmDrawCount = (codeObj.palmDrawCount || 0) + 1;
+          if ((codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult) {
+            return sendJson(res, 200, { ok: true, alreadyAnalyzed: true, code: codeObj });
+          }
+          codeObj.palmDrawCount = 1;
           codeObj.palmResult = readingResult;
           codeObj.logs.palmDrawnAt = now;
-          detail = `ลูกค้าสแกนลายมือ (${readingResult.hand === "left" ? "มือซ้าย" : "มือขวา"}) ความแม่นยำ ${readingResult.confidence || "98"}%`;
+          codeObj.logs.palmAnalyzedAt = now;
+          const handDesc = readingResult.hand === "both" ? "ครบ 2 มือ (ซ้าย+ขวา)" : (readingResult.hand === "left" ? "มือซ้าย" : "มือขวา");
+          detail = `ลูกค้าวิเคราะห์ลายมือ (${handDesc}) ความแม่นยำ ${Number(readingResult.confidence || 92).toFixed(1)}%`;
         } else {
           codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
           codeObj.siamsiResult = readingResult;
@@ -433,6 +438,12 @@ const server = http.createServer(async (req, res) => {
         codeObj.drawCount = 0;
         codeObj.tarotDrawCount = 0;
         codeObj.siamsiDrawCount = 0;
+        codeObj.palmDrawCount = 0;
+        codeObj.palmResult = null;
+        if (codeObj.logs) {
+          codeObj.logs.palmDrawnAt = null;
+          codeObj.logs.palmAnalyzedAt = null;
+        }
         codeObj.status = codeObj.logs.accessCount > 0 ? "accessed" : "unused";
         codeObj.readingResult = null;
         codeObj.tarotResult = null;

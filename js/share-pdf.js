@@ -516,12 +516,327 @@ class ShareAndPdfEngine {
   /**
    * สร้างลิงก์สำหรับแชร์ผลคำทำนายโดยตรง เพื่อให้เพื่อนในโซเชียลคลิกเข้ามาดูหน้าคำทำนายชุดเดียวกันได้ทันที
    */
+  _loadOptionalImage(src) {
+    if (!src) return Promise.resolve(null);
+    return this.loadImage(src).catch(() => null);
+  }
+
+  _drawContainImage(ctx, img, x, y, w, h) {
+    if (!img || !img.width || !img.height) return;
+    const scale = Math.min(w / img.width, h / img.height);
+    const dw = img.width * scale;
+    const dh = img.height * scale;
+    const dx = x + (w - dw) / 2;
+    const dy = y + (h - dh) / 2;
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  async generatePalmInfoCard(readingData) {
+    const W = 1080;
+    const H = 1620;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+
+    // 1. Dark Mystic Celestial Background
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, "#050918");
+    bg.addColorStop(0.5, "#101836");
+    bg.addColorStop(1, "#070b1d");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Soft Aura Glow
+    const glow = ctx.createRadialGradient(W / 2, 260, 40, W / 2, 260, 560);
+    glow.addColorStop(0, "rgba(243, 207, 122, 0.16)");
+    glow.addColorStop(1, "rgba(243, 207, 122, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, 820);
+
+    // Outer Gold Frame
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.55)";
+    ctx.lineWidth = 3;
+    this.drawRoundedRect(ctx, 26, 26, W - 52, H - 52, 28);
+    ctx.stroke();
+
+    // Header + Brand Logo
+    const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
+      ? window.brandThemeEngine.getLogoUrl()
+      : "assets/logo.jpg";
+    const logoImg = await this._loadOptionalImage(logoUrl);
+    if (logoImg) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(110, 102, 42, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(logoImg, 68, 60, 84, 84);
+      ctx.restore();
+    }
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#f3cf7a";
+    ctx.font = "bold 28px 'Cinzel', 'Prompt', sans-serif";
+    ctx.fillText("SIAMSI TAROT ORACLE • PALMISTRY", W / 2, 88);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 36px 'Prompt', sans-serif";
+    ctx.fillText("ผลวิเคราะห์ลายมือครบ 2 มือ (ซ้าย + ขวา)", W / 2, 134);
+
+    const confVal = Number(readingData.confidence || 92).toFixed(1);
+    ctx.fillStyle = "rgba(16, 185, 129, 0.18)";
+    ctx.strokeStyle = "rgba(52, 211, 153, 0.65)";
+    ctx.lineWidth = 1.6;
+    this.drawRoundedRect(ctx, W / 2 - 190, 154, 380, 40, 20);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#86efac";
+    ctx.font = "600 20px 'Prompt', sans-serif";
+    ctx.fillText(`🎯 ความแม่นยำการตรวจจับ ${confVal}%`, W / 2, 181);
+
+    // 2. Dual-Hand HUD Visual Frames
+    const leftImg = await this._loadOptionalImage(readingData.leftHudDataUrl);
+    const rightImg = await this._loadOptionalImage(readingData.rightHudDataUrl);
+    const cardY = 216;
+    const cardW = 472;
+    const cardH = 370;
+
+    const drawHandBox = (x, label, img) => {
+      ctx.fillStyle = "rgba(9, 14, 32, 0.9)";
+      ctx.strokeStyle = "rgba(243, 207, 122, 0.42)";
+      ctx.lineWidth = 2;
+      this.drawRoundedRect(ctx, x, cardY, cardW, cardH, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      if (img) {
+        this._drawContainImage(ctx, img, x + 16, cardY + 14, cardW - 32, cardH - 64);
+      } else {
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "500 20px 'Prompt', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("บันทึกผลสแกนหัตถศาสตร์แล้ว", x + cardW / 2, cardY + cardH / 2);
+      }
+
+      ctx.fillStyle = "#fde68a";
+      ctx.font = "bold 20px 'Prompt', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(label, x + cardW / 2, cardY + cardH - 18);
+    };
+
+    drawHandBox(56, "✋ มือซ้าย • พื้นดวงเดิม", leftImg);
+    drawHandBox(W - 56 - cardW, "🤚 มือขวา • ปัจจุบัน-อนาคต", rightImg);
+
+    // 3. Verdict Box
+    const vY = cardY + cardH + 20;
+    ctx.fillStyle = "rgba(243, 207, 122, 0.1)";
+    ctx.strokeStyle = "rgba(243, 207, 122, 0.35)";
+    ctx.lineWidth = 1.5;
+    this.drawRoundedRect(ctx, 56, vY, W - 112, 92, 16);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff1be";
+    ctx.font = "600 21px 'Prompt', sans-serif";
+    const vLines = this.wrapTextLines(ctx, readingData.summaryVerdict || "วิเคราะห์ครบ 2 ฝ่ามือสำเร็จ", W - 156).slice(0, 2);
+    vLines.forEach((line, idx) => {
+      ctx.fillText(line, W / 2, vY + 38 + idx * 30);
+    });
+
+    // 4. Stacked 5-Aspect Highlights
+    const aspects = readingData.aspects || {};
+    const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
+    let curY = vY + 114;
+    const boxH = 154;
+    const gap = 16;
+
+    orderedKeys.forEach((key) => {
+      const asp = aspects[key];
+      if (!asp) return;
+      ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
+      ctx.strokeStyle = "rgba(243, 207, 122, 0.28)";
+      ctx.lineWidth = 1.5;
+      this.drawRoundedRect(ctx, 56, curY, W - 112, boxH, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#f3cf7a";
+      ctx.font = "bold 22px 'Prompt', sans-serif";
+      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 80, curY + 36);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#86efac";
+      ctx.font = "600 18px 'Prompt', sans-serif";
+      ctx.fillText(asp.grade || "", W - 80, curY + 36);
+
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#e2e8f0";
+      ctx.font = "400 19px 'Prompt', sans-serif";
+      const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "");
+      const bodyLines = this.wrapTextLines(ctx, cleanBody, W - 168).slice(0, 3);
+      bodyLines.forEach((ln, li) => {
+        ctx.fillText(ln, 80, curY + 68 + li * 26);
+      });
+
+      curY += boxH + gap;
+    });
+
+    // Footer
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "500 18px 'Prompt', sans-serif";
+    const dateStr = new Date(readingData.timestamp || Date.now()).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    ctx.fillText(`✦ เซียมซีทาโรต์ (Siamsi Tarot Oracle) • บันทึกผลวิเคราะห์วันที่ ${dateStr} ✦`, W / 2, H - 38);
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 0.95));
+    const dataUrl = canvas.toDataURL("image/png", 0.95);
+    this.currentInfoDataUrl = dataUrl;
+    this.currentInfoBlob = blob;
+    this.currentReadingData = readingData;
+    return { dataUrl, blob, canvas };
+  }
+
+  async generatePalmPdfDetailPages(readingData) {
+    const pages = [];
+    const W = 1240;
+    const H = 1754;
+    const padX = 76;
+    const contentW = W - padX * 2;
+    const maxBottomY = H - 96;
+
+    const createPage = (pageNum) => {
+      const c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, W, 94);
+      ctx.fillStyle = "#f3cf7a";
+      ctx.font = "bold 26px 'Prompt', sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("คัมภีร์หัตถศาสตร์ฉบับสมบูรณ์ (วิเคราะห์ครบ 2 มือ)", padX, 58);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "500 18px 'Prompt', sans-serif";
+      ctx.fillText(`หน้า ${pageNum + 1}`, W - padX, 58);
+      pages.push(c);
+      return { c, ctx, y: 136 };
+    };
+
+    let pageState = createPage(1);
+    const ensureSpace = (neededH) => {
+      if (pageState.y + neededH > maxBottomY) {
+        pageState = createPage(pages.length + 1);
+      }
+    };
+
+    const { ctx } = pageState;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#1e293b";
+    ctx.font = "bold 24px 'Prompt', sans-serif";
+    ctx.fillText(`สรุปภาพรวมการวิเคราะห์ (ความแม่นยำ ${Number(readingData.confidence || 92).toFixed(1)}%)`, padX, pageState.y);
+    pageState.y += 38;
+
+    pageState.ctx.font = "400 20px 'Prompt', sans-serif";
+    pageState.ctx.fillStyle = "#334155";
+    const sumLines = this.wrapTextLines(pageState.ctx, readingData.summaryVerdict || "", contentW);
+    sumLines.forEach(ln => {
+      ensureSpace(32);
+      pageState.ctx.fillText(ln, padX, pageState.y);
+      pageState.y += 30;
+    });
+    pageState.y += 22;
+
+    const aspects = readingData.aspects || {};
+    for (const key of ["life", "intellect", "love", "wealth", "guidance"]) {
+      const asp = aspects[key];
+      if (!asp) continue;
+
+      pageState.ctx.font = "400 20px 'Prompt', sans-serif";
+      const mainLines = this.wrapTextLines(pageState.ctx, asp.text || "", contentW - 36);
+      const leftLines = asp.leftNote ? this.wrapTextLines(pageState.ctx, asp.leftNote, contentW - 52) : [];
+      const rightLines = asp.rightNote ? this.wrapTextLines(pageState.ctx, asp.rightNote, contentW - 52) : [];
+
+      const estHeight = 86 + mainLines.length * 30 + (leftLines.length ? leftLines.length * 26 + 24 : 0) + (rightLines.length ? rightLines.length * 26 + 24 : 0) + 28;
+      ensureSpace(Math.min(estHeight, 520));
+
+      const cardTop = pageState.y;
+      const boxFillH = estHeight - 16;
+      pageState.ctx.fillStyle = "#f8fafc";
+      pageState.ctx.strokeStyle = "#cbd5e1";
+      pageState.ctx.lineWidth = 1.6;
+      this.drawRoundedRect(pageState.ctx, padX, cardTop, contentW, boxFillH, 14);
+      pageState.ctx.fill();
+      pageState.ctx.stroke();
+
+      let innerY = cardTop + 40;
+      pageState.ctx.textAlign = "left";
+      pageState.ctx.fillStyle = "#0f172a";
+      pageState.ctx.font = "bold 24px 'Prompt', sans-serif";
+      pageState.ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, padX + 20, innerY);
+
+      pageState.ctx.textAlign = "right";
+      pageState.ctx.fillStyle = "#047857";
+      pageState.ctx.font = "600 18px 'Prompt', sans-serif";
+      pageState.ctx.fillText(asp.grade || "", W - padX - 20, innerY);
+      innerY += 38;
+
+      pageState.ctx.textAlign = "left";
+      pageState.ctx.fillStyle = "#1e293b";
+      pageState.ctx.font = "400 20px 'Prompt', sans-serif";
+      mainLines.forEach(ln => {
+        pageState.ctx.fillText(ln, padX + 20, innerY);
+        innerY += 30;
+      });
+
+      if (leftLines.length) {
+        innerY += 10;
+        pageState.ctx.fillStyle = "#0369a1";
+        pageState.ctx.font = "600 18px 'Prompt', sans-serif";
+        leftLines.forEach(ln => {
+          pageState.ctx.fillText(ln, padX + 28, innerY);
+          innerY += 26;
+        });
+      }
+      if (rightLines.length) {
+        innerY += 8;
+        pageState.ctx.fillStyle = "#92400e";
+        pageState.ctx.font = "600 18px 'Prompt', sans-serif";
+        rightLines.forEach(ln => {
+          pageState.ctx.fillText(ln, padX + 28, innerY);
+          innerY += 26;
+        });
+      }
+
+      pageState.y = cardTop + estHeight;
+    }
+
+    return pages;
+  }
+
   buildShareableReadingUrl(readingData) {
     const baseUrl = window.location.origin + window.location.pathname;
     if (!readingData) return baseUrl;
 
     const params = new URLSearchParams();
     params.set("share", "1");
+
+    if (readingData.mode === "palm") {
+      params.set("palm", "1");
+      params.set("hand", String(readingData.hand || "both"));
+      params.set("conf", String(readingData.confidence || "92"));
+      if (readingData.code) params.set("code", readingData.code);
+      const shortSum = String(readingData.summaryVerdict || "").slice(0, 180);
+      if (shortSum) params.set("sum", shortSum);
+      return `${baseUrl}?${params.toString()}`;
+    }
 
     if (readingData.mode === "siamsi") {
       params.set("siamsi", String(readingData.signNumber || readingData.stickNum || "1"));
@@ -545,6 +860,26 @@ class ShareAndPdfEngine {
   buildFullSocialCaption(readingData) {
     if (!readingData) return "";
     const shareUrl = this.buildShareableReadingUrl(readingData);
+
+    if (readingData.mode === "palm") {
+      const aspects = readingData.aspects || {};
+      const order = ["life", "intellect", "love", "wealth", "guidance"];
+      const aspectText = order
+        .map(k => aspects[k])
+        .filter(Boolean)
+        .map(a => `${a.icon || "✦"} ${a.title} (${a.grade || ""})\n${a.text || ""}`)
+        .join("\n\n");
+      const confVal = Number(readingData.confidence || 92).toFixed(1);
+      return `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (SIAMSI TAROT • PALMISTRY)\n` +
+        `🎯 ความแม่นยำการตรวจจับ: ${confVal}%\n` +
+        `✨ บทสรุป: ${readingData.summaryVerdict || ""}\n\n` +
+        `━━━━━━━━━━━━━━━\n` +
+        `📜 คำพยากรณ์หัตถศาสตร์ 5 ด้าน\n` +
+        `━━━━━━━━━━━━━━━\n\n` +
+        `${aspectText}\n\n` +
+        `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
+        `#ดูดวงลายมือ #สแกนลายมือ2มือ #เซียมซีทาโรต์`;
+    }
 
     if (readingData.mode === "siamsi") {
       const poem = (readingData.poemLines || []).join("\n");
@@ -723,6 +1058,12 @@ class ShareAndPdfEngine {
       try {
         await document.fonts.ready;
       } catch (_) {}
+    }
+
+    if (readingData.mode === "palm") {
+      const { canvas: infoCanvas } = await this.generatePalmInfoCard(readingData);
+      const detailPages = await this.generatePalmPdfDetailPages(readingData);
+      return this.canvasesToPdfBlob([infoCanvas, ...detailPages]);
     }
 
     if (readingData.mode === "siamsi") {
@@ -1145,9 +1486,11 @@ class ShareAndPdfEngine {
   async downloadInfoImageFile(readingData) {
     let dataUrl = this.currentInfoDataUrl;
     if (!dataUrl || this.currentReadingData !== readingData) {
-      const res = readingData.mode === "siamsi"
-        ? await this.generateSiamsiInfoCard(readingData)
-        : await this.generateTarotInfoCard(readingData);
+      const res = readingData.mode === "palm"
+        ? await this.generatePalmInfoCard(readingData)
+        : (readingData.mode === "siamsi"
+          ? await this.generateSiamsiInfoCard(readingData)
+          : await this.generateTarotInfoCard(readingData));
       dataUrl = res.dataUrl;
     }
     const codePart = readingData.code ? `_${readingData.code}` : "";

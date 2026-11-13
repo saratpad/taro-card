@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบหลังบ้านจัดการโค้ด & ตำราพยากรณ์ RAG | เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE)</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/style.css?v=20261113d">
+  <link rel="stylesheet" href="css/admin.css?v=20261113d">
 </head>
 <body class="admin-body">
 
@@ -120,9 +120,9 @@
         </div>
       </div>
       <div class="stat-card stat-drawn">
-        <div class="stat-icon">🎴</div>
+        <div class="stat-icon">✅</div>
         <div class="stat-info">
-          <span class="stat-label">สุ่มไพ่/เซียมซีแล้ว</span>
+          <span class="stat-label">ดูดวง / วิเคราะห์แล้ว</span>
           <strong class="stat-value" id="stat-drawn-codes">0</strong>
         </div>
       </div>
@@ -139,7 +139,7 @@
     <section class="admin-panel-card create-code-panel">
       <div class="panel-header">
         <h2>✨ สร้างโค้ดดูดวงใหม่สำหรับลูกค้า Fastwork</h2>
-        <p>โค้ดทุกใบจำกัดการสุ่มดูดวง <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
+        <p>โค้ดทุกใบจำกัดการใช้งานดูดวง/วิเคราะห์ลายมือ <strong>1 ครั้ง</strong> และมีอายุใช้งาน <strong>1 วัน (24 ชั่วโมง)</strong> โดยอัตโนมัติ</p>
       </div>
 
       <form id="create-code-form" class="create-code-form" autocomplete="off">
@@ -219,13 +219,14 @@
             <option value="all">ทุกแพ็กเกจ / ทุกศาสตร์</option>
             <option value="tarot">🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์</option>
             <option value="siamsi">🎋 แพ็กเกจ 2: เสี่ยงเซียมซี</option>
-            <option value="combo">🌟 แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี</option>
+            <option value="combo">🌟 แพ็กเกจ 3: รวม 3 ศาสตร์</option>
+            <option value="palm">✋ แพ็กเกจ 4: วิเคราะห์ลายมือ (2 มือ)</option>
           </select>
           <select id="admin-filter-status" class="admin-filter-select">
             <option value="all">ทุกสถานะ</option>
             <option value="unused">⏳ ยังไม่เข้าระบบ</option>
-            <option value="accessed">👁️ เข้าระบบแล้ว (ยังไม่จับไพ่)</option>
-            <option value="drawn">✅ จับไพ่/เซียมซีแล้ว</option>
+            <option value="accessed">👁️ เข้าระบบแล้ว (ยังไม่ดูดวง/วิเคราะห์)</option>
+            <option value="drawn">✅ ดูดวง / วิเคราะห์แล้ว</option>
             <option value="expired">⌛ หมดอายุแล้ว</option>
           </select>
         </div>
@@ -335,8 +336,8 @@
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
   <script src="js/rag-engine.js"></script>
-  <script src="js/code-manager.js"></script>
-  <script src="js/share-pdf.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/code-manager.js?v=20261113d"></script>
+  <script src="js/share-pdf.js?v=20261113d"></script>
+  <script src="js/admin.js?v=20261113d"></script>
 </body>
 </html>

@@ -282,7 +282,10 @@ class CodeManager {
     if (!codeObj) return false;
     const c = this._normalizeCodeObj(codeObj);
     if (c.mode === "combo") {
-      return c.tarotDrawCount >= 1 && c.siamsiDrawCount >= 1;
+      return c.tarotDrawCount >= 1 && c.siamsiDrawCount >= 1 && c.palmDrawCount >= 1;
+    }
+    if (c.mode === "palm") {
+      return c.palmDrawCount >= 1;
     }
     if (c.mode === "siamsi") {
       return c.siamsiDrawCount >= 1;
@@ -373,7 +376,7 @@ class CodeManager {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี (1 ครั้ง)",
       combo: "แพ็กเกจ 3: ดูดวงไพ่ทาโรต์ + เสี่ยงเซียมซี + สแกนลายมือ (อย่างละ 1 ครั้ง)",
-      palm: "แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (1 ครั้ง)"
+      palm: "แพ็กเกจ 4: วิเคราะห์ลายมือครบ 2 มือ (1 ครั้ง)"
     };
     const modeDesc = modeDescMap[cleanMode] || modeDescMap.tarot;
 
@@ -399,6 +402,7 @@ class CodeManager {
         tarotDrawnAt: null,
         siamsiDrawnAt: null,
         palmDrawnAt: null,
+        palmAnalyzedAt: null,
         sharedAt: null,
         shareCount: 0,
         pdfDownloadedAt: null,
@@ -529,10 +533,15 @@ class CodeManager {
       const cardNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
       summaryDetail = `ลูกค้าเปิดไพ่ทาโรต์ 3 ใบ หมวด${readingResult.categoryName || readingResult.category}: ${cardNames}`;
     } else if (readingResult.mode === "palm") {
-      codeObj.palmDrawCount = (codeObj.palmDrawCount || 0) + 1;
+      if ((codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult) {
+        return codeObj;
+      }
+      codeObj.palmDrawCount = 1;
       codeObj.palmResult = readingResult;
       codeObj.logs.palmDrawnAt = now;
-      summaryDetail = `ลูกค้าสแกนลายมือ (${readingResult.hand === "left" ? "มือซ้าย" : "มือขวา"}) ความแม่นยำ ${readingResult.confidence || "98%"}%`;
+      codeObj.logs.palmAnalyzedAt = now;
+      const handDesc = readingResult.hand === "both" ? "ครบ 2 มือ (ซ้าย+ขวา)" : (readingResult.hand === "left" ? "มือซ้าย" : "มือขวา");
+      summaryDetail = `ลูกค้าวิเคราะห์ลายมือ (${handDesc}) ความแม่นยำ ${Number(readingResult.confidence || 92).toFixed(1)}%`;
     } else {
       codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
       codeObj.siamsiResult = readingResult;
@@ -627,6 +636,12 @@ class CodeManager {
       codeObj.drawCount = 0;
       codeObj.tarotDrawCount = 0;
       codeObj.siamsiDrawCount = 0;
+      codeObj.palmDrawCount = 0;
+      codeObj.palmResult = null;
+      if (codeObj.logs) {
+        codeObj.logs.palmDrawnAt = null;
+        codeObj.logs.palmAnalyzedAt = null;
+      }
       codeObj.status = codeObj.logs.accessCount > 0 ? "accessed" : "unused";
       codeObj.readingResult = null;
       codeObj.tarotResult = null;

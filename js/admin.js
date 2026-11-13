@@ -432,7 +432,7 @@ class AdminBackoffice {
       return window.codeManager.isDemoCode(codeObjOrStr);
     }
     const codeStr = typeof codeObjOrStr === "string" ? codeObjOrStr : (codeObjOrStr && codeObjOrStr.code ? codeObjOrStr.code : "");
-    return ["TAROT99", "SIAMSI99", "COMBO99"].includes(String(codeStr).trim().toUpperCase());
+    return ["TAROT99", "SIAMSI99", "COMBO99", "PALM99"].includes(String(codeStr).trim().toUpperCase());
   }
 
   getCustomerCodes() {
@@ -443,7 +443,7 @@ class AdminBackoffice {
     const customerCodes = this.getCustomerCodes();
     const total = customerCodes.length;
     const accessed = customerCodes.filter(c => c.logs && c.logs.accessCount > 0).length;
-    const drawn = customerCodes.filter(c => (c.drawCount > 0 && c.readingResult) || c.tarotResult || c.siamsiResult).length;
+    const drawn = customerCodes.filter(c => (c.drawCount > 0 && c.readingResult) || c.tarotResult || c.siamsiResult || c.palmResult || (c.palmDrawCount || 0) >= 1).length;
     const sharedOrPdf = customerCodes.filter(c => c.logs && (c.logs.shareCount > 0 || c.logs.pdfDownloadCount > 0)).length;
 
     if (this.statTotal) this.statTotal.textContent = total;
@@ -511,7 +511,7 @@ class AdminBackoffice {
 
   getEffectiveStatus(codeObj) {
     if (window.codeManager.isCodeExpired(codeObj)) return "expired";
-    if (codeObj.drawCount > 0 && codeObj.readingResult) return "drawn";
+    if ((codeObj.drawCount > 0 && codeObj.readingResult) || codeObj.tarotResult || codeObj.siamsiResult || codeObj.palmResult || (codeObj.palmDrawCount || 0) >= 1) return "drawn";
     if (codeObj.logs && codeObj.logs.accessCount > 0) return "accessed";
     return "unused";
   }
@@ -559,7 +559,9 @@ class AdminBackoffice {
       const hasAccessed = logs.accessCount > 0;
       const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
       const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
-      const hasDrawn = !!(tarotRes || siamsiRes);
+      const palmRes = codeObj.palmResult || (codeObj.readingResult && codeObj.readingResult.mode === "palm" ? codeObj.readingResult : null);
+      const isPalmOnly = codeObj.mode === "palm";
+      const hasDrawn = !!(tarotRes || siamsiRes || palmRes || (codeObj.palmDrawCount || 0) >= 1);
       const hasShared = logs.shareCount > 0;
       const hasPdf = logs.pdfDownloadCount > 0;
 
@@ -586,8 +588,8 @@ class AdminBackoffice {
           <span class="mini-status-chip ${hasAccessed ? 'done' : 'pending'}" title="การเข้าระบบ">
             ${hasAccessed ? `👁️ เข้าแล้ว (${logs.accessCount})` : '⏳ ยังไม่เข้า'}
           </span>
-          <span class="mini-status-chip ${hasDrawn ? 'done' : 'pending'}" title="การสุ่มคำทำนาย">
-            ${hasDrawn ? '🎴 สุ่มแล้ว' : '⚪ รอสุ่ม'}
+          <span class="mini-status-chip ${hasDrawn ? 'done' : 'pending'}" title="${isPalmOnly ? 'สถานะการวิเคราะห์ลายมือ' : 'การสุ่มคำทำนาย'}">
+            ${hasDrawn ? (isPalmOnly || (palmRes && !tarotRes && !siamsiRes) ? '✋ วิเคราะห์แล้ว' : '🎴 สุ่มแล้ว') : (isPalmOnly ? '⚪ รอวิเคราะห์ลายมือ' : '⚪ รอสุ่ม')}
           </span>
           ${hasShared ? `<span class="mini-status-chip done">📤 แชร์ (${logs.shareCount})</span>` : ""}
           ${hasPdf ? `<span class="mini-status-chip done">📄 PDF (${logs.pdfDownloadCount})</span>` : ""}
@@ -611,6 +613,13 @@ class AdminBackoffice {
           </button>
         `;
       }
+      if (palmRes) {
+        quickPdfBtns += `
+          <button type="button" class="btn-row-act btn-pdf-highlight" data-act="download-pdf-palm" title="ดาวน์โหลด PDF วิเคราะห์ลายมือ">
+            📄 PDF ลายมือ
+          </button>
+        `;
+      }
 
       // Detailed drawer content (hidden by default inside <details>)
       const resultBlocks = [];
@@ -622,6 +631,10 @@ class AdminBackoffice {
       }
       if (siamsiRes) {
         resultBlocks.push(`<div><strong style="color:var(--gold-primary);">🎋 เซียมซีเบอร์ ${siamsiRes.signNumber}:</strong> ${siamsiRes.signTitle || ""} (${siamsiRes.fortuneLevel || ""})</div>`);
+      }
+      if (palmRes) {
+        const palmSum = palmRes.summary || (palmRes.reading && palmRes.reading.summaryVerdict) || "วิเคราะห์ลายมือครบ 2 มือแล้ว";
+        resultBlocks.push(`<div><strong style="color:#86efac;">✋ วิเคราะห์ลายมือ (2 มือ):</strong> ${palmSum}</div>`);
       }
       const hiddenResultHtml = resultBlocks.length > 0
         ? resultBlocks.join("")
@@ -652,7 +665,7 @@ class AdminBackoffice {
               🚀 เปิด
             </button>
             ${quickPdfBtns}
-            <button type="button" class="btn-row-act" data-act="reset-draw" title="รีเซ็ตสิทธิ์สุ่มใหม่">
+            <button type="button" class="btn-row-act" data-act="reset-draw" title="${isPalmOnly ? 'รีเซ็ตสิทธิ์วิเคราะห์ลายมือใหม่' : 'รีเซ็ตสิทธิ์สุ่มใหม่'}">
               🔄 รีเซ็ต
             </button>
             <button type="button" class="btn-row-act btn-danger" data-act="delete" title="ลบโค้ดนี้">
@@ -666,11 +679,13 @@ class AdminBackoffice {
                   <span>สร้าง: ${this.formatDateTime(codeObj.createdAt)}</span>
                   <span>• หมดอายุ: ${this.formatDateTime(codeObj.expiresAt)}</span>
                   ${logs.lastAccessedAt ? `<span>• เข้าล่าสุด: ${this.formatDateTime(logs.lastAccessedAt)}</span>` : ""}
-                  ${logs.drawnAt ? `<span>• สุ่มเมื่อ: ${this.formatDateTime(logs.drawnAt)}</span>` : ""}
+                  ${(logs.palmAnalyzedAt || logs.palmDrawnAt) ? `<span>• วิเคราะห์ลายมือเมื่อ: ${this.formatDateTime(logs.palmAnalyzedAt || logs.palmDrawnAt)}</span>` : ""}
+                  ${(logs.drawnAt && !isPalmOnly) ? `<span>• สุ่มเมื่อ: ${this.formatDateTime(logs.drawnAt)}</span>` : ""}
                 </div>
                 <div class="drawer-extra-actions">
                   ${tarotRes ? `<button type="button" class="btn-row-act" data-act="download-info-tarot">🖼️ รูป Info ทาโรต์</button>` : ""}
                   ${siamsiRes ? `<button type="button" class="btn-row-act" data-act="download-info-siamsi">🖼️ รูป Info เซียมซี</button>` : ""}
+                  ${palmRes ? `<button type="button" class="btn-row-act" data-act="download-info-palm">🖼️ รูป Info ลายมือ</button>` : ""}
                   ${hasDrawn ? `<button type="button" class="btn-row-act" data-act="copy-reading">💬 ก๊อบปี้คำทำนายเต็ม</button>` : ""}
                   <button type="button" class="btn-row-act" data-act="view-logs">📜 ประวัติ Log เต็ม</button>
                   <button type="button" class="btn-row-act" data-act="extend-1d">⏳ ต่ออายุ +1 วัน</button>
@@ -709,6 +724,7 @@ class AdminBackoffice {
 
     const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
     const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+    const palmRes = codeObj.palmResult || (codeObj.readingResult && codeObj.readingResult.mode === "palm" ? codeObj.readingResult : null);
 
     if (act === "download-pdf-tarot" && tarotRes) {
       this.showToast(`⏳ กำลังสร้างไฟล์ PDF ไพ่ทาโรต์สำหรับโค้ด ${codeObj.code}...`);
@@ -738,6 +754,21 @@ class AdminBackoffice {
       return;
     }
 
+    if (act === "download-pdf-palm" && palmRes) {
+      this.showToast(`⏳ กำลังสร้างไฟล์ PDF วิเคราะห์ลายมือสำหรับโค้ด ${codeObj.code}...`);
+      const palmPayload = this._buildAdminPalmPayload(codeObj, palmRes);
+      const ok = await window.shareAndPdfEngine.downloadReadingPdfFile(
+        palmPayload,
+        `SiamSiTarot_Palm_${codeObj.code}.pdf`
+      );
+      if (ok) {
+        await window.codeManager.recordActionLog(codeObj.code, "pdf", "แอดมินดาวน์โหลดไฟล์ PDF วิเคราะห์ลายมือเพื่อส่งให้ลูกค้า");
+        await this.refreshData(true);
+        this.showToast(`📄 ดาวน์โหลดไฟล์ PDF ลายมือของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      }
+      return;
+    }
+
     if (act === "download-info-tarot" && tarotRes) {
       this.showToast(`⏳ กำลังสร้างรูป Info Card ไพ่ทาโรต์...`);
       await window.shareAndPdfEngine.downloadInfoImageFile(tarotRes);
@@ -752,10 +783,18 @@ class AdminBackoffice {
       return;
     }
 
+    if (act === "download-info-palm" && palmRes) {
+      this.showToast(`⏳ กำลังสร้างรูป Info Card วิเคราะห์ลายมือ...`);
+      await window.shareAndPdfEngine.downloadInfoImageFile(this._buildAdminPalmPayload(codeObj, palmRes));
+      this.showToast(`🖼️ ดาวน์โหลดรูป Info Card ลายมือของโค้ด ${codeObj.code} เรียบร้อยแล้ว!`);
+      return;
+    }
+
     if (act === "copy-reading") {
       const blocks = [];
       if (tarotRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(tarotRes));
       if (siamsiRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(siamsiRes));
+      if (palmRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(this._buildAdminPalmPayload(codeObj, palmRes)));
       if (blocks.length === 0) return;
       await navigator.clipboard.writeText(blocks.join("\n\n==============================\n\n"));
       this.showToast(`💬 คัดลอกคำทำนายฉบับเต็มของโค้ด ${codeObj.code} แล้ว! นำไปวางส่งลูกค้าได้เลย`);
@@ -770,7 +809,8 @@ class AdminBackoffice {
     if (act === "reset-draw") {
       await window.codeManager.updateCodeAdmin(codeObj.code, "reset_draw");
       await this.refreshData();
-      this.showToast(`🔄 รีเซ็ตสิทธิ์โค้ด ${codeObj.code} เรียบร้อย (สุ่มใหม่ได้ 1 ครั้ง)`);
+      const resetHint = codeObj.mode === "palm" ? "วิเคราะห์ลายมือใหม่ได้ 1 ครั้ง" : "สุ่มใหม่ได้ 1 ครั้ง";
+      this.showToast(`🔄 รีเซ็ตสิทธิ์โค้ด ${codeObj.code} เรียบร้อย (${resetHint})`);
       return;
     }
 
@@ -926,6 +966,21 @@ class AdminBackoffice {
     this.showToast(`🎴 สุ่มไพ่ทาโรต์ 3 ใบรหัส ${codeObj.code} เรียบร้อยแล้ว! กดปุ่ม "โหลด PDF" เพื่อส่งให้ลูกค้าได้เลย`);
   }
 
+  _buildAdminPalmPayload(codeObj, palmRes) {
+    const r = (palmRes && palmRes.reading) || palmRes || {};
+    return {
+      mode: "palm",
+      hand: palmRes.hand || r.hand || "both",
+      code: (codeObj && codeObj.code) || "",
+      confidence: palmRes.confidence || r.avgConfidence || 92,
+      summaryVerdict: palmRes.summary || r.summaryVerdict || "วิเคราะห์ลายมือครบ 2 มือสำเร็จ",
+      aspects: palmRes.aspects || r.aspects || {},
+      leftHudDataUrl: palmRes.leftHudThumbDataUrl || palmRes.leftHudDataUrl || "",
+      rightHudDataUrl: palmRes.rightHudThumbDataUrl || palmRes.rightHudDataUrl || "",
+      timestamp: (codeObj && codeObj.logs && (codeObj.logs.palmAnalyzedAt || codeObj.logs.palmDrawnAt)) || Date.now()
+    };
+  }
+
   openCodeDetailModal(codeObj) {
     if (!this.detailModal || !this.detailModalBody) return;
     const eventsHtml = (codeObj.events || []).map(ev => `
@@ -937,15 +992,20 @@ class AdminBackoffice {
 
     const tarotRes = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
     const siamsiRes = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
+    const palmRes = codeObj.palmResult || (codeObj.readingResult && codeObj.readingResult.mode === "palm" ? codeObj.readingResult : null);
     const blocks = [];
     if (tarotRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(tarotRes));
     if (siamsiRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(siamsiRes));
-    const fullReadingText = blocks.length > 0 ? blocks.join("\n\n==============================\n\n") : "ลูกค้ายังไม่ได้กดสุ่มคำทำนาย";
+    if (palmRes) blocks.push(window.shareAndPdfEngine.buildFullSocialCaption(this._buildAdminPalmPayload(codeObj, palmRes)));
+    const fullReadingText = blocks.length > 0
+      ? blocks.join("\n\n==============================\n\n")
+      : (codeObj.mode === "palm" ? "ลูกค้ายังไม่ได้วิเคราะห์ลายมือ" : "ลูกค้ายังไม่ได้กดสุ่มคำทำนาย");
 
     const modeMap = {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
-      combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
+      combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี + วิเคราะห์ลายมือ (อย่างละ 1 ครั้ง)",
+      palm: "แพ็กเกจ 4: วิเคราะห์ลายมือ (2 มือ)"
     };
 
     this.detailModalBody.innerHTML = `

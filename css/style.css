@@ -4413,8 +4413,10 @@ body {
 
 /* Social Share Studio Modal */
 .share-studio-modal {
-  max-width: 880px;
+  max-width: min(880px, 95vw);
   width: 95%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .share-studio-header {
@@ -4450,6 +4452,16 @@ body {
   grid-template-columns: 1fr 1.15fr;
   gap: 1.5rem;
   align-items: start;
+}
+
+.share-studio-grid > * {
+  min-width: 0;
+}
+
+.share-studio-modal .btn-full-width {
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .share-col-label {
@@ -5390,7 +5402,14 @@ body {
 
 @media (max-width: 640px) {
   .direct-social-platforms-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .modal-platforms-grid {
+    grid-template-columns: 1fr;
+  }
+  .btn-platform-share {
+    padding: 0.65rem 0.7rem;
+    min-width: 0;
   }
   .btn-social-share-modern {
     flex-wrap: wrap;
@@ -7138,36 +7157,39 @@ body {
 }
 
 .palm-aspects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  max-width: 780px;
+  margin: 0 auto;
 }
 
 .palm-aspect-card {
-  background: rgba(9, 14, 34, 0.85);
-  border: 1px solid rgba(243, 207, 122, 0.28);
-  border-radius: 16px;
-  padding: 1.2rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  background: rgba(9, 14, 34, 0.9);
+  border: 1px solid rgba(243, 207, 122, 0.34);
+  border-radius: 18px;
+  padding: 1.35rem 1.45rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .palm-aspect-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(243, 207, 122, 0.55);
+  border-color: rgba(243, 207, 122, 0.6);
 }
 
 .aspect-card-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.65rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  gap: 0.85rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 .aspect-icon {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   flex-shrink: 0;
 }
 
@@ -7177,23 +7199,198 @@ body {
 }
 
 .aspect-title-wrap h4 {
-  font-size: 0.94rem;
+  font-size: 1.08rem;
+  font-weight: 700;
   color: #ffffff;
   margin: 0;
+  line-height: 1.35;
 }
 
 .aspect-grade-pill {
-  font-size: 0.72rem;
+  font-size: 0.84rem;
   color: #86efac;
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .aspect-text {
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: #cbd5e1;
+  font-size: 0.98rem;
+  line-height: 1.78;
+  color: #e2e8f0;
   margin: 0;
+}
+
+.aspect-dual-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.24);
+}
+
+.aspect-hand-note {
+  background: rgba(15, 23, 42, 0.72);
+  border-left: 3px solid rgba(56, 189, 248, 0.75);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  line-height: 1.62;
+  color: #cbd5e1;
+}
+
+.aspect-hand-note.right-note {
+  border-left-color: rgba(243, 207, 122, 0.85);
+}
+
+.aspect-hand-note strong {
+  color: #f8fafc;
+}
+
+/* === Two-Hand Guided Flow & Result HUD Controls === */
+#palm-dual-step-banner {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(30, 41, 59, 0.9));
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  margin: 0 auto 1rem auto;
+  max-width: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: #e0f2fe;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.16);
+}
+
+#palm-dual-step-banner.step-two {
+  border-color: rgba(243, 207, 122, 0.65);
+  color: #fef3c7;
+  box-shadow: 0 6px 22px rgba(243, 207, 122, 0.16);
+}
+
+#palm-hand1-done-card {
+  background: linear-gradient(145deg, rgba(9, 14, 34, 0.96), rgba(17, 24, 52, 0.95));
+  border: 1.5px solid rgba(52, 211, 153, 0.55);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin: 0 auto 1.25rem auto;
+  max-width: 640px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.48);
+}
+
+#palm-hand1-done-card.warning-state {
+  border-color: rgba(251, 191, 36, 0.7);
+}
+
+.hand1-done-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hand1-done-thumb,
+#palm-hand1-thumb {
+  width: 108px;
+  height: 136px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid rgba(52, 211, 153, 0.72);
+  background: #020617;
+  flex-shrink: 0;
+}
+
+.hand1-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+#palm-hud-hand-tabs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0 auto 0.95rem auto;
+  padding: 0.35rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(243, 207, 122, 0.3);
+  border-radius: 999px;
+}
+
+.btn-hud-hand {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.48rem 1.05rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-hud-hand.active {
+  background: linear-gradient(135deg, #f3cf7a, #d49b35);
+  color: #090d16;
+  box-shadow: 0 4px 12px rgba(243, 207, 122, 0.35);
+}
+
+.palm-hud-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(243, 207, 122, 0.2);
+}
+
+.palm-entitlement-badge,
+#palm-entitlement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.44rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  background: rgba(52, 211, 153, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.42);
+  color: #86efac;
+}
+
+.palm-entitlement-badge.locked,
+#palm-entitlement-badge.locked {
+  background: rgba(243, 207, 122, 0.14);
+  border-color: rgba(243, 207, 122, 0.45);
+  color: #fde68a;
+}
+
+@media (max-width: 600px) {
+  .palm-aspect-card {
+    padding: 1.15rem 1rem;
+    border-radius: 15px;
+  }
+  .aspect-title-wrap h4 {
+    font-size: 1.04rem;
+  }
+  .aspect-text {
+    font-size: 0.96rem;
+    line-height: 1.75;
+  }
+  .aspect-hand-note {
+    font-size: 0.88rem;
+  }
+  .palm-hud-footer-row {
+    justify-content: center;
+  }
 }
 
 /* Palm Result Actions */

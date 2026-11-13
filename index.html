@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261113c">
+  <link rel="stylesheet" href="css/style.css?v=20261113d">
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -957,9 +957,43 @@
             </p>
           </div>
 
-          <!-- Hand Choice Toggle: ซ้าย vs ขวา -->
+          <!-- Dual-Hand Progress Banner -->
+          <div class="palm-dual-step-banner" id="palm-dual-step-banner" data-step="1">
+            <div class="dual-step-pill" id="palm-dual-step-pill">ขั้นตอนที่ 1 / 2 • สแกนฝ่ามือข้างแรก</div>
+            <p class="dual-step-desc" id="palm-dual-step-desc">
+              ถ่ายภาพมือข้างใดก่อนก็ได้ (ซ้ายหรือขวา) ระบบจะวิเคราะห์ข้างมืออัตโนมัติ แล้วแจ้งให้นำมืออีกข้างมาสแกนให้ครบ 2 มือ
+            </p>
+          </div>
+
+          <!-- Hand-1 Completed -> Switch to Opposite Hand Prompt Card -->
+          <div class="palm-hand1-done-card" id="palm-hand1-done-card" style="display: none;">
+            <div class="hand1-done-row">
+              <img id="palm-hand1-thumb" class="hand1-done-thumb" alt="ผลสแกนมือข้างแรก" style="display: none;" />
+              <div class="hand1-done-info">
+                <div class="hand1-done-badge" id="palm-hand1-badge">✅ วิเคราะห์มือขวาสำเร็จ!</div>
+                <h3 id="palm-hand1-title">กรุณานำ "มือซ้าย" อีกข้างมาสแกนต่อ (ขั้นตอนที่ 2 / 2)</h3>
+                <p id="palm-hand1-desc">เพื่อเปรียบเทียบพื้นดวงเดิมและปัจจุบันให้คำพยากรณ์ครบสมบูรณ์ทุกด้าน</p>
+              </div>
+            </div>
+            <div class="hand1-done-actions" id="palm-hand1-actions">
+              <button type="button" class="btn-mystic-primary" id="btn-palm-scan-second-hand">
+                <span>📷</span>
+                <span id="btn-palm-scan-second-label">พร้อมแล้ว — เปิดกล้องสแกนมืออีกข้าง</span>
+              </button>
+              <button type="button" class="btn-secondary-mystic btn-sm" id="btn-palm-override-hand" style="display: none;">
+                <span>✓</span>
+                <span id="btn-palm-override-label">ยืนยันใช้ภาพนี้เป็นมืออีกข้าง</span>
+              </button>
+              <button type="button" class="btn-secondary-mystic btn-sm" id="btn-palm-restart-both">
+                <span>🔄</span>
+                <span>เริ่มสแกนใหม่ตั้งแต่ข้างแรก</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hand Choice Toggle: ซ้าย vs ขวา (ช่วยพลิกกรอบไกด์) -->
           <div class="palm-hand-selector-wrap">
-            <span class="palm-selector-label">เลือกข้างฝ่ามือที่ต้องการสแกน:</span>
+            <span class="palm-selector-label">กรอบรูปมือไกด์ (ระบบจะตรวจข้างมือซ้าย/ขวาจริงจากภาพให้อัตโนมัติ):</span>
             <div class="palm-hand-buttons">
               <button type="button" class="btn-hand-toggle" id="btn-palm-hand-left">
                 <span>✋</span>
@@ -1110,10 +1144,19 @@
             </p>
           </div>
 
-          <!-- Interactive HUD Canvas & Layer Inspector -->
+          <!-- Interactive HUD Canvas & Dual-Hand Viewer -->
           <div class="palm-hud-inspection-card">
+            <div class="hud-hand-switcher" id="palm-hud-hand-tabs" style="display: none;">
+              <button type="button" class="btn-hud-hand active" id="btn-hud-view-left" data-hud-hand="left">
+                <span>✋</span> มือซ้าย (พื้นดวงเดิม)
+              </button>
+              <button type="button" class="btn-hud-hand" id="btn-hud-view-right" data-hud-hand="right">
+                <span>🤚</span> มือขวา (ปัจจุบัน/อนาคต)
+              </button>
+            </div>
+
             <div class="hud-top-bar">
-              <span class="hud-title">🔍 ตรวจสอบภาพสแกนเส้นลายมือ (Interactive Vector HUD)</span>
+              <span class="hud-title">🔍 ภาพสแกนเส้นลายมือ (Interactive Vector HUD)</span>
               <div class="hud-layer-chips">
                 <button type="button" class="chip-layer active" data-palm-layer="all">ทั้งหมด</button>
                 <button type="button" class="chip-layer" data-palm-layer="life">เส้นชีวิต</button>
@@ -1133,44 +1176,20 @@
               <canvas id="palm-result-canvas"></canvas>
             </div>
 
-            <!-- Active Selected Line Detail Box -->
-            <div class="palm-line-detail-box" id="palm-active-line-detail"></div>
-
-            <!-- Calibration & Re-scan Sliders (สำหรับปรับความคมชัดเพื่อความแม่นยำสูงสุด) -->
-            <div class="palm-calibration-panel">
-              <div class="calibration-header">
-                <span>⚙️ ปรับแต่งความคมชัด & ความไวการสแกน (Fine-Tuning Calibration)</span>
-              </div>
-              <div class="calibration-sliders-grid">
-                <div class="calib-item">
-                  <label for="palm-slider-brightness">ความสว่าง (Brightness)</label>
-                  <input type="range" id="palm-slider-brightness" min="-50" max="50" value="0" />
-                </div>
-                <div class="calib-item">
-                  <label for="palm-slider-contrast">คอนทราสต์ (Contrast)</label>
-                  <input type="range" id="palm-slider-contrast" min="-50" max="50" value="0" />
-                </div>
-                <div class="calib-item">
-                  <label for="palm-slider-sensitivity">ความไวตรวจจับเส้น (Sensitivity)</label>
-                  <input type="range" id="palm-slider-sensitivity" min="1" max="5" value="3" />
-                </div>
-              </div>
-              <div class="calibration-actions">
-                <button type="button" id="btn-palm-recalibrate" class="btn-secondary-mystic btn-sm">
-                  <span>⚡</span>
-                  <span>สแกนปรับปรุงใหม่ (Recalibrate)</span>
-                </button>
-                <button type="button" id="btn-palm-retake" class="btn-secondary-mystic btn-sm">
-                  <span>📸</span>
-                  <span>ถ่ายภาพใหม่</span>
-                </button>
-              </div>
+            <div class="palm-hud-footer-row">
+              <span class="palm-entitlement-badge" id="palm-entitlement-badge" style="display: none;">
+                🔒 วิเคราะห์ครบ 2 มือและบันทึกสิทธิ์เสร็จสิ้นแล้ว (ไม่สามารถสแกนซ้ำได้)
+              </span>
+              <button type="button" id="btn-palm-retake" class="btn-secondary-mystic btn-sm" style="display: none;">
+                <span>📸</span>
+                <span>ถ่ายภาพใหม่</span>
+              </button>
             </div>
           </div>
 
           <!-- Comprehensive Palmistry 5-Aspect Reading Cards -->
           <div class="palm-aspects-section">
-            <h3 class="aspects-section-title">📜 คำพยากรณ์หัตถศาสตร์อย่างละเอียด 5 ด้าน</h3>
+            <h3 class="aspects-section-title">📜 คำพยากรณ์หัตถศาสตร์อย่างละเอียด 5 ด้าน (วิเคราะห์ครบ 2 มือ)</h3>
             <div class="palm-aspects-grid" id="palm-reading-aspects"></div>
           </div>
 
@@ -1518,14 +1537,14 @@
   <script src="js/palm-data.js"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261113c"></script>
+  <script src="js/palm-scanner.js?v=20261113d"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/rag-engine.js"></script>
-  <script src="js/code-manager.js"></script>
-  <script src="js/share-pdf.js"></script>
+  <script src="js/code-manager.js?v=20261113d"></script>
+  <script src="js/share-pdf.js?v=20261113d"></script>
   <script src="js/siamsi.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=20261113d"></script>
 
 </body>
 </html>

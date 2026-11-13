@@ -1010,7 +1010,22 @@ class TarotApp {
     if (this.palmModeContainer) this.palmModeContainer.style.display = "block";
 
     if (window.palmApp) {
-      window.palmApp.startCamera();
+      const palmUsed = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
+      if (palmUsed) {
+        window.palmApp.restoreSavedPalmReading(codeObj.palmResult, { locked: true, codeObj });
+        this.showToast("🔒 สิทธิ์นี้วิเคราะห์ลายมือครบ 2 มือแล้ว (กำลังแสดงผลที่บันทึกไว้)");
+      } else {
+        window.palmApp.startNewPalmSession(codeObj);
+      }
+    } else if (codeObj && codeObj.palmResult) {
+      this._pendingSharedPalm = codeObj.palmResult;
+    }
+  }
+
+  refreshActiveCodeState() {
+    if (this.activeCode && window.codeManager && typeof window.codeManager.findCode === "function") {
+      const latest = window.codeManager.findCode(this.activeCode);
+      if (latest) this.activeCodeObj = latest;
     }
   }
 
@@ -2114,7 +2129,9 @@ class TarotApp {
       directPostUrl,
       mode: payload ? payload.mode : "tarot",
       code: this.activeCode || "",
-      readingSummary: payload && payload.mode === "siamsi"
+      readingSummary: payload && payload.mode === "palm"
+        ? `✋ วิเคราะห์ลายมือครบ 2 มือ (${Number(payload.confidence || 92).toFixed(1)}%)`
+        : payload && payload.mode === "siamsi"
         ? `เซียมซีเบอร์ ${payload.signNumber} (${payload.signTitle || ""})`
         : `ไพ่ 3 ใบ หมวด${(payload && payload.categoryName) || ""}`,
       timestamp: Date.now()
@@ -2223,6 +2240,11 @@ class TarotApp {
   async ensureInfoCardGenerated(payload) {
     if (!payload) return null;
     window.shareAndPdfEngine.currentReadingData = payload;
+    if (payload.mode === "palm") {
+      const res = await window.shareAndPdfEngine.generatePalmInfoCard(payload);
+      if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = res.dataUrl;
+      return res;
+    }
     if (payload.mode === "siamsi") {
       const res = await window.shareAndPdfEngine.generateSiamsiInfoCard(payload);
       if (this.shareInfoPreviewImg) this.shareInfoPreviewImg.src = res.dataUrl;
@@ -2309,7 +2331,9 @@ class TarotApp {
 
     const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
     const shareUrl = window.shareAndPdfEngine.buildShareableReadingUrl(payload);
-    const shortSummary = payload.mode === "siamsi"
+    const shortSummary = payload.mode === "palm"
+      ? `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (ความแม่นยำ ${Number(payload.confidence || 92).toFixed(1)}%) — ${payload.summaryVerdict || ""}`
+      : payload.mode === "siamsi"
       ? `🎋 ผลคำทำนายเซียมซีทาโรต์ เบอร์ ${payload.signNumber} (${payload.signTitle || ""}) — "${payload.oneLine || ""}" #เซียมซีทาโรต์ #ดูดวง`
       : `🔮 ผลคำทำนายไพ่ทาโรต์ 3 ใบ หมวด${payload.categoryName || "ดวงชะตา"}: ${(payload.cards || []).map(c => c.name_th).join(" • ")} (${payload.verdictBadge || ""}) #เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์`;
 
@@ -2403,7 +2427,9 @@ class TarotApp {
     window.mysticAudio.playClick();
 
     let payload = null;
-    if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
+    if (modeHint === "palm" && window.palmApp) {
+      payload = this.activeSocialPayload || window.palmApp.buildPalmSharePayload();
+    } else if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
       payload = this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign);
     } else if (modeHint === "tarot" && this.currentReadingPayload) {
       payload = this.currentReadingPayload;
@@ -2431,7 +2457,9 @@ class TarotApp {
 
   showSocialLoginPopupView(platform, payload) {
     const meta = SOCIAL_PLATFORMS_META[platform] || SOCIAL_PLATFORMS_META.facebook;
-    const readingTitle = payload && payload.mode === "siamsi"
+    const readingTitle = payload && payload.mode === "palm"
+      ? `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (${Number(payload.confidence || 92).toFixed(1)}%)`
+      : payload && payload.mode === "siamsi"
       ? `🎋 เซียมซีเบอร์ ${payload.signNumber} (${payload.signTitle || meta.name})`
       : `🔮 ไพ่ทาโรต์ 3 ใบ หมวด${(payload && payload.categoryName) || "ดวงชะตา"}`;
 
@@ -2690,7 +2718,9 @@ class TarotApp {
 
     const fullCaption = window.shareAndPdfEngine.buildFullSocialCaption(payload);
     const shareUrl = window.shareAndPdfEngine.buildShareableReadingUrl(payload);
-    const shortSummary = payload.mode === "siamsi"
+    const shortSummary = payload.mode === "palm"
+      ? `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (ความแม่นยำ ${Number(payload.confidence || 92).toFixed(1)}%) — ${payload.summaryVerdict || ""}`
+      : payload.mode === "siamsi"
       ? `🎋 ผลคำทำนายเซียมซีทาโรต์ เบอร์ ${payload.signNumber} (${payload.signTitle || ""}) — "${payload.oneLine || ""}" #เซียมซีทาโรต์ #ดูดวง`
       : `🔮 ผลคำทำนายไพ่ทาโรต์ 3 ใบ หมวด${payload.categoryName || "ดวงชะตา"}: ${(payload.cards || []).map(c => c.name_th).join(" • ")} (${payload.verdictBadge || ""}) #เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์`;
 
@@ -2777,6 +2807,33 @@ class TarotApp {
   checkSharedReadingUrl() {
     try {
       const params = new URLSearchParams(window.location.search);
+
+      // 0. กรณีเป็นลิงก์แชร์ผลวิเคราะห์ลายมือครบ 2 มือ (?share=1&palm=1&...)
+      if (params.get("palm") === "1") {
+        const sharedCode = params.get("code") || "";
+        const foundCode = sharedCode && window.codeManager ? window.codeManager.findCode(sharedCode) : null;
+        const saved = foundCode && foundCode.palmResult
+          ? foundCode.palmResult
+          : {
+              mode: "palm",
+              hand: params.get("hand") || "both",
+              confidence: Number(params.get("conf") || 92),
+              summary: params.get("sum") || "ผลวิเคราะห์ลายมือครบ 2 มือ (แชร์สาธารณะ)",
+              aspects: {
+                life: { icon: "🌟", title: "วาสนาชีวิต & สุขภาพ", grade: "แชร์สาธารณะ", text: params.get("sum") || "กดดูใบคำทำนายฉบับเต็มหรือสแกนด้วยสิทธิ์ของคุณเองเพื่อดูรายละเอียดครบทั้ง 2 มือ" }
+              }
+            };
+        if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
+        this.openPalmServiceForCode({ palmDrawCount: 1, palmResult: saved });
+        if (sharedCode && window.codeManager && !foundCode && typeof window.codeManager.verifyCodeRemote === "function") {
+          Promise.resolve(window.codeManager.verifyCodeRemote(sharedCode)).then(remoteRes => {
+            if (remoteRes && remoteRes.codeObj && remoteRes.codeObj.palmResult) {
+              window.palmApp.restoreSavedPalmReading(remoteRes.codeObj.palmResult, { locked: true, codeObj: remoteRes.codeObj });
+            }
+          }).catch(() => {});
+        }
+        return true;
+      }
 
       // 1. กรณีเป็นลิงก์แชร์ผลเซียมซี (?share=1&siamsi=xx&deck=...)
       const siamsiParam = params.get("siamsi");
@@ -2904,6 +2961,11 @@ window.addEventListener("DOMContentLoaded", () => {
   if (typeof PalmApp !== "undefined") {
     window.palmApp = new PalmApp();
     window.tarotApp.palmApp = window.palmApp;
+    if (window.tarotApp._pendingSharedPalm) {
+      const savedPending = window.tarotApp._pendingSharedPalm;
+      window.tarotApp._pendingSharedPalm = null;
+      window.tarotApp.openPalmServiceForCode({ palmDrawCount: 1, palmResult: savedPending });
+    }
   }
   if (window.siamsiApp) {
     window.siamsiApp.app = window.tarotApp;

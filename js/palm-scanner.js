@@ -99,8 +99,9 @@ class PalmScannerEngine {
     };
 
     const confidence = this.calculateScanConfidence(quality, lines, mounts, vision);
-    const detectedHand = vision.handedness || hand;
-    const reading = this.interpretPalmReading(lines, mounts, hand, confidence);
+    const detectedHand = options.forceHand || vision.handedness || hand;
+    const effectiveHand = detectedHand === "left" || detectedHand === "right" ? detectedHand : hand;
+    const reading = this.interpretPalmReading(lines, mounts, effectiveHand, confidence);
 
     return {
       ok: true,
@@ -416,6 +417,104 @@ class PalmScannerEngine {
   /**
    * แปลผลการสแกนลายมือร่วมกับฐานข้อมูลหัตถศาสตร์
    */
+  interpretDualHandReading(leftScan, rightScan) {
+    const lScan = leftScan || rightScan || {};
+    const rScan = rightScan || leftScan || {};
+    const lR = lScan.reading || this.interpretPalmReading(lScan.lines || {}, lScan.mounts || {}, "left", lScan.confidence || {});
+    const rR = rScan.reading || this.interpretPalmReading(rScan.lines || {}, rScan.mounts || {}, "right", rScan.confidence || {});
+
+    const lPct = Math.round(Number((lScan.confidence && lScan.confidence.percentage) || 75));
+    const rPct = Math.round(Number((rScan.confidence && rScan.confidence.percentage) || 75));
+    const avgPct = Number(((lPct + rPct) / 2).toFixed(1));
+    const lFeat = (lScan.confidence && lScan.confidence.featuresDetected) || 3;
+    const rFeat = (rScan.confidence && rScan.confidence.featuresDetected) || 3;
+
+    const lLines = lScan.lines || {};
+    const rLines = rScan.lines || {};
+    const lifeLeft = (lLines.life && lLines.life.detected) ? (lLines.life.metrics && lLines.life.metrics.confidenceScore) || 75 : 55;
+    const lifeRight = (rLines.life && rLines.life.detected) ? (rLines.life.metrics && rLines.life.metrics.confidenceScore) || 75 : 55;
+    const fateBoth = Boolean((lLines.fate && lLines.fate.detected) || (rLines.fate && rLines.fate.detected));
+    const sunBoth = Boolean((lLines.sun && lLines.sun.detected) || (rLines.sun && rLines.sun.detected));
+
+    const synergyLife = lifeRight >= lifeLeft
+      ? "พลังชีวิตและการสร้างฐานะในปัจจุบันพัฒนาดีขึ้นกว่าพื้นดวงเดิม แสดงถึงวินัยและการดูแลตนเองที่ส่งผลบวกชัดเจน"
+      : "พื้นดวงเดิมมีฐานกำลังใจและบุญเก่าหนุนหลังแข็งแกร่ง ช่วงนี้ควรจัดสมดุลการพักผ่อนเพื่อดึงศักยภาพเดิมกลับมาให้เต็มร้อย";
+
+    const synergyFate = fateBoth
+      ? "เส้นวาสนาปรากฏเกื้อหนุนทั้งรากฐานเดิมและการลงมือทำในปัจจุบัน โอกาสเลื่อนขั้น ขยายกิจการ และความมั่นคงระยะยาวเปิดกว้าง"
+      : "เส้นวาสนาเน้นพลังแห่งอิสรภาพและความสามารถเฉพาะตัว ยิ่งลงมือทำด้วยตนเองยิ่งก่อเกิดความมั่งคั่งและเกียรติยศ";
+
+    const synergySun = sunBoth
+      ? "มีรัศมีจากเส้นอาทิตย์เสริมเมตตามหานิยม ชื่อเสียง และผู้ใหญ่ให้การสนับสนุน"
+      : "ความสำเร็จเกิดจากความสม่ำเสมอและเครดิตความน่าเชื่อถือที่สั่งสมด้วยตนเองอย่างมั่นคง";
+
+    const buildMergedAspect = (key, defaultIcon, defaultTitle, dualGrade, bridgeSentence) => {
+      const lAsp = (lR.aspects && lR.aspects[key]) || { grade: "", text: "" };
+      const rAsp = (rR.aspects && rR.aspects[key]) || { grade: "", text: "" };
+      const cleanStr = (s) => String(s || "").replace(/\s*\(\s*\)/g, "").trim();
+      const lClean = cleanStr(lAsp.text);
+      const rClean = cleanStr(rAsp.text);
+      const combinedGrade = dualGrade || rAsp.grade || lAsp.grade || "สมดุลมงคล";
+      return {
+        icon: rAsp.icon || lAsp.icon || defaultIcon,
+        title: rAsp.title || lAsp.title || defaultTitle,
+        grade: `${combinedGrade}`,
+        leftNote: `มือซ้าย (พื้นดวงเดิม): ${lClean}`,
+        rightNote: `มือขวา (ปัจจุบัน-อนาคต): ${rClean}`,
+        text: `${bridgeSentence} (ปัจจุบัน: ${rClean})`.trim()
+      };
+    };
+
+    const aspects = {
+      life: buildMergedAspect(
+        "life",
+        "🌟",
+        "วาสนาชีวิต สุขภาพ และพลังกาย",
+        (lifeRight >= 78 && lifeLeft >= 75) ? "รากฐานมั่นคง พลังชีวิตแข็งแกร่งทั้ง 2 มือ" : "พลังชีวิตสมดุล ปรับตัวเก่ง",
+        synergyLife
+      ),
+      intellect: buildMergedAspect(
+        "intellect",
+        "🧠",
+        "สติปัญญา การงาน และการตัดสินใจ",
+        rR.aspects && rR.aspects.intellect ? rR.aspects.intellect.grade : "วิจารณญาณเฉียบคม",
+        "เมื่อเทียบแนวโน้มความคิดระหว่างมือซ้ายและมือขวา พบว่าพรสวรรค์ดั้งเดิมสอดประสานกับทักษะการตัดสินใจในยุคปัจจุบันอย่างลงตัว"
+      ),
+      love: buildMergedAspect(
+        "love",
+        "💖",
+        "ความรัก ความสัมพันธ์ และจิตใจ",
+        rR.aspects && rR.aspects.love ? rR.aspects.love.grade : "รักมั่นคงลึกซึ้ง",
+        "ความลึกซึ้งทางความรู้สึกจากพื้นดวงเดิมหลอมรวมกับวุฒิภาวะในปัจจุบัน ช่วยให้ความสัมพันธ์ดำเนินไปด้วยความเข้าใจและเกื้อกูลกัน"
+      ),
+      wealth: buildMergedAspect(
+        "wealth",
+        "💰",
+        "โชคลาภ การเงิน และเกียรติยศ",
+        (fateBoth && sunBoth) ? "วาสนาทรัพย์และบารมีเปิดกว้าง" : (fateBoth ? "การเงินมั่นคงจากความเพียร" : "ดวงการเงินยืดหยุ่นเปิดโอกาส"),
+        `${synergyFate} ${synergySun}`
+      ),
+      guidance: buildMergedAspect(
+        "guidance",
+        "🌿",
+        "คำแนะนำเสริมสิริมงคล",
+        "แนวทางเกื้อหนุนครบทั้ง 2 มือ",
+        "เคล็ดเสริมชะตาจากการวิเคราะห์ครบ 2 ฝ่ามือคือการรักษาสมดุลระหว่างสัญชาตญาณ (มือซ้าย) และการวางแผนลงมือทำจริง (มือขวา)"
+      )
+    };
+
+    return {
+      hand: "both",
+      handMeta: {
+        name: "ฝ่ามือทั้ง 2 ข้าง (ซ้าย + ขวา)",
+        role: "วิเคราะห์ครบพื้นดวงเดิมและปัจจุบัน-อนาคต"
+      },
+      avgConfidence: avgPct,
+      aspects,
+      summaryVerdict: `วิเคราะห์ครบ 2 มือสำเร็จ (มือซ้าย ${lFeat}/6 เส้น • มือขวา ${rFeat}/6 เส้น • ความแม่นยำเฉลี่ย ${avgPct}%) — ผสานคำพยากรณ์ทั้งพื้นดวงเดิมและแนวโน้มปัจจุบัน-อนาคตครบ 5 ด้าน`
+    };
+  }
+
   interpretPalmReading(lines, mounts, hand, confidence) {
     const kb = window.PALM_KNOWLEDGE_BASE || {};
     const kbLines = kb.lines || {};
@@ -544,6 +643,18 @@ class PalmApp {
     this.isScanning = false;
     this.torchOn = false;
 
+    // 2-Hand Dual Scan & Entitlement State
+    this.dualScans = { left: null, right: null };
+    this.capturedImages = { left: null, right: null };
+    this.hudThumbs = { left: "", right: "" };
+    this.hudFullUrls = { left: "", right: "" };
+    this.dualReading = null;
+    this.scanStep = 1;
+    this.activeHudHand = "right";
+    this.isEntitlementLocked = false;
+    this.pendingDuplicateScan = null;
+    this.savedLockedData = null;
+
     this.initDOM();
     this.initEvents();
     if (window.PalmMediaPipe && typeof window.PalmMediaPipe.warmup === "function") {
@@ -589,6 +700,25 @@ class PalmApp {
     this.scanStepText = document.getElementById("palm-scan-step-text");
     this.scanLaserBeam = document.getElementById("palm-scan-laser-beam");
 
+    // Dual-Hand Guided Flow & Entitlement Elements
+    this.dualStepBanner = document.getElementById("palm-dual-step-banner");
+    this.dualStepPill = document.getElementById("palm-dual-step-pill");
+    this.dualStepDesc = document.getElementById("palm-dual-step-desc");
+    this.hand1DoneCard = document.getElementById("palm-hand1-done-card");
+    this.hand1ThumbImg = document.getElementById("palm-hand1-thumb");
+    this.hand1BadgeEl = document.getElementById("palm-hand1-badge");
+    this.hand1TitleEl = document.getElementById("palm-hand1-title");
+    this.hand1DescEl = document.getElementById("palm-hand1-desc");
+    this.btnScanSecondHand = document.getElementById("btn-palm-scan-second-hand");
+    this.btnScanSecondLabel = document.getElementById("btn-palm-scan-second-label");
+    this.btnOverrideHand = document.getElementById("btn-palm-override-hand");
+    this.btnOverrideLabel = document.getElementById("btn-palm-override-label");
+    this.btnRestartBoth = document.getElementById("btn-palm-restart-both");
+    this.hudHandTabs = document.getElementById("palm-hud-hand-tabs");
+    this.btnHudViewLeft = document.getElementById("btn-hud-view-left");
+    this.btnHudViewRight = document.getElementById("btn-hud-view-right");
+    this.entitlementBadge = document.getElementById("palm-entitlement-badge");
+
     // Result & Inspection Elements
     this.resultCanvas = document.getElementById("palm-result-canvas");
     this.resultCanvasWrap = document.getElementById("palm-result-canvas-wrap");
@@ -598,13 +728,6 @@ class PalmApp {
     this.layerFilterChips = document.querySelectorAll("[data-palm-layer]");
     this.btnToggleSkeleton = document.getElementById("btn-palm-toggle-skeleton");
     this.btnToggleRidge = document.getElementById("btn-palm-toggle-ridge");
-    this.activeLineDetailBox = document.getElementById("palm-active-line-detail");
-
-    // Calibration Sliders
-    this.sliderBrightness = document.getElementById("palm-slider-brightness");
-    this.sliderContrast = document.getElementById("palm-slider-contrast");
-    this.sliderSensitivity = document.getElementById("palm-slider-sensitivity");
-    this.btnRecalibrate = document.getElementById("btn-palm-recalibrate");
 
     // Action Buttons
     this.btnRetake = document.getElementById("btn-palm-retake");
@@ -687,7 +810,6 @@ class PalmApp {
           chip.classList.add("active");
           this.activeLayer = chip.getAttribute("data-palm-layer") || "all";
           this.renderResultHUD();
-          this.updateActiveLineDetail(this.activeLayer);
         });
       });
     }
@@ -707,14 +829,28 @@ class PalmApp {
       });
     }
 
-    // Recalibrate
-    if (this.btnRecalibrate) {
-      this.btnRecalibrate.addEventListener("click", () => this.recalibrateScan());
+    // Dual-Hand Flow Actions
+    if (this.btnScanSecondHand) {
+      this.btnScanSecondHand.addEventListener("click", () => this.resumeCameraForSecondHand());
+    }
+    if (this.btnOverrideHand) {
+      this.btnOverrideHand.addEventListener("click", () => this.confirmDuplicateAsMissingHand());
+    }
+    if (this.btnRestartBoth) {
+      this.btnRestartBoth.addEventListener("click", () => this.startNewPalmSession());
+    }
+    if (this.btnHudViewLeft) {
+      this.btnHudViewLeft.addEventListener("click", () => this.switchHudResultHand("left"));
+    }
+    if (this.btnHudViewRight) {
+      this.btnHudViewRight.addEventListener("click", () => this.switchHudResultHand("right"));
     }
 
-    // Retake
+    // Retake (disabled/hidden when entitlement locked)
     if (this.btnRetake) {
-      this.btnRetake.addEventListener("click", () => this.resetToCaptureScreen());
+      this.btnRetake.addEventListener("click", () => {
+        if (!this.isEntitlementLocked) this.resetToCaptureScreen();
+      });
     }
 
     // Actions
@@ -1237,6 +1373,7 @@ class PalmApp {
   }
 
   loadSamplePalmDemo() {
+    this._nextScanForcedHand = this.currentHand;
     if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.2);
     // สร้างภาพตัวอย่างฝ่ามือ (นิ้ว 5 นิ้ว + ข้อมือ + โทนสีผิวจริง + ร่องเส้นหลัก) ให้ระบบ CV ตรวจจับได้จริง
     const w = 720, h = 960;
@@ -1342,16 +1479,16 @@ class PalmApp {
       await new Promise(r => setTimeout(r, 180));
     }
 
-    // ประมวลผลด้วย Engine จริง
-    const brightness = this.sliderBrightness ? Number(this.sliderBrightness.value) : 0;
-    const contrast = this.sliderContrast ? Number(this.sliderContrast.value) : 0;
-    const sensitivity = this.sliderSensitivity ? Number(this.sliderSensitivity.value) : 3;
+    // ประมวลผลด้วย Engine จริง (ปรับพารามิเตอร์อัตโนมัติ)
+    const forceHand = this._nextScanForcedHand || undefined;
+    this._nextScanForcedHand = null;
 
     this.scanResult = await this.engine.scanPalmImage(imageSource, {
       hand: this.currentHand,
-      brightness,
-      contrast,
-      sensitivity
+      forceHand,
+      brightness: 0,
+      contrast: 0,
+      sensitivity: 3
     });
 
     if (!this.scanResult || this.scanResult.ok === false) {
@@ -1362,61 +1499,427 @@ class PalmApp {
       } else {
         alert(errMsg);
       }
-      this.resetToCaptureScreen();
+      this.resumeCaptureOrStep2();
       return;
     }
 
     if (this.scanStepText) this.scanStepText.textContent = "ตรวจวัดความลึก ความยาว และเนินทั้ง 7 สำเร็จเรียบร้อย!";
     if (this.scanProgressBar) this.scanProgressBar.style.width = "100%";
 
-    if (window.codeManager && window.taroApp && window.taroApp.activeCode && typeof window.codeManager.recordReadingDraw === "function") {
-      try {
-        window.codeManager.recordReadingDraw(window.taroApp.activeCode, {
-          mode: "palm",
-          hand: this.scanResult.hand,
-          confidence: this.scanResult.confidence ? this.scanResult.confidence.percentage : 0,
-          summary: this.scanResult.reading ? this.scanResult.reading.summaryVerdict : ""
-        });
-      } catch (_) {}
-    }
-
     this.isScanning = false;
+    await this.handleCompletedSingleScan(this.scanResult, imageSource);
+  }
+
+  startNewPalmSession(codeObj = null) {
+    this.stopCamera();
+    this.dualScans = { left: null, right: null };
+    this.capturedImages = { left: null, right: null };
+    this.hudThumbs = { left: "", right: "" };
+    this.hudFullUrls = { left: "", right: "" };
+    this.dualReading = null;
+    this.scanResult = null;
+    this.capturedImage = null;
+    this.pendingDuplicateScan = null;
+    this.savedLockedData = null;
+    this._nextScanForcedHand = null;
+    this.isCapturing = false;
+    this.isScanning = false;
+    this.scanStep = 1;
+    this.activeHudHand = "right";
+
+    const isCodeBound = Boolean((codeObj && codeObj.code) || (window.taroApp && window.taroApp.activeCode));
+    const alreadyDone = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
+    this.isEntitlementLocked = Boolean(isCodeBound && alreadyDone);
+
+    if (this.screenResult) this.screenResult.classList.remove("active");
+    if (this.screenScanning) this.screenScanning.classList.remove("active");
+    if (this.screenCapture) this.screenCapture.classList.add("active");
+
+    if (this.hand1DoneCard) {
+      this.hand1DoneCard.style.display = "none";
+      this.hand1DoneCard.classList.remove("warning-state");
+    }
+    if (this.btnOverrideHand) this.btnOverrideHand.style.display = "none";
+    this._updateDualStepBanner(1, null);
+    this.setHand("right");
+    this.startCamera(this.cameraFacing || "environment");
+  }
+
+  restoreSavedPalmReading(savedPalm, options = {}) {
+    if (!savedPalm) return;
+    this.stopCamera();
+    this.isCapturing = false;
+    this.isScanning = false;
+    this.pendingDuplicateScan = null;
+    this.savedLockedData = savedPalm;
+    this.isEntitlementLocked = options.locked !== false;
+
+    const reading = savedPalm.reading || {
+      hand: "both",
+      handMeta: { name: "ฝ่ามือทั้ง 2 ข้าง (ซ้าย + ขวา)", role: "วิเคราะห์ครบพื้นดวงเดิมและปัจจุบัน-อนาคต" },
+      avgConfidence: savedPalm.confidence || 92,
+      summaryVerdict: savedPalm.summary || savedPalm.summaryVerdict || "วิเคราะห์ลายมือครบ 2 มือสำเร็จ",
+      aspects: savedPalm.aspects || {}
+    };
+
+    this.dualReading = reading;
+    this.hudThumbs = {
+      left: savedPalm.leftHudThumbDataUrl || savedPalm.leftHudDataUrl || "",
+      right: savedPalm.rightHudThumbDataUrl || savedPalm.rightHudDataUrl || ""
+    };
+    this.hudFullUrls = { ...this.hudThumbs };
+    this.capturedImages = { left: null, right: null };
+    this.dualScans = {
+      left: {
+        hand: "left",
+        detectedHand: "left",
+        confidence: {
+          percentage: savedPalm.leftConfidence || reading.avgConfidence || 90,
+          featuresDetected: 5,
+          landmarkMethod: "mediapipe",
+          label: "บันทึกผลการวิเคราะห์แล้ว"
+        },
+        lines: {},
+        mounts: {},
+        reading
+      },
+      right: {
+        hand: "right",
+        detectedHand: "right",
+        confidence: {
+          percentage: savedPalm.rightConfidence || reading.avgConfidence || 90,
+          featuresDetected: 5,
+          landmarkMethod: "mediapipe",
+          label: "บันทึกผลการวิเคราะห์แล้ว"
+        },
+        lines: {},
+        mounts: {},
+        reading
+      }
+    };
+
+    this.activeHudHand = this.hudThumbs.left ? "left" : "right";
+    this.scanResult = this.dualScans[this.activeHudHand];
+    this.capturedImage = null;
     this.showResultScreen();
   }
 
+  _updateDualStepBanner(stepNum, scannedFirstHand) {
+    if (!this.dualStepBanner) return;
+    this.dualStepBanner.dataset.step = String(stepNum);
+    this.dualStepBanner.classList.toggle("step-two", stepNum === 2);
+    if (stepNum === 1) {
+      if (this.dualStepPill) this.dualStepPill.textContent = "ขั้นตอนที่ 1 / 2 • สแกนฝ่ามือข้างแรก";
+      if (this.dualStepDesc) {
+        this.dualStepDesc.textContent = "วางฝ่ามือซ้ายหรือขวาก็ได้ ระบบจะวิเคราะห์ให้อัตโนมัติว่าเป็นมือข้างใด แล้วแจ้งให้สแกนอีกข้างต่อ";
+      }
+    } else {
+      const doneThai = scannedFirstHand === "left" ? "มือซ้าย" : "มือขวา";
+      const nextThai = scannedFirstHand === "left" ? "มือขวา" : "มือซ้าย";
+      if (this.dualStepPill) this.dualStepPill.textContent = `ขั้นตอนที่ 2 / 2 • รอสแกน${nextThai}`;
+      if (this.dualStepDesc) {
+        this.dualStepDesc.textContent = `วิเคราะห์${doneThai}เรียบร้อยแล้ว กรุณาวาง "${nextThai}" ให้ตรงกรอบรูปมือเพื่อดูดวงครบทั้ง 2 มือ`;
+      }
+    }
+  }
+
+  resumeCaptureOrStep2() {
+    if (this.screenScanning) this.screenScanning.classList.remove("active");
+    if (this.screenResult) this.screenResult.classList.remove("active");
+    if (this.screenCapture) this.screenCapture.classList.add("active");
+    this.isCapturing = false;
+    this.startCamera(this.cameraFacing || "environment");
+  }
+
+  resumeCameraForSecondHand() {
+    this.isCapturing = false;
+    const firstHand = this.dualScans.left ? "left" : (this.dualScans.right ? "right" : null);
+    const nextHand = firstHand ? (firstHand === "left" ? "right" : "left") : this.currentHand;
+    this.setHand(nextHand);
+    this.startCamera(this.cameraFacing || "environment");
+    if (this.cameraContainer && this.cameraContainer.scrollIntoView) {
+      this.cameraContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  async handleCompletedSingleScan(scanRes, imageSource) {
+    const detected = (scanRes.detectedHand === "left" || scanRes.detectedHand === "right")
+      ? scanRes.detectedHand
+      : this.currentHand;
+
+    const alreadyLeft = Boolean(this.dualScans.left);
+    const alreadyRight = Boolean(this.dualScans.right);
+
+    // กรณีสแกนข้างแรก (Step 1)
+    if (!alreadyLeft && !alreadyRight) {
+      if (scanRes.hand !== detected) {
+        scanRes.hand = detected;
+        scanRes.reading = this.engine.interpretPalmReading(scanRes.lines, scanRes.mounts, detected, scanRes.confidence);
+      }
+      this.dualScans[detected] = scanRes;
+      this.capturedImages[detected] = imageSource;
+      this.hudThumbs[detected] = this._renderOffscreenHud(scanRes, imageSource, 360, 0.72);
+      this.hudFullUrls[detected] = this._renderOffscreenHud(scanRes, imageSource, 760, 0.85);
+      this.scanStep = 2;
+
+      const otherHand = detected === "left" ? "right" : "left";
+      const detectedThai = detected === "left" ? "มือซ้าย" : "มือขวา";
+      const otherThai = otherHand === "left" ? "มือซ้าย" : "มือขวา";
+      const confPct = Math.round(Number((scanRes.confidence && scanRes.confidence.percentage) || 85));
+
+      this.stopCamera();
+      this.isCapturing = false;
+      this.setHand(otherHand);
+      this._updateDualStepBanner(2, detected);
+
+      if (this.screenScanning) this.screenScanning.classList.remove("active");
+      if (this.screenResult) this.screenResult.classList.remove("active");
+      if (this.screenCapture) this.screenCapture.classList.add("active");
+
+      if (this.hand1DoneCard) {
+        this.hand1DoneCard.classList.remove("warning-state");
+        this.hand1DoneCard.style.display = "block";
+      }
+      if (this.hand1ThumbImg) {
+        this.hand1ThumbImg.src = this.hudThumbs[detected] || imageSource.src || "";
+        this.hand1ThumbImg.style.display = "block";
+      }
+      if (this.hand1BadgeEl) this.hand1BadgeEl.textContent = `✅ วิเคราะห์${detectedThai}สำเร็จ! (ขั้นที่ 1 / 2)`;
+      if (this.hand1TitleEl) this.hand1TitleEl.textContent = `กรุณานำ "${otherThai}" อีกข้างมาสแกนต่อ (ขั้นตอนที่ 2 / 2)`;
+      if (this.hand1DescEl) {
+        this.hand1DescEl.textContent = `ระบบตรวจจับ${detectedThai}เรียบร้อย (ความชัด ${confPct}%) เพื่อเปรียบเทียบพื้นดวงเดิมและปัจจุบันให้คำพยากรณ์ครบทุกด้าน`;
+      }
+      if (this.btnOverrideHand) this.btnOverrideHand.style.display = "none";
+      if (this.btnScanSecondLabel) this.btnScanSecondLabel.textContent = `พร้อมแล้ว — เปิดกล้องสแกน${otherThai}`;
+
+      if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.0);
+      if (window.taroApp && typeof window.taroApp.showToast === "function") {
+        window.taroApp.showToast(`วิเคราะห์${detectedThai}สำเร็จ! กรุณาสแกน${otherThai}ต่อเพื่อดูดวงครบ 2 มือ`);
+      }
+      if (this.hand1DoneCard && this.hand1DoneCard.scrollIntoView) {
+        this.hand1DoneCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
+    // กรณี Step 2 (มีมือข้างหนึ่งอยู่แล้ว)
+    const existingHand = alreadyLeft ? "left" : "right";
+    const missingHand = existingHand === "left" ? "right" : "left";
+
+    if (detected === existingHand) {
+      // สแกนซ้ำข้างเดิม — เก็บผลชั่วคราวแล้วเตือนผู้ใช้พร้อมปุ่มยืนยันหรือถ่ายใหม่
+      this.pendingDuplicateScan = { scan: scanRes, image: imageSource };
+      const existingThai = existingHand === "left" ? "มือซ้าย" : "มือขวา";
+      const missingThai = missingHand === "left" ? "มือซ้าย" : "มือขวา";
+
+      this.stopCamera();
+      this.isCapturing = false;
+      this.setHand(missingHand);
+      if (this.screenScanning) this.screenScanning.classList.remove("active");
+      if (this.screenResult) this.screenResult.classList.remove("active");
+      if (this.screenCapture) this.screenCapture.classList.add("active");
+
+      if (this.hand1DoneCard) {
+        this.hand1DoneCard.classList.add("warning-state");
+        this.hand1DoneCard.style.display = "block";
+      }
+      if (this.hand1BadgeEl) this.hand1BadgeEl.textContent = `⚠️ ภาพที่สแกนล่าสุดตรวจพบเป็น ${existingThai} ซ้ำ`;
+      if (this.hand1TitleEl) this.hand1TitleEl.textContent = `กรุณานำ "${missingThai}" อีกข้างมาสแกน (หรือกดยืนยันหากถ่ายถูกข้างแล้ว)`;
+      if (this.hand1DescEl) {
+        this.hand1DescEl.textContent = `ระบบต้องการข้อมูลทั้งมือซ้ายและมือขวา หากภาพเมื่อสักครู่คือ${missingThai}ของคุณจริง สามารถกดยืนยันใช้ภาพนี้ได้ทันที`;
+      }
+      if (this.btnOverrideHand) this.btnOverrideHand.style.display = "inline-flex";
+      if (this.btnOverrideLabel) this.btnOverrideLabel.textContent = `✓ ยืนยันใช้ภาพนี้เป็น${missingThai}`;
+      if (this.btnScanSecondLabel) this.btnScanSecondLabel.textContent = `📷 เปิดกล้องสแกน${missingThai}ใหม่`;
+      if (window.taroApp && typeof window.taroApp.showToast === "function") {
+        window.taroApp.showToast(`⚠️ ตรวจพบ${existingThai}ซ้ำ กรุณาสแกน${missingThai}หรือกดยืนยัน`);
+      }
+      return;
+    }
+
+    // สแกนครบทั้ง 2 มือ!
+    if (scanRes.hand !== missingHand) {
+      scanRes.hand = missingHand;
+      scanRes.reading = this.engine.interpretPalmReading(scanRes.lines, scanRes.mounts, missingHand, scanRes.confidence);
+    }
+    this.pendingDuplicateScan = null;
+    this.dualScans[missingHand] = scanRes;
+    this.capturedImages[missingHand] = imageSource;
+    await this.finalizeDualHandReading();
+  }
+
+  async confirmDuplicateAsMissingHand() {
+    const existingHand = this.dualScans.left ? "left" : (this.dualScans.right ? "right" : null);
+    if (!existingHand || !this.pendingDuplicateScan) return;
+    const missingHand = existingHand === "left" ? "right" : "left";
+    const { scan, image } = this.pendingDuplicateScan;
+    this.pendingDuplicateScan = null;
+
+    scan.hand = missingHand;
+    scan.detectedHand = missingHand;
+    scan.reading = this.engine.interpretPalmReading(scan.lines, scan.mounts, missingHand, scan.confidence);
+    this.dualScans[missingHand] = scan;
+    this.capturedImages[missingHand] = image;
+    await this.finalizeDualHandReading();
+  }
+
+  async finalizeDualHandReading() {
+    const leftScan = this.dualScans.left;
+    const rightScan = this.dualScans.right;
+    if (!leftScan || !rightScan) return;
+
+    for (const side of ["left", "right"]) {
+      if (!this.hudThumbs[side] && this.capturedImages[side]) {
+        this.hudThumbs[side] = this._renderOffscreenHud(this.dualScans[side], this.capturedImages[side], 360, 0.72);
+      }
+      if (!this.hudFullUrls[side] && this.capturedImages[side]) {
+        this.hudFullUrls[side] = this._renderOffscreenHud(this.dualScans[side], this.capturedImages[side], 760, 0.85);
+      }
+    }
+
+    this.dualReading = this.engine.interpretDualHandReading(leftScan, rightScan);
+    this.activeHudHand = "left";
+    this.scanResult = leftScan;
+    this.capturedImage = this.capturedImages.left;
+    this.stopCamera();
+    this.isCapturing = false;
+    this.isScanning = false;
+
+    if (this.hand1DoneCard) this.hand1DoneCard.style.display = "none";
+
+    // บันทึกสิทธิ์ว่า "วิเคราะห์แล้ว" 1/1 เมื่อวิเคราะห์ครบทั้ง 2 มือ
+    const summarizeHandLines = (scan) => {
+      const out = {};
+      for (const k of ["life", "head", "heart", "fate", "sun", "mercury"]) {
+        const l = scan.lines && scan.lines[k];
+        if (l) {
+          out[k] = {
+            detected: Boolean(l.detected),
+            confidenceScore: l.metrics ? Number(l.metrics.confidenceScore || 0) : 0,
+            specialTrait: l.metrics ? String(l.metrics.specialTrait || "") : ""
+          };
+        }
+      }
+      return out;
+    };
+
+    if (window.codeManager && window.taroApp && window.taroApp.activeCode && typeof window.codeManager.recordReadingDraw === "function") {
+      try {
+        await Promise.resolve(window.codeManager.recordReadingDraw(window.taroApp.activeCode, {
+          mode: "palm",
+          hand: "both",
+          confidence: this.dualReading.avgConfidence,
+          summary: this.dualReading.summaryVerdict,
+          reading: {
+            hand: "both",
+            handMeta: this.dualReading.handMeta,
+            avgConfidence: this.dualReading.avgConfidence,
+            summaryVerdict: this.dualReading.summaryVerdict,
+            aspects: this.dualReading.aspects
+          },
+          leftConfidence: leftScan.confidence ? leftScan.confidence.percentage : 0,
+          rightConfidence: rightScan.confidence ? rightScan.confidence.percentage : 0,
+          leftLinesSummary: summarizeHandLines(leftScan),
+          rightLinesSummary: summarizeHandLines(rightScan),
+          leftHudThumbDataUrl: this.hudThumbs.left || "",
+          rightHudThumbDataUrl: this.hudThumbs.right || "",
+          analyzedAt: new Date().toISOString()
+        }));
+        if (typeof window.taroApp.refreshActiveCodeState === "function") {
+          window.taroApp.refreshActiveCodeState();
+        }
+      } catch (err) {
+        console.warn("Palm draw record warning:", err);
+      }
+      this.isEntitlementLocked = true;
+    }
+
+    this.showResultScreen();
+  }
+
+  switchHudResultHand(handSide) {
+    if (handSide !== "left" && handSide !== "right") return;
+    if (!this.dualScans[handSide] && !this.hudThumbs[handSide]) return;
+    this.activeHudHand = handSide;
+    this.scanResult = this.dualScans[handSide] || this.scanResult;
+    this.capturedImage = (this.capturedImages && this.capturedImages[handSide]) || null;
+    if (this.btnHudViewLeft) this.btnHudViewLeft.classList.toggle("active", handSide === "left");
+    if (this.btnHudViewRight) this.btnHudViewRight.classList.toggle("active", handSide === "right");
+    this.renderResultHUD();
+  }
+
+  _renderOffscreenHud(scanRes, imgEl, maxSide = 360, jpegQuality = 0.72) {
+    if (!scanRes || !imgEl) return "";
+    try {
+      const fullCanvas = document.createElement("canvas");
+      this.renderHudOntoCanvas(fullCanvas, scanRes, imgEl, {
+        activeLayer: "all",
+        showSkeletonOverlay: false,
+        showRidgeOverlay: false
+      });
+      const scale = Math.min(1, maxSide / Math.max(fullCanvas.width || 1, fullCanvas.height || 1));
+      const outCanvas = document.createElement("canvas");
+      outCanvas.width = Math.max(1, Math.round(fullCanvas.width * scale));
+      outCanvas.height = Math.max(1, Math.round(fullCanvas.height * scale));
+      const octx = outCanvas.getContext("2d");
+      octx.drawImage(fullCanvas, 0, 0, outCanvas.width, outCanvas.height);
+      return outCanvas.toDataURL("image/jpeg", jpegQuality);
+    } catch (_) {
+      return "";
+    }
+  }
+
   showResultScreen() {
-    if (!this.scanResult || this.scanResult.ok === false) return;
+    if (!this.scanResult && !this.dualReading) return;
 
     if (this.screenScanning) this.screenScanning.classList.remove("active");
     if (this.screenCapture) this.screenCapture.classList.remove("active");
     if (this.screenResult) this.screenResult.classList.add("active");
 
-    const conf = this.scanResult.confidence;
+    const reading = this.dualReading || (this.scanResult && this.scanResult.reading) || {};
+    const avgPct = this.dualReading
+      ? this.dualReading.avgConfidence
+      : (this.scanResult && this.scanResult.confidence ? this.scanResult.confidence.percentage : 0);
+
     if (this.confidenceBadge) {
-      this.confidenceBadge.innerHTML = `🎯 ${conf.label} (<strong id="palm-confidence-val">${conf.percentage}%</strong>)`;
+      this.confidenceBadge.innerHTML = this.dualReading
+        ? `🎯 วิเคราะห์ครบ 2 มือ (ความแม่นยำเฉลี่ย <strong id="palm-confidence-val">${avgPct}%</strong>)`
+        : `🎯 ${(this.scanResult.confidence && this.scanResult.confidence.label) || "วิเคราะห์แล้ว"} (<strong id="palm-confidence-val">${avgPct}%</strong>)`;
       this.confidenceValue = document.getElementById("palm-confidence-val");
     }
     if (this.handInfoPill) {
-      const hMeta = this.scanResult.reading.handMeta || {};
-      const detLabel = this.scanResult.detectedHand === "left" ? "มือซ้าย" : "มือขวา";
-      const matchNote = this.scanResult.detectedHand && this.scanResult.detectedHand !== this.currentHand
-        ? ` • ภาพตรวจพบ: ${detLabel}`
-        : "";
-      this.handInfoPill.textContent = `✋ ${hMeta.name || (this.currentHand === "left" ? "มือซ้าย" : "มือขวา")}${matchNote}`;
+      this.handInfoPill.textContent = this.dualReading
+        ? "✋ มือซ้าย (พื้นดวงเดิม) + มือขวา (ปัจจุบัน-อนาคต)"
+        : `✋ ${this.activeHudHand === "left" ? "มือซ้าย" : "มือขวา"}`;
+    }
+    if (this.hudHandTabs) {
+      const hasBoth = Boolean(this.dualScans.left && this.dualScans.right);
+      this.hudHandTabs.style.display = hasBoth ? "inline-flex" : "none";
+      if (this.btnHudViewLeft) this.btnHudViewLeft.classList.toggle("active", this.activeHudHand === "left");
+      if (this.btnHudViewRight) this.btnHudViewRight.classList.toggle("active", this.activeHudHand === "right");
+    }
+    if (this.entitlementBadge) {
+      if (this.isEntitlementLocked) {
+        this.entitlementBadge.style.display = "inline-flex";
+        this.entitlementBadge.classList.add("locked");
+        this.entitlementBadge.textContent = "🔒 วิเคราะห์ครบ 2 มือแล้ว (บันทึกสิทธิ์ 1/1)";
+      } else {
+        this.entitlementBadge.style.display = "none";
+        this.entitlementBadge.classList.remove("locked");
+      }
+    }
+    if (this.btnRetake) {
+      this.btnRetake.style.display = this.isEntitlementLocked ? "none" : "inline-flex";
     }
     if (this.summaryVerdictText) {
-      const meth = this.scanResult.landmarkMethod === "mediapipe" ? "MediaPipe 21 จุด" : "Offline Skin-CV";
-      this.summaryVerdictText.textContent = `ตรวจพบเส้นชัดเจน ${conf.featuresDetected} จาก 6 เส้นหลัก (${meth} • ใช้เวลา ${this.scanResult.elapsedMs || 0} ms) พร้อมคำทำนายจากคัมภีร์หัตถศาสตร์`;
+      this.summaryVerdictText.textContent = reading.summaryVerdict || "";
     }
 
     // เรนเดอร์ Canvas ภาพลายมือพร้อมเส้นเวกเตอร์ HUD
     this.renderResultHUD();
 
-    // แสดงคำทำนาย 5 ด้าน
+    // แสดงคำทำนาย 5 ด้านเรียงทีละด้านอ่านง่ายในมือถือ
     this.renderReadingAspects();
-
-    // อัปเดตรายละเอียดเส้นที่เลือก
-    this.updateActiveLineDetail("all");
 
     if (window.mysticAudio) {
       window.mysticAudio.playCrystalBell(1046.5, 1.6);
@@ -1424,36 +1927,62 @@ class PalmApp {
   }
 
   renderResultHUD() {
-    if (!this.scanResult || !this.resultCanvas || !this.capturedImage) return;
+    if (!this.resultCanvas) return;
+    if (!this.capturedImage && this.hudThumbs && this.hudThumbs[this.activeHudHand]) {
+      const thumbUrl = this.hudThumbs[this.activeHudHand];
+      const img = new Image();
+      img.onload = () => {
+        this.resultCanvas.width = img.width || 480;
+        this.resultCanvas.height = img.height || 640;
+        const ctx = this.resultCanvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, this.resultCanvas.width, this.resultCanvas.height);
+      };
+      img.src = thumbUrl;
+      return;
+    }
+    if (!this.scanResult || !this.capturedImage) return;
+    this.renderHudOntoCanvas(this.resultCanvas, this.scanResult, this.capturedImage, {
+      activeLayer: this.activeLayer,
+      showSkeletonOverlay: this.showSkeletonOverlay,
+      showRidgeOverlay: this.showRidgeOverlay
+    });
+  }
 
-    const res = this.scanResult;
-    const canvas = this.resultCanvas;
+  renderHudOntoCanvas(canvas, res, capturedImage, opts = {}) {
+    if (!res || !canvas || !capturedImage) return;
+    const activeLayer = opts.activeLayer !== undefined ? opts.activeLayer : this.activeLayer;
+    const showRidge = opts.showRidgeOverlay !== undefined ? opts.showRidgeOverlay : this.showRidgeOverlay;
+    const showSkeleton = opts.showSkeletonOverlay !== undefined ? opts.showSkeletonOverlay : this.showSkeletonOverlay;
+
     canvas.width = res.width;
     canvas.height = res.height;
     const ctx = canvas.getContext("2d");
 
     // 1. วาดภาพจริงของฝ่ามือ
-    ctx.drawImage(this.capturedImage, 0, 0, res.width, res.height);
+    ctx.drawImage(capturedImage, 0, 0, res.width, res.height);
 
     // 2. เคลือบฟิล์มบางเบาเพื่อให้รอยย่นผิวหนังยังมองเห็นเปรียบเทียบความตรงได้อย่างชัดเจน
     ctx.fillStyle = "rgba(4, 7, 20, 0.14)";
     ctx.fillRect(0, 0, res.width, res.height);
 
     // 2b. แผนที่ร่องลายมือจาก Hessian (ถอด/เปิดดูได้)
-    if (this.showRidgeOverlay && res.debug && res.debug.ridge) {
+    if (showRidge && res.debug && res.debug.ridge) {
       this.drawRidgeOverlay(ctx, res.debug);
     }
 
     // 2c. กรอบฝ่ามือและจุดกระดูก 21 ข้อ (MediaPipe / Skin-CV)
-    if (this.showSkeletonOverlay && res.anchors) {
+    if (showSkeleton && res.anchors) {
       this.drawSkeletonOverlay(ctx, res.anchors);
     }
 
     // 3. วาดเส้นลายมือตาม Layer ที่เลือก
     const kb = window.PALM_KNOWLEDGE_BASE ? window.PALM_KNOWLEDGE_BASE.lines : {};
-    const linesToDraw = this.activeLayer === "all"
+    const linesToDraw = activeLayer === "all"
       ? ["life", "head", "heart", "fate", "sun", "mercury"]
-      : (this.activeLayer === "mounts" ? [] : [this.activeLayer]);
+      : (activeLayer === "mounts" ? [] : [activeLayer]);
+    const isFocusedCheck = (k) => activeLayer === k;
+    const showAllLines = activeLayer === "all";
+    const drawMounts = activeLayer === "mounts";
     const placedLabels = [];
     const pillH = Math.max(17, Math.round(res.width * 0.024));
     const fontSize = Math.max(10, Math.round(res.width * 0.0155));
@@ -1461,11 +1990,11 @@ class PalmApp {
     linesToDraw.forEach(lineKey => {
       const lineData = res.lines[lineKey];
       if (!lineData || !lineData.points || lineData.points.length < 2) return;
-      if (this.activeLayer === "all" && !lineData.detected) return;
+      if (showAllLines && !lineData.detected) return;
 
       const meta = kb[lineKey] || { color: "#38bdf8", name: lineKey };
       const pts = lineData.points;
-      const isFocused = this.activeLayer === lineKey;
+      const isFocused = isFocusedCheck(lineKey);
 
       if (!lineData.detected) {
         ctx.save();
@@ -1591,7 +2120,7 @@ class PalmApp {
     });
 
     // 4. วาดเนินทั้ง 7 เฉพาะเมื่อเลือกแท็บ "เนินทั้ง 7" เพื่อไม่ให้บังเส้นลายมือในหน้าหลัก
-    if (this.activeLayer === "mounts") {
+    if (drawMounts) {
       ctx.save();
       for (const [mKey, mData] of Object.entries(res.mounts)) {
         const rad = Math.min(mData.radius || 26, Math.max(18, Math.round(res.width * 0.044)));
@@ -1699,158 +2228,122 @@ class PalmApp {
     ctx.restore();
   }
 
-  updateActiveLineDetail(layerKey) {
-    if (!this.activeLineDetailBox || !this.scanResult) return;
-
-    const res = this.scanResult;
-    const kbLines = window.PALM_KNOWLEDGE_BASE ? window.PALM_KNOWLEDGE_BASE.lines : {};
-
-    if (layerKey === "all") {
-      const mini = (id, name, color) => {
-        const l = res.lines[id] || {};
-        const m = l.metrics || {};
-        const stat = l.detected ? `${m.confidenceScore || 0}%` : "ไม่ชัดเจน";
-        return `
-          <div class="line-mini-badge" style="border-left: 3px solid ${color}; opacity:${l.detected ? 1 : 0.72};">
-            <strong>${name}:</strong> ${m.specialTrait || "-"} (${stat})
-          </div>`;
-      };
-      this.activeLineDetailBox.innerHTML = `
-        <div class="line-detail-summary-grid">
-          ${mini("life", "เส้นชีวิต", "#10b981")}
-          ${mini("head", "เส้นสมอง", "#06b6d4")}
-          ${mini("heart", "เส้นหัวใจ", "#ec4899")}
-          ${mini("fate", "เส้นวาสนา", "#eab308")}
-        </div>
-      `;
-      return;
-    }
-
-    if (layerKey === "mounts") {
-      const topMounts = Object.values(res.mounts || {})
-        .filter(m => m.fullness === "full")
-        .map(m => `${m.name} (${m.fullnessScore || "-"}%)`)
-        .join(", ") || "สมดุลทุกเนิน";
-      this.activeLineDetailBox.innerHTML = `
-        <div class="mounts-detail-summary">
-          <strong>ตรวจวัดตำแหน่งเนินบนฝ่ามือครบ 7 เนิน (ตำแหน่งอ้างอิงตาม Landmark จริง):</strong>
-          <p>เนินเด่นพิเศษในภาพนี้: <strong>${topMounts}</strong></p>
-        </div>
-      `;
-      return;
-    }
-
-    const line = res.lines[layerKey];
-    const meta = kbLines[layerKey] || { name: layerKey, color: "#f3cf7a", description: "" };
-    if (!line) return;
-    const m = line.metrics || {};
-    const statusBadge = line.detected
-      ? `ความแม่นยำวัดจริง: ${Number(m.confidenceScore || 0).toFixed(1)}%`
-      : `ไม่พบร่องเส้นชัดเจนในภาพ (${Number(m.confidenceScore || 0).toFixed(0)}%)`;
-
-    this.activeLineDetailBox.innerHTML = `
-      <div class="line-focused-card" style="border-color: ${meta.color};">
-        <div class="focused-header">
-          <span class="focused-title" style="color: ${meta.color};">✦ ${meta.name} (${meta.enName || ""})</span>
-          <span class="focused-accuracy">${statusBadge}</span>
-        </div>
-        <p class="focused-desc">${meta.description || ""}</p>
-        <div class="focused-stats">
-          <span>ความต่อเนื่อง: <strong>${m.coveragePercentage || 0}%</strong></span>
-          <span>ความลึกชัด: <strong>${m.depthScore || 0}%</strong></span>
-          <span>ความยาวเทียบฝ่ามือ: <strong>${m.lengthPercentage || 0}%</strong></span>
-          <span>ลักษณะที่วัดได้: <strong>${m.specialTrait || "-"}</strong></span>
-        </div>
-      </div>
-    `;
-  }
-
   renderReadingAspects() {
-    if (!this.scanResult || !this.readingAspectsContainer) return;
-    const reading = this.scanResult.reading;
+    if (!this.readingAspectsContainer) return;
+    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    if (!reading || !reading.aspects) return;
 
-    const cardsHtml = Object.values(reading.aspects).map(asp => `
-      <div class="palm-aspect-card">
-        <div class="aspect-card-header">
-          <span class="aspect-icon">${asp.icon}</span>
-          <div class="aspect-title-wrap">
-            <h4>${asp.title}</h4>
-            <span class="aspect-grade-pill">${asp.grade}</span>
+    const cardsHtml = Object.values(reading.aspects).map(asp => {
+      const breakdownHtml = (asp.leftNote || asp.rightNote)
+        ? `
+          <div class="aspect-dual-breakdown">
+            ${asp.leftNote ? `<div class="aspect-hand-note"><strong>✋ มือซ้าย (พื้นดวงเดิม):</strong> ${asp.leftNote.replace(/^มือซ้าย \(พื้นดวงเดิม\):\s*/, "")}</div>` : ""}
+            ${asp.rightNote ? `<div class="aspect-hand-note right-note"><strong>🤚 มือขวา (ปัจจุบัน-อนาคต):</strong> ${asp.rightNote.replace(/^มือขวา \(ปัจจุบัน-อนาคต\):\s*/, "")}</div>` : ""}
           </div>
+        `
+        : "";
+      return `
+        <div class="palm-aspect-card">
+          <div class="aspect-card-header">
+            <span class="aspect-icon">${asp.icon || "✦"}</span>
+            <div class="aspect-title-wrap">
+              <h4>${asp.title || ""}</h4>
+              <span class="aspect-grade-pill">${asp.grade || ""}</span>
+            </div>
+          </div>
+          <p class="aspect-text">${asp.text || ""}</p>
+          ${breakdownHtml}
         </div>
-        <p class="aspect-text">${asp.text}</p>
-      </div>
-    `).join("");
+      `;
+    }).join("");
 
     this.readingAspectsContainer.innerHTML = cardsHtml;
 
     if (this.summaryVerdictText) {
-      this.summaryVerdictText.textContent = reading.summaryVerdict;
+      this.summaryVerdictText.textContent = reading.summaryVerdict || "";
     }
   }
 
-  async recalibrateScan() {
-    if (!this.capturedImage) return;
-    this.playSound("playCardFlip");
-    this.startScanningProcess(this.capturedImage);
+  resetToCaptureScreen() {
+    if (this.isEntitlementLocked) {
+      if (window.taroApp && typeof window.taroApp.showToast === "function") {
+        window.taroApp.showToast("สิทธิ์นี้วิเคราะห์ครบ 2 มือและบันทึกผลเรียบร้อยแล้ว");
+      }
+      return;
+    }
+    this.startNewPalmSession();
   }
 
-  resetToCaptureScreen() {
-    this.scanResult = null;
-    this.capturedImage = null;
-    this.isCapturing = false;
-    if (this.screenResult) this.screenResult.classList.remove("active");
-    if (this.screenScanning) this.screenScanning.classList.remove("active");
-    if (this.screenCapture) this.screenCapture.classList.add("active");
-    this.startCamera(this.cameraFacing || "environment");
+  buildPalmSharePayload() {
+    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    if (!reading) return null;
+    const avgConf = this.dualReading
+      ? this.dualReading.avgConfidence
+      : (this.scanResult && this.scanResult.confidence ? this.scanResult.confidence.percentage : 0);
+    const activeCode = (window.taroApp && window.taroApp.activeCode) || "";
+    const leftConf = (this.dualScans.left && this.dualScans.left.confidence && this.dualScans.left.confidence.percentage)
+      || (this.savedLockedData && this.savedLockedData.leftConfidence)
+      || avgConf;
+    const rightConf = (this.dualScans.right && this.dualScans.right.confidence && this.dualScans.right.confidence.percentage)
+      || (this.savedLockedData && this.savedLockedData.rightConfidence)
+      || avgConf;
+    const leftHudDataUrl = (this.hudFullUrls && this.hudFullUrls.left) || (this.hudThumbs && this.hudThumbs.left) || "";
+    const rightHudDataUrl = (this.hudFullUrls && this.hudFullUrls.right) || (this.hudThumbs && this.hudThumbs.right) || "";
+    return {
+      mode: "palm",
+      hand: this.dualReading ? "both" : this.currentHand,
+      code: activeCode,
+      confidence: avgConf,
+      leftConfidence: leftConf,
+      rightConfidence: rightConf,
+      summaryVerdict: reading.summaryVerdict || "",
+      aspects: reading.aspects || {},
+      leftHudDataUrl,
+      rightHudDataUrl,
+      timestamp: Date.now()
+    };
   }
 
   copyReadingToClipboard() {
-    if (!this.scanResult) return;
-    const reading = this.scanResult.reading;
-    const text = `✋ ผลการสแกนดูลายมืออัจฉริยะ (${reading.handMeta.name})\n` +
-      `ความแม่นยำการตรวจวัด: ${this.scanResult.confidence.percentage}%\n\n` +
-      `🌟 วาสนาชีวิต & สุขภาพ: ${reading.aspects.life.text}\n\n` +
-      `🧠 สติปัญญา & การงาน: ${reading.aspects.intellect.text}\n\n` +
-      `💖 ความรัก & จิตใจ: ${reading.aspects.love.text}\n\n` +
-      `💰 โชคลาภ & เกียรติยศ: ${reading.aspects.wealth.text}\n\n` +
-      `🌿 คำแนะนำมงคล: ${reading.aspects.guidance.text}\n\n` +
-      `บทสรุป: ${reading.summaryVerdict}\n#สแกนลายมือ #ดูดวงลายมือ #เซียมซีทาโรต์`;
+    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    if (!reading || !reading.aspects) return;
+    const avgConf = this.dualReading
+      ? this.dualReading.avgConfidence
+      : (this.scanResult && this.scanResult.confidence ? this.scanResult.confidence.percentage : 0);
+    const titleHand = (reading.handMeta && reading.handMeta.name) || "ฝ่ามือทั้ง 2 ข้าง";
+    const text = `✋ ผลการวิเคราะห์ลายมือครบ 2 มือ (${titleHand})\n` +
+      `ความแม่นยำการตรวจวัด: ${avgConf}%\n\n` +
+      `🌟 วาสนาชีวิต & สุขภาพ: ${(reading.aspects.life && reading.aspects.life.text) || ""}\n\n` +
+      `🧠 สติปัญญา & การงาน: ${(reading.aspects.intellect && reading.aspects.intellect.text) || ""}\n\n` +
+      `💖 ความรัก & จิตใจ: ${(reading.aspects.love && reading.aspects.love.text) || ""}\n\n` +
+      `💰 โชคลาภ & เกียรติยศ: ${(reading.aspects.wealth && reading.aspects.wealth.text) || ""}\n\n` +
+      `🌿 คำแนะนำมงคล: ${(reading.aspects.guidance && reading.aspects.guidance.text) || ""}\n\n` +
+      `บทสรุป: ${reading.summaryVerdict || ""}\n#สแกนลายมือ2มือ #ดูดวงลายมือ #เซียมซีทาโรต์`;
 
     navigator.clipboard.writeText(text).then(() => {
       if (window.taroApp && window.taroApp.showToast) {
-        window.taroApp.showToast("📋 คัดลอกผลการสแกนลายมือฉบับเต็มเรียบร้อยแล้ว!");
+        window.taroApp.showToast("📋 คัดลอกผลการวิเคราะห์ลายมือฉบับเต็มเรียบร้อยแล้ว!");
       }
       if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.2);
     });
   }
 
   sharePalmToSocial() {
-    if (!this.scanResult) return;
-    const payload = {
-      mode: "palm",
-      hand: this.currentHand,
-      confidence: this.scanResult.confidence.percentage,
-      summaryVerdict: this.scanResult.reading.summaryVerdict,
-      aspects: this.scanResult.reading.aspects,
-      timestamp: Date.now()
-    };
-    if (window.taroApp && typeof window.taroApp.shareToSocialPlatform === "function") {
+    const payload = this.buildPalmSharePayload();
+    if (!payload) return;
+    if (window.taroApp) {
       window.taroApp.activeSocialPayload = payload;
-      window.taroApp.shareToSocialPlatform("facebook", "palm");
+      if (typeof window.taroApp.openSocialShareStudio === "function") {
+        window.taroApp.openSocialShareStudio(payload);
+      } else if (typeof window.taroApp.shareToSocialPlatform === "function") {
+        window.taroApp.shareToSocialPlatform("facebook", "palm");
+      }
     }
   }
 
   downloadPalmPdf() {
-    if (!this.scanResult) return;
-    const payload = {
-      mode: "palm",
-      hand: this.currentHand,
-      confidence: this.scanResult.confidence.percentage,
-      summaryVerdict: this.scanResult.reading.summaryVerdict,
-      aspects: this.scanResult.reading.aspects,
-      timestamp: Date.now()
-    };
+    const payload = this.buildPalmSharePayload();
+    if (!payload) return;
     if (window.taroApp && typeof window.taroApp.downloadDirectPDF === "function") {
       window.taroApp.downloadDirectPDF(payload);
     }
