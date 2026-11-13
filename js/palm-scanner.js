@@ -423,160 +423,270 @@ class PalmScannerEngine {
     const lR = lScan.reading || this.interpretPalmReading(lScan.lines || {}, lScan.mounts || {}, "left", lScan.confidence || {});
     const rR = rScan.reading || this.interpretPalmReading(rScan.lines || {}, rScan.mounts || {}, "right", rScan.confidence || {});
 
-    const lPct = Math.round(Number((lScan.confidence && lScan.confidence.percentage) || 75));
-    const rPct = Math.round(Number((rScan.confidence && rScan.confidence.percentage) || 75));
+    const lPct = Math.round(Number((lScan.confidence && lScan.confidence.percentage) || 78));
+    const rPct = Math.round(Number((rScan.confidence && rScan.confidence.percentage) || 78));
     const avgPct = Number(((lPct + rPct) / 2).toFixed(1));
-    const lFeat = (lScan.confidence && lScan.confidence.featuresDetected) || 3;
-    const rFeat = (rScan.confidence && rScan.confidence.featuresDetected) || 3;
 
     const lLines = lScan.lines || {};
     const rLines = rScan.lines || {};
-    const lifeLeft = (lLines.life && lLines.life.detected) ? (lLines.life.metrics && lLines.life.metrics.confidenceScore) || 75 : 55;
-    const lifeRight = (rLines.life && rLines.life.detected) ? (rLines.life.metrics && rLines.life.metrics.confidenceScore) || 75 : 55;
-    const fateBoth = Boolean((lLines.fate && lLines.fate.detected) || (rLines.fate && rLines.fate.detected));
-    const sunBoth = Boolean((lLines.sun && lLines.sun.detected) || (rLines.sun && rLines.sun.detected));
+    const lMounts = lScan.mounts || {};
+    const rMounts = rScan.mounts || {};
 
-    const synergyLife = lifeRight >= lifeLeft
-      ? "พลังชีวิตและการสร้างฐานะในปัจจุบันพัฒนาดีขึ้นกว่าพื้นดวงเดิม แสดงถึงวินัยและการดูแลตนเองที่ส่งผลบวกชัดเจน"
-      : "พื้นดวงเดิมมีฐานกำลังใจและบุญเก่าหนุนหลังแข็งแกร่ง ช่วงนี้ควรจัดสมดุลการพักผ่อนเพื่อดึงศักยภาพเดิมกลับมาให้เต็มร้อย";
+    const lifeL = lLines.life || {};
+    const lifeR = rLines.life || {};
+    const lifeDepthR = (lifeR.metrics && lifeR.metrics.depthScore) || 55;
+    const lifeArcR = (lifeR.traits && lifeR.traits.arc) || "moderate";
+    const venusFullR = rMounts.venus && rMounts.venus.fullness === "full";
+    const venusFullL = lMounts.venus && lMounts.venus.fullness === "full";
 
-    const synergyFate = fateBoth
-      ? "เส้นวาสนาปรากฏเกื้อหนุนทั้งรากฐานเดิมและการลงมือทำในปัจจุบัน โอกาสเลื่อนขั้น ขยายกิจการ และความมั่นคงระยะยาวเปิดกว้าง"
-      : "เส้นวาสนาเน้นพลังแห่งอิสรภาพและความสามารถเฉพาะตัว ยิ่งลงมือทำด้วยตนเองยิ่งก่อเกิดความมั่งคั่งและเกียรติยศ";
+    const headR = rLines.head || {};
+    const headL = lLines.head || {};
+    const headSlopeR = (headR.traits && headR.traits.slope) || "straight";
+    const headLenR = (headR.metrics && headR.metrics.lengthPercentage) || 50;
 
-    const synergySun = sunBoth
-      ? "มีรัศมีจากเส้นอาทิตย์เสริมเมตตามหานิยม ชื่อเสียง และผู้ใหญ่ให้การสนับสนุน"
-      : "ความสำเร็จเกิดจากความสม่ำเสมอและเครดิตความน่าเชื่อถือที่สั่งสมด้วยตนเองอย่างมั่นคง";
+    const heartR = rLines.heart || {};
+    const heartTargetR = (heartR.traits && heartR.traits.endTarget) || "between";
 
-    const buildMergedAspect = (key, defaultIcon, defaultTitle, dualGrade, bridgeSentence) => {
-      const lAsp = (lR.aspects && lR.aspects[key]) || { grade: "", text: "" };
-      const rAsp = (rR.aspects && rR.aspects[key]) || { grade: "", text: "" };
+    const fateL = Boolean(lLines.fate && lLines.fate.detected);
+    const fateR = Boolean(rLines.fate && rLines.fate.detected);
+    const sunL = Boolean(lLines.sun && lLines.sun.detected);
+    const sunR = Boolean(rLines.sun && rLines.sun.detected);
+    const mercBoth = Boolean((lLines.mercury && lLines.mercury.detected) || (rLines.mercury && rLines.mercury.detected));
+    const fateOrigR = (rLines.fate && rLines.fate.traits && rLines.fate.traits.origin) || "wrist";
+
+    // 1. สุขภาพและพลังชีวิต
+    const lifeGrade = (lifeR.detected && (lifeArcR === "wide" || lifeDepthR >= 55 || venusFullR))
+      ? "แข็งแรง ฟื้นตัวไว"
+      : (lifeR.detected ? "สมดุล คล่องตัวดี" : "ควรเน้นพักผ่อนให้เพียงพอ");
+    let lifeDualText = "";
+    if (lifeR.detected && (lifeArcR === "wide" || venusFullR || venusFullL)) {
+      lifeDualText = "พื้นฐานร่างกายและพลังใจของคุณค่อนข้างอึด ลุยงานหนักหรือรับผิดชอบหลายเรื่องพร้อมกันได้ดี เวลาเหนื่อยล้าก็ฟื้นตัวไว ช่วงนี้แค่ดูแลเรื่องนอนหลับและดื่มน้ำให้พอก็จะยิ่งสดชื่นมีพลังเต็มที่";
+    } else if (lifeR.detected && lifeL.detected && lifeDepthR >= 50) {
+      lifeDualText = "จังหวะพลังชีวิตสม่ำเสมอ ร่างกายปรับตัวเข้ากับความเปลี่ยนแปลงและงานที่เร่งรีบได้ดี พื้นฐานสุขภาพถือว่าอยู่ในเกณฑ์ดี แต่ควรแบ่งเวลาผ่อนคลายความเครียดบ้างเพื่อไม่ให้ล้าสะสม";
+    } else {
+      lifeDualText = "คุณเป็นคนใช้พลังงานอย่างรู้จังหวะ ไม่ชอบฝืนหักโหมเกินกำลัง จึงทำงานระยะยาวได้ต่อเนื่อง หากจัดตารางนอนให้เป็นเวลาและออกกำลังกายเบาๆ สม่ำเสมอ สุขภาพจะนิ่งและแข็งแรงขึ้นมาก";
+    }
+
+    // 2. ความคิดและการงาน
+    const intellectGrade = headSlopeR === "curved_moon"
+      ? "ไอเดียดี มีไหวพริบ"
+      : (headLenR >= 60 ? "คิดเป็นระบบ ตัดสินใจคม" : "รอบคอบ แก้ปัญหาเก่ง");
+    let intellectDualText = "";
+    if (headSlopeR === "curved_moon") {
+      intellectDualText = "ความคิดของคุณผสานทั้งเหตุผลและมุมมองสร้างสรรค์ได้ดี อ่านคนและจับจังหวะสถานการณ์เก่ง เหมาะกับงานที่ได้วางแผน คิดไอเดียใหม่ หรือสื่อสารกับผู้คน แค่จัดลำดับงานให้ชัดก็จะไปได้ไวมาก";
+    } else if (headLenR >= 60) {
+      intellectDualText = "แนวคิดของคุณเป็นขั้นเป็นตอน มองความเป็นจริงชัดและตัดสินใจได้เด็ดขาด เมื่อเจอปัญหาเฉพาะหน้าจะตั้งสติและหาทางออกได้ไว เหมาะกับการคุมงานหรือรับหน้าที่สำคัญที่ต้องอาศัยความแม่นยำ";
+    } else if (headL.detected || headR.detected) {
+      intellectDualText = "คุณเป็นคนคิดรอบคอบและเรียนรู้จากประสบการณ์จริงได้ดี มีความละเอียดถี่ถ้วนก่อนลงมือทำ ในเรื่องงานถ้ามั่นใจในตัวเองมากขึ้นและกล้าตัดสินใจเร็วขึ้นอีกนิด โอกาสดีๆ จะเข้ามาชัดมาก";
+    } else {
+      intellectDualText = "สไตล์การทำงานเน้นความยืดหยุ่นและปรับวิธีคิดตามหน้างานเก่ง ไม่ยึดติดกรอบเดิมๆ ช่วงนี้หากจดบันทึกวางแผนล่วงหน้าและโฟกัสทีละเป้าหมาย ผลงานจะออกมาโดดเด่นและไม่เหนื่อยฟรี";
+    }
+
+    // 3. ความรักและความสัมพันธ์
+    const loveGrade = heartTargetR === "jupiter"
+      ? "รักจริง ทุ่มเทใจ"
+      : (heartTargetR === "between" ? "รักเข้าใจ ดูแลกันดี" : "รักมั่นคง ไม่หวือหวา");
+    let loveDualText = "";
+    if (heartTargetR === "jupiter") {
+      loveDualText = "คุณเป็นคนรักจริงและคาดหวังความชัดเจน เวลาให้ใจใครจะซื่อสัตย์และดูแลอีกฝ่ายเต็มที่ ความสัมพันธ์จะราบรื่นมากเมื่อเปิดใจคุยกันตรงๆ และลดความคาดหวังเล็กๆ น้อยๆ ลงบ้าง";
+    } else if (heartTargetR === "between") {
+      loveDualText = "ความรักของคุณเดินด้วยความเข้าใจและเหตุผล รู้จักใส่ใจความรู้สึกของคนใกล้ตัวโดยไม่งี่เง่า เป็นคู่คิดที่ดีให้กันได้ยาวนาน ยิ่งแบ่งปันเรื่องราวในแต่ละวันกันสม่ำเสมอใจยิ่งใกล้กัน";
+    } else {
+      loveDualText = "ภายนอกอาจดูนิ่งๆ หรือไม่ใช่สายหวานจัด แต่ลึกๆ เป็นคนรักมั่นคงและรับผิดชอบความสัมพันธ์เก่ง ช่วยเหลือดูแลด้วยความจริงใจ หากแสดงออกหรือพูดความรู้สึกดีๆ บ่อยขึ้นจะช่วยเติมความอบอุ่นได้ดีมาก";
+    }
+
+    // 4. การเงินและโชคโอกาส
+    const wealthGrade = (fateR && sunR)
+      ? "การเงินเด่น มีคนสนับสนุน"
+      : (fateR || fateL ? "สร้างฐานะมั่นคงขึ้นเรื่อยๆ" : "หาเงินคล่อง ได้หลายช่องทาง");
+    let wealthDualText = "";
+    if (fateR && sunR) {
+      wealthDualText = "ดวงการเงินและโอกาสก้าวหน้าเปิดชัด งานที่ลงแรงไว้กำลังผลิดอกออกผลและมีเกณฑ์ได้รับการยอมรับหรือผู้ใหญ่คอยหนุน รายได้จะทยอยขยับขึ้นตามผลงานที่มีความสม่ำเสมอ";
+    } else if (fateR || fateL) {
+      const channelHint = fateOrigR === "moon"
+        ? "โอกาสและรายรับมักเข้ามาจากการติดต่อผู้คน งานออนไลน์ หรือลูกค้าที่บอกต่อ"
+        : "ความขยันและวินัยในการเก็บออมของคุณกำลังสร้างความมั่นคงให้ฐานะแบบค่อยเป็นค่อยไป";
+      wealthDualText = `${channelHint} ยิ่งโฟกัสกับงานถนัดและทำอย่างต่อเนื่อง การเงินจะเริ่มลงตัวและมีเงินสำรองอุ่นใจขึ้นชัด`;
+    } else {
+      wealthDualText = "เส้นทางการเงินเป็นแบบอิสระ เติบโตจากไหวพริบและความสามารถเฉพาะตัว ไม่ถูกจำกัดด้วยทางเดียว ช่วงนี้มีช่องทางรายได้เสริมหรืองานโปรเจกต์ใหม่เข้ามาให้หยิบจับได้ดี";
+    }
+
+    // 5. คำแนะนำเสริมชีวิต
+    const guidanceGrade = mercBoth ? "สื่อสารให้ชัด เปิดรับโอกาส" : "รักษาสมดุลแล้วเดินหน้าต่อ";
+    const guidanceDualText = mercBoth
+      ? "จุดแข็งของคุณอยู่ที่การพูดคุย เจรจา และสังเกตจังหวะเก่ง ถ้ากล้านำเสนอไอเดียและสร้างความสม่ำเสมอในการดูแลสุขภาพ โอกาสดีเรื่องงานกับเงินจะเข้ามาง่ายขึ้น พร้อมแบ่งเวลาทำบุญทำทานตามกำลังใจจะยิ่งสบายใจ"
+      : "ชีวิตช่วงนี้เน้นความนิ่งและการลงมือทำทีละก้าวอย่างมั่นคง อย่าเร่งกดดันตัวเองเกินไป แค่พักผ่อนให้พอ รักษาคำพูดและความตั้งใจดีไว้ สิ่งที่วางแผนไว้จะค่อยๆ สำเร็จและราบรื่นอย่างเป็นธรรมชาติ";
+
+    const rightConfirmFallback = {
+      life: "ช่วงปัจจุบันสุขภาพและแรงกายยังหนุนได้ดี ควรรักษาเวลานอนให้สม่ำเสมอแล้วพลังจะอยู่ตัวนาน",
+      intellect: "แนวโน้มช่วงนี้ตัดสินใจเรื่องงานและวางแผนได้คมขึ้นเมื่อโฟกัสทีละเป้าหมาย",
+      love: "ช่วงนี้ความสัมพันธ์พัฒนาไปในทางที่มั่นคงขึ้นเมื่อเปิดใจสื่อสารกันตรงๆ",
+      wealth: "จังหวะปัจจุบันเดินหน้าต่อได้สวย เน้นลงมือทำสม่ำเสมอแล้วรายรับจะค่อยๆ ชัดเจนขึ้น",
+      guidance: "ทิศทางต่อจากนี้เน้นความต่อเนื่องและจัดสมดุลงานกับเวลาพักให้ลงตัวที่สุด"
+    };
+
+    const buildMergedAspect = (key, defaultIcon, defaultTitle, dualGrade, plainText) => {
+      const lAsp = (lR.aspects && lR.aspects[key]) || { grade: "", text: "", shortNote: "" };
+      const rAsp = (rR.aspects && rR.aspects[key]) || { grade: "", text: "", shortNote: "" };
       const cleanStr = (s) => String(s || "").replace(/\s*\(\s*\)/g, "").trim();
-      const lClean = cleanStr(lAsp.text);
-      const rClean = cleanStr(rAsp.text);
-      const combinedGrade = dualGrade || rAsp.grade || lAsp.grade || "สมดุลมงคล";
+      const leftSummary = cleanStr(lAsp.shortNote || lAsp.text);
+      let rightSummary = cleanStr(rAsp.shortNote || rAsp.text);
+      if (rightSummary === leftSummary) {
+        rightSummary = rightConfirmFallback[key] || rightSummary;
+      }
       return {
         icon: rAsp.icon || lAsp.icon || defaultIcon,
         title: rAsp.title || lAsp.title || defaultTitle,
-        grade: `${combinedGrade}`,
-        leftNote: `มือซ้าย (พื้นดวงเดิม): ${lClean}`,
-        rightNote: `มือขวา (ปัจจุบัน-อนาคต): ${rClean}`,
-        text: `${bridgeSentence} (ปัจจุบัน: ${rClean})`.trim()
+        grade: dualGrade || rAsp.grade || lAsp.grade || "สมดุลดี",
+        leftNote: `มือซ้าย (พื้นดวงเดิม): ${leftSummary}`,
+        rightNote: `มือขวา (ปัจจุบัน-อนาคต): ${rightSummary}`,
+        text: cleanStr(plainText)
       };
     };
 
     const aspects = {
-      life: buildMergedAspect(
-        "life",
-        "🌟",
-        "วาสนาชีวิต สุขภาพ และพลังกาย",
-        (lifeRight >= 78 && lifeLeft >= 75) ? "รากฐานมั่นคง พลังชีวิตแข็งแกร่งทั้ง 2 มือ" : "พลังชีวิตสมดุล ปรับตัวเก่ง",
-        synergyLife
-      ),
-      intellect: buildMergedAspect(
-        "intellect",
-        "🧠",
-        "สติปัญญา การงาน และการตัดสินใจ",
-        rR.aspects && rR.aspects.intellect ? rR.aspects.intellect.grade : "วิจารณญาณเฉียบคม",
-        "เมื่อเทียบแนวโน้มความคิดระหว่างมือซ้ายและมือขวา พบว่าพรสวรรค์ดั้งเดิมสอดประสานกับทักษะการตัดสินใจในยุคปัจจุบันอย่างลงตัว"
-      ),
-      love: buildMergedAspect(
-        "love",
-        "💖",
-        "ความรัก ความสัมพันธ์ และจิตใจ",
-        rR.aspects && rR.aspects.love ? rR.aspects.love.grade : "รักมั่นคงลึกซึ้ง",
-        "ความลึกซึ้งทางความรู้สึกจากพื้นดวงเดิมหลอมรวมกับวุฒิภาวะในปัจจุบัน ช่วยให้ความสัมพันธ์ดำเนินไปด้วยความเข้าใจและเกื้อกูลกัน"
-      ),
-      wealth: buildMergedAspect(
-        "wealth",
-        "💰",
-        "โชคลาภ การเงิน และเกียรติยศ",
-        (fateBoth && sunBoth) ? "วาสนาทรัพย์และบารมีเปิดกว้าง" : (fateBoth ? "การเงินมั่นคงจากความเพียร" : "ดวงการเงินยืดหยุ่นเปิดโอกาส"),
-        `${synergyFate} ${synergySun}`
-      ),
-      guidance: buildMergedAspect(
-        "guidance",
-        "🌿",
-        "คำแนะนำเสริมสิริมงคล",
-        "แนวทางเกื้อหนุนครบทั้ง 2 มือ",
-        "เคล็ดเสริมชะตาจากการวิเคราะห์ครบ 2 ฝ่ามือคือการรักษาสมดุลระหว่างสัญชาตญาณ (มือซ้าย) และการวางแผนลงมือทำจริง (มือขวา)"
-      )
+      life: buildMergedAspect("life", "🌟", "สุขภาพ และพลังชีวิต", lifeGrade, lifeDualText),
+      intellect: buildMergedAspect("intellect", "🧠", "ความคิด การงาน และการตัดสินใจ", intellectGrade, intellectDualText),
+      love: buildMergedAspect("love", "💖", "ความรัก และความสัมพันธ์", loveGrade, loveDualText),
+      wealth: buildMergedAspect("wealth", "💰", "การเงิน โอกาส และความมั่นคง", wealthGrade, wealthDualText),
+      guidance: buildMergedAspect("guidance", "🌿", "คำแนะนำที่ใช้ได้จริง", guidanceGrade, guidanceDualText)
     };
+
+    const mentalSummary = headSlopeR === "curved_moon" ? "หัวไวด้านไอเดียและการสื่อสาร" : "ความคิดเป็นระบบและรอบคอบ";
+    const fortuneSummary = (fateR || sunR) ? "มีจังหวะเติบโตจากการลงมือทำและผู้ใหญ่หนุน" : "หาโอกาสและรายได้เสริมได้หลายช่องทาง";
 
     return {
       hand: "both",
       handMeta: {
         name: "ฝ่ามือทั้ง 2 ข้าง (ซ้าย + ขวา)",
-        role: "วิเคราะห์ครบพื้นดวงเดิมและปัจจุบัน-อนาคต"
+        role: "เปรียบเทียบพื้นนิสัยเดิมกับทิศทางชีวิตปัจจุบัน"
       },
       avgConfidence: avgPct,
       aspects,
-      summaryVerdict: `วิเคราะห์ครบ 2 มือสำเร็จ (มือซ้าย ${lFeat}/6 เส้น • มือขวา ${rFeat}/6 เส้น • ความแม่นยำเฉลี่ย ${avgPct}%) — ผสานคำพยากรณ์ทั้งพื้นดวงเดิมและแนวโน้มปัจจุบัน-อนาคตครบ 5 ด้าน`
+      summaryVerdict: `ภาพรวมทั้ง 2 มือ (ความชัดเฉลี่ย ${avgPct}%): พื้นฐานร่างกายและกำลังใจดี ${mentalSummary} และ${fortuneSummary}`
     };
   }
 
   interpretPalmReading(lines, mounts, hand, confidence) {
     const kb = window.PALM_KNOWLEDGE_BASE || {};
-    const kbLines = kb.lines || {};
     const handMeta = (kb.hands && kb.hands[hand]) || { name: hand === "left" ? "มือซ้าย" : "มือขวา" };
 
-    const findVar = (lineId, pred, fallback) => {
-      const l = kbLines[lineId];
-      if (!l || !Array.isArray(l.variations)) return fallback || "";
-      const hit = l.variations.find(pred);
-      return hit ? hit.meaning : (fallback || "");
-    };
+    const safeMount = (id) => (mounts && mounts[id]) || { fullness: "moderate", fullnessScore: 55 };
+    const venusM = safeMount("venus");
+    const saturnM = safeMount("saturn");
+    const jupiterM = safeMount("jupiter");
+    const sunM = safeMount("sun");
 
-    // 1. ด้านวาสนาชีวิตและพลังกาย (Life & Vitality)
-    const life = lines.life || {};
+    // 1. สุขภาพและพลังชีวิต
+    const life = (lines && lines.life) || {};
     const lifeL = life.metrics || {};
     const lT = life.traits || {};
-    const venusM = mounts.venus;
-    const lifeMeaning = !life.detected
-      ? "เส้นชีวิตในภาพนี้ค่อนข้างละเอียดบาง จึงตรวจจับได้บางส่วน"
-      : lT.arc === "wide"
-        ? findVar("life", v => v.name.includes("กว้าง"), lifeL.specialTrait)
-        : findVar("life", v => v.name.includes("แคบ") || v.name.includes("สั้น"), lifeL.specialTrait);
-    const lifeText = `${life.detected ? `เส้นชีวิต${lifeL.specialTrait}` : "ตรวจจับเส้นชีวิตได้บางส่วน"} ควบคู่กับ${venusM.name}ที่${venusM.fullnessLabel} — ${lifeMeaning}`;
+    let lifeShort = "";
+    let lifeText = "";
+    let lifeGrade = "สมดุล คล่องตัวดี";
+    if (!life.detected) {
+      lifeGrade = "ต้องใส่ใจการพักผ่อน";
+      lifeShort = "เส้นชีวิตค่อนข้างบาง จึงไวต่อความเหนื่อยล้าและต้องดูแลการนอนให้สม่ำเสมอ";
+      lifeText = "ร่างกายไวต่อการพักผ่อนน้อยและความเครียดสะสม ถ้าโหมงานหนักติดต่อกันอาจอ่อนเพลียง่าย ช่วงนี้ควรเข้านอนให้เป็นเวลา ดื่มน้ำให้พอ และหาเวลาพักสมองระหว่างวันแล้วพลังกายจะกลับมาดีมาก";
+    } else if (lT.arc === "wide" || venusM.fullness === "full") {
+      lifeGrade = "แข็งแรง ฟื้นตัวไว";
+      lifeShort = "อึดและฟื้นตัวเก่ง มีพลังใจพร้อมลุยเรื่องสำคัญและรับแรงกดดันได้ดี";
+      lifeText = "คุณมีพื้นฐานกำลังกายและกำลังใจดี ลุยงานได้นานกว่าคนทั่วไปและเวลาป่วยหรือล้าก็ฟื้นตัวไว ระวังเพียงอย่ารับเรื่องคนอื่นมาแบกมากเกินไปจนลืมดูแลสุขภาพตัวเอง";
+    } else if (lT.reachesWrist) {
+      lifeGrade = "อึดทน ดูแลตัวเองดี";
+      lifeShort = "พลังชีวิตต่อเนื่องยาวนาน ปรับตัวเข้ากับการทำงานและจังหวะชีวิตได้สบาย";
+      lifeText = "ความแข็งแรงและการฟื้นตัวอยู่ในเกณฑ์ดี ทำงานระยะยาวได้สม่ำเสมอไม่แผ่วง่าย หากออกกำลังกายเบาๆ ต่อเนื่องและเลี่ยงการนอนดึกติดต่อกัน จะยิ่งช่วยให้ร่างกายสดชื่นกระปรี้กระเปร่า";
+    } else {
+      lifeShort = "ใช้พลังอย่างประหยัด เน้นความพอดีและจังหวะที่ไม่หักโหมเกินไป";
+      lifeText = "คุณรู้ขีดจำกัดของตัวเองดี ไม่ค่อยฝืนใช้แรงเกินตัวจึงประคองงานและชีวิตได้ดี แนะนำให้แบ่งช่วงพักผ่อนให้ชัดและขยับร่างกายเบาๆ จะช่วยเสริมความสดใสและภูมิคุ้มกันได้ดีขึ้น";
+    }
 
-    // 2. ด้านสติปัญญาและการงาน (Intellect & Career)
-    const head = lines.head || {};
+    // 2. ความคิดและการงาน
+    const head = (lines && lines.head) || {};
     const headL = head.metrics || {};
     const hdT = head.traits || {};
-    const saturnM = mounts.saturn;
-    const headMeaning = !head.detected
-      ? "เส้นสมองในภาพนี้เห็นไม่ชัดเจนตลอดสาย"
-      : findVar("head", v => v.type === hdT.slope, headL.specialTrait);
-    const intellectText = `${head.detected ? `เส้นสมอง${headL.specialTrait}` : "ตรวจจับเส้นสมองได้บางส่วน"} เมื่อจับคู่กับ${saturnM.name}ที่${saturnM.fullnessLabel} — ${headMeaning}`;
+    let headShort = "";
+    let intellectText = "";
+    let headGrade = "คิดรอบคอบ เป็นเหตุเป็นผล";
+    if (!head.detected) {
+      headGrade = "ปรับตัวไว ตามหน้างาน";
+      headShort = "คิดไวพลิกแพลงตามสถานการณ์เก่ง แต่บางครั้งอาจลังเลเมื่อต้องตัดสินใจหลายเรื่องพร้อมกัน";
+      intellectText = "คุณเป็นคนหัวไวและแก้ปัญหาเฉพาะหน้าตามสถานการณ์ได้ดี เพียงแต่บางช่วงถ้าต้องคิดหลายเรื่องพร้อมกันอาจเกิดความลังเล แนะนำให้เขียนเรียงลำดับสิ่งที่สำคัญที่สุดก่อนลงมือทำแล้วงานจะเดินหน้าไวมาก";
+    } else if (hdT.slope === "curved_moon") {
+      headGrade = "ไอเดียดี เข้าใจคนเก่ง";
+      headShort = "เด่นด้านความคิดสร้างสรรค์ มองภาพรวมขาด และจับอารมณ์หรือความต้องการของคนอื่นได้ดี";
+      intellectText = "มีจินตนาการและไอเดียสดใหม่อยู่เสมอ อ่านสถานการณ์และเข้าใจความรู้สึกคนรอบตัวเก่ง จึงเหมาะกับงานที่ได้วางแผน คิดคอนเทนต์ งานบริการ หรือการสื่อสารกับลูกค้า ยิ่งลงมือทำตามแผนให้จบทีละชิ้นผลลัพธ์ยิ่งปัง";
+    } else if ((headL.lengthPercentage || 0) >= 62 || saturnM.fullness === "full") {
+      headGrade = "วางแผนแม่น ตัดสินใจชัด";
+      headShort = "คิดเป็นขั้นเป็นตอน มองความเป็นจริงชัด และรับผิดชอบเรื่องยากๆ ได้น่าเชื่อถือ";
+      intellectText = "วิธีคิดค่อนข้างเป็นระบบ มองเหตุและผลชัดเจนก่อนตัดสินใจ ไม่ค่อยหวั่นไหวตามกระแสง่ายๆ จึงเหมาะกับงานบริหาร งานวิเคราะห์ งานตัวเลข หรือการดูแลโครงการสำคัญที่จะเติบโตได้ด้วยความน่าเชื่อถือ";
+    } else {
+      headShort = "มองโลกตามความจริง รอบคอบและเรียนรู้ไวจากประสบการณ์ที่เจอ";
+      intellectText = "เป็นคนคิดรอบคอบและปฏิบัติจริงจัง ไม่ชอบพูดลอยๆ เวลาทำงานจะเก็บรายละเอียดได้ดีและค่อยๆ พัฒนาฝีมือขึ้นเรื่อยๆ หากมั่นใจในการตัดสินใจของตัวเองเพิ่มอีกนิดจะก้าวหน้าเร็วขึ้นมาก";
+    }
 
-    // 3. ด้านความรักและจิตใจ (Love & Emotion)
-    const heart = lines.heart || {};
-    const heartL = heart.metrics || {};
+    // 3. ความรักและความสัมพันธ์
+    const heart = (lines && lines.heart) || {};
     const hT = heart.traits || {};
-    const jupiterM = mounts.jupiter;
-    const heartMeaning = !heart.detected
-      ? "เส้นหัวใจค่อนข้างบางในมุมแสงของภาพนี้"
-      : findVar("heart", v => v.target === (hT.endTarget === "jupiter" ? "jupiter" : hT.endTarget === "saturn" ? "saturn" : "between"), heartL.specialTrait);
-    const loveText = `${heart.detected ? `เส้นหัวใจ${heartL.specialTrait}` : "ตรวจจับเส้นหัวใจได้บางส่วน"} ร่วมกับ${jupiterM.name} (${jupiterM.fullnessLabel}) — ${heartMeaning}`;
+    let heartShort = "";
+    let loveText = "";
+    let loveGrade = "รักมั่นคง เข้าใจกันดี";
+    if (!heart.detected) {
+      loveGrade = "อ่อนโยน แสดงออกด้วยกระทำ";
+      heartShort = "ใส่ใจความรู้สึกเก่งแต่มักเก็บไว้ในใจ เลือกดูแลคนรักผ่านการกระทำมากกว่าคำพูด";
+      loveText = "คุณเป็นคนจิตใจดีและแคร์ความรู้สึกคนใกล้ตัว แต่ไม่ค่อยถนัดบอกรักเป็นคำพูดหวานๆ มักแสดงออกด้วยการช่วยดูแลในเรื่องชีวิตประจำวัน ถ้าลองเอ่ยชมหรือสื่อสารความรู้สึกตรงๆ บ้าง ความสัมพันธ์จะอบอุ่นขึ้นอีกมาก";
+    } else if (hT.endTarget === "jupiter" || jupiterM.fullness === "full") {
+      loveGrade = "รักจริง จริงใจสูง";
+      heartShort = "รักจริงจัง ซื่อสัตย์ และคาดหวังความชัดเจนจากคนที่คบด้วยเต็มร้อย";
+      loveText = "เวลาคบใครคุณให้ความสำคัญและความจริงใจสูงมาก เป็นคนทุ่มเทและอยากสร้างความสัมพันธ์ที่ชัดเจนมั่นคง ข้อแนะนำคือเปิดโอกาสให้ต่างฝ่ายต่างค่อยๆ ปรับตัว อย่ากดดันตัวเองหรืออีกฝ่ายด้วยมาตรฐานที่สูงเกินไป";
+    } else if (hT.endTarget === "between") {
+      loveGrade = "รักสมดุล มีเหตุผล";
+      heartShort = "รักอย่างมีเหตุผล รู้จักให้พื้นที่กันและพูดคุยปรับความเข้าใจได้ง่าย";
+      loveText = "คุณบาลานซ์ระหว่างความรู้สึกรักกับเหตุผลได้ดี เวลาคบใครจึงเข้าใจกันง่าย ไม่งอนหรือเอาแต่ใจเกินเหตุ เป็นทั้งคนรักและเพื่อนคู่คิดที่ดี ยิ่งหมั่นคุยกันเปิดอกอย่างสม่ำเสมอดวงความรักจะราบรื่นยาวนาน";
+    } else {
+      heartShort = "ความรู้สึกมั่นคง ไม่เปลี่ยนใจง่าย รักใครแล้วดูแลช่วยเหลือกันเงียบๆ";
+      loveText = "ความรักของคุณค่อยเป็นค่อยไปแต่มั่นคงมาก ไม่ชอบความหวือหวาชั่วคราว เมื่อตัดสินใจเลือกใครแล้วจะดูแลรับผิดชอบอย่างดี แค่เติมเวลาพูดคุยหยอกล้อและแบ่งปันเรื่องราวกันมากขึ้นก็จะยิ่งสนิทใจกันกว่าเดิม";
+    }
 
-    // 4. ด้านโชคลาภ การเงิน และเกียรติยศ (Wealth & Fortune)
-    const fate = lines.fate || {};
-    const sun = lines.sun || {};
-    const sunM = mounts.sun;
-    const fateText = fate.detected
-      ? `${fate.metrics.specialTrait} (${findVar("fate", v => v.place === (fate.traits && fate.traits.origin), "")})`
-      : "ไม่พบเส้นวาสนาหลักชัดเจนในภาพ (บ่งบอกเส้นทางชีวิตที่ยืดหยุ่น สร้างโอกาสได้หลายทางตามจังหวะเวลา)";
-    const sunText = sun.detected ? `และตรวจพบเส้นอาทิตย์ (${sun.metrics.specialTrait})` : "ส่วนเส้นอาทิตย์ยังไม่ปรากฏเข้มชัด";
-    const wealthText = `${fateText} ${sunText} ประกอบกับ${sunM.name}ที่${sunM.fullnessLabel}`;
+    // 4. การเงินและโอกาส
+    const fate = (lines && lines.fate) || {};
+    const sun = (lines && lines.sun) || {};
+    const fateOrigin = fate.traits && fate.traits.origin;
+    let wealthShort = "";
+    let wealthText = "";
+    let wealthGrade = "หาเงินคล่อง เปิดโอกาสใหม่";
+    if (fate.detected && sun.detected) {
+      wealthGrade = "การเงินเด่น มีคนสนับสนุน";
+      wealthShort = "จังหวะงานและการเงินเดินคู่กัน ผลงานโดดเด่นและมีโอกาสได้คนคอยเกื้อหนุน";
+      wealthText = "มีเกณฑ์สร้างรายได้และความก้าวหน้าจากฝีมือตัวเองอย่างชัดเจน สิ่งที่ตั้งใจทำมีโอกาสเข้าตาหัวหน้า ลูกค้า หรือผู้ใหญ่ให้การสนับสนุน ถ้าวางแผนเก็บออมควบคู่ไปกับลงทุนพัฒนาทักษะ ฐานะจะขยับมั่นคงเร็วมาก";
+    } else if (fate.detected) {
+      wealthGrade = "สร้างฐานะมั่นคงด้วยตนเอง";
+      wealthShort = fateOrigin === "moon"
+        ? "รายได้ดีมักมาจากงานติดต่อสื่อสาร ผู้คนบอกต่อ หรือโอกาสต่างถิ่น"
+        : "ฐานะการเงินค่อยๆ เติบโตจากความขยันและความสม่ำเสมอของตัวเอง";
+      wealthText = fateOrigin === "moon"
+        ? "ดวงการเงินเปิดรับโอกาสจากผู้คน การเจรจา หรือการเดินทางทำงาน ยิ่งขยันสร้างคอนเนกชันและรักษามาตรฐานงาน รายรับจะเข้ามาหลายทางและต่อยอดได้ดี"
+        : "เป็นคนพึ่งพาตัวเองได้และสร้างฐานะขึ้นด้วยสองมือ ยิ่งโฟกัสงานหลักให้ต่อเนื่องและจัดสรรเงินเก็บให้เป็นระบบ รายรับและเงินสำรองจะมั่นคงขึ้นตามลำดับเวลา";
+    } else if (sun.detected || sunM.fullness === "full") {
+      wealthGrade = "เครดิตดี เงินเข้าเพราะความน่าเชื่อถือ";
+      wealthShort = "มีเสน่ห์และความน่าเชื่อถือ ดึงดูดโอกาสและลูกค้าใหม่ๆ เข้ามาได้เรื่อยๆ";
+      wealthText = "ความน่าเชื่อถือและสไตล์การทำงานเฉพาะตัวเป็นจุดขายที่ช่วยสร้างรายได้ให้คุณ เวลาลงมือทำอะไรมักมีคนเชื่อมั่นและช่วยแนะนำต่อ ทำให้เกิดช่องทางทำเงินหรือโอกาสใหม่ๆ อยู่เสมอ";
+    } else {
+      wealthShort = "ดวงการเงินยืดหยุ่น สร้างรายได้เสริมและขยับขยายได้หลายแนวทางตามจังหวะ";
+      wealthText = "เส้นทางการเงินของคุณไม่ได้ถูกจำกัดแค่ทางเดียว สามารถพลิกแพลงหาช่องทางสร้างรายได้เสริมหรืองานอิสระได้ดี ช่วงนี้หากลองจับงานถนัดมาต่อยอดอย่างจริงจังและจดบันทึกรายรับรายจ่ายให้ชัด จะเห็นเงินเหลือเก็บชัดขึ้นมาก";
+    }
 
-    // 5. คำแนะนำเสริมดวงชะตา (Guidance)
-    const mercury = lines.mercury || {};
-    const mercNote = mercury.detected
-      ? `นอกจากนี้ยังตรวจพบเส้นพุธ (${mercury.metrics.specialTrait}) เสริมไหวพริบการเจรจาและสุขภาพ`
-      : "เส้นสุขภาพ/เส้นพุธเรียบสงบ สื่อถึงจังหวะชีวิตที่ปรับสมดุลได้ดี";
-    const guidanceText = `ตามหลักหัตถศาสตร์${handMeta.name} (${handMeta.focus || "ภาพรวมดวงชะตา"}) ${mercNote} ควรดูแลสุขภาพพักผ่อนให้สมดุล ฝึกสมาธิ และเสริมบุญด้านปัญญา/การให้ทานเพื่อเกื้อหนุนโชคลาภระยะยาว`;
+    // 5. คำแนะนำเสริมสิริมงคล
+    const mercury = (lines && lines.mercury) || {};
+    const guidanceShort = mercury.detected
+      ? "ไหวพริบและการพูดคุยชัดเจนคือจุดแข็ง ใช้สื่อสารดีๆ แล้วโอกาสจะเปิดไว"
+      : "รักษาจังหวะชีวิตให้สมดุล พักผ่อนให้พอ และเดินหน้าตามแผนทีละขั้นอย่างสบายใจ";
+    const guidanceText = mercury.detected
+      ? "คุณมีจุดเด่นเรื่องการพูดคุยประสานงานและสังเกตสิ่งรอบตัวเก่ง ให้ใช้จุดนี้สื่อสารให้ชัดเจนและจริงใจ พร้อมแบ่งเวลาพักผ่อนดูแลสุขภาพให้ดี เสริมด้วยการช่วยเหลือผู้อื่นหรือทำบุญตามกำลัง ชีวิตจะยิ่งราบรื่นและมีโชคลาภเข้ามาง่ายขึ้น"
+      : "แนวโน้มชีวิตดีขึ้นเมื่อจัดสมดุลระหว่างเรื่องงานกับเวลาพักผ่อน ไม่กดดันตัวเองให้รีบเกินไป ทำสิ่งที่ตั้งใจไว้ให้สม่ำเสมอ และทำบุญเสริมสติปัญญาหรือปล่อยวางเรื่องจุกจิกบ้าง จะช่วยให้ใจเบาและดึงดูดเรื่องดีๆ เข้ามาได้ตลอด";
 
-    const summaryVerdict = `สแกน${handMeta.name}ตรวจพบเส้นชัด ${confidence.featuresDetected}/6 เส้นหลัก (${confidence.landmarkMethod === "mediapipe" ? "MediaPipe 21 จุด" : "Skin-CV"} • ความแม่นยำ ${confidence.percentage}%) • ${lifeL.specialTrait}`;
+    const confPct = (confidence && confidence.percentage) || 88;
+    const summaryVerdict = `ผลสแกน${handMeta.name} (ความชัด ${confPct}%): ${lifeShort} ส่วนเรื่องงานและความคิด${headShort.replace(/^คิด/, "เป็นคนคิด")}`;
 
     return {
       handType: hand,
@@ -584,33 +694,38 @@ class PalmScannerEngine {
       aspects: {
         life: {
           icon: "🌟",
-          title: "วาสนาชีวิต สุขภาพ และพลังกาย",
+          title: "สุขภาพ และพลังชีวิต",
           text: lifeText,
-          grade: life.detected ? (lifeL.depthScore >= 55 ? "ชัดเจนแข็งแกร่ง" : "สมดุลคล่องตัว") : "เส้นบางละเอียด"
+          shortNote: lifeShort,
+          grade: lifeGrade
         },
         intellect: {
           icon: "🧠",
-          title: "สติปัญญา การงาน และการตัดสินใจ",
+          title: "ความคิด การงาน และการตัดสินใจ",
           text: intellectText,
-          grade: head.detected ? (hdT.slope === "curved_moon" ? "คิดสร้างสรรค์" : "ตรรกะเฉียบคม") : "รอประมวลผลชัดขึ้น"
+          shortNote: headShort,
+          grade: headGrade
         },
         love: {
           icon: "💖",
-          title: "ความรัก ความสัมพันธ์ และจิตใจ",
+          title: "ความรัก และความสัมพันธ์",
           text: loveText,
-          grade: heart.detected ? (hT.endTarget === "jupiter" ? "จริงใจอุดมคติ" : "รักมั่นคง") : "เส้นละเอียดบาง"
+          shortNote: heartShort,
+          grade: loveGrade
         },
         wealth: {
           icon: "💰",
-          title: "โชคลาภ การเงิน และเกียรติยศ",
+          title: "การเงิน โอกาส และความมั่นคง",
           text: wealthText,
-          grade: fate.detected || sun.detected ? "วาสนาสร้างด้วยตนเอง" : "ดวงยืดหยุ่นเปิดกว้าง"
+          shortNote: wealthShort,
+          grade: wealthGrade
         },
         guidance: {
           icon: "🌿",
-          title: "คำแนะนำเสริมสิริมงคล",
+          title: "คำแนะนำที่ใช้ได้จริง",
           text: guidanceText,
-          grade: "แนวทางเกื้อหนุนชีวิต"
+          shortNote: guidanceShort,
+          grade: "เคล็ดเสริมดวงประจำตัว"
         }
       },
       summaryVerdict
@@ -2305,24 +2420,15 @@ class PalmApp {
   }
 
   copyReadingToClipboard() {
-    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
-    if (!reading || !reading.aspects) return;
-    const avgConf = this.dualReading
-      ? this.dualReading.avgConfidence
-      : (this.scanResult && this.scanResult.confidence ? this.scanResult.confidence.percentage : 0);
-    const titleHand = (reading.handMeta && reading.handMeta.name) || "ฝ่ามือทั้ง 2 ข้าง";
-    const text = `✋ ผลการวิเคราะห์ลายมือครบ 2 มือ (${titleHand})\n` +
-      `ความแม่นยำการตรวจวัด: ${avgConf}%\n\n` +
-      `🌟 วาสนาชีวิต & สุขภาพ: ${(reading.aspects.life && reading.aspects.life.text) || ""}\n\n` +
-      `🧠 สติปัญญา & การงาน: ${(reading.aspects.intellect && reading.aspects.intellect.text) || ""}\n\n` +
-      `💖 ความรัก & จิตใจ: ${(reading.aspects.love && reading.aspects.love.text) || ""}\n\n` +
-      `💰 โชคลาภ & เกียรติยศ: ${(reading.aspects.wealth && reading.aspects.wealth.text) || ""}\n\n` +
-      `🌿 คำแนะนำมงคล: ${(reading.aspects.guidance && reading.aspects.guidance.text) || ""}\n\n` +
-      `บทสรุป: ${reading.summaryVerdict || ""}\n#สแกนลายมือ2มือ #ดูดวงลายมือ #เซียมซีทาโรต์`;
+    const payload = this.buildPalmSharePayload();
+    if (!payload) return;
+    const text = (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.buildFullSocialCaption === "function")
+      ? window.shareAndPdfEngine.buildFullSocialCaption(payload)
+      : `${payload.summaryVerdict || ""}\n${Object.values(payload.aspects || {}).map(a => `${a.icon || "✦"} ${a.title}: ${a.text}`).join("\n\n")}`;
 
     navigator.clipboard.writeText(text).then(() => {
       if (window.taroApp && window.taroApp.showToast) {
-        window.taroApp.showToast("📋 คัดลอกผลการวิเคราะห์ลายมือฉบับเต็มเรียบร้อยแล้ว!");
+        window.taroApp.showToast("📋 คัดลอกผลคำทำนายลายมือครบทั้ง 2 มือเรียบร้อยแล้ว!");
       }
       if (window.mysticAudio) window.mysticAudio.playCrystalBell(880, 1.2);
     });

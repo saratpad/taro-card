@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261113d">
+  <link rel="stylesheet" href="css/style.css?v=20261113e">
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -1189,7 +1189,7 @@
 
           <!-- Comprehensive Palmistry 5-Aspect Reading Cards -->
           <div class="palm-aspects-section">
-            <h3 class="aspects-section-title">📜 คำพยากรณ์หัตถศาสตร์อย่างละเอียด 5 ด้าน (วิเคราะห์ครบ 2 มือ)</h3>
+            <h3 class="aspects-section-title">📜 คำทำนายลายมือ 5 ด้านสำคัญ (วิเคราะห์ครบ 2 มือ)</h3>
             <div class="palm-aspects-grid" id="palm-reading-aspects"></div>
           </div>
 
@@ -1232,21 +1232,27 @@
 
       <div class="share-studio-header">
         <span class="share-studio-badge">✦ SOCIAL SHARE & PDF STUDIO ✦</span>
-        <h3>แชร์ผลคำทำนาย "เซียมซีทาโรต์"</h3>
-        <p>รูป Info สรุปหน้าไพ่พร้อมคำทำนายด้านที่เลือกอย่างย่อ และข้อความคำทำนายฉบับเต็มสำหรับวางในโพสต์หรือคอมเมนต์</p>
+        <h3 id="share-studio-title">แชร์รูป Info และคำทำนายของคุณ</h3>
+        <p id="share-studio-subtitle">ระบบจะแชร์ทั้ง "ภาพ Info Card" และ "ข้อความคำทำนายฉบับเต็ม" ที่คุณดูไว้ ไม่ใช่แค่ลิงก์เว็บแอป</p>
       </div>
 
       <div class="share-studio-grid">
         <!-- Left: Generated Info Image Preview -->
         <div class="share-info-preview-col">
-          <div class="share-col-label">1. รูป Info สรุปผลดวงชะตา (สำหรับแนบเป็นรูปโพสต์)</div>
+          <div class="share-col-label">1. รูป Info สรุปผลคำทำนายของคุณ (แนบเป็นรูปโพสต์)</div>
           <div class="info-canvas-preview-wrap" id="info-canvas-preview-wrap">
             <img id="share-info-preview-img" alt="SiamSi Tarot Info Card" />
           </div>
-          <button type="button" id="btn-save-info-image" class="btn-secondary-mystic btn-full-width">
-            <span>🖼️</span>
-            <span>บันทึกรูป Info Card ลงเครื่อง (.PNG)</span>
-          </button>
+          <div class="share-info-btn-stack">
+            <button type="button" id="btn-save-info-image" class="btn-secondary-mystic btn-full-width">
+              <span>🖼️</span>
+              <span>บันทึกรูป Info Card ลงเครื่อง (.PNG)</span>
+            </button>
+            <button type="button" id="btn-copy-info-image" class="btn-secondary-mystic btn-full-width">
+              <span>📋</span>
+              <span>คัดลอกรูป Info ลงคลิปบอร์ด (วางโพสต์ได้ทันที)</span>
+            </button>
+          </div>
         </div>
 
         <!-- Right: Full Prediction Text for Post / Comment -->
@@ -1310,12 +1316,12 @@
           <div class="share-studio-actions">
             <button type="button" id="btn-native-share-all" class="btn-mystic-primary btn-full-width">
               <span>📲</span>
-              <span>แชร์ด่วนผ่านระบบเครื่อง (ส่งรูป Info + คำทำนายไปยังแอปโซเชียลทันที)</span>
+              <span>แชร์รูป Info + คำทำนายทันที (ผ่านเมนูแชร์ของเครื่อง)</span>
             </button>
 
             <button type="button" id="btn-copy-full-caption" class="btn-secondary-mystic btn-full-width">
               <span>💬</span>
-              <span>คัดลอกคำทำนายเต็มเก็บไว้ในคลิปบอร์ด</span>
+              <span>คัดลอกข้อความคำทำนายฉบับเต็มลงคลิปบอร์ด</span>
             </button>
 
             <button type="button" id="btn-modal-download-pdf" class="btn-secondary-mystic btn-full-width">
@@ -1359,19 +1365,20 @@
         <div class="social-connect-Attachment-preview">
           <img id="social-login-preview-thumb" src="assets/logo.jpg" alt="Info Card Preview" class="social-login-thumb" />
           <div class="social-login-preview-meta">
-            <span class="preview-pill-ready">✨ เตรียมโพสต์รูป Info Card + คำทำนายฉบับเต็ม</span>
-            <strong id="social-login-preview-title">ผลคำทำนายเซียมซีทาโรต์</strong>
-            <small id="social-login-preview-sub">ระบบจะส่งรูปภาพสรุปผลดวงชะตาและแคปชันคำทำนายเข้าสู่บัญชีของคุณทันทีหลังเข้าสู่ระบบ</small>
+            <span class="preview-pill-ready">✨ แชร์รูป Info Card + ข้อความคำทำนายฉบับเต็ม</span>
+            <strong id="social-login-preview-title">ผลคำทำนายของคุณ</strong>
+            <small id="social-login-preview-sub">ระบบจะเตรียมภาพ Info Card (.PNG) และคัดลอกข้อความคำทำนายที่คุณดูไว้สำหรับโพสต์จริง</small>
+            <p id="social-login-preview-excerpt" class="social-login-preview-excerpt"></p>
           </div>
         </div>
 
         <!-- Official Platform OAuth / Share Popup (Recommended 100% Real Login) -->
         <div class="social-official-login-cta">
           <button type="button" id="btn-open-official-share-popup" class="btn-official-oauth-login">
-            <span class="oauth-icon">🌐</span>
+            <span class="oauth-icon">🖼️</span>
             <span class="oauth-text-wrap">
-              <strong id="btn-open-official-share-text">เข้าสู่ระบบผ่านหน้าต่างทางการของ Facebook</strong>
-              <small>ตรวจสอบรหัสผ่านจริง 100% โดยตรงกับแพลตฟอร์ม และอนุญาตโพสต์</small>
+              <strong id="btn-open-official-share-text">เปิดหน้าโพสต์ Facebook พร้อมรูป Info & คำทำนาย</strong>
+              <small id="btn-open-official-share-sub">บันทึกรูป Info (.PNG) + คัดลอกคำทำนายไว้ให้วางโพสต์ได้ทันที</small>
             </span>
           </button>
         </div>
@@ -1469,10 +1476,15 @@
           <div class="published-card-body-grid">
             <div class="published-img-col">
               <img id="social-post-result-img" src="assets/logo.jpg" alt="Posted Info Card" />
+              <div class="published-quick-tools">
+                <button type="button" id="btn-copy-posted-info-img" class="btn-mini-asset">🖼️ คัดลอกรูป</button>
+                <button type="button" id="btn-download-posted-info-img" class="btn-mini-asset">⬇️ โหลด PNG</button>
+              </div>
             </div>
             <div class="published-caption-col">
-              <div class="published-caption-label">ข้อความแคปชันและลิงก์ผลคำทำนายที่ระบบโพสต์ให้:</div>
+              <div class="published-caption-label">ข้อความคำทำนายที่แชร์พร้อมรูป Info Card:</div>
               <textarea id="social-post-result-caption" class="published-caption-box" rows="6" readonly></textarea>
+              <button type="button" id="btn-copy-posted-caption" class="btn-mini-asset btn-mini-caption-copy">📋 คัดลอกข้อความคำทำนาย</button>
             </div>
           </div>
         </div>
@@ -1485,8 +1497,8 @@
           </button>
 
           <button type="button" id="btn-open-shared-reading-url" class="btn-secondary-mystic btn-full-width">
-            <span>🌐</span>
-            <span>เปิดดูหน้าคำทำนายที่แชร์ (Public Reading URL) ↗</span>
+            <span>📜</span>
+            <span>เปิดดูใบคำทำนายฉบับเต็มในระบบอีกครั้ง ↗</span>
           </button>
 
           <!-- Verified Posts History Container -->
@@ -1537,14 +1549,14 @@
   <script src="js/palm-data.js"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261113d"></script>
+  <script src="js/palm-scanner.js?v=20261113e"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/rag-engine.js"></script>
   <script src="js/code-manager.js?v=20261113d"></script>
-  <script src="js/share-pdf.js?v=20261113d"></script>
+  <script src="js/share-pdf.js?v=20261113e"></script>
   <script src="js/siamsi.js"></script>
-  <script src="js/app.js?v=20261113d"></script>
+  <script src="js/app.js?v=20261113e"></script>
 
 </body>
 </html>

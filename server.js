@@ -303,7 +303,8 @@ const server = http.createServer(async (req, res) => {
       code: String(body.code || ""),
       mode: String(body.mode || "tarot"),
       shareUrl: String(body.shareUrl || ""),
-      caption: String(body.caption || "").slice(0, 2000),
+      caption: String(body.caption || "").slice(0, 5000),
+      hasInfoImage: Boolean(body.hasInfoImage !== false),
       verified: Boolean(body.verified !== false),
       device: String(body.device || "desktop"),
       postedAt: Date.now()

@@ -646,9 +646,9 @@ class ShareAndPdfEngine {
     // 4. Stacked 5-Aspect Highlights
     const aspects = readingData.aspects || {};
     const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
-    let curY = vY + 114;
-    const boxH = 154;
-    const gap = 16;
+    let curY = vY + 112;
+    const boxH = 156;
+    const gap = 14;
 
     orderedKeys.forEach((key) => {
       const asp = aspects[key];
@@ -663,20 +663,24 @@ class ShareAndPdfEngine {
       ctx.textAlign = "left";
       ctx.fillStyle = "#f3cf7a";
       ctx.font = "bold 22px 'Prompt', sans-serif";
-      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 80, curY + 36);
+      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 80, curY + 35);
 
       ctx.textAlign = "right";
       ctx.fillStyle = "#86efac";
       ctx.font = "600 18px 'Prompt', sans-serif";
-      ctx.fillText(asp.grade || "", W - 80, curY + 36);
+      ctx.fillText(asp.grade || "", W - 80, curY + 35);
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#e2e8f0";
-      ctx.font = "400 19px 'Prompt', sans-serif";
-      const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "");
-      const bodyLines = this.wrapTextLines(ctx, cleanBody, W - 168).slice(0, 3);
+      ctx.font = "400 18.5px 'Prompt', sans-serif";
+      const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
+      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 168);
+      const bodyLines = allWrapped.slice(0, 3);
+      if (allWrapped.length > 3 && bodyLines[2]) {
+        bodyLines[2] = bodyLines[2].slice(0, Math.max(10, bodyLines[2].length - 1)) + "…";
+      }
       bodyLines.forEach((ln, li) => {
-        ctx.fillText(ln, 80, curY + 68 + li * 26);
+        ctx.fillText(ln, 80, curY + 67 + li * 27);
       });
 
       curY += boxH + gap;
@@ -855,11 +859,10 @@ class ShareAndPdfEngine {
   }
 
   /**
-   * สร้างข้อความคำทำนายฉบับเต็ม สำหรับโพสต์โซเชียล / วางในคอมเมนต์ต่อท้ายรูป Info
+   * สร้างข้อความคำทำนายฉบับเต็ม สำหรับโพสต์โซเชียลพร้อมรูป Info Card (ไม่แชร์เป็นแค่ลิงก์เว็บแอป)
    */
   buildFullSocialCaption(readingData) {
     if (!readingData) return "";
-    const shareUrl = this.buildShareableReadingUrl(readingData);
 
     if (readingData.mode === "palm") {
       const aspects = readingData.aspects || {};
@@ -867,17 +870,20 @@ class ShareAndPdfEngine {
       const aspectText = order
         .map(k => aspects[k])
         .filter(Boolean)
-        .map(a => `${a.icon || "✦"} ${a.title} (${a.grade || ""})\n${a.text || ""}`)
+        .map(a => {
+          const lines = [`${a.icon || "✦"} ${a.title} (${a.grade || ""})`, `${a.text || ""}`];
+          if (a.leftNote) lines.push(`  • ${a.leftNote}`);
+          if (a.rightNote) lines.push(`  • ${a.rightNote}`);
+          return lines.join("\n");
+        })
         .join("\n\n");
       const confVal = Number(readingData.confidence || 92).toFixed(1);
-      return `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (SIAMSI TAROT • PALMISTRY)\n` +
-        `🎯 ความแม่นยำการตรวจจับ: ${confVal}%\n` +
-        `✨ บทสรุป: ${readingData.summaryVerdict || ""}\n\n` +
+      return `✋ ผลวิเคราะห์ลายมือครบ 2 มือ (${confVal}%)\n` +
+        `✨ ${readingData.summaryVerdict || ""}\n\n` +
         `━━━━━━━━━━━━━━━\n` +
-        `📜 คำพยากรณ์หัตถศาสตร์ 5 ด้าน\n` +
+        `📜 คำทำนายลายมือ 5 ด้านสำคัญ\n` +
         `━━━━━━━━━━━━━━━\n\n` +
         `${aspectText}\n\n` +
-        `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
         `#ดูดวงลายมือ #สแกนลายมือ2มือ #เซียมซีทาโรต์`;
     }
 
@@ -891,7 +897,6 @@ class ShareAndPdfEngine {
         `💡 หัวใจสำคัญ: "${readingData.oneLine || ""}"\n\n` +
         `📜 บทกลอนประจำใบเซียมซี:\n${poem}\n\n` +
         `🔮 คำทำนายฉบับเต็ม:\n${aspectsText}\n\n` +
-        `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
         `#เซียมซีทาโรต์ #ดูดวง #เสี่ยงเซียมซี`;
     }
 
@@ -914,7 +919,7 @@ class ShareAndPdfEngine {
       : "";
     const luckyLine = readingData.luckyBoost ? `• การเสริมดวงมงคล: ${readingData.luckyBoost}\n` : "";
 
-    return `✨ ผลคำทำนายดวงชะตา "เซียมซีทาโรต์" (SIAMSI TAROT • ORACLE) ✨\n` +
+    return `✨ ผลคำทำนายดวงชะตา "เซียมซีทาโรต์" ✨\n` +
       `🏷️ หมวดหมู่ที่เลือกดู: ด้าน${readingData.categoryName}\n` +
       loveStatusLine +
       `🌟 แนวโน้มดวงชะตา: ${readingData.verdictBadge}\n\n` +
@@ -932,7 +937,6 @@ class ShareAndPdfEngine {
       luckyLine + `\n` +
       `⚠️ ข้อควรระวัง:\n` +
       `• ${readingData.dontAction}\n\n` +
-      `🔗 ดูผลคำทำนายนี้: ${shareUrl}\n` +
       `#เซียมซีทาโรต์ #ดูดวงไพ่ทาโรต์ #ไพ่ยิปซี #ดูดวง${readingData.categoryName}`;
   }
 
@@ -1480,23 +1484,60 @@ class ShareAndPdfEngine {
     return true;
   }
 
+  getInfoCardFilename(readingData) {
+    const codePart = readingData && readingData.code ? `_${readingData.code}` : "";
+    const modePart = readingData && readingData.mode ? `_${readingData.mode}` : "";
+    return `SiamSiTarot_InfoCard${modePart}${codePart}.png`;
+  }
+
+  async ensureInfoAsset(readingData) {
+    if (!readingData) return null;
+    if (!this.currentInfoBlob || !this.currentInfoDataUrl || this.currentReadingData !== readingData) {
+      if (readingData.mode === "palm") {
+        await this.generatePalmInfoCard(readingData);
+      } else if (readingData.mode === "siamsi") {
+        await this.generateSiamsiInfoCard(readingData);
+      } else {
+        await this.generateTarotInfoCard(readingData);
+      }
+    }
+    return {
+      blob: this.currentInfoBlob,
+      dataUrl: this.currentInfoDataUrl,
+      fileName: this.getInfoCardFilename(readingData)
+    };
+  }
+
+  async createInfoCardFile(readingData) {
+    const asset = await this.ensureInfoAsset(readingData);
+    if (!asset || !asset.blob) return null;
+    return new File([asset.blob], asset.fileName, { type: "image/png" });
+  }
+
+  async copyInfoImageToClipboard(readingData) {
+    const asset = await this.ensureInfoAsset(readingData);
+    if (!asset || !asset.blob || !navigator.clipboard || typeof navigator.clipboard.write !== "function" || typeof ClipboardItem === "undefined") {
+      return false;
+    }
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": asset.blob })
+      ]);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /**
    * ดาวน์โหลดไฟล์รูป Info Card (.png) ลงเครื่อง
    */
   async downloadInfoImageFile(readingData) {
-    let dataUrl = this.currentInfoDataUrl;
-    if (!dataUrl || this.currentReadingData !== readingData) {
-      const res = readingData.mode === "palm"
-        ? await this.generatePalmInfoCard(readingData)
-        : (readingData.mode === "siamsi"
-          ? await this.generateSiamsiInfoCard(readingData)
-          : await this.generateTarotInfoCard(readingData));
-      dataUrl = res.dataUrl;
-    }
-    const codePart = readingData.code ? `_${readingData.code}` : "";
+    const asset = await this.ensureInfoAsset(readingData);
+    if (!asset || !asset.dataUrl) return;
     const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = `SiamSiTarot_InfoCard${codePart}.png`;
+    a.href = asset.dataUrl;
+    a.download = asset.fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
