@@ -336,33 +336,6 @@ class PalmScannerEngine {
 
   buildMountsFromVision(vision) {
     const kb = (window.PALM_KNOWLEDGE_BASE && window.PALM_KNOWLEDGE_BASE.mounts) || {};
-    const statusTextMap = {
-      full: "เนินอวบอิ่มเต็ม • พลังงานเด่นชัด",
-      moderate: "เนินสมส่วนสมดุล • ราบรื่นปกติ",
-      flat: "เนินค่อนข้างราบ • พลังงานแนวดิ่งสงบ"
-    };
-    const vm = vision.mounts || {};
-    const out = {};
-    for (const id of ["jupiter", "saturn", "sun", "mercury", "venus", "moon", "mars"]) {
-      const m = vm[id] || { id, x: 0, y: 0, fullness: 55, status: "moderate" };
-      const kbm = kb[id] || {};
-      const status = m.status || "moderate";
-      out[id] = {
-        id,
-        name: kbm.name || id,
-        symbol: kbm.symbol || "✦",
-        x: m.x,
-        y: m.y,
-        fullness: m.fullness,
-        status,
-        statusText: statusTextMap[status] || statusTextMap.moderate,
-        meaning: (kbm.interpretation && kbm.interpretation[status]) || kbm.meaning || ""
-      };
-    }
-    return out;
-  }
-  buildMountsFromVision(vision) {
-    const kb = (window.PALM_KNOWLEDGE_BASE && window.PALM_KNOWLEDGE_BASE.mounts) || {};
     const statusLabelMap = {
       full: "เนินอวบอิ่มสมบูรณ์ (โดดเด่น)",
       moderate: "เนินสมส่วนพอดี",
@@ -1038,8 +1011,8 @@ class PalmApp {
     // 1. วาดภาพจริงของฝ่ามือ
     ctx.drawImage(this.capturedImage, 0, 0, res.width, res.height);
 
-    // 2. เคลือบฟิล์ม Mystic Dark เพื่อให้เส้นเวกเตอร์เด่นชัด
-    ctx.fillStyle = "rgba(4, 7, 20, 0.34)";
+    // 2. เคลือบฟิล์มบางเบาเพื่อให้รอยย่นผิวหนังยังมองเห็นเปรียบเทียบความตรงได้อย่างชัดเจน
+    ctx.fillStyle = "rgba(4, 7, 20, 0.14)";
     ctx.fillRect(0, 0, res.width, res.height);
 
     // 2b. แผนที่ร่องลายมือจาก Hessian (ถอด/เปิดดูได้)
@@ -1057,6 +1030,9 @@ class PalmApp {
     const linesToDraw = this.activeLayer === "all"
       ? ["life", "head", "heart", "fate", "sun", "mercury"]
       : (this.activeLayer === "mounts" ? [] : [this.activeLayer]);
+    const placedLabels = [];
+    const pillH = Math.max(17, Math.round(res.width * 0.024));
+    const fontSize = Math.max(10, Math.round(res.width * 0.0155));
 
     linesToDraw.forEach(lineKey => {
       const lineData = res.lines[lineKey];
@@ -1065,12 +1041,13 @@ class PalmApp {
 
       const meta = kb[lineKey] || { color: "#38bdf8", name: lineKey };
       const pts = lineData.points;
+      const isFocused = this.activeLayer === lineKey;
 
       if (!lineData.detected) {
         ctx.save();
         ctx.strokeStyle = meta.color;
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 2.0;
+        ctx.setLineDash([5, 5]);
         ctx.globalAlpha = 0.55;
         ctx.beginPath();
         ctx.moveTo(pts[0].x, pts[0].y);
@@ -1080,96 +1057,149 @@ class PalmApp {
         return;
       }
 
-      // Glow Effect ภายนอก
+      // เงาฟุ้งบางๆ รอบเส้นหลักโดยไม่บดบังร่องฝ่ามือจริง
       ctx.save();
       ctx.strokeStyle = meta.color;
-      ctx.lineWidth = this.activeLayer === lineKey ? 10 : 8;
+      ctx.lineWidth = isFocused ? 5.2 : 3.8;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
       ctx.shadowColor = meta.color;
-      ctx.shadowBlur = 14;
-      ctx.globalAlpha = 0.4;
-
+      ctx.shadowBlur = 5;
+      ctx.globalAlpha = 0.24;
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) {
-        ctx.lineTo(pts[i].x, pts[i].y);
-      }
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
       ctx.stroke();
       ctx.restore();
 
-      // เส้นเวกเตอร์คมชัดภายใน
+      // เส้นแกนเวกเตอร์คมชัดแนบกลางร่องลายมือ
       ctx.save();
       ctx.strokeStyle = meta.color;
-      ctx.lineWidth = this.activeLayer === lineKey ? 4.2 : 3.2;
+      ctx.lineWidth = isFocused ? 2.4 : 1.85;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowColor = "#ffffff";
-      ctx.shadowBlur = 5;
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) {
-        ctx.lineTo(pts[i].x, pts[i].y);
-      }
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
       ctx.stroke();
 
-      // วาดโหนดจุดหัว-ท้าย
-      [pts[0], pts[Math.floor(pts.length / 2)], pts[pts.length - 1]].forEach(p => {
+      // จุดมาร์คปลายเริ่มต้นและปลายสิ้นสุด (ไม่บังกลางจุดตัดเส้น)
+      [pts[0], pts[pts.length - 1]].forEach(p => {
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = meta.color;
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = 1.4;
         ctx.stroke();
       });
 
-      // ป้ายชื่อเส้น
-      const midPoint = pts[Math.floor(pts.length / 2)];
-      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-      ctx.strokeStyle = meta.color;
-      ctx.lineWidth = 1.5;
-      const labelText = `${meta.name} (${lineData.metrics.confidenceScore.toFixed(0)}%)`;
-      ctx.font = "bold 13px 'Prompt', sans-serif";
+      // ป้ายชื่อแบบกะทัดรัดตรงปลายเส้นด้านนอก พร้อมหลีกเลี่ยงการซ้อนทับ
+      const pStart = pts[0], pEnd = pts[pts.length - 1];
+      let anchor = pEnd;
+      let dx = 0, dy = -16;
+      if (lineKey === "heart") {
+        anchor = pStart.x < pEnd.x ? pStart : pEnd;
+        dx = anchor.x < res.width * 0.5 ? -8 : 8;
+        dy = -16;
+      } else if (lineKey === "head") {
+        anchor = pEnd;
+        dx = pEnd.x < res.width * 0.5 ? -14 : 14;
+        dy = 16;
+      } else if (lineKey === "life") {
+        anchor = pEnd;
+        dx = 26;
+        dy = 14;
+      } else if (lineKey === "fate") {
+        anchor = pStart.y > pEnd.y ? pStart : pEnd;
+        dx = -28;
+        dy = 15;
+      } else {
+        anchor = pEnd;
+        dy = -16;
+      }
+
+      const confPct = Math.round(Number((lineData.metrics && lineData.metrics.confidenceScore) || 0));
+      const labelText = `${meta.name} ${confPct}%`;
+      ctx.font = `600 ${fontSize}px 'Prompt', sans-serif`;
       const textW = ctx.measureText(labelText).width;
+      const boxW = textW + 10;
+      let cx = Math.max(boxW / 2 + 6, Math.min(res.width - boxW / 2 - 6, anchor.x + dx));
+      let cy = Math.max(pillH / 2 + 6, Math.min(res.height - pillH / 2 - 6, anchor.y + dy));
+
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const overlaps = placedLabels.some(b =>
+          Math.abs(cx - b.cx) < (boxW + b.w) * 0.5 + 4 &&
+          Math.abs(cy - b.cy) < (pillH + b.h) * 0.5 + 3
+        );
+        if (!overlaps) break;
+        cy = Math.max(pillH / 2 + 6, Math.min(res.height - pillH / 2 - 6, cy + (dy >= 0 ? 20 : -20)));
+      }
+      placedLabels.push({ cx, cy, w: boxW, h: pillH });
+
+      // เส้นชี้บางเชื่อมปลายเส้นกับป้ายชื่อ
+      ctx.strokeStyle = meta.color;
+      ctx.globalAlpha = 0.65;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(anchor.x, anchor.y);
+      ctx.lineTo(cx, cy);
+      ctx.stroke();
+
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(9, 14, 30, 0.82)";
+      ctx.strokeStyle = meta.color;
+      ctx.lineWidth = 1.25;
       ctx.beginPath();
       if (ctx.roundRect) {
-        ctx.roundRect(midPoint.x - (textW / 2) - 6, midPoint.y - 18, textW + 12, 22, 6);
+        ctx.roundRect(cx - boxW / 2, cy - pillH / 2, boxW, pillH, 5);
       } else {
-        ctx.rect(midPoint.x - (textW / 2) - 6, midPoint.y - 18, textW + 12, 22);
+        ctx.rect(cx - boxW / 2, cy - pillH / 2, boxW, pillH);
       }
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#f8fafc";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(labelText, midPoint.x, midPoint.y - 7);
+      ctx.fillText(labelText, cx, cy + 0.5);
       ctx.restore();
     });
 
-    // 4. วาดเนินทั้ง 7 หากเลือก "all" หรือ "mounts"
-    if (this.activeLayer === "all" || this.activeLayer === "mounts") {
+    // 4. วาดเนินทั้ง 7 เฉพาะเมื่อเลือกแท็บ "เนินทั้ง 7" เพื่อไม่ให้บังเส้นลายมือในหน้าหลัก
+    if (this.activeLayer === "mounts") {
       ctx.save();
       for (const [mKey, mData] of Object.entries(res.mounts)) {
-        ctx.strokeStyle = "rgba(243, 207, 122, 0.65)";
-        ctx.lineWidth = 1.8;
-        ctx.setLineDash([4, 4]);
+        const rad = Math.min(mData.radius || 26, Math.max(18, Math.round(res.width * 0.044)));
+        ctx.fillStyle = "rgba(243, 207, 122, 0.09)";
+        ctx.strokeStyle = "rgba(243, 207, 122, 0.85)";
+        ctx.lineWidth = 1.7;
+        ctx.setLineDash([4, 3]);
         ctx.beginPath();
-        ctx.arc(mData.center.x, mData.center.y, mData.radius, 0, Math.PI * 2);
+        ctx.arc(mData.center.x, mData.center.y, rad, 0, Math.PI * 2);
+        ctx.fill();
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Glyphs & Label
-        ctx.fillStyle = "rgba(243, 207, 122, 0.9)";
-        ctx.font = "bold 14px 'Cinzel', serif";
+        // จุดกึ่งกลาง + ชื่อเนิน
+        ctx.fillStyle = "#fde68a";
+        ctx.beginPath();
+        ctx.arc(mData.center.x, mData.center.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = "bold 12px 'Cinzel', serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(mData.symbol, mData.center.x, mData.center.y - 5);
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "rgba(9, 14, 30, 0.88)";
+        ctx.fillStyle = "#fde68a";
+        ctx.strokeText(mData.symbol, mData.center.x, mData.center.y - 8);
+        ctx.fillText(mData.symbol, mData.center.x, mData.center.y - 8);
 
-        ctx.font = "11px 'Prompt', sans-serif";
+        ctx.font = "600 10px 'Prompt', sans-serif";
+        ctx.strokeText(mData.name, mData.center.x, mData.center.y + 9);
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(mData.name, mData.center.x, mData.center.y + 12);
+        ctx.fillText(mData.name, mData.center.x, mData.center.y + 9);
       }
       ctx.restore();
     }

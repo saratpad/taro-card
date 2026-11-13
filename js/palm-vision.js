@@ -353,20 +353,44 @@
   }
 
   const MOUNT_UV = {
-    jupiter: [0.80, 0.94],
-    saturn:  [0.58, 0.96],
-    sun:     [0.36, 0.94],
-    mercury: [0.16, 0.86],
+    jupiter: [0.84, 0.90],
+    saturn:  [0.60, 0.96],
+    sun:     [0.37, 0.95],
+    mercury: [0.14, 0.89],
     venus:   [0.82, 0.36],
     moon:    [0.16, 0.28],
-    mars:    [0.50, 0.56]
+    mars:    [0.49, 0.56]
   };
 
-  function computeMounts(frame, gray, ridge, roi, cw, ch, scale, minX, minY, meanLum) {
+  function computeMounts(landmarks, frame, gray, ridge, roi, cw, ch, scale, minX, minY, meanLum) {
     const rad = Math.max(6, Math.round(frame.palmWidth * 0.065 * scale));
+    const lerpPt = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+    const lm = landmarks || [];
+    const hasCore = lm[0] && lm[5] && lm[9] && lm[13] && lm[17];
+
+    const resolvePt = (id, uvFallback) => {
+      if (!hasCore) return frame.toImg(uvFallback[0], uvFallback[1]);
+      if (id === "jupiter") return lerpPt(lm[5], lm[0], 0.11);
+      if (id === "saturn")  return lerpPt(lm[9], lm[0], 0.10);
+      if (id === "sun")     return lerpPt(lm[13], lm[0], 0.10);
+      if (id === "mercury") return lerpPt(lm[17], lm[0], 0.11);
+      if (id === "venus") {
+        const uvPt = frame.toImg(uvFallback[0], uvFallback[1]);
+        if (lm[1] && lm[2]) {
+          return {
+            x: 0.24 * lm[1].x + 0.10 * lm[2].x + 0.20 * lm[0].x + 0.46 * uvPt.x,
+            y: 0.24 * lm[1].y + 0.10 * lm[2].y + 0.20 * lm[0].y + 0.46 * uvPt.y
+          };
+        }
+        return uvPt;
+      }
+      return frame.toImg(uvFallback[0], uvFallback[1]);
+    };
+
     const mounts = {};
-    for (const [id, [u, v]] of Object.entries(MOUNT_UV)) {
-      const pt = frame.toImg(u, v);
+    for (const [id, uvFb] of Object.entries(MOUNT_UV)) {
+      const pt = resolvePt(id, uvFb);
+      const uv = frame.toUV(pt.x, pt.y);
       const cx = Math.round((pt.x - minX) * scale);
       const cy = Math.round((pt.y - minY) * scale);
       let lumSum = 0, ridgeSum = 0, n = 0;
@@ -389,93 +413,88 @@
       const baseBias = id === "venus" ? 72 : id === "mars" ? 64 : 66;
       const fullness = Math.max(38, Math.min(96, Math.round(baseBias + relBright * 140 - meanR * 22)));
       const status = fullness >= 74 ? "full" : (fullness >= 56 ? "moderate" : "flat");
-      mounts[id] = { id, x: Math.round(pt.x), y: Math.round(pt.y), u, v, fullness, status };
+      mounts[id] = {
+        id,
+        x: Math.round(pt.x),
+        y: Math.round(pt.y),
+        u: Number(uv.u.toFixed(3)),
+        v: Number(uv.v.toFixed(3)),
+        fullness,
+        status
+      };
     }
     return mounts;
   }
 
   // ---------------------------------------------------------------------------
-  // Line templates (ตำแหน่งตามกายวิภาคมาตรฐาน) — ใช้กำหนด corridor และทิศทางคาดหมายเท่านั้น
-  // ตำแหน่งจริงมาจากร่องบนภาพ
+  // Line templates (ตำแหน่งตามกายวิภาคมาตรฐาน) — smooth C1 spline corridors สำหรับ DP
   // ---------------------------------------------------------------------------
   const LINE_TEMPLATES = {
-    life:    { poly: [[0.92, 0.74], [0.76, 0.64], [0.68, 0.44], [0.69, 0.10]], hw: 0.10, minLen: 0.30, required: true, sharedHeadLife: true },
-    head:    { poly: [[0.92, 0.74], [0.66, 0.63], [0.43, 0.56], [0.10, 0.46]], hw: 0.11, minLen: 0.28, required: true, sharedHeadLife: true },
-    heart:   { poly: [[0.02, 0.72], [0.34, 0.81], [0.60, 0.92], [0.78, 1.05]], hw: 0.10, minLen: 0.28, required: true },
-    fate:    { poly: [[0.50, 0.06], [0.50, 0.42], [0.55, 0.80]], hw: 0.11, minLen: 0.18, required: false },
-    sun:     { poly: [[0.34, 0.42], [0.34, 0.64], [0.36, 0.88]], hw: 0.075, minLen: 0.14, required: false },
-    mercury: { poly: [[0.44, 0.14], [0.28, 0.44], [0.14, 0.74]], hw: 0.085, minLen: 0.16, required: false }
+    heart:   { poly: [[-0.06, 0.67], [0.22, 0.72], [0.54, 0.80], [0.82, 0.94]], hw: 0.14, hwStart: 0.14, minLen: 0.28, required: true },
+    head:    { poly: [[1.00, 0.72], [0.70, 0.66], [0.40, 0.59], [0.02, 0.52]], hw: 0.13, hwStart: 0.10, minLen: 0.28, required: true, sharedHeadLife: true },
+    life:    { poly: [[1.00, 0.72], [0.71, 0.67], [0.61, 0.51], [0.63, 0.30], [0.71, 0.06]], hw: 0.13, hwStart: 0.085, minLen: 0.30, required: true, sharedHeadLife: true },
+    fate:    { poly: [[0.48, 0.05], [0.49, 0.36], [0.53, 0.64], [0.60, 0.89]], hw: 0.12, hwStart: 0.11, minLen: 0.18, required: false },
+    sun:     { poly: [[0.38, 0.38], [0.36, 0.64], [0.37, 0.90]], hw: 0.075, hwStart: 0.07, minLen: 0.15, required: false },
+    mercury: { poly: [[0.42, 0.14], [0.27, 0.46], [0.15, 0.78]], hw: 0.08, hwStart: 0.08, minLen: 0.16, required: false }
   };
   const TRACE_ORDER = ["heart", "head", "life", "fate", "sun", "mercury"];
 
-  function polyInfo(poly, frame) {
-    const segs = [];
-    let total = 0;
-    for (let i = 0; i < poly.length - 1; i++) {
-      const [x1, y1] = poly[i], [x2, y2] = poly[i + 1];
-      const len = Math.hypot(x2 - x1, y2 - y1);
-      const p1 = frame.toImg(x1, y1), p2 = frame.toImg(x2, y2);
-      const ilen = Math.hypot(p2.x - p1.x, p2.y - p1.y) || 1;
-      segs.push({ x1, y1, dx: x2 - x1, dy: y2 - y1, len, start: total, tx: (p2.x - p1.x) / ilen, ty: (p2.y - p1.y) / ilen });
-      total += len;
-    }
-    return { segs, total };
+  // Smooth Catmull-Rom spline sampler along control points in UV space
+  function sampleSplineUV(poly, t) {
+    const m = poly.length;
+    if (t <= 0) return { u: poly[0][0], v: poly[0][1] };
+    if (t >= 1) return { u: poly[m - 1][0], v: poly[m - 1][1] };
+    const f = t * (m - 1);
+    const i = Math.min(m - 2, Math.floor(f));
+    const s = f - i;
+    const p0 = poly[Math.max(0, i - 1)];
+    const p1 = poly[i];
+    const p2 = poly[i + 1];
+    const p3 = poly[Math.min(m - 1, i + 2)];
+    const s2 = s * s, s3 = s2 * s;
+    const cm = (a, b, c, d) => 0.5 * (
+      2 * b + (-a + c) * s + (2 * a - 5 * b + 4 * c - d) * s2 + (-a + 3 * b - 3 * c + d) * s3
+    );
+    return { u: cm(p0[0], p1[0], p2[0], p3[0]), v: cm(p0[1], p1[1], p2[1], p3[1]) };
   }
 
-  // ระยะจากจุดถึง polyline + ตำแหน่งตามแนวเส้น (0..1) + ทิศทางคาดหมายในพิกัดภาพ
-  function distToPoly(info, u, v) {
-    let best = Infinity, bestT = 0, bestSeg = info.segs[0];
-    for (const s of info.segs) {
-      let t = ((u - s.x1) * s.dx + (v - s.y1) * s.dy) / (s.len * s.len);
-      t = Math.max(0, Math.min(1, t));
-      const px = s.x1 + t * s.dx, py = s.y1 + t * s.dy;
-      const d = Math.hypot(u - px, v - py);
-      if (d < best) { best = d; bestT = (s.start + t * s.len) / info.total; bestSeg = s; }
-    }
-    return { d: best, t: bestT, tx: bestSeg.tx, ty: bestSeg.ty };
-  }
-
-  // ---------------------------------------------------------------------------
-  // Min-heap for Dijkstra
-  // ---------------------------------------------------------------------------
-  class Heap {
-    constructor(cap) { this.idx = new Int32Array(cap); this.key = new Float64Array(cap); this.n = 0; }
-    push(i, k) {
-      let p = this.n++;
-      if (p >= this.idx.length) { this._grow(); }
-      this.idx[p] = i; this.key[p] = k;
-      while (p > 0) {
-        const q = (p - 1) >> 1;
-        if (this.key[q] <= this.key[p]) break;
-        this._swap(p, q); p = q;
-      }
-    }
-    pop() {
-      const top = this.idx[0], topK = this.key[0];
-      this.n--;
-      if (this.n > 0) {
-        this.idx[0] = this.idx[this.n]; this.key[0] = this.key[this.n];
-        let p = 0;
-        for (;;) {
-          const l = 2 * p + 1, r = l + 1;
-          let m = p;
-          if (l < this.n && this.key[l] < this.key[m]) m = l;
-          if (r < this.n && this.key[r] < this.key[m]) m = r;
-          if (m === p) break;
-          this._swap(p, m); p = m;
+  // Morphological 1D & 2D Black-Hat helpers for crisp valley enhancement
+  function morph1D(src, w, h, r, isMax, horiz) {
+    const out = new Float32Array(w * h);
+    if (horiz) {
+      for (let y = 0; y < h; y++) {
+        const row = y * w;
+        for (let x = 0; x < w; x++) {
+          let best = isMax ? -Infinity : Infinity;
+          const x0 = Math.max(0, x - r), x1 = Math.min(w - 1, x + r);
+          for (let xx = x0; xx <= x1; xx++) {
+            const v = src[row + xx];
+            if (isMax ? v > best : v < best) best = v;
+          }
+          out[row + x] = best;
         }
       }
-      this.lastKey = topK;
-      return top;
+    } else {
+      for (let y = 0; y < h; y++) {
+        const y0 = Math.max(0, y - r), y1 = Math.min(h - 1, y + r);
+        for (let x = 0; x < w; x++) {
+          let best = isMax ? -Infinity : Infinity;
+          for (let yy = y0; yy <= y1; yy++) {
+            const v = src[yy * w + x];
+            if (isMax ? v > best : v < best) best = v;
+          }
+          out[y * w + x] = best;
+        }
+      }
     }
-    _swap(a, b) {
-      const ti = this.idx[a]; this.idx[a] = this.idx[b]; this.idx[b] = ti;
-      const tk = this.key[a]; this.key[a] = this.key[b]; this.key[b] = tk;
-    }
-    _grow() {
-      const ni = new Int32Array(this.idx.length * 2); ni.set(this.idx); this.idx = ni;
-      const nk = new Float64Array(this.key.length * 2); nk.set(this.key); this.key = nk;
-    }
+    return out;
+  }
+
+  function closing2D(src, w, h, r) {
+    const d1 = morph1D(src, w, h, r, true, true);
+    const d2 = morph1D(d1, w, h, r, true, false);
+    const e1 = morph1D(d2, w, h, r, false, true);
+    return morph1D(e1, w, h, r, false, false);
   }
 
   // ---------------------------------------------------------------------------
@@ -517,7 +536,7 @@
     const target = 420;
     const scale = Math.max(0.2, Math.min(1.6, target / frame.palmLength));
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const [u, v] of [[-0.08, -0.06], [1.08, -0.06], [-0.08, 1.08], [1.08, 1.08], [1.12, 0.4], [-0.1, 0.5]]) {
+    for (const [u, v] of [[-0.16, -0.06], [1.14, -0.06], [-0.16, 1.08], [1.14, 1.08], [1.14, 0.4], [-0.16, 0.5]]) {
       const p = frame.toImg(u, v);
       minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
       minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
@@ -540,7 +559,7 @@
         for (const [dx, dy, wt] of [[0, 0, (1 - fx) * (1 - fy)], [1, 0, fx * (1 - fy)], [0, 1, (1 - fx) * fy], [1, 1, fx * fy]]) {
           const p = ((y0 + dy) * w + (x0 + dx)) * 4;
           // ช่องสีเขียวให้คอนทราสต์ของร่องบนผิวดีที่สุด
-          acc += wt * (0.22 * rgba[p] + 0.66 * rgba[p + 1] + 0.12 * rgba[p + 2]);
+          acc += wt * (0.20 * rgba[p] + 0.68 * rgba[p + 1] + 0.12 * rgba[p + 2]);
         }
         const i = y * cw + x;
         gray[i] = acc;
@@ -550,33 +569,39 @@
       }
     }
 
-    // --- 3. ROI: ฝ่ามือ (ไม่รวมนิ้ว) และห่างจากขอบมือ ---
-    const edgeSigma = 7;
+    // --- 3. ROI: ฝ่ามือ (รวมขอบด้านข้างสำหรับจุดเริ่มต้นเส้นหัวใจและง่ามนิ้วโป้ง) ---
+    const edgeSigma = 3;
     const skinB = blur(skinC, cw, ch, edgeSigma);
     const roi = new Uint8Array(cw * ch);
     let roiCount = 0;
     for (let i = 0; i < roi.length; i++) {
-      const inPalm = U[i] > -0.02 && U[i] < 1.04 && V[i] > -0.02 && V[i] < 1.07;
-      if (inPalm && skinB[i] > 0.94) { roi[i] = 1; roiCount++; }
+      const inPalm = U[i] > -0.13 && U[i] < 1.07 && V[i] > -0.02 && V[i] < 1.08;
+      if (inPalm && skinB[i] > 0.84) { roi[i] = 1; roiCount++; }
     }
     if (roiCount < cw * ch * 0.15) {
       return { ok: false, reason: "roi_small", message: "พื้นที่ฝ่ามือที่ตรวจเจอน้อยเกินไป กรุณาหงายฝ่ามือเข้าหากล้องให้เต็มกรอบ" };
     }
 
-    // --- 4. Illumination normalization (Weber) + directional multi-scale Hessian ridge ---
-    const bg = blur(gray, cw, ch, 18);
+    // --- 4. Illumination normalization (Weber) + Black-Hat valley + sharper Hessian + Directional NMS ---
+    const bg = blur(gray, cw, ch, 14);
     const norm = new Float32Array(cw * ch);
     for (let i = 0; i < norm.length; i++) {
       norm[i] = (gray[i] - bg[i]) / Math.max(8, 0.08 * bg[i]);
+    }
+    const closed = closing2D(norm, cw, ch, 4);
+    const valleyNorm = new Float32Array(cw * ch);
+    for (let i = 0; i < norm.length; i++) {
+      const bh = Math.max(0, closed[i] - norm[i]);
+      valleyNorm[i] = norm[i] - 0.35 * bh;
     }
 
     const ridge = new Float32Array(cw * ch);
     const dirX = new Float32Array(cw * ch);
     const dirY = new Float32Array(cw * ch);
-    const sigmas = [2.0, 3.0, 4.4];
+    const sigmas = [1.1, 1.8, 2.8];
     for (const s of sigmas) {
-      const L = blur(norm, cw, ch, s);
-      const s2 = s * s;
+      const L = blur(valleyNorm, cw, ch, s);
+      const sWeight = Math.pow(s, 1.25);
       for (let y = 1; y < ch - 1; y++) {
         for (let x = 1; x < cw - 1; x++) {
           const i = y * cw + x;
@@ -589,7 +614,7 @@
           const l2 = (dxx + dyy - tmp) / 2;
           if (l1 <= 0) continue;
           const rb = l2 / l1;
-          const resp = s2 * l1 * Math.exp(-(rb * rb) / 0.5);
+          const resp = sWeight * l1 * Math.exp(-(rb * rb) / 0.5);
           if (resp > ridge[i]) {
             ridge[i] = resp;
             let vx = dxy, vy = l2 - dxx;
@@ -603,19 +628,53 @@
       }
     }
     const pLow = percentile(ridge, roi, 0.56);
-    const pHigh = percentile(ridge, roi, 0.985 - (sensitivity - 3) * 0.007);
+    const pHigh = percentile(ridge, roi, 0.986 - (sensitivity - 3) * 0.007);
     const rSpan = Math.max(1e-4, pHigh - pLow);
-    const R = new Float32Array(cw * ch);
-    for (let i = 0; i < R.length; i++) R[i] = roi[i] ? Math.max(0, Math.min(1, (ridge[i] - pLow) / rSpan)) : 0;
+    const Rraw = new Float32Array(cw * ch);
+    for (let i = 0; i < Rraw.length; i++) Rraw[i] = roi[i] ? Math.max(0, Math.min(1, (ridge[i] - pLow) / rSpan)) : 0;
 
-    // --- 5. Trace each principal line inside its anatomical corridor ---
-    const used = new Uint8Array(cw * ch);
+    // Directional Non-Maximum Suppression (NMS) along normal (-dirY, dirX)
+    const sampleRaw = (sx, sy) => {
+      const x0 = Math.max(0, Math.min(cw - 2, Math.floor(sx)));
+      const y0 = Math.max(0, Math.min(ch - 2, Math.floor(sy)));
+      const fx = Math.max(0, Math.min(1, sx - x0));
+      const fy = Math.max(0, Math.min(1, sy - y0));
+      const p = y0 * cw + x0;
+      return (
+        Rraw[p] * (1 - fx) * (1 - fy) +
+        Rraw[p + 1] * fx * (1 - fy) +
+        Rraw[p + cw] * (1 - fx) * fy +
+        Rraw[p + cw + 1] * fx * fy
+      );
+    };
+    const Rnms = new Float32Array(cw * ch);
+    for (let y = 1; y < ch - 1; y++) {
+      for (let x = 1; x < cw - 1; x++) {
+        const i = y * cw + x;
+        const val = Rraw[i];
+        if (!roi[i] || val <= 0.02) continue;
+        const nx = -dirY[i], ny = dirX[i];
+        const rp = sampleRaw(x + 1.15 * nx, y + 1.15 * ny);
+        const rm = sampleRaw(x - 1.15 * nx, y - 1.15 * ny);
+        const mx = Math.max(rp, rm);
+        if (val >= mx) Rnms[i] = val;
+        else if (val >= 0.88 * mx) Rnms[i] = 0.60 * val;
+        else Rnms[i] = 0.16 * val;
+      }
+    }
+    const R = new Float32Array(cw * ch);
+    for (let i = 0; i < R.length; i++) R[i] = 0.72 * Rnms[i] + 0.28 * Rraw[i];
+
+    // --- 5. Trace each principal line via smooth directional DP ---
+    const usedMask = new Uint8Array(cw * ch);
     const lines = {};
-    for (const key of TRACE_ORDER) {
-      lines[key] = traceLine(key, LINE_TEMPLATES[key], R, dirX, dirY, roi, U, V, used, cw, ch, frame, scale, toOrig);
+    for (let idx = 0; idx < TRACE_ORDER.length; idx++) {
+      const key = TRACE_ORDER[idx];
+      const bit = 1 << idx;
+      lines[key] = traceLine(key, bit, LINE_TEMPLATES[key], R, Rraw, dirX, dirY, roi, usedMask, cw, ch, frame, scale, toOrig, sensitivity, lines);
     }
 
-    // --- 6. Quality metrics + mounts ---
+    // --- 6. Quality metrics + landmark-anchored mounts ---
     let lumSum = 0, lumN = 0;
     for (let i = 0; i < gray.length; i += 7) if (roi[i]) { lumSum += gray[i]; lumN++; }
     const meanLum = lumN ? lumSum / lumN : 0;
@@ -627,7 +686,7 @@
       sharp += lap * lap; sharpN++;
     }
     const sharpness = sharpN ? Math.sqrt(sharp / sharpN) : 0;
-    const mounts = computeMounts(frame, gray, R, roi, cw, ch, scale, minX, minY, meanLum);
+    const mounts = computeMounts(landmarks, frame, gray, R, roi, cw, ch, scale, minX, minY, meanLum);
     const handedness = opts.handedness || detectHandedness(landmarks);
 
     return {
@@ -649,138 +708,340 @@
     };
   }
 
-  function traceLine(key, tpl, R, dirX, dirY, roi, U, V, used, cw, ch, frame, scale, toOrig) {
-    const info = polyInfo(tpl.poly, frame);
-    const n = cw * ch;
-    const dist = new Float64Array(n).fill(Infinity);
-    const prev = new Int32Array(n).fill(-1);
-    const tAt = new Float32Array(n).fill(-1);
-    const dAt = new Float32Array(n);
-    const effAt = new Float32Array(n);
-    const heap = new Heap(4096);
+  function traceLine(key, bit, tpl, R, Rraw, dirX, dirY, roi, usedMask, cw, ch, frame, scale, toOrig, sensitivity, lines) {
+    const T = 88;
+    const M = 53;
+    const midJ = (M - 1) >> 1;
+    const maxJump = 2;
 
-    // corridor + directional weight + start set
-    for (let i = 0; i < n; i++) {
-      if (!roi[i]) continue;
-      const { d, t, tx, ty } = distToPoly(info, U[i], V[i]);
-      if (d > tpl.hw) continue;
-      tAt[i] = t;
-      dAt[i] = d / tpl.hw;
-      const align = R[i] > 0.05 ? Math.abs(tx * dirX[i] + ty * dirY[i]) : 0.6;
-      effAt[i] = R[i] * (0.20 + 0.80 * align * align);
-      if (t < 0.06) {
-        dist[i] = 0;
-        heap.push(i, 0);
-      }
-    }
-    const nb = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, 1, Math.SQRT2], [-1, -1, Math.SQRT2]];
-    let endIdx = -1;
-    while (heap.n) {
-      const p = heap.pop();
-      const dp = heap.lastKey;
-      if (dp > dist[p]) continue;
-      if (tAt[p] > 0.94) { endIdx = p; break; }
-      const x = p % cw, y = (p / cw) | 0;
-      for (const [dx, dy, len] of nb) {
-        const xx = x + dx, yy = y + dy;
-        if (xx < 0 || yy < 0 || xx >= cw || yy >= ch) continue;
-        const q = yy * cw + xx;
-        if (tAt[q] < 0) continue;
-        const dd = dAt[q];
-        const allowShare = tpl.sharedHeadLife && tAt[q] < 0.28;
-        const c = 1 / (0.04 + effAt[q]) + 2.5 * dd * dd + (used[q] && !allowShare ? 2.5 : 0);
-        const nd = dp + c * len;
-        if (nd < dist[q]) { dist[q] = nd; prev[q] = p; heap.push(q, nd); }
-      }
-    }
-    if (endIdx < 0) return emptyLine(key, tpl);
-
-    // backtrack path (crop coords)
-    const path = [];
-    for (let p = endIdx; p >= 0; p = prev[p]) path.push(p);
-    path.reverse();
-
-    // smoothed directional + scalar ridge evidence along path
-    const rv = path.map(p => R[p]);
-    const ev = path.map(p => 0.40 * R[p] + 0.60 * effAt[p]);
-    const win = 5;
-    const sm = ev.map((_, i) => {
-      let a = 0, c = 0;
-      for (let k = Math.max(0, i - win); k <= Math.min(ev.length - 1, i + win); k++) { a += ev[k]; c++; }
-      return a / c;
-    });
-
-    const TH = 0.16;
-    let s0 = 0, s1 = path.length - 1;
-    if (tpl.required) {
-      while (s0 < s1 && sm[s0] < TH) s0++;
-      while (s1 > s0 && sm[s1] < TH) s1--;
-    } else {
-      // เส้นรองเลือกช่วงต่อเนื่องที่เด่นชัดที่สุด เพื่อไม่โยงเกาะจุดรบกวนไกลกัน
-      let bestScore = -1, bestA = 0, bestB = -1;
-      let curA = -1, curScore = 0, gapCount = 0;
-      for (let i = 0; i < sm.length; i++) {
-        if (sm[i] >= TH) {
-          if (curA < 0) { curA = i; curScore = 0; }
-          curScore += sm[i];
-          gapCount = 0;
-          if (curScore > bestScore) { bestScore = curScore; bestA = curA; bestB = i; }
-        } else if (curA >= 0) {
-          gapCount++;
-          if (gapCount > 8) curA = -1;
+    // ระยะห่างกายวิภาคระหว่างเส้นหัวใจกับเส้นสมอง (ป้องกันเส้นสมองปีนขึ้นเกาะแนวเส้นหัวใจ)
+    const heartUV = (key === "head" && lines && lines.heart && lines.heart.detected && lines.heart.uv.length >= 2)
+      ? lines.heart.uv
+      : null;
+    const heartVAt = (u) => {
+      if (!heartUV || u > 0.76) return Infinity;
+      let best = Infinity;
+      for (let i = 0; i < heartUV.length - 1; i++) {
+        const a = heartUV[i], b = heartUV[i + 1];
+        const uMin = Math.min(a.u, b.u), uMax = Math.max(a.u, b.u);
+        if (u >= uMin - 0.03 && u <= uMax + 0.03) {
+          const span = b.u - a.u;
+          const s = Math.abs(span) > 1e-4 ? Math.max(0, Math.min(1, (u - a.u) / span)) : 0.5;
+          const v = a.v + (b.v - a.v) * s;
+          if (v < best) best = v;
         }
       }
-      if (bestB <= bestA) return emptyLine(key, tpl);
-      s0 = bestA; s1 = bestB;
-      while (s1 > s0 && sm[s1] < TH) s1--;
+      return best;
+    };
+
+    const bilerp = (arr, x, y) => {
+      const x0 = Math.max(0, Math.min(cw - 2, Math.floor(x)));
+      const y0 = Math.max(0, Math.min(ch - 2, Math.floor(y)));
+      const fx = Math.max(0, Math.min(1, x - x0));
+      const fy = Math.max(0, Math.min(1, y - y0));
+      const p = y0 * cw + x0;
+      return (
+        arr[p] * (1 - fx) * (1 - fy) +
+        arr[p + 1] * fx * (1 - fy) +
+        arr[p + cw] * (1 - fx) * fy +
+        arr[p + cw + 1] * fx * fy
+      );
+    };
+
+    const gCx = new Float32Array(T * M);
+    const gCy = new Float32Array(T * M);
+    const gR = new Float32Array(T * M);
+    const gRaw = new Float32Array(T * M);
+    const gDx = new Float32Array(T * M);
+    const gDy = new Float32Array(T * M);
+    const gDn = new Float32Array(M);
+    const gUsed = new Uint8Array(T * M);
+    const gBlocked = new Uint8Array(T * M);
+    const gInRoi = new Uint8Array(T * M);
+    const stepInRoi = new Uint8Array(T);
+    const normX = new Float32Array(T);
+    const normY = new Float32Array(T);
+
+    for (let j = 0; j < M; j++) gDn[j] = -1 + 2 * (j / (M - 1));
+
+    const hwStart = tpl.hwStart || tpl.hw;
+    for (let k = 0; k < T; k++) {
+      const t = k / (T - 1);
+      const cUV = sampleSplineUV(tpl.poly, t);
+      const pA = sampleSplineUV(tpl.poly, Math.max(0, t - 0.005));
+      const pB = sampleSplineUV(tpl.poly, Math.min(1, t + 0.005));
+      const du = pB.u - pA.u, dv = pB.v - pA.v;
+      const luv = Math.hypot(du, dv) || 1;
+      const nu = -dv / luv, nv = du / luv;
+      const hw = hwStart + (tpl.hw - hwStart) * Math.min(1, t / 0.35);
+
+      const n0 = frame.toImg(cUV.u, cUV.v);
+      const n1 = frame.toImg(cUV.u + nu * 0.05, cUV.v + nv * 0.05);
+      const nxC = n1.x - n0.x, nyC = n1.y - n0.y;
+      const nLen = Math.hypot(nxC, nyC) || 1;
+      normX[k] = nxC / nLen;
+      normY[k] = nyC / nLen;
+
+      let anyIn = 0;
+      for (let j = 0; j < M; j++) {
+        const idx = k * M + j;
+        const dUV = gDn[j] * hw;
+        const uu = cUV.u + dUV * nu, vv = cUV.v + dUV * nv;
+        const pt = frame.toImg(uu, vv);
+        const cx = (pt.x - (toOrig(0, 0).x)) * scale;
+        const cy = (pt.y - (toOrig(0, 0).y)) * scale;
+        gCx[idx] = cx;
+        gCy[idx] = cy;
+
+        if (heartUV && uu < 0.76 && vv > heartVAt(uu) - 0.038) {
+          gBlocked[idx] = 1;
+        }
+
+        const ix = Math.round(cx), iy = Math.round(cy);
+        if (ix >= 1 && iy >= 1 && ix < cw - 1 && iy < ch - 1 && roi[iy * cw + ix]) {
+          gInRoi[idx] = 1;
+          anyIn = 1;
+          const pix = iy * cw + ix;
+          gR[idx] = gBlocked[idx] ? 0 : bilerp(R, cx, cy);
+          gRaw[idx] = gBlocked[idx] ? 0 : bilerp(Rraw, cx, cy);
+          gDx[idx] = dirX[pix];
+          gDy[idx] = dirY[pix];
+          gUsed[idx] = usedMask[pix];
+        }
+      }
+      stepInRoi[k] = anyIn;
     }
 
-    const trimmed = path.slice(s0, s1 + 1);
-    const trimmedR = rv.slice(s0, s1 + 1);
-    const trimmedE = ev.slice(s0, s1 + 1);
-    const trimmedSm = sm.slice(s0, s1 + 1);
+    // Dynamic Programming (Smooth Directional Viterbi)
+    const dp = new Float64Array(T * M).fill(-1e9);
+    const back = new Int16Array(T * M).fill(midJ);
+    const wPrior = tpl.required ? 0.045 : 0.060;
+    const wJump = tpl.required ? 0.105 : 0.125;
 
-    // metrics
+    for (let j = 0; j < M; j++) {
+      const idx = j;
+      if (!gInRoi[idx]) {
+        dp[idx] = -0.30 - wPrior * gDn[j] * gDn[j];
+      } else {
+        const uPenalty = (gUsed[idx] && !(key === "life" && (gUsed[idx] & 2))) ? (tpl.required ? 0.35 : 0.65) : 0;
+        dp[idx] = gR[idx] * 0.85 - wPrior * gDn[j] * gDn[j] - uPenalty - (gBlocked[idx] ? 0.95 : 0);
+      }
+    }
+
+    for (let k = 1; k < T; k++) {
+      const t = k / (T - 1);
+      const prevRow = (k - 1) * M;
+      const curRow = k * M;
+      const freeEntry = !stepInRoi[k - 1] && stepInRoi[k];
+      const allowHeadShare = key === "life" && t < 0.34;
+
+      for (let j = 0; j < M; j++) {
+        const idx = curRow + j;
+        const inR = gInRoi[idx];
+        const priorCost = wPrior * gDn[j] * gDn[j];
+        let best = -1e9, bestP = j;
+
+        const jLo = freeEntry ? 0 : Math.max(0, j - maxJump);
+        const jHi = freeEntry ? (M - 1) : Math.min(M - 1, j + maxJump);
+        for (let jp = jLo; jp <= jHi; jp++) {
+          const pIdx = prevRow + jp;
+          const prevDp = dp[pIdx];
+          if (prevDp <= -1e8) continue;
+
+          const dj = j - jp;
+          const jumpCost = freeEntry
+            ? 0.004 * Math.abs(dj)
+            : ((gInRoi[pIdx] && inR) ? wJump * dj * dj : 0.02 * dj * dj);
+          let nodeScore;
+          if (!inR) {
+            nodeScore = -0.35 - priorCost;
+          } else {
+            const sx = gCx[idx] - gCx[pIdx], sy = gCy[idx] - gCy[pIdx];
+            const slen = Math.hypot(sx, sy) || 1;
+            const align = gR[idx] > 0.04 ? Math.abs((sx * gDx[idx] + sy * gDy[idx]) / slen) : 0.55;
+            const eff = gR[idx] * (0.20 + 0.80 * align * align);
+            const uM = gUsed[idx];
+            let uPen = gBlocked[idx] ? 0.95 : 0;
+            if (uM) {
+              if (allowHeadShare && (uM & 2) && !(uM & ~2)) uPen -= 0.04; // ดึงดูดเล็กน้อยเฉพาะช่วงโคนเส้นสมอง/ชีวิต
+              else if (key === "fate" && align < 0.45) uPen += 0.08;     // ข้ามเส้นขวางเกือบตั้งฉากได้สะดวก
+              else uPen += tpl.required ? 0.45 : 0.70;
+            }
+            nodeScore = eff - priorCost - uPen;
+          }
+          const cand = prevDp + nodeScore - jumpCost;
+          if (cand > best) { best = cand; bestP = jp; }
+        }
+        dp[idx] = best;
+        back[idx] = bestP;
+      }
+    }
+
+    // เลือกจุดปลายทางที่ดีที่สุด (ภายใน ROI หากมี)
+    let bestEnd = midJ, bestEndScore = -1e9;
+    const lastRow = (T - 1) * M;
+    for (let j = 0; j < M; j++) {
+      const s = dp[lastRow + j] + (gInRoi[lastRow + j] ? 0.05 : 0);
+      if (s > bestEndScore) { bestEndScore = s; bestEnd = j; }
+    }
+
+    // Backtrack path
+    const jPath = new Int16Array(T);
+    let cur = bestEnd;
+    for (let k = T - 1; k >= 0; k--) {
+      jPath[k] = cur;
+      if (k > 0) cur = back[k * M + cur];
+    }
+
+    // Per-step directional evidence & raw ridge along tracked curve
+    const rv = new Float32Array(T);
+    const ev = new Float32Array(T);
+    const inRoiArr = new Uint8Array(T);
+    for (let k = 0; k < T; k++) {
+      const idx = k * M + jPath[k];
+      inRoiArr[k] = gInRoi[idx];
+      if (!gInRoi[idx]) continue;
+      const kPrev = Math.max(0, k - 1), kNext = Math.min(T - 1, k + 1);
+      const pIdx = kPrev * M + jPath[kPrev], nIdx = kNext * M + jPath[kNext];
+      const sx = gCx[nIdx] - gCx[pIdx], sy = gCy[nIdx] - gCy[pIdx];
+      const slen = Math.hypot(sx, sy) || 1;
+      const align = gR[idx] > 0.04 ? Math.abs((sx * gDx[idx] + sy * gDy[idx]) / slen) : 0.55;
+      const eff = gR[idx] * (0.20 + 0.80 * align * align);
+      rv[k] = gRaw[idx];
+      ev[k] = 0.30 * gRaw[idx] + 0.70 * eff;
+    }
+
+    const win = 2;
+    const sm = new Float32Array(T);
+    for (let k = 0; k < T; k++) {
+      let a = 0, c = 0;
+      for (let q = Math.max(0, k - win); q <= Math.min(T - 1, k + win); q++) {
+        if (!inRoiArr[q]) continue;
+        a += ev[q]; c++;
+      }
+      sm[k] = c ? a / c : 0;
+    }
+
+    // Kadane's Maximum-Subarray Extraction (ตัดปลายปลอมอัตโนมัติ แต่ข้ามรอยขาดจริงขนาดสั้นได้)
+    const sensShift = (sensitivity - 3) * 0.015;
+    const baseTh = Math.max(0.085, (tpl.required ? 0.115 : 0.22) - sensShift);
+    let bestScore = -1, bestA = 0, bestB = -1;
+    let curA = -1, curScore = 0;
+    for (let k = 0; k < T; k++) {
+      if (!inRoiArr[k]) { curA = -1; curScore = 0; continue; }
+      const gain = sm[k] - baseTh;
+      if (curA < 0) {
+        if (gain > 0) { curA = k; curScore = gain; }
+      } else {
+        curScore += gain;
+        if (curScore <= 0) { curA = -1; curScore = 0; }
+      }
+      if (curA >= 0 && curScore > bestScore) {
+        bestScore = curScore;
+        bestA = curA;
+        bestB = k;
+      }
+    }
+    if (bestB <= bestA) return emptyLine(key);
+
+    let s0 = bestA, s1 = bestB;
+    const tipTh = tpl.required ? Math.max(0.09, 0.12 - sensShift) : Math.max(0.14, 0.18 - sensShift);
+    if (tpl.required) {
+      // ต่อปลายเส้นหลักข้ามรอยแสงสะท้อนจางๆ ไปยังจุดขอบมือถ้ามีร่องชัดเจนต่อเนื่อง
+      let extL = -1;
+      for (let k = s0 - 1, gap = 0; k >= 0 && gap <= 11; k--, gap++) {
+        if (!inRoiArr[k]) break;
+        if (sm[k] >= 0.15 || ev[k] >= 0.22) extL = k;
+      }
+      if (extL >= 0) s0 = extL;
+      let extR = -1;
+      for (let k = s1 + 1, gap = 0; k < T && gap <= 11; k++, gap++) {
+        if (!inRoiArr[k]) break;
+        if (sm[k] >= 0.15 || ev[k] >= 0.22) extR = k;
+      }
+      if (extR >= 0) s1 = extR;
+    }
+    while (s0 < s1 && (!inRoiArr[s0] || Math.max(ev[s0], sm[s0]) < tipTh)) s0++;
+    while (s1 > s0 && (!inRoiArr[s1] || Math.max(ev[s1], sm[s1]) < tipTh)) s1--;
+    if (s1 <= s0) return emptyLine(key);
+
+    // Extract coordinates + Subpixel Valley Centroid Snap along normal
+    const ptsCrop = [];
+    const trimmedR = [];
+    const trimmedE = [];
+    const trimmedSm = [];
+    for (let k = s0; k <= s1; k++) {
+      const idx = k * M + jPath[k];
+      let cx = gCx[idx], cy = gCy[idx];
+      if (gRaw[idx] >= 0.14) {
+        const nx = normX[k], ny = normY[k];
+        let num = 0, den = 0;
+        for (let o = -2.0; o <= 2.001; o += 0.5) {
+          const sx = cx + o * nx, sy = cy + o * ny;
+          if (sx < 1 || sy < 1 || sx >= cw - 1 || sy >= ch - 1) continue;
+          const v = bilerp(Rraw, sx, sy);
+          const wt = v * v;
+          num += o * wt;
+          den += wt;
+        }
+        if (den > 1e-4) {
+          const shift = Math.max(-1.6, Math.min(1.6, num / den));
+          cx += shift * nx;
+          cy += shift * ny;
+        }
+      }
+      ptsCrop.push({ x: cx, y: cy });
+      trimmedR.push(rv[k]);
+      trimmedE.push(ev[k]);
+      trimmedSm.push(sm[k]);
+    }
+
+    // Metrics
     let lenPx = 0;
-    for (let i = 1; i < trimmed.length; i++) {
-      const a = trimmed[i - 1], b = trimmed[i];
-      lenPx += Math.hypot((a % cw) - (b % cw), ((a / cw) | 0) - ((b / cw) | 0));
+    for (let i = 1; i < ptsCrop.length; i++) {
+      lenPx += Math.hypot(ptsCrop[i].x - ptsCrop[i - 1].x, ptsCrop[i].y - ptsCrop[i - 1].y);
     }
-    const lenPalm = (lenPx / scale) / frame.palmLength; // ความยาวเทียบความยาวฝ่ามือ
-    const coverage = trimmedE.length ? trimmedE.filter(v => v > 0.15).length / trimmedE.length : 0;
+    const lenPalm = (lenPx / scale) / frame.palmLength;
+    const coverage = trimmedE.length ? trimmedE.filter(v => v > 0.14).length / trimmedE.length : 0;
     const meanR = trimmedR.length ? trimmedR.reduce((a, b) => a + b, 0) / trimmedR.length : 0;
     const meanE = trimmedE.length ? trimmedE.reduce((a, b) => a + b, 0) / trimmedE.length : 0;
     let gaps = 0, inGap = 0;
     for (const v of trimmedSm) {
-      if (v < 0.13) { inGap++; if (inGap === 8) gaps++; } else inGap = 0;
+      if (v < 0.13) { inGap++; if (inGap === 4) gaps++; } else inGap = 0;
     }
-    const covThresh = tpl.required ? 0.50 : 0.62;
-    const depthThresh = tpl.required ? 0.22 : 0.30;
-    const detected = trimmed.length > 8 && coverage >= covThresh && meanE >= depthThresh && lenPalm >= tpl.minLen;
+    const covThresh = tpl.required ? 0.50 : 0.66;
+    const depthThresh = tpl.required ? 0.21 : 0.35;
+    const minRawR = tpl.required ? 0.14 : 0.39;
+    const detected = ptsCrop.length > 6 && coverage >= covThresh && meanE >= depthThresh && meanR >= minRawR && lenPalm >= tpl.minLen;
 
-    // mark pixels as used เฉพาะเส้นที่ตรวจพบจริง (dilate 2px) เพื่อไม่ให้เส้นรองมาแย่งร่องเส้นหลัก
+    // mark bitmask pixels as used เฉพาะเส้นที่ตรวจพบจริง
     if (detected) {
-      for (const p of trimmed) {
-        const x = p % cw, y = (p / cw) | 0;
-        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
-          const xx = x + dx, yy = y + dy;
-          if (xx >= 0 && yy >= 0 && xx < cw && yy < ch) used[yy * cw + xx] = 1;
+      for (let i = 0; i < ptsCrop.length; i++) {
+        const ax = ptsCrop[i].x, ay = ptsCrop[i].y;
+        for (let tSub = 0; tSub < (i < ptsCrop.length - 1 ? 3 : 1); tSub++) {
+          const px = i < ptsCrop.length - 1 ? ax + (ptsCrop[i + 1].x - ax) * (tSub / 3) : ax;
+          const py = i < ptsCrop.length - 1 ? ay + (ptsCrop[i + 1].y - ay) * (tSub / 3) : ay;
+          const rx = Math.round(px), ry = Math.round(py);
+          for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+            const xx = rx + dx, yy = ry + dy;
+            if (xx >= 0 && yy >= 0 && xx < cw && yy < ch) usedMask[yy * cw + xx] |= bit;
+          }
         }
       }
     }
 
-    // points (original image coords), simplified + uv
-    const ptsOrig = trimmed.map(p => toOrig(p % cw, (p / cw) | 0));
-    const simplified = simplify(ptsOrig, Math.max(1.2, 1.5 / scale));
-    const uvPts = simplified.map(p => frame.toUV(p.x, p.y));
+    const ptsOrig = ptsCrop.map(p => toOrig(p.x, p.y));
+    const simplified = simplify(ptsOrig, Math.max(0.9, 1.1 / scale));
+    const smooth = smoothPoints(simplified, 1);
+    const uvPts = smooth.map(p => frame.toUV(p.x, p.y));
 
-    const rawConf = 100 * Math.min(1, 0.52 * coverage + 0.48 * Math.min(1, meanE / 0.52));
+    const rawConf = 100 * Math.min(1, 0.52 * coverage + 0.48 * Math.min(1, meanE / 0.50));
     const confidence = detected ? Math.round(rawConf) : Math.round(Math.min(48, rawConf * 0.55));
 
     return {
       id: key,
       detected,
-      points: smoothPoints(simplified, 2),
+      points: smooth,
       uv: uvPts,
       lengthRatio: Number(lenPalm.toFixed(3)),
       coverage: Number(coverage.toFixed(3)),
