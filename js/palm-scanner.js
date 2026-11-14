@@ -511,18 +511,18 @@ class PalmScannerEngine {
       wealthDualText = "เส้นทางการเงินเป็นแบบอิสระ เติบโตจากไหวพริบและความสามารถเฉพาะตัว ไม่ถูกจำกัดด้วยทางเดียว ช่วงนี้มีช่องทางรายได้เสริมหรืองานโปรเจกต์ใหม่เข้ามาให้หยิบจับได้ดี";
     }
 
-    // 5. คำแนะนำเสริมชีวิต
-    const guidanceGrade = mercBoth ? "สื่อสารให้ชัด เปิดรับโอกาส" : "รักษาสมดุลแล้วเดินหน้าต่อ";
+    // 5. คำแนะนำดวงชะตา (เป็นกลาง ไม่เร่งนำพา)
+    const guidanceGrade = mercBoth ? "เด่นด้านการสังเกตและการสื่อสาร" : "จังหวะชีวิตค่อยเป็นค่อยไป";
     const guidanceDualText = mercBoth
-      ? "จุดแข็งของคุณอยู่ที่การพูดคุย เจรจา และสังเกตจังหวะเก่ง ถ้ากล้านำเสนอไอเดียและสร้างความสม่ำเสมอในการดูแลสุขภาพ โอกาสดีเรื่องงานกับเงินจะเข้ามาง่ายขึ้น พร้อมแบ่งเวลาทำบุญทำทานตามกำลังใจจะยิ่งสบายใจ"
-      : "ชีวิตช่วงนี้เน้นความนิ่งและการลงมือทำทีละก้าวอย่างมั่นคง อย่าเร่งกดดันตัวเองเกินไป แค่พักผ่อนให้พอ รักษาคำพูดและความตั้งใจดีไว้ สิ่งที่วางแผนไว้จะค่อยๆ สำเร็จและราบรื่นอย่างเป็นธรรมชาติ";
+      ? "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว"
+      : "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
 
     const rightConfirmFallback = {
       life: "ช่วงปัจจุบันสุขภาพและแรงกายยังหนุนได้ดี ควรรักษาเวลานอนให้สม่ำเสมอแล้วพลังจะอยู่ตัวนาน",
       intellect: "แนวโน้มช่วงนี้ตัดสินใจเรื่องงานและวางแผนได้คมขึ้นเมื่อโฟกัสทีละเป้าหมาย",
       love: "ช่วงนี้ความสัมพันธ์พัฒนาไปในทางที่มั่นคงขึ้นเมื่อเปิดใจสื่อสารกันตรงๆ",
       wealth: "จังหวะปัจจุบันเดินหน้าต่อได้สวย เน้นลงมือทำสม่ำเสมอแล้วรายรับจะค่อยๆ ชัดเจนขึ้น",
-      guidance: "ทิศทางต่อจากนี้เน้นความต่อเนื่องและจัดสมดุลงานกับเวลาพักให้ลงตัวที่สุด"
+      guidance: "แนวโน้มช่วงนี้เหมาะกับการประคองจังหวะชีวิตให้พอดี ไม่หักโหมจนเกินไป"
     };
 
     const buildMergedAspect = (key, defaultIcon, defaultTitle, dualGrade, plainText) => {
@@ -549,7 +549,7 @@ class PalmScannerEngine {
       intellect: buildMergedAspect("intellect", "🧠", "ความคิด การงาน และการตัดสินใจ", intellectGrade, intellectDualText),
       love: buildMergedAspect("love", "💖", "ความรัก และความสัมพันธ์", loveGrade, loveDualText),
       wealth: buildMergedAspect("wealth", "💰", "การเงิน โอกาส และความมั่นคง", wealthGrade, wealthDualText),
-      guidance: buildMergedAspect("guidance", "🌿", "คำแนะนำที่ใช้ได้จริง", guidanceGrade, guidanceDualText)
+      guidance: buildMergedAspect("guidance", "🌿", "คำแนะนำดวงชะตา", guidanceGrade, guidanceDualText)
     };
 
     const mentalSummary = headSlopeR === "curved_moon" ? "หัวไวด้านไอเดียและการสื่อสาร" : "ความคิดเป็นระบบและรอบคอบ";
@@ -559,12 +559,17 @@ class PalmScannerEngine {
       ? window.ragEngine.retrievePalmReadingInsights({ leftScan: lScan, rightScan: rScan, baseAspects: aspects })
       : null;
 
+    // ผสานมุมมองจากตำราที่ Admin เลือกเข้าในคำทำนายหลักอย่างกลมกลืน (ไม่แสดงกล่อง "เกร็ดคำทำนายจากตำรา:" แยกซ้ำ)
     if (ragPalm && ragPalm.aspectInsights) {
-      Object.keys(aspects).forEach((k) => {
-        if (ragPalm.aspectInsights[k]) {
-          aspects[k].ragInsight = ragPalm.aspectInsights[k];
-        }
-      });
+      const shouldBlendIntoText = !ragPalm.isBuiltIn || ragPalm.bookId !== "palm_thai_classical";
+      if (shouldBlendIntoText) {
+        Object.keys(aspects).forEach((k) => {
+          const extra = String(ragPalm.aspectInsights[k] || "").trim();
+          if (extra && aspects[k] && !aspects[k].text.includes(extra)) {
+            aspects[k].text = `${aspects[k].text} ${extra}`;
+          }
+        });
+      }
     }
 
     const lensNote = (ragPalm && ragPalm.lensSummaryLabel) ? ` (${ragPalm.lensSummaryLabel})` : "";
@@ -693,14 +698,14 @@ class PalmScannerEngine {
       wealthText = "เส้นทางการเงินของคุณไม่ได้ถูกจำกัดแค่ทางเดียว สามารถพลิกแพลงหาช่องทางสร้างรายได้เสริมหรืองานอิสระได้ดี ช่วงนี้หากลองจับงานถนัดมาต่อยอดอย่างจริงจังและจดบันทึกรายรับรายจ่ายให้ชัด จะเห็นเงินเหลือเก็บชัดขึ้นมาก";
     }
 
-    // 5. คำแนะนำเสริมสิริมงคล
+    // 5. คำแนะนำดวงชะตา (เป็นกลาง ไม่เร่งนำพา)
     const mercury = (lines && lines.mercury) || {};
     const guidanceShort = mercury.detected
-      ? "ไหวพริบและการพูดคุยชัดเจนคือจุดแข็ง ใช้สื่อสารดีๆ แล้วโอกาสจะเปิดไว"
-      : "รักษาจังหวะชีวิตให้สมดุล พักผ่อนให้พอ และเดินหน้าตามแผนทีละขั้นอย่างสบายใจ";
+      ? "พื้นดวงมีจุดเด่นด้านการสังเกตและการสื่อสารกับคนรอบตัว"
+      : "จังหวะชีวิตเป็นแนวค่อยเป็นค่อยไป เน้นความพอดีและสมดุลในแต่ละวัน";
     const guidanceText = mercury.detected
-      ? "คุณมีจุดเด่นเรื่องการพูดคุยประสานงานและสังเกตสิ่งรอบตัวเก่ง ให้ใช้จุดนี้สื่อสารให้ชัดเจนและจริงใจ พร้อมแบ่งเวลาพักผ่อนดูแลสุขภาพให้ดี เสริมด้วยการช่วยเหลือผู้อื่นหรือทำบุญตามกำลัง ชีวิตจะยิ่งราบรื่นและมีโชคลาภเข้ามาง่ายขึ้น"
-      : "แนวโน้มชีวิตดีขึ้นเมื่อจัดสมดุลระหว่างเรื่องงานกับเวลาพักผ่อน ไม่กดดันตัวเองให้รีบเกินไป ทำสิ่งที่ตั้งใจไว้ให้สม่ำเสมอ และทำบุญเสริมสติปัญญาหรือปล่อยวางเรื่องจุกจิกบ้าง จะช่วยให้ใจเบาและดึงดูดเรื่องดีๆ เข้ามาได้ตลอด";
+      ? "ภาพรวมดวงชะตามีไหวพริบในการสังเกตและการสื่อสารกับผู้คนรอบตัว เป็นช่วงที่การพูดคุยอย่างใจเย็นและชัดเจนมักช่วยให้เรื่องงานและความสัมพันธ์ดำเนินไปได้ราบรื่น ควบคู่กับการพักผ่อนอย่างเหมาะสม"
+      : "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสมดุลระหว่างเรื่องงานกับการพักผ่อน ไม่เร่งรัดตัวเองเกินพอดี ความสม่ำเสมอในสิ่งที่ทำอยู่จะค่อยๆ ส่งผลดีตามจังหวะเวลา";
 
     const confPct = (confidence && confidence.percentage) || 88;
     const summaryVerdict = `ผลสแกน${handMeta.name} (ความชัด ${confPct}%): ${lifeShort} ส่วนเรื่องงานและความคิด${headShort.replace(/^คิด/, "เป็นคนคิด")}`;
@@ -739,10 +744,10 @@ class PalmScannerEngine {
         },
         guidance: {
           icon: "🌿",
-          title: "คำแนะนำที่ใช้ได้จริง",
+          title: "คำแนะนำดวงชะตา",
           text: guidanceText,
           shortNote: guidanceShort,
-          grade: "เคล็ดเสริมดวงประจำตัว"
+          grade: "แนวโน้มภาพรวมดวงชะตา"
         }
       },
       summaryVerdict
@@ -2600,14 +2605,6 @@ class PalmApp {
           </div>
         `
         : "";
-      const ragCalloutHtml = asp.ragInsight
-        ? `
-          <div class="rag-insight-callout">
-            <div class="rag-insight-head">📚 เกร็ดคำทำนายจากตำรา: ${bookTitle}</div>
-            <p class="rag-insight-text">${asp.ragInsight}</p>
-          </div>
-        `
-        : "";
       return `
         <div class="palm-aspect-card">
           <div class="aspect-card-header">
@@ -2619,7 +2616,6 @@ class PalmApp {
           </div>
           <p class="aspect-text">${asp.text || ""}</p>
           ${breakdownHtml}
-          ${ragCalloutHtml}
         </div>
       `;
     }).join("");
