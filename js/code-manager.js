@@ -829,4 +829,129 @@ class CodeManager {
   }
 }
 
+/**
+ * ป้องกันกรณีลูกค้าเปิดลิงก์ผ่าน In-App Browser (เช่น LINE, Facebook, IG, TikTok)
+ * ซึ่งบล็อกกล้องถ่ายภาพฝ่ามือ — บังคับแนะนำเปิดด้วย Safari / Chrome พร้อมแนบ openExternalBrowser=1
+ */
+const ExternalBrowserGuard = {
+  detectInAppBrowser(uaInput) {
+    const ua = String(
+      uaInput !== undefined
+        ? uaInput
+        : (typeof navigator !== "undefined" ? navigator.userAgent : "")
+    );
+    const platform = /Android/i.test(ua)
+      ? "android"
+      : (/iPhone|iPad|iPod/i.test(ua) ? "ios" : "other");
+
+    if (/\bLine\/|\bLINE\//i.test(ua)) {
+      return { isInApp: true, appKey: "line", appName: "LINE", platform };
+    }
+    if (/FBAN|FBAV|FB_IAB|Messenger/i.test(ua)) {
+      return { isInApp: true, appKey: "facebook", appName: "Facebook / Messenger", platform };
+    }
+    if (/Instagram/i.test(ua)) {
+      return { isInApp: true, appKey: "instagram", appName: "Instagram", platform };
+    }
+    if (/BytedanceWebview|musical_ly|TikTok|ByteLocale|Trill/i.test(ua)) {
+      return { isInApp: true, appKey: "tiktok", appName: "TikTok", platform };
+    }
+    if (/MicroMessenger|;\s*wv\)/i.test(ua)) {
+      return { isInApp: true, appKey: "webview", appName: "เบราว์เซอร์ในแอป", platform };
+    }
+    return { isInApp: false, appKey: "", appName: "", platform };
+  },
+
+  isInAppBrowser(uaInput) {
+    return this.detectInAppBrowser(uaInput).isInApp;
+  },
+
+  appendExternalBrowserParam(rawUrl) {
+    if (typeof window === "undefined") return String(rawUrl || "");
+    try {
+      const u = new URL(rawUrl || window.location.href, window.location.origin);
+      u.searchParams.set("openExternalBrowser", "1");
+      return u.toString();
+    } catch (_) {
+      const s = String(rawUrl || "");
+      if (!s || s.includes("openExternalBrowser=1")) return s;
+      return s + (s.includes("?") ? "&" : "?") + "openExternalBrowser=1";
+    }
+  },
+
+  buildExternalLaunchUrls(codeObj) {
+    if (typeof window === "undefined") {
+      return { externalUrl: "", androidChromeIntentUrl: "", androidSystemIntentUrl: "" };
+    }
+    const u = new URL(window.location.href);
+    if (codeObj && codeObj.code) {
+      u.searchParams.set("code", String(codeObj.code).toUpperCase());
+      if (!u.searchParams.get("t") && window.codeManager && typeof window.codeManager.encodeCodeToken === "function") {
+        const tok = window.codeManager.encodeCodeToken(codeObj);
+        if (tok) u.searchParams.set("t", tok);
+      }
+    }
+    u.searchParams.set("openExternalBrowser", "1");
+    const externalUrl = u.toString();
+    const protoNoColon = u.protocol.replace(":", "") || "https";
+    const hostPathSearch = `${u.host}${u.pathname}${u.search}`;
+    const fallbackEncoded = encodeURIComponent(externalUrl);
+    const androidChromeIntentUrl = `intent://${hostPathSearch}#Intent;scheme=${protoNoColon};package=com.android.chrome;S.browser_fallback_url=${fallbackEncoded};end`;
+    const androidSystemIntentUrl = `intent://${hostPathSearch}#Intent;scheme=${protoNoColon};action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackEncoded};end`;
+    return { externalUrl, androidChromeIntentUrl, androidSystemIntentUrl };
+  },
+
+  syncUrlForExternalOpen(codeObj) {
+    if (typeof window === "undefined" || !window.history || typeof window.history.replaceState !== "function") return "";
+    try {
+      const { externalUrl } = this.buildExternalLaunchUrls(codeObj);
+      if (externalUrl) {
+        const parsed = new URL(externalUrl);
+        window.history.replaceState({}, document.title, `${parsed.pathname}${parsed.search}`);
+      }
+      return externalUrl;
+    } catch (_) {
+      return "";
+    }
+  },
+
+  needsExternalBrowserForPalm(codeObj, uaInput) {
+    const info = this.detectInAppBrowser(uaInput);
+    if (!info.isInApp) return false;
+    const palmAlreadyDone = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
+    return !palmAlreadyDone;
+  },
+
+  attemptAutoEscape(codeObj, uaInput) {
+    if (typeof window === "undefined") return false;
+    const info = this.detectInAppBrowser(uaInput);
+    if (!info.isInApp) return false;
+    const keySuffix = (codeObj && codeObj.code) ? String(codeObj.code).toUpperCase() : "PAGE";
+    const storageKey = `siamsi_ext_jump_${keySuffix}`;
+    try {
+      if (sessionStorage.getItem(storageKey)) return false;
+      sessionStorage.setItem(storageKey, "1");
+    } catch (_) {}
+
+    const { externalUrl, androidSystemIntentUrl } = this.buildExternalLaunchUrls(codeObj);
+    const params = new URLSearchParams(window.location.search);
+
+    if (info.appKey === "line" && params.get("openExternalBrowser") !== "1") {
+      try {
+        window.location.replace(externalUrl);
+        return true;
+      } catch (_) {}
+    }
+
+    if (info.platform === "android" && window.location.protocol === "https:") {
+      try {
+        window.location.href = androidSystemIntentUrl;
+        return true;
+      } catch (_) {}
+    }
+    return false;
+  }
+};
+
+window.ExternalBrowserGuard = ExternalBrowserGuard;
 window.codeManager = new CodeManager();

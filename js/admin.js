@@ -582,7 +582,8 @@ class AdminBackoffice {
     const basePath = window.location.pathname.replace(/admin\.html.*$/, "index.html");
     const token = (codeObj && window.codeManager.encodeCodeToken) ? window.codeManager.encodeCodeToken(codeObj) : "";
     const tokenParam = token ? `&t=${encodeURIComponent(token)}` : "";
-    return `${window.location.origin}${basePath}?code=${encodeURIComponent(codeStr)}${tokenParam}`;
+    // openExternalBrowser=1 ช่วยบังคับให้แอป LINE (ทั้ง iOS/Android) เด้งเปิดใน Safari/Chrome อัตโนมัติเพื่อให้ใช้กล้องถ่ายฝ่ามือได้
+    return `${window.location.origin}${basePath}?code=${encodeURIComponent(codeStr)}${tokenParam}&openExternalBrowser=1`;
   }
 
   buildFastworkCustomerMessage(codeObj) {
@@ -602,8 +603,13 @@ class AdminBackoffice {
       timeStyle: "short"
     });
     const limitRule = codeObj.mode === "combo"
-      ? `- โค้ดพิเศษนี้สามารถเลือกใช้บริการได้ทั้ง "ดูดวงไพ่ทาโรต์ 3 ใบ" และ "เสี่ยงเซียมซี" อย่างละ 1 ครั้ง (มีอายุใช้งาน 1 วัน ถึง ${expireStr})`
-      : `- โค้ดนี้ให้คุณกดสุ่มเปิดดวงด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`;
+      ? `- โค้ดพิเศษนี้สามารถเลือกใช้บริการได้ทั้ง "ดูดวงไพ่ทาโรต์ 3 ใบ", "เสี่ยงเซียมซี" และ "สแกนลายมือ" อย่างละ 1 ครั้ง (มีอายุใช้งาน 1 วัน ถึง ${expireStr})`
+      : (codeObj.mode === "palm"
+        ? `- โค้ดนี้ให้คุณสแกนวิเคราะห์ลายมือครบ 2 มือด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`
+        : `- โค้ดนี้ให้คุณกดสุ่มเปิดดวงด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`);
+    const browserNote = (codeObj.mode === "palm" || codeObj.mode === "combo")
+      ? `- 🌐 สำคัญสำหรับสแกนลายมือ: กรุณาเปิดลิงก์ด้วยเบราว์เซอร์ Safari (iPhone) หรือ Chrome (Android) เพื่อใช้งานกล้องถ่ายรูปฝ่ามือ (ระบบแนบคำสั่งเปิดผ่านเบราว์เซอร์ให้อัตโนมัติหากกดจาก LINE ค่ะ)\n`
+      : "";
 
     return `🔮 ขอต้อนรับสู่ "เซียมซีทาโรต์" (SIAMSI TAROT • ORACLE)\n` +
       `✦ ${serviceName}${catNote}\n` +
@@ -611,6 +617,7 @@ class AdminBackoffice {
       `🔗 คลิกเข้าสู่ระบบเพื่อกดดูดวงด้วยตนเอง: ${link}\n\n` +
       `📌 เงื่อนไขการใช้งาน:\n` +
       `${limitRule}\n` +
+      `${browserNote}` +
       `- หลังกดเปิดคำทำนายแล้ว สามารถกดแชร์รูป Info พร้อมคำทำนายเต็มไปยังโซเชียล หรือดาวน์โหลดเก็บเป็นไฟล์ PDF ลงเครื่องได้ทันทีค่ะ ✨`;
   }
 

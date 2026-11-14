@@ -7634,3 +7634,148 @@ body {
   }
 }
 
+/* =========================================================================
+   EXTERNAL BROWSER GUARD MODAL (FORCE SAFARI / CHROME FOR PALM CAMERA)
+   ========================================================================= */
+.ext-browser-modal-overlay {
+  z-index: 2500;
+  background: rgba(5, 7, 18, 0.94);
+  backdrop-filter: blur(12px);
+  padding: 1rem;
+}
+
+.ext-browser-modal-box {
+  max-width: 500px;
+  width: 100%;
+  padding: 1.75rem 1.45rem;
+  border: 1.5px solid rgba(243, 207, 122, 0.55);
+  background: linear-gradient(160deg, rgba(16, 22, 54, 0.98), rgba(28, 13, 52, 0.98));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 36px rgba(243, 207, 122, 0.16);
+  text-align: center;
+}
+
+.ext-guard-badge-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.ext-guard-app-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid rgba(251, 113, 133, 0.55);
+  color: #fecdd3;
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.ext-guard-title {
+  color: #fde68a;
+  font-size: 1.32rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 0.65rem;
+}
+
+.ext-guard-desc {
+  color: #e2e8f0;
+  font-size: 0.96rem;
+  line-height: 1.7;
+  margin-bottom: 1.1rem;
+}
+
+.ext-guard-url-card {
+  background: rgba(8, 12, 32, 0.88);
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  border-radius: 12px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 1.05rem;
+  text-align: left;
+}
+
+.ext-guard-url-label {
+  font-size: 0.78rem;
+  color: #7dd3fc;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ext-guard-url-text {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  line-height: 1.45;
+  max-height: 3.1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ext-guard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.15rem;
+}
+
+.ext-guard-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 50px;
+  padding: 0.85rem 1.1rem;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1.02rem;
+  text-decoration: none;
+  color: #161026;
+  background: linear-gradient(135deg, #fde68a, #f59e0b);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+  cursor: pointer;
+}
+
+.ext-guard-open-btn:hover {
+  filter: brightness(1.06);
+}
+
+.ext-guard-steps-box {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(243, 207, 122, 0.28);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  text-align: left;
+}
+
+.ext-guard-steps-title {
+  color: #fde68a;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.55rem;
+}
+
+.ext-guard-step-item {
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  line-height: 1.62;
+  padding: 0.38rem 0.55rem;
+  border-radius: 8px;
+}
+
+.ext-guard-step-item.is-highlighted {
+  background: rgba(56, 189, 248, 0.14);
+  border-left: 3px solid #38bdf8;
+}
+
+.ext-guard-code-note {
+  margin-top: 0.85rem;
+  font-size: 0.82rem;
+  color: #86efac;
+  line-height: 1.5;
+}
+

@@ -868,6 +868,7 @@ class PalmApp {
     this.cameraFallbackEl = document.getElementById("palm-camera-fallback");
     this.cameraFallbackMsgEl = document.getElementById("palm-camera-fallback-msg");
     this.btnRetryCamera = document.getElementById("btn-palm-retry-camera");
+    this.btnOpenExtBrowser = document.getElementById("btn-palm-open-ext-browser");
     this.btnFallbackUpload = document.getElementById("btn-palm-fallback-upload");
     this.btnToggleAutoCapture = document.getElementById("btn-palm-toggle-autocapture");
     this.autoCaptureLabel = document.getElementById("palm-autocapture-label");
@@ -943,6 +944,16 @@ class PalmApp {
     }
     if (this.btnRetryCamera) {
       this.btnRetryCamera.addEventListener("click", () => this.startCamera(this.cameraFacing || "environment"));
+    }
+    if (this.btnOpenExtBrowser) {
+      this.btnOpenExtBrowser.addEventListener("click", () => {
+        if (window.taroApp && typeof window.taroApp.showExternalBrowserGuard === "function") {
+          window.taroApp.showExternalBrowserGuard(window.taroApp.activeCodeObj);
+        } else if (window.ExternalBrowserGuard) {
+          const { externalUrl } = window.ExternalBrowserGuard.buildExternalLaunchUrls(window.taroApp && window.taroApp.activeCodeObj);
+          if (externalUrl) window.open(externalUrl, "_blank");
+        }
+      });
     }
     if (this.btnFallbackUpload && this.fileInput) {
       this.btnFallbackUpload.addEventListener("click", () => this.fileInput.click());
@@ -1126,6 +1137,18 @@ class PalmApp {
   async startCamera(facingMode) {
     const targetFacing = facingMode || this.cameraFacing || "environment";
     this.cameraFacing = targetFacing;
+
+    if (!this.isEntitlementLocked && typeof window !== "undefined" && window.ExternalBrowserGuard) {
+      const activeCodeObj = window.taroApp ? window.taroApp.activeCodeObj : null;
+      if (window.ExternalBrowserGuard.needsExternalBrowserForPalm(activeCodeObj)) {
+        this.cameraStatus = "error";
+        this._showCameraFallback("แอปแชท (LINE / Facebook) บล็อกสิทธิ์กล้อง กรุณาเปิดด้วย Safari หรือ Chrome");
+        if (window.taroApp && typeof window.taroApp.showExternalBrowserGuard === "function") {
+          window.taroApp.showExternalBrowserGuard(activeCodeObj);
+        }
+        return false;
+      }
+    }
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       this.cameraStatus = "error";

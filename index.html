@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261114e">
-  <link rel="stylesheet" href="css/responsive.css?v=20261114e">
+  <link rel="stylesheet" href="css/style.css?v=20261114f">
+  <link rel="stylesheet" href="css/responsive.css?v=20261114f">
 </head>
 <body>
 
@@ -1062,6 +1062,7 @@
                 <p id="palm-camera-fallback-msg">ยังไม่สามารถเชื่อมต่อกล้องได้ กรุณาอนุญาตการเข้าถึงกล้อง</p>
                 <div class="fallback-actions">
                   <button type="button" class="btn-mystic-primary btn-sm" id="btn-palm-retry-camera">🔄 เปิดกล้องอีกครั้ง</button>
+                  <button type="button" class="btn-secondary-mystic btn-sm" id="btn-palm-open-ext-browser">🌐 เปิดใน Safari / Chrome</button>
                   <button type="button" class="btn-secondary-mystic btn-sm" id="btn-palm-fallback-upload">🖼️ เลือกรูปจากเครื่อง</button>
                 </div>
               </div>
@@ -1589,6 +1590,51 @@
     </div>
   </div>
 
+  <!-- External Browser Guard Modal (บังคับเปิดใน Safari / Chrome เมื่อเปิดลิงก์จาก LINE/FB/IG เพื่อใช้งานกล้องถ่ายรูป) -->
+  <div id="external-browser-guard-modal" class="modal-overlay ext-browser-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="ext-guard-title">
+    <div class="modal-content-box ext-browser-modal-box">
+      <div class="ext-guard-badge-row">
+        <span class="ext-guard-app-pill" id="ext-guard-app-badge">⚠️ กำลังเปิดผ่านแอปแชท (LINE)</span>
+      </div>
+      <h2 class="ext-guard-title" id="ext-guard-title">📷 กรุณาเปิดด้วย Safari / Chrome<br>เพื่อใช้งานกล้องสแกนลายมือ</h2>
+      <p class="ext-guard-desc" id="ext-guard-desc">
+        เนื่องจากเบราว์เซอร์ภายในแอป <strong id="ext-guard-app-name">LINE</strong> บล็อกสิทธิ์การเปิดกล้องถ่ายรูป จึงต้องเปิดลิงก์นี้ผ่านเบราว์เซอร์หลักของเครื่อง (<strong>Safari บน iPhone</strong> หรือ <strong>Chrome บน Android</strong>) ค่ะ
+      </p>
+
+      <div class="ext-guard-url-card">
+        <div class="ext-guard-url-label">🔗 ลิงก์สิทธิ์สแกนลายมือของคุณ (แนบโค้ดพร้อมใช้งาน):</div>
+        <div class="ext-guard-url-text" id="ext-guard-url-text">-</div>
+      </div>
+
+      <div class="ext-guard-actions">
+        <a id="btn-ext-open-browser" class="ext-guard-open-btn" href="#" rel="noopener noreferrer">
+          <span>🌐</span>
+          <span id="btn-ext-open-browser-label">เปิดด้วยเบราว์เซอร์ (Safari / Chrome)</span>
+        </a>
+        <button type="button" id="btn-ext-copy-link" class="btn-secondary-mystic btn-full-width">
+          <span>📋</span>
+          <span id="btn-ext-copy-link-label">คัดลอกลิงก์ไปวางใน Safari / Chrome</span>
+        </button>
+        <button type="button" id="btn-ext-back-combo" class="btn-secondary-mystic btn-full-width" style="display: none;">
+          <span>←</span>
+          <span>กลับไปหน้าเลือกบริการ (ไพ่ทาโรต์ / เซียมซี)</span>
+        </button>
+      </div>
+
+      <div class="ext-guard-steps-box">
+        <div class="ext-guard-steps-title">📱 วิธีเปิดด้วยเบราว์เซอร์ภายนอก (ง่ายใน 2 วินาที):</div>
+        <div class="ext-guard-step-item" id="ext-step-ios">
+          <strong>🍎 iPhone (Safari):</strong> แตะไอคอน <strong>•••</strong> / <strong>⋮</strong> (หรือสัญลักษณ์เข็มทิศ/แชร์) มุมขวาบน/ล่างของหน้าจอ แล้วเลือก <strong>“เปิดด้วยเบราว์เซอร์เริ่มต้น (Open in Safari)”</strong> หรือกดปุ่ม <strong>“คัดลอกลิงก์”</strong> ไปเปิดในแอป <strong>Safari</strong>
+        </div>
+        <div class="ext-guard-step-item" id="ext-step-android">
+          <strong>🤖 Android (Chrome):</strong> กดปุ่มสีทอง <strong>“เปิดด้วยเบราว์เซอร์”</strong> ด้านบน หรือแตะ <strong>⋮ มุมขวาบน</strong> แล้วเลือก <strong>“เปิดด้วยแอปอื่น / Chrome”</strong>
+        </div>
+      </div>
+
+      <p class="ext-guard-code-note" id="ext-guard-code-note">✨ รหัสสิทธิ์ของคุณถูกแนบอยู่ในลิงก์แล้ว เปิดใน Safari / Chrome ก็สแกนฝ่ามือได้ทันที</p>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="mystic-toast" class="mystic-toast"></div>
 
@@ -1598,17 +1644,17 @@
   <script src="js/tarot-love-data.js"></script>
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
-  <script src="js/palm-data.js?v=20261114e"></script>
+  <script src="js/palm-data.js?v=20261114f"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261114e"></script>
+  <script src="js/palm-scanner.js?v=20261114f"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/rag-engine.js?v=20261114e"></script>
-  <script src="js/code-manager.js?v=20261114e"></script>
-  <script src="js/share-pdf.js?v=20261114e"></script>
-  <script src="js/siamsi.js?v=20261114e"></script>
-  <script src="js/app.js?v=20261114e"></script>
+  <script src="js/rag-engine.js?v=20261114f"></script>
+  <script src="js/code-manager.js?v=20261114f"></script>
+  <script src="js/share-pdf.js?v=20261114f"></script>
+  <script src="js/siamsi.js?v=20261114f"></script>
+  <script src="js/app.js?v=20261114f"></script>
 
 </body>
 </html>

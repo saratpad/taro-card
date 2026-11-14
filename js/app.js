@@ -421,6 +421,20 @@ class TarotApp {
     this.btnCheckPostsSiamsi = document.getElementById("btn-check-posts-siamsi");
     this.btnCheckPostsPalm = document.getElementById("btn-check-posts-palm");
 
+    // External Browser Guard Modal Elements
+    this.extBrowserModal = document.getElementById("external-browser-guard-modal");
+    this.extGuardAppBadge = document.getElementById("ext-guard-app-badge");
+    this.extGuardAppName = document.getElementById("ext-guard-app-name");
+    this.extGuardUrlText = document.getElementById("ext-guard-url-text");
+    this.btnExtOpenBrowser = document.getElementById("btn-ext-open-browser");
+    this.btnExtOpenBrowserLabel = document.getElementById("btn-ext-open-browser-label");
+    this.btnExtCopyLink = document.getElementById("btn-ext-copy-link");
+    this.btnExtCopyLinkLabel = document.getElementById("btn-ext-copy-link-label");
+    this.btnExtBackCombo = document.getElementById("btn-ext-back-combo");
+    this.extStepIos = document.getElementById("ext-step-ios");
+    this.extStepAndroid = document.getElementById("ext-step-android");
+    this.extGuardCodeNote = document.getElementById("ext-guard-code-note");
+
     // Card Detail Modal
     this.modal = document.getElementById("card-detail-modal");
     this.modalBody = document.getElementById("modal-card-body");
@@ -431,6 +445,38 @@ class TarotApp {
   }
 
   bindEvents() {
+    // External Browser Guard Actions (LINE / FB / IG WebView Escape)
+    if (this.btnExtCopyLink) {
+      this.btnExtCopyLink.addEventListener("click", async () => {
+        const targetUrl = this._externalGuardUrl
+          || (window.ExternalBrowserGuard ? window.ExternalBrowserGuard.buildExternalLaunchUrls(this.activeCodeObj).externalUrl : window.location.href);
+        await this._copyTextSafely(targetUrl);
+        if (this.btnExtCopyLinkLabel) {
+          this.btnExtCopyLinkLabel.textContent = "✅ คัดลอกลิงก์แล้ว! นำไปวางใน Safari / Chrome ได้เลย";
+        }
+        this.showToast("✅ คัดลอกลิงก์แล้ว เปิดแอป Safari หรือ Chrome แล้วกดวางได้เลยค่ะ");
+      });
+    }
+    if (this.btnExtOpenBrowser) {
+      this.btnExtOpenBrowser.addEventListener("click", async () => {
+        const targetUrl = this._externalGuardUrl
+          || (window.ExternalBrowserGuard ? window.ExternalBrowserGuard.buildExternalLaunchUrls(this.activeCodeObj).externalUrl : window.location.href);
+        await this._copyTextSafely(targetUrl).catch(() => {});
+        const info = window.ExternalBrowserGuard ? window.ExternalBrowserGuard.detectInAppBrowser() : { platform: "other" };
+        if (info.platform !== "android") {
+          this.showToast("💡 คัดลอกลิงก์ไว้ให้ด้วยแล้ว หากหน้าจอไม่เปิด Safari เอง แตะ ••• > เปิดด้วยเบราว์เซอร์ ได้เลยค่ะ");
+        }
+      });
+    }
+    if (this.btnExtBackCombo) {
+      this.btnExtBackCombo.addEventListener("click", () => {
+        this.hideExternalBrowserGuard();
+        if (this.activeCodeObj && this.activeCodeObj.mode === "combo") {
+          this.showComboSelector(this.activeCodeObj);
+        }
+      });
+    }
+
     // Brand logo click
     if (this.navBrand) {
       this.navBrand.addEventListener("click", (e) => {
@@ -954,7 +1000,7 @@ class TarotApp {
       return;
     }
 
-    // 3. Package 4 (palm): Go directly to Palm Reading
+    // 3. Package 4 (palm): Go directly to Palm Reading (enforcing external browser if camera still needed)
     if (codeObj.mode === "palm") {
       this.openPalmServiceForCode(codeObj);
       return;
@@ -1088,15 +1134,114 @@ class TarotApp {
     }
   }
 
+  async _copyTextSafely(text) {
+    const val = String(text || "");
+    if (!val) return false;
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(val);
+        return true;
+      }
+    } catch (_) {}
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = val;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  showExternalBrowserGuard(codeObj) {
+    if (!this.extBrowserModal || typeof window === "undefined" || !window.ExternalBrowserGuard) return;
+    const guard = window.ExternalBrowserGuard;
+    const info = guard.detectInAppBrowser();
+    guard.syncUrlForExternalOpen(codeObj || this.activeCodeObj);
+    const { externalUrl, androidChromeIntentUrl } = guard.buildExternalLaunchUrls(codeObj || this.activeCodeObj);
+    this._externalGuardUrl = externalUrl;
+
+    if (this.extGuardAppBadge) {
+      this.extGuardAppBadge.textContent = `⚠️ กำลังเปิดผ่านแอป ${info.appName || "แชท"} (กล้องถูกบล็อก)`;
+    }
+    if (this.extGuardAppName) {
+      this.extGuardAppName.textContent = info.appName || "ในแอป";
+    }
+    if (this.extGuardUrlText) {
+      this.extGuardUrlText.textContent = externalUrl;
+    }
+    if (this.btnExtOpenBrowser) {
+      if (info.platform === "android") {
+        this.btnExtOpenBrowser.setAttribute("href", androidChromeIntentUrl);
+        this.btnExtOpenBrowser.removeAttribute("target");
+      } else {
+        this.btnExtOpenBrowser.setAttribute("href", externalUrl);
+        this.btnExtOpenBrowser.setAttribute("target", "_blank");
+      }
+    }
+    if (this.btnExtOpenBrowserLabel) {
+      this.btnExtOpenBrowserLabel.textContent = info.platform === "android"
+        ? "เปิดด้วยเบราว์เซอร์ Chrome / หลักของเครื่อง"
+        : (info.platform === "ios"
+          ? "เปิดลิงก์ด้วยเบราว์เซอร์ Safari"
+          : "เปิดด้วยเบราว์เซอร์ภายนอก (Safari / Chrome)");
+    }
+    if (this.btnExtCopyLinkLabel) {
+      this.btnExtCopyLinkLabel.textContent = "คัดลอกลิงก์ไปวางใน Safari / Chrome";
+    }
+    if (this.extStepIos) {
+      this.extStepIos.classList.toggle("is-highlighted", info.platform === "ios");
+    }
+    if (this.extStepAndroid) {
+      this.extStepAndroid.classList.toggle("is-highlighted", info.platform === "android");
+    }
+    if (this.extGuardCodeNote) {
+      const codeStr = (codeObj && codeObj.code) || this.activeCode || "";
+      this.extGuardCodeNote.textContent = codeStr
+        ? `✨ รหัสสิทธิ์ (${codeStr}) แนบอยู่ในลิงก์แล้ว เมื่อเปิดใน Safari / Chrome จะเข้าหน้าสแกนลายมือได้ทันที`
+        : "✨ เปิดผ่าน Safari / Chrome เพื่อใช้งานกล้องสแกนลายมือได้เต็มประสิทธิภาพ";
+    }
+    if (this.btnExtBackCombo) {
+      const isCombo = Boolean((codeObj && codeObj.mode === "combo") || (this.activeCodeObj && this.activeCodeObj.mode === "combo"));
+      this.btnExtBackCombo.style.display = isCombo ? "inline-flex" : "none";
+    }
+
+    this.extBrowserModal.classList.add("active");
+  }
+
+  hideExternalBrowserGuard() {
+    if (this.extBrowserModal) {
+      this.extBrowserModal.classList.remove("active");
+    }
+  }
+
   openPalmServiceForCode(codeObj) {
     if (!codeObj) return;
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
     if (this.siamsiModeContainer) this.siamsiModeContainer.style.display = "none";
+
+    const palmUsed = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
+
+    // บังคับให้ลูกค้าเปิดผ่าน Safari / Chrome หากยังต้องใช้กล้องสแกนฝ่ามือและกำลังเปิดอยู่ใน LINE / แอปแชท
+    if (!palmUsed && window.ExternalBrowserGuard && window.ExternalBrowserGuard.needsExternalBrowserForPalm(codeObj)) {
+      if (this.palmModeContainer) this.palmModeContainer.style.display = "none";
+      if (window.palmApp) window.palmApp.stopCamera();
+      this.showExternalBrowserGuard(codeObj);
+      window.ExternalBrowserGuard.attemptAutoEscape(codeObj);
+      return;
+    }
+
+    this.hideExternalBrowserGuard();
     if (this.palmModeContainer) this.palmModeContainer.style.display = "block";
 
     if (window.palmApp) {
-      const palmUsed = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
       if (palmUsed) {
         window.palmApp.restoreSavedPalmReading(codeObj.palmResult, { locked: true, codeObj });
         this.showToast("🔒 สิทธิ์นี้วิเคราะห์ลายมือครบ 2 มือแล้ว (กำลังแสดงผลที่บันทึกไว้)");
