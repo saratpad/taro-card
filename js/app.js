@@ -885,6 +885,10 @@ class TarotApp {
       return;
     }
 
+    if (window.ragEngine && typeof window.ragEngine.syncFromServer === "function") {
+      await window.ragEngine.syncFromServer().catch(() => {});
+    }
+
     const res = await window.codeManager.verifyAndAccessCode(rawCode, recordAccess);
     if (!res.valid) {
       if (this.accessCodeError) {
@@ -1674,11 +1678,19 @@ class TarotApp {
       this.printMetaLine.textContent = `หมวดหมู่เฉพาะด้าน: ${domainName}${loveStatusBadge} • ลำดับหน้าไพ่: ${spreadFormula} • วันที่: ${nowStr}`;
     }
 
+    const activeTarotBook = (window.ragEngine && typeof window.ragEngine.getActiveBook === "function")
+      ? window.ragEngine.getActiveBook("tarot")
+      : null;
+
     if (this.resultsQuestionRecap) {
+      const bookBadgeHtml = activeTarotBook
+        ? `<span style="margin: 0 0.6rem; opacity:0.5;">•</span><span>📖 ตำรา: </span><strong style="color:#7dd3fc;">${activeTarotBook.title}</strong>`
+        : "";
       this.resultsQuestionRecap.innerHTML = `
         <span>✦ หมวดหมู่: </span><strong style="color:var(--gold-primary);">${domainName}${loveStatusBadge}</strong>
         <span style="margin: 0 0.6rem; opacity:0.5;">•</span>
         <span>ลำดับหน้าไพ่: </span><strong style="color:#fde68a;">${spreadFormula}</strong>
+        ${bookBadgeHtml}
       `;
     }
 
@@ -1830,7 +1842,10 @@ class TarotApp {
       verdictPlain: verdictResult.plainText,
       doAction: verdictResult.doAction,
       dontAction: verdictResult.dontAction,
-      luckyBoost: verdictResult.luckyBoost
+      luckyBoost: verdictResult.luckyBoost,
+      textbookId: verdictResult.textbookId || "",
+      textbookTitle: verdictResult.textbookTitle || "",
+      ragSynthesis: verdictResult.ragSynthesis || ""
     };
 
     if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.ensureInfoAsset === "function") {
@@ -1883,6 +1898,48 @@ class TarotApp {
     }
 
     const verdictData = this.generateConciseVerdictText(verdictType);
+    const positions = this.getPositions();
+    const activeBook = (window.ragEngine && typeof window.ragEngine.getActiveBook === "function")
+      ? window.ragEngine.getActiveBook("tarot")
+      : null;
+
+    // เชื่อมเกร็ดความรู้เฉพาะใบจากตำราไพ่ทาโรต์ที่ Admin เลือกใช้งาน
+    if (window.ragEngine && typeof window.ragEngine.retrieveCardInsight === "function" && this.interpretationsFeed) {
+      const feedCards = Array.from(this.interpretationsFeed.children || []);
+      this.drawnCards.forEach((item, idx) => {
+        const cardEl = feedCards[idx];
+        if (!cardEl || !item || !item.card) return;
+        const oldCallout = cardEl.querySelector(".rag-insight-callout");
+        if (oldCallout) oldCallout.remove();
+
+        const posTitle = positions[idx] ? (positions[idx][this.lang] || "") : "";
+        const insight = window.ragEngine.retrieveCardInsight({
+          card: item.card,
+          isReversed: item.isReversed,
+          category: this.category,
+          loveStatus: this.loveStatus,
+          positionTitle: posTitle
+        });
+        if (insight) {
+          const callout = document.createElement("div");
+          callout.className = "rag-insight-callout";
+          callout.innerHTML = `
+            <div class="rag-insight-head">📖 มุมมองจากตำรา: ${(activeBook && activeBook.title) || "ตำราไพ่ทาโรต์"}</div>
+            <p class="rag-insight-text">${insight}</p>
+          `;
+          cardEl.appendChild(callout);
+        }
+      });
+    }
+
+    const ragSynthesisObj = (window.ragEngine && typeof window.ragEngine.retrieveSpreadSynthesis === "function")
+      ? window.ragEngine.retrieveSpreadSynthesis({
+          drawnCards: this.drawnCards,
+          category: this.category,
+          loveStatus: this.loveStatus,
+          verdictType
+        })
+      : null;
 
     // รวบรวมคำแนะนำจากหน้าไพ่มาผสานรวมในส่วนคำแนะนำโดยตรง (ไม่แยกเป็นหัวข้อเข็มทิศให้สับสน)
     const cardsGuidanceSentences = this.drawnCards.map((item) => {
@@ -1892,6 +1949,14 @@ class TarotApp {
     }).filter(Boolean);
 
     const combinedDoAction = `${verdictData.doAction} โดยแนวทางสำคัญในการก้าวต่อไปคือ ${cardsGuidanceSentences.join(" • ")} ${verdictData.luckyBoost}`;
+    const ragBookHtml = (ragSynthesisObj && ragSynthesisObj.synthesisText)
+      ? `
+        <div class="rag-insight-callout" style="margin-top:0.9rem;">
+          <div class="rag-insight-head">📚 สรุปตามตำราที่ใช้งาน: ${ragSynthesisObj.bookTitle}</div>
+          <p class="rag-insight-text">${ragSynthesisObj.synthesisText}</p>
+        </div>
+      `
+      : "";
 
     if (this.verdictContent) {
       this.verdictContent.innerHTML = `
@@ -1899,6 +1964,7 @@ class TarotApp {
           <div class="verdict-sub-section-title">🔮 สรุปและวิเคราะห์ดวงชะตา</div>
           <p class="storyline-lead" style="margin-bottom:0.85rem; line-height:1.85; color:#f8fafc;">${verdictData.plainText}</p>
           <p class="storyline-deep" style="margin:0; line-height:1.85; color:#e2e8f0;">${verdictData.deepNarrative}</p>
+          ${ragBookHtml}
         </div>
       `;
     }
@@ -1928,7 +1994,10 @@ class TarotApp {
       plainText: `${verdictData.plainText} ${verdictData.deepNarrative}`,
       doAction: combinedDoAction,
       dontAction: verdictData.dontAction,
-      luckyBoost: verdictData.luckyBoost
+      luckyBoost: verdictData.luckyBoost,
+      textbookId: (activeBook && activeBook.id) || "",
+      textbookTitle: (activeBook && activeBook.title) || "",
+      ragSynthesis: (ragSynthesisObj && ragSynthesisObj.synthesisText) || ""
     };
   }
 

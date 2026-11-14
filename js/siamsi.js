@@ -26,11 +26,13 @@ class SiamsiApp {
     this._decayInterval = null;
     this.selectedAspect = "all";
 
-    // Textbook Deck state: "wongtaisin" (default) or "tanjai"
+    // Textbook Deck state: "wongtaisin" (default) or "tanjai" (ผู้ดูเลือกเองได้เสมอ)
     try {
       this.currentDeck = localStorage.getItem("mystic_siamsi_deck") || "wongtaisin";
+      this.viewerCustomRagId = localStorage.getItem("mystic_siamsi_custom_rag") || "";
     } catch (e) {
       this.currentDeck = "wongtaisin";
+      this.viewerCustomRagId = "";
     }
     this.iosMotionPermissionGranted = false;
 
@@ -52,6 +54,15 @@ class SiamsiApp {
     this.initDOM();
     this.bindEvents();
     this.applyDeck(this.currentDeck);
+    this.renderViewerCustomTextbookPicker();
+    if (typeof window !== "undefined") {
+      window.addEventListener("rag-engine-updated", () => {
+        this.renderViewerCustomTextbookPicker();
+        if (this.screenResult && this.screenResult.classList.contains("active") && this.currentSign) {
+          this.renderSiamsiSupplement(this.currentSign);
+        }
+      });
+    }
     this.setupShakeSensors();
     this.startDecayLoop();
     this.checkUrlForSign();
@@ -169,6 +180,14 @@ class SiamsiApp {
       dirMainTitle.textContent = deckName === "tanjai"
         ? (this.lang === "en" ? "Luang Por Tanjai 100 Signs Directory" : "สารบัญเซียมซีหลวงพ่อทันใจ 100 ใบ")
         : (this.lang === "en" ? "Wong Tai Sin 100 Signs Directory" : "สารบัญเซียมซีหว่องไทซิน 100 ใบ");
+    }
+
+    // Switch button label on result plaque
+    if (this.btnSwitchResultDeck) {
+      this.btnSwitchResultDeck.style.display = "inline-flex";
+      this.btnSwitchResultDeck.textContent = deckName === "tanjai"
+        ? (this.lang === "en" ? "Switch: Wong Tai Sin ⇄" : "สลับดู: หว่องไทซิน ⇄")
+        : (this.lang === "en" ? "Switch: Luang Por Tanjai ⇄" : "สลับดู: หลวงพ่อทันใจ ⇄");
     }
 
     // Cylinder Engraving Carving
@@ -297,6 +316,8 @@ class SiamsiApp {
     this.dirDeckTabTanjai = document.getElementById("dir-deck-tab-tanjai");
     this.resultDeckBadge = document.getElementById("siamsi-result-deck-badge");
     this.btnSwitchResultDeck = document.getElementById("btn-switch-result-deck");
+    this.customRagPicker = document.getElementById("siamsi-custom-rag-picker");
+    this.ragSupplementSlot = document.getElementById("siamsi-rag-supplement-slot");
 
     // iOS Motion Permission Helper
     this.iosMotionHelper = document.getElementById("ios-motion-helper");
@@ -1172,6 +1193,9 @@ class SiamsiApp {
       storyCard.style.display = (sign.story || (isEn && sign.en && sign.en.story)) ? "" : "none";
     }
 
+    // Render Optional Custom Siamsi Supplement chosen by Viewer
+    this.renderSiamsiSupplement(sign);
+
     // Render 7 Aspects Comprehensive Cards (TH or EN)
     this.renderAspectCards(sign);
 
@@ -1179,6 +1203,77 @@ class SiamsiApp {
     try {
       history.replaceState(null, "", `#siamsi=${sign.number}`);
     } catch (e) {}
+  }
+
+  renderViewerCustomTextbookPicker() {
+    if (!this.customRagPicker || !window.ragEngine || typeof window.ragEngine.getViewerEnabledSiamsiSupplements !== "function") {
+      return;
+    }
+    const supplements = window.ragEngine.getViewerEnabledSiamsiSupplements();
+    if (!supplements || supplements.length === 0) {
+      this.customRagPicker.style.display = "none";
+      this.customRagPicker.innerHTML = "";
+      return;
+    }
+
+    const validIds = new Set(supplements.map(s => s.id));
+    if (this.viewerCustomRagId && !validIds.has(this.viewerCustomRagId)) {
+      this.viewerCustomRagId = "";
+    }
+
+    this.customRagPicker.style.display = "block";
+    this.customRagPicker.innerHTML = `
+      <div class="siamsi-rag-picker-title">📚 เลือกตำราวิเคราะห์เสริมเพิ่มเติม (ผู้ดูเลือกเองได้):</div>
+      <div class="siamsi-rag-chips">
+        <button type="button" class="siamsi-rag-chip ${!this.viewerCustomRagId ? "active" : ""}" data-siamsi-rag="">
+          ✨ เฉพาะตำราหลัก 100 ใบ
+        </button>
+        ${supplements.map(book => `
+          <button type="button" class="siamsi-rag-chip ${this.viewerCustomRagId === book.id ? "active" : ""}" data-siamsi-rag="${book.id}">
+            📖 ${book.title}
+          </button>
+        `).join("")}
+      </div>
+    `;
+
+    this.customRagPicker.querySelectorAll("[data-siamsi-rag]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        this.viewerCustomRagId = btn.getAttribute("data-siamsi-rag") || "";
+        try {
+          localStorage.setItem("mystic_siamsi_custom_rag", this.viewerCustomRagId);
+        } catch (_) {}
+        this.renderViewerCustomTextbookPicker();
+        if (this.currentSign) {
+          this.renderSiamsiSupplement(this.currentSign);
+        }
+      });
+    });
+  }
+
+  renderSiamsiSupplement(sign) {
+    if (!this.ragSupplementSlot) return;
+    if (!sign || !this.viewerCustomRagId || !window.ragEngine || typeof window.ragEngine.retrieveSiamsiSupplement !== "function") {
+      this.ragSupplementSlot.style.display = "none";
+      this.ragSupplementSlot.innerHTML = "";
+      return;
+    }
+    const sup = window.ragEngine.retrieveSiamsiSupplement({
+      sign,
+      deck: this.currentDeck,
+      customBookId: this.viewerCustomRagId
+    });
+    if (!sup || !sup.text) {
+      this.ragSupplementSlot.style.display = "none";
+      this.ragSupplementSlot.innerHTML = "";
+      return;
+    }
+    this.ragSupplementSlot.style.display = "block";
+    this.ragSupplementSlot.innerHTML = `
+      <div class="rag-insight-callout" style="margin: 1rem 0;">
+        <div class="rag-insight-head">📖 มุมมองจากตำราเสริมที่ท่านเลือก: ${sup.bookTitle}</div>
+        <p class="rag-insight-text">${sup.text}</p>
+      </div>
+    `;
   }
 
   renderAspectCards(sign) {
@@ -1541,9 +1636,15 @@ ${poem}
 
   enterWithCustomerCode(codeObj) {
     if (!codeObj) return;
-    if (codeObj.lockedCategory === "wongtaisin" || codeObj.lockedCategory === "tanjai") {
+    // ให้ผู้ดูสามารถเลือกตำราเซียมซีเองได้เสมอ (ใช้ lockedCategory เฉพาะกรณีผู้ดูยังไม่เคยเลือกไว้)
+    let savedViewerDeck = "";
+    try {
+      savedViewerDeck = localStorage.getItem("mystic_siamsi_deck") || "";
+    } catch (_) {}
+    if (!savedViewerDeck && (codeObj.lockedCategory === "wongtaisin" || codeObj.lockedCategory === "tanjai")) {
       this.setDeck(codeObj.lockedCategory);
     }
+    this.renderViewerCustomTextbookPicker();
 
     const savedSiamsi = codeObj.siamsiResult || (codeObj.readingResult && codeObj.readingResult.mode === "siamsi" ? codeObj.readingResult : null);
     const siamsiUsed = (codeObj.siamsiDrawCount || 0) >= 1 || (codeObj.mode === "siamsi" && codeObj.drawCount >= 1);
@@ -1614,6 +1715,7 @@ ${poem}
       this.seekerNameInput.value = this.app.seekerName;
     }
 
+    this.renderViewerCustomTextbookPicker();
     this.checkIosMotionBanner();
     this.startListeningMotion();
   }

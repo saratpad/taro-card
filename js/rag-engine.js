@@ -213,212 +213,838 @@ class BrandThemeEngine {
   }
 }
 
+const STORAGE_KEY_RAG_CUSTOM = "siamsi_tarot_rag_custom_v2";
+const STORAGE_KEY_RAG_ACTIVE = "siamsi_tarot_rag_active_v1";
+
+const DISCIPLINE_META = {
+  tarot: {
+    id: "tarot",
+    icon: "🔮",
+    label: "ไพ่ทาโรต์ (Tarot 3-Card)",
+    shortLabel: "ไพ่ทาโรต์",
+    controlMode: "admin",
+    defaultBookId: "tarot_classic_rw"
+  },
+  palm: {
+    id: "palm",
+    icon: "✋",
+    label: "หัตถศาสตร์ / สแกนลายมือ",
+    shortLabel: "สแกนลายมือ",
+    controlMode: "admin",
+    defaultBookId: "palm_thai_classical"
+  },
+  siamsi: {
+    id: "siamsi",
+    icon: "🎋",
+    label: "เซียมซีศักดิ์สิทธิ์ (Siamsi)",
+    shortLabel: "เซียมซี",
+    controlMode: "viewer",
+    defaultBookId: "siamsi_wongtaisin"
+  }
+};
+
+const DEFAULT_ACTIVE_BOOKS = {
+  tarot: "tarot_classic_rw",
+  palm: "palm_thai_classical",
+  siamsi: "viewer_choice"
+};
+
+function buildBuiltinTextbooks() {
+  const baseTs = 1731542400000;
+  return [
+    // =========================================================================
+    // 1. TAROT TEXTBOOKS (คลังตำราไพ่ทาโรต์ - Admin เลือกใช้ได้)
+    // =========================================================================
+    {
+      id: "tarot_classic_rw",
+      discipline: "tarot",
+      targetScope: "tarot",
+      isBuiltIn: true,
+      title: "คัมภีร์ทาโรต์มาตรฐาน Rider-Waite & เคล็ดลับอ่าน 3 ตำแหน่ง",
+      source: "ตำราหลักในระบบ (Standard Classic)",
+      sourceType: "Built-in Standard",
+      styleTag: "มาตรฐาน Rider-Waite • ชัดเจน ตรงไปตรงมา",
+      description: "ตีความตามสัญลักษณ์ Rider-Waite ดั้งเดิม เชื่อมโยงลำดับเหตุและผลของไพ่ 3 ตำแหน่งอย่างสมดุล",
+      uploadedAt: baseTs,
+      createdAt: baseTs,
+      content: `[ความรัก คนโสด] ไพ่ใบที่ 1 (อดีต) สะท้อนบทเรียนหัวใจที่ผ่านมา ไพ่ใบที่ 2 (ปัจจุบัน) แสดงเสน่ห์และโอกาสที่กำลังเปิดรับ และไพ่ใบที่ 3 (แนวโน้มในอนาคต) ชี้ทิศทางคนที่กำลังจะก้าวเข้ามาในชีวิต
+[ความรัก ไม่โสด/มีคนในใจ] ไพ่ใบที่ 1 (ความรู้สึกเรา) แสดงความคาดหวังในใจคุณ ไพ่ใบที่ 2 (ความรู้สึกอีกฝ่าย) เปิดมุมมองความรู้สึกแท้จริงของอีกฝ่าย และไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือบทสรุปการพัฒนาความสัมพันธ์
+[การงาน] ดูพัฒนาการจากรากฐานเดิม (ใบที่ 1) สู่ภารกิจปัจจุบัน (ใบที่ 2) และผลลัพธ์ความสำเร็จหรือจุดเปลี่ยนที่ต้องเตรียมรับมือ (ใบที่ 3)
+[การเงิน] ใช้โครงสร้าง เหตุ (พฤติกรรมการเงิน) ➔ ผล (สภาพคล่องปัจจุบัน) ➔ สรุป (โอกาสรับทรัพย์และความมั่นคงระยะถัดไป)
+[สุขภาพ] ประเมินสมดุลพลังงานกายใจจากพฤติกรรมสะสมเดิม เพื่อปรับการพักผ่อนและดูแลตัวเองให้ถูกจุด`
+    },
+    {
+      id: "tarot_modern_psych",
+      discipline: "tarot",
+      targetScope: "tarot",
+      isBuiltIn: true,
+      title: "ตำราไพ่ทาโรต์จิตวิทยาเชิงลึก & Mindset ยุคใหม่",
+      source: "ตำราหลักในระบบ (Modern Psychology)",
+      sourceType: "Built-in Psychology",
+      styleTag: "วิเคราะห์จิตใจ • เหตุ-ผลเชิงพฤติกรรม • พัฒนาตนเอง",
+      description: "เจาะลึกสภาวะอารมณ์ กลไกจิตใต้สำนึก รูปแบบความผูกพัน (Attachment) และการตัดสินใจเชิงกลยุทธ์ที่ใช้ได้จริงในชีวิตประจำวัน",
+      uploadedAt: baseTs - 1000,
+      createdAt: baseTs - 1000,
+      content: `[ความรัก คนโสด] ถอดรหัสรูปแบบจิตใต้สำนึกในการเลือกคู่ (Pattern Recognition) ช่วยให้รู้ว่าคุณกำลังดึงดูดคนแบบใด และควรปรับ Mindset จุดไหนเพื่อเจอความรักที่ดีต่อใจ
+[ความรัก ไม่โสด/มีคนในใจ] วิเคราะห์ภาษาความรักและกลไกป้องกันตัวเองของทั้งสองฝ่าย (Emotional Triggers) เพื่อสื่อสารอย่างเข้าใจแทนการคาดเดา
+[การงาน] เน้นภาวะผู้นำ การจัดการความเครียดจากงาน (Burnout Prevention) และจุดแข็งเชิงทักษะที่ควรหยิบมาใช้ต่อรอง
+[การเงิน] ถอดพฤติกรรมการใช้เงินตามอารมณ์ (Emotional Spending) สู่การวางระบบการเงินที่สร้างความอุ่นใจระยะยาว
+[สุขภาพ] ดูสัญญาณความล้าทางจิตใจที่ส่งผลต่อร่างกาย พร้อมแนวทางปรับจังหวะชีวิตและการพักฟื้นแบบ Mind-Body Balance`
+    },
+    {
+      id: "tarot_karma_spiritual",
+      discipline: "tarot",
+      targetScope: "tarot",
+      isBuiltIn: true,
+      title: "ตำราทาโรต์สายมู เคล็ดกรรม วาสนา & พิธีเสริมดวง",
+      source: "ตำราหลักในระบบ (Karma & Spiritual)",
+      sourceType: "Built-in Spiritual",
+      styleTag: "กรรมลิขิต • บุญวาสนา • เคล็ดทำบุญเสริมชะตา",
+      description: "ตีความหน้าไพ่ผ่านแรงอธิษฐาน บุพเพสันนิวาส จังหวะวิบากกรรม และแนะนำเคล็ดทำบุญแก้ชะตาให้เข้ากับพลังงานไพ่ที่เปิดได้",
+      uploadedAt: baseTs - 2000,
+      createdAt: baseTs - 2000,
+      content: `[ความรัก คนโสด] อ่านจังหวะบุพเพสันนิวาสและแรงดึงดูดทางจิตวิญญาณ พร้อมเคล็ดไหว้ขอพรเมตตามหานิยมเพื่อเปิดทางให้คู่บุญพบกันไวขึ้น
+[ความรัก ไม่โสด/มีคนในใจ] ตรวจกระแสกรรมสัมพันธ์และความปรองดองระหว่างสองดวงใจ แนะนำการทำบุญร่วมกันหรือถวายแสงสว่างลดแรงกระทบกระทั่ง
+[การงาน] เสริมบารมีเมตตาจากผู้ใหญ่และสิ่งศักดิ์สิทธิ์ประจำสายงาน แนะนำวันมงคลและวิธีแก้เคล็ดอุปสรรคติดขัด
+[การเงิน] เปิดกระแสโชคลาภและทานบารมี ตามหลักธาตุของไพ่ทั้ง 3 ใบ เพื่อลดรายจ่ายรั่วไหลและหนุนโภคทรัพย์
+[สุขภาพ] ปรับธาตุในกายให้สมดุล สวดมนต์ทำสมาธิแผ่เมตตาให้เจ้ากรรมนายเวร เพื่อความเบาสบายใจและฟื้นพลังชีวิต`
+    },
+
+    // =========================================================================
+    // 2. PALM TEXTBOOKS (คลังตำราหัตถศาสตร์ / สแกนลายมือ - Admin เลือกใช้ได้)
+    // =========================================================================
+    {
+      id: "palm_thai_classical",
+      discipline: "palm",
+      targetScope: "palm",
+      isBuiltIn: true,
+      title: "คัมภีร์หัตถศาสตร์ไทย-จีนโบราณ (มือซ้ายกรรมเดิม • มือขวาปัจจุบัน)",
+      source: "ตำราหลักในระบบ (Classical Thai-Chinese)",
+      sourceType: "Built-in Classical Palmistry",
+      styleTag: "เทียบซ้าย-ขวา • บุญบารมีเดิม • เสริมมงคลชีวิต",
+      description: "ผสานตำราหัตถศาสตร์ไทยและจีนโบราณ เปรียบเทียบวาสนาเดิมบนมือซ้ายกับการลงมือสร้างปัจจุบันบนมือขวา พร้อมเคล็ดเสริมบารมี",
+      uploadedAt: baseTs,
+      createdAt: baseTs,
+      content: `[สุขภาพ และพลังชีวิต] ดูความสมบูรณ์ของเส้นชีวิตและเนินศุกร์ตามตำราไทย-จีน เพื่อวัดทุนธาตุไฟและแรงกายที่ติดตัวมาแต่กำเนิด
+[ความคิด การงาน และการตัดสินใจ] พิจารณาเส้นสมองร่วมกับเนินพฤหัสและเนินเสาร์ เพื่อชี้แนวทางอาชีพที่ถูกโฉลกและมีผู้ใหญ่อุปถัมภ์
+[ความรัก และความสัมพันธ์] วิเคราะห์เส้นหัวใจจากขอบมือถึงโคนนิ้ว เพื่อบอกลักษณะคู่บุญและวิธีประคับประคองครอบครัวให้ร่มเย็น
+[การเงิน โอกาส และความมั่นคง] เจาะจงเส้นวาสนาและเส้นอาทิตย์ในฐานะเครื่องหมายโภคทรัพย์ ยศถาบรรดาศักดิ์ และโชคลาภจากการขยันทำมาหากิน
+[คำแนะนำที่ใช้ได้จริง] แนะนำจังหวะชีวิตและการทำบุญเสริมบารมีให้รับกับรูปเนินและเส้นลายมือทั้ง 2 ข้าง`
+    },
+    {
+      id: "palm_western_chirology",
+      discipline: "palm",
+      targetScope: "palm",
+      isBuiltIn: true,
+      title: "ตำราหัตถศาสตร์สากล & จิตวิทยาพฤติกรรม (Modern Chirology)",
+      source: "ตำราหลักในระบบ (Behavioral Chirology)",
+      sourceType: "Built-in Chirology",
+      styleTag: "วิเคราะห์พฤติกรรม • ศักยภาพสมอง • วิทยาศาสตร์ชีวิต",
+      description: "แปลความเส้นลายมือและเนินฝ่ามือเชิงจิตวิทยาพฤติกรรม สไตล์การคิด การสื่อสาร และการบริหารพลังงานให้เหมาะกับคนทำงานยุคใหม่",
+      uploadedAt: baseTs - 1000,
+      createdAt: baseTs - 1000,
+      content: `[สุขภาพ และพลังชีวิต] ประเมินอัตราการฟื้นตัวของร่างกายและความสมดุลระบบประสาทจากความโค้งของเส้นชีวิตและการใช้พลังงาน
+[ความคิด การงาน และการตัดสินใจ] จำแนกโครงสร้างความคิดเชิงตรรกะ (เส้นตรง) กับความคิดสร้างสรรค์/เห็นอกเห็นใจผู้อื่น (เส้นโค้งสู่เนินจันทร์)
+[ความรัก และความสัมพันธ์] อธิบายรูปแบบการแสดงออกทางอารมณ์ ความต้องการพื้นที่ส่วนตัว และการสื่อสารกับคนใกล้ตัวตามเส้นหัวใจ
+[การเงิน โอกาส และความมั่นคง] วิเคราะห์ความถนัดด้านการสร้างคุณค่า วินัยการจัดการ และโอกาสเติบโตทางอาชีพจากความต่อเนื่องของเส้นวาสนา
+[คำแนะนำที่ใช้ได้จริง] เสนอวิธีปรับนิสัยและตารางชีวิตประจำวันที่วัดผลได้จริงตามโครงสร้างสมองและพลังงานมือ`
+    },
+    {
+      id: "palm_wealth_career",
+      discipline: "palm",
+      targetScope: "palm",
+      isBuiltIn: true,
+      title: "ตำราลายมือเศรษฐี เส้นวาสนา การงาน และโอกาสทางธุรกิจ",
+      source: "ตำราหลักในระบบ (Wealth & Career Focus)",
+      sourceType: "Built-in Business Palmistry",
+      styleTag: "เจาะลึกการเงิน • เส้นวาสนา & อาทิตย์ • จังหวะธุรกิจ",
+      description: "เน้นวิเคราะห์เส้นวาสนา เส้นอาทิตย์ เส้นพุธ และเนินสำคัญที่ชี้จุดทำเงิน เครดิตความน่าเชื่อถือ และการต่อยอดธุรกิจ",
+      uploadedAt: baseTs - 2000,
+      createdAt: baseTs - 2000,
+      content: `[สุขภาพ และพลังชีวิต] ประเมินความอึดและขีดความสามารถในการลุยงานใหญ่โดยไม่หมดไฟระหว่างทาง
+[ความคิด การงาน และการตัดสินใจ] เน้นกลยุทธ์การตัดสินใจ จังหวะขยายงาน การบริหารคน และบทบาทผู้นำหรือผู้เชี่ยวชาญเฉพาะทาง
+[ความรัก และความสัมพันธ์] อ่านความสมดุลระหว่างเวลาการทำงานกับการดูแลคู่ชีวิต รวมถึงเกณฑ์ได้คู่คิดคู่สร้างคู่สมหนุนฐานะ
+[การเงิน โอกาส และความมั่นคง] ถอดรหัสจุดเริ่มต้นเส้นวาสนา (ฐานมือ vs เนินจันทร์) ร่วมกับเส้นอาทิตย์และเส้นพุธ เพื่อชี้ช่องทางรับทรัพย์ที่เหมาะที่สุด
+[คำแนะนำที่ใช้ได้จริง] โฟกัสเคล็ดลับการสร้างเครดิต การเจรจาต่อรอง และการเก็บออมต่อยอดทรัพย์สินอย่างเป็นรูปธรรม`
+    },
+
+    // =========================================================================
+    // 3. SIAMSI TEXTBOOKS (คลังตำราเซียมซี - ผู้ดูเลือกเองได้หน้าเว็บ)
+    // =========================================================================
+    {
+      id: "siamsi_wongtaisin",
+      discipline: "siamsi",
+      targetScope: "siamsi",
+      deckKey: "wongtaisin",
+      isBuiltIn: true,
+      enabledForViewer: true,
+      title: "ตำราเซียมซีหว่องไทซิน ต้นฉบับ 100 ใบ (เบอร์ 00–99)",
+      source: "ตำราหลักในระบบ (Wong Tai Sin)",
+      sourceType: "Built-in 100-Stick Deck",
+      styleTag: "บทกลอนจีนโบราณ • ประวัติตำนาน • พยากรณ์ 7 ด้าน",
+      description: "คัมภีร์เซียมซีศาลเจ้าหว่องไทซินครบ 100 ใบ (00-99) พร้อมบทกลอนจีน-ไทย ตำนานเปรียบเทียบในอดีต และคำทำนายครบ 7 ด้าน",
+      uploadedAt: baseTs,
+      createdAt: baseTs,
+      content: `[ภาพรวมตำราเซียมซีหว่องไทซิน] ตำราเซียมซีศักดิ์สิทธิ์สายเต๋าจากฮ่องกง โดดเด่นเรื่องบทกลอนอุปมาที่แม่นยำ ระดับโชคชะตา และเรื่องราวบุคคลในประวัติศาสตร์จีน
+[การเลือกใช้หน้าเว็บ] ผู้ดูสามารถกดเลือกสลับระหว่างตำรา "หว่องไทซิน" และ "หลวงพ่อทันใจ" ได้โดยตรงทั้งบนแท่นบูชา สารบัญ และหน้าแสดงผลคำทำนาย`
+    },
+    {
+      id: "siamsi_tanjai",
+      discipline: "siamsi",
+      targetScope: "siamsi",
+      deckKey: "tanjai",
+      isBuiltIn: true,
+      enabledForViewer: true,
+      title: "ตำราเซียมซีหลวงพ่อทันใจ ต้นฉบับ 100 ใบ (เบอร์ 01–100)",
+      source: "ตำราหลักในระบบ (Luang Por Tanjai)",
+      sourceType: "Built-in 100-Stick Deck",
+      styleTag: "ตำราศักดิ์สิทธิ์ไทย-ล้านนา • คำทำนายตรงประเด็น 7 ด้าน",
+      description: "คัมภีร์เซียมซีหลวงพ่อทันใจ 100 ใบ คำทำนายชัดเจนตรงประเด็นในภาษาเข้าใจง่าย พร้อมคำแนะนำการอธิษฐานขอพรให้สำเร็จไว",
+      uploadedAt: baseTs - 1000,
+      createdAt: baseTs - 1000,
+      content: `[ภาพรวมตำราเซียมซีหลวงพ่อทันใจ] โดดเด่นเรื่องความเมตตา คำทำนายกระชับตรงจุดในเรื่องอาชีพ การเงิน ความรัก สุขภาพ การเรียน และครอบครัว
+[การเลือกใช้หน้าเว็บ] ผู้ดูสามารถกดเลือกตำราเซียมซีหลวงพ่อทันใจได้เองอย่างอิสระบนหน้าแท่นบูชาเซียมซี`
+    }
+  ].map(book => ({
+    ...book,
+    chunks: RAGKnowledgeEngine.splitTextIntoChunks(book.content)
+  }));
+}
+
 /**
  * ระบบคลังความรู้ตำราพยากรณ์ (NotebookLM / RAG Knowledge Base Engine)
+ * แยกคลังตำราตาม 3 ศาสตร์หลัก (ไพ่ทาโรต์, หัตถศาสตร์/ลายมือ, เซียมซี)
+ * - ไพ่ทาโรต์ & สแกนลายมือ: Admin เลือกตั้งค่าได้ว่าศาสตร์นี้ใช้ตำราใด
+ * - เซียมซี: ผู้ดู (Customer/Viewer) เป็นผู้เลือกตำราเองได้หน้าเว็บ
  */
 class RAGKnowledgeEngine {
   constructor() {
-    this.documents = this._loadDocuments();
-    this._ensureDefaultCorpus();
+    this.customDocuments = this._loadCustomDocuments();
+    this.activeBooks = this._loadActiveBooks();
+    this._syncPromise = null;
+    this.readyPromise = this.syncFromServer();
   }
 
-  _loadDocuments() {
+  static splitTextIntoChunks(text) {
+    if (!text) return [];
+    return String(text)
+      .split(/\n{2,}|(?=^#{1,3}\s)|(?=^\[)/m)
+      .map(s => s.trim())
+      .filter(s => s.length >= 12);
+  }
+
+  _splitIntoChunks(text) {
+    return RAGKnowledgeEngine.splitTextIntoChunks(text);
+  }
+
+  _normalizeCustomDoc(doc) {
+    if (!doc) return null;
+    const rawDisc = doc.discipline || doc.targetScope || "tarot";
+    const discipline = ["tarot", "palm", "siamsi"].includes(rawDisc) ? rawDisc : "tarot";
+    const chunks = Array.isArray(doc.chunks) && doc.chunks.length > 0
+      ? doc.chunks
+      : this._splitIntoChunks(doc.content || "");
+    return {
+      ...doc,
+      isBuiltIn: false,
+      discipline,
+      targetScope: discipline,
+      enabledForViewer: doc.enabledForViewer !== false,
+      source: doc.source || doc.sourceType || "NotebookLM Upload",
+      sourceType: doc.sourceType || doc.source || "NotebookLM Upload",
+      uploadedAt: doc.uploadedAt || doc.createdAt || Date.now(),
+      chunks,
+      chunksCount: chunks.length
+    };
+  }
+
+  _loadCustomDocuments() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY_RAG);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
+      const rawV2 = localStorage.getItem(STORAGE_KEY_RAG_CUSTOM);
+      if (rawV2) {
+        const parsed = JSON.parse(rawV2);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter(d => d && d.id && d.id !== "doc_default_master_tarot" && !d.isBuiltIn)
+            .map(d => this._normalizeCustomDoc(d))
+            .filter(Boolean);
+        }
+      }
+      // Migrate legacy v1 custom uploads (skip legacy hardcoded default)
+      const rawV1 = localStorage.getItem(STORAGE_KEY_RAG);
+      if (rawV1) {
+        const parsedV1 = JSON.parse(rawV1);
+        if (Array.isArray(parsedV1)) {
+          const migrated = parsedV1
+            .filter(d => d && d.id && d.id !== "doc_default_master_tarot")
+            .map(d => this._normalizeCustomDoc(d))
+            .filter(Boolean);
+          if (migrated.length > 0) {
+            localStorage.setItem(STORAGE_KEY_RAG_CUSTOM, JSON.stringify(migrated));
+          }
+          return migrated;
+        }
       }
     } catch (e) {}
     return [];
   }
 
-  _saveDocuments(docs) {
-    this.documents = docs;
+  _saveCustomDocuments(docs) {
+    const cleaned = (docs || [])
+      .filter(d => d && !d.isBuiltIn)
+      .map(d => this._normalizeCustomDoc(d))
+      .filter(Boolean);
+    this.customDocuments = cleaned;
     try {
-      localStorage.setItem(STORAGE_KEY_RAG, JSON.stringify(docs));
+      localStorage.setItem(STORAGE_KEY_RAG_CUSTOM, JSON.stringify(cleaned));
     } catch (e) {}
   }
 
-  _ensureDefaultCorpus() {
-    if (this.documents.length > 0) return;
-    const now = Date.now();
-    const content = `[ความรัก คนโสด] เมื่อไพ่ใบที่ 1 (อดีต) เป็นไพ่ธาตุถ้วยหรือไพ่เมเจอร์ใหญ่ สะท้อนว่าหัวใจผ่านบทเรียนสำคัญที่ทำให้รู้จักคุณค่าของตัวเองมากขึ้น ไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือตัวชี้วัดจังหวะเวลาที่คนใหม่จะก้าวเข้ามา
-[ความรัก ไม่โสด/มีคนในใจ] ไพ่ใบที่ 1 (ความรู้สึกเรา) แทนท่าทีและสิ่งที่คุณคาดหวังในใจ ส่วนไพ่ใบที่ 2 (ความรู้สึกอีกฝ่าย) แทนความรู้สึกแท้จริงที่เขาอาจไม่ได้พูดออกมาตรงๆ และไพ่ใบที่ 3 (แนวโน้มในอนาคต) คือบทสรุปทิศทางความสัมพันธ์ว่าจะพัฒนาไปในทิศทางใด
-[การงาน] การเรียงแบบ อดีต ➔ ปัจจุบัน ➔ อนาคต ให้ดูน้ำหนักที่ไพ่ใบที่ 2 (สถานการณ์ปัจจุบัน) ควบคู่กับไพ่ใบที่ 3 (อนาคต) เพื่อวางกลยุทธ์รับมือและคว้าโอกาสสำคัญ
-[การเงิน] ตำรา เหตุ ➔ ผล ➔ สรุป เน้นวิเคราะห์ต้นเหตุการใช้จ่ายในใบที่ 1 เพื่อแก้สภาพคล่องในใบที่ 2 และเปิดทางรับโชคลาภหรือผลตอบแทนในใบที่ 3
-[สุขภาพ] ตำรา เหตุ ➔ ผล ➔ สรุป ให้ดูสมดุลธาตุของไพ่ทั้ง 3 ใบ เพื่อปรับพฤติกรรมการพักผ่อนและฟื้นฟูพลังชีวิต`;
-    const chunks = this._splitIntoChunks(content);
-    const starterDocs = [
-      {
-        id: "doc_default_master_tarot",
-        title: "คัมภีร์เคล็ดลับการอ่านไพ่ 3 ใบตามตำแหน่ง (อดีต/ความรู้สึกเรา/เหตุ • ปัจจุบัน/ความรู้สึกอีกฝ่าย/ผล • อนาคต/สรุป)",
-        source: "NotebookLM Summary",
-        sourceType: "NotebookLM Summary",
-        discipline: "tarot",
-        targetScope: "tarot",
-        uploadedAt: now,
-        createdAt: now,
-        chunks,
-        chunksCount: chunks.length,
-        content
-      }
-    ];
-    this._saveDocuments(starterDocs);
+  _normalizeActiveMap(raw) {
+    const src = (raw && typeof raw === "object") ? raw : {};
+    return {
+      tarot: (typeof src.tarot === "string" && src.tarot.trim()) ? src.tarot.trim() : DEFAULT_ACTIVE_BOOKS.tarot,
+      palm: (typeof src.palm === "string" && src.palm.trim()) ? src.palm.trim() : DEFAULT_ACTIVE_BOOKS.palm,
+      siamsi: "viewer_choice"
+    };
   }
 
-  getAllDocuments() {
-    return this.documents.map(d => ({
-      ...d,
-      chunks: Array.isArray(d.chunks) ? d.chunks : this._splitIntoChunks(d.content),
-      discipline: d.discipline || d.targetScope || "tarot",
-      source: d.source || d.sourceType || "NotebookLM",
-      uploadedAt: d.uploadedAt || d.createdAt || Date.now()
+  _loadActiveBooks() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_RAG_ACTIVE);
+      if (raw) {
+        return this._normalizeActiveMap(JSON.parse(raw));
+      }
+    } catch (e) {}
+    return { ...DEFAULT_ACTIVE_BOOKS };
+  }
+
+  _saveActiveBooks(map) {
+    const normalized = this._normalizeActiveMap(map);
+    this.activeBooks = normalized;
+    try {
+      localStorage.setItem(STORAGE_KEY_RAG_ACTIVE, JSON.stringify(normalized));
+    } catch (e) {}
+    return normalized;
+  }
+
+  _notifyUpdated() {
+    if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+      try {
+        window.dispatchEvent(new CustomEvent("rag-engine-updated", {
+          detail: { activeBooks: this.getActiveBooksMap() }
+        }));
+      } catch (_) {}
+    }
+  }
+
+  async _apiJson(url, options = {}) {
+    if (typeof fetch !== "function") return null;
+    try {
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        },
+        signal: controller.signal
+      });
+      clearTimeout(tid);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async syncFromServer() {
+    if (this._syncPromise) return this._syncPromise;
+    this._syncPromise = (async () => {
+      const data = await this._apiJson("/api/rag-docs");
+      if (data && Array.isArray(data.docs)) {
+        const serverCustom = data.docs
+          .filter(d => d && d.id && d.id !== "doc_default_master_tarot" && !d.isBuiltIn)
+          .map(d => this._normalizeCustomDoc(d))
+          .filter(Boolean);
+        // Merge server custom docs cleanly (server is authoritative when available)
+        if (serverCustom.length > 0 || this.customDocuments.length === 0) {
+          this._saveCustomDocuments(serverCustom);
+        }
+      }
+      if (data && data.activeBooks && typeof data.activeBooks === "object") {
+        this._saveActiveBooks(data.activeBooks);
+      }
+      this._notifyUpdated();
+      this._syncPromise = null;
+      return { docs: this.getAllDocuments(), activeBooks: this.getActiveBooksMap() };
+    })();
+    return this._syncPromise;
+  }
+
+  getDisciplineMeta(discipline) {
+    return DISCIPLINE_META[discipline] || DISCIPLINE_META.tarot;
+  }
+
+  getAllDisciplinesMeta() {
+    return [DISCIPLINE_META.tarot, DISCIPLINE_META.palm, DISCIPLINE_META.siamsi];
+  }
+
+  getBuiltInDocuments(discipline = null) {
+    const all = buildBuiltinTextbooks();
+    return discipline ? all.filter(b => b.discipline === discipline) : all;
+  }
+
+  getDocumentsByDiscipline(discipline = "tarot") {
+    const disc = ["tarot", "palm", "siamsi"].includes(discipline) ? discipline : "tarot";
+    const builtIns = this.getBuiltInDocuments(disc);
+    const custom = this.customDocuments.filter(d => d.discipline === disc || d.targetScope === "all");
+    const activeMap = this.getActiveBooksMap();
+    const activeId = activeMap[disc];
+
+    const combined = [...custom, ...builtIns];
+    return combined.map(doc => ({
+      ...doc,
+      chunks: Array.isArray(doc.chunks) && doc.chunks.length > 0 ? doc.chunks : this._splitIntoChunks(doc.content || ""),
+      isActive: disc === "siamsi"
+        ? (doc.isBuiltIn || doc.enabledForViewer !== false)
+        : (doc.id === activeId)
     }));
   }
 
-  /**
-   * แบ่งเนื้อหาสรุปจาก NotebookLM ออกเป็นย่อหน้า/หัวข้อย่อย (Chunks) เพื่อค้นหาด้วย RAG
-   */
-  _splitIntoChunks(text) {
-    if (!text) return [];
-    return String(text)
-      .split(/\n{2,}|(?=^#{1,3}\s)|(?=^\[)/m)
-      .map(s => s.trim())
-      .filter(s => s.length >= 15);
+  getAllDocuments() {
+    return [
+      ...this.getDocumentsByDiscipline("tarot"),
+      ...this.getDocumentsByDiscipline("palm"),
+      ...this.getDocumentsByDiscipline("siamsi")
+    ];
   }
 
-  addDocument({ title, content, source = "NotebookLM", sourceType = "NotebookLM", discipline = "tarot", targetScope = "all" }) {
+  getActiveBooksMap() {
+    const map = this._normalizeActiveMap(this.activeBooks);
+    // Validate tarot & palm point to existing docs
+    for (const disc of ["tarot", "palm"]) {
+      const builtIns = this.getBuiltInDocuments(disc);
+      const custom = this.customDocuments.filter(d => d.discipline === disc || d.targetScope === "all");
+      const allIds = new Set([...custom, ...builtIns].map(d => d.id));
+      if (!allIds.has(map[disc])) {
+        map[disc] = DISCIPLINE_META[disc].defaultBookId;
+      }
+    }
+    return map;
+  }
+
+  getActiveBook(discipline = "tarot") {
+    const disc = ["tarot", "palm", "siamsi"].includes(discipline) ? discipline : "tarot";
+    const docs = this.getDocumentsByDiscipline(disc);
+
+    if (disc === "siamsi") {
+      let viewerDeck = "wongtaisin";
+      try {
+        viewerDeck = localStorage.getItem("mystic_siamsi_deck") || "wongtaisin";
+      } catch (_) {}
+      const targetId = viewerDeck === "tanjai" ? "siamsi_tanjai" : "siamsi_wongtaisin";
+      return docs.find(d => d.id === targetId) || docs[0] || null;
+    }
+
+    const activeId = this.getActiveBooksMap()[disc];
+    return docs.find(d => d.id === activeId) || docs.find(d => d.id === DISCIPLINE_META[disc].defaultBookId) || docs[0] || null;
+  }
+
+  getViewerEnabledSiamsiSupplements() {
+    return this.customDocuments
+      .filter(d => d.discipline === "siamsi" && d.enabledForViewer !== false)
+      .map(d => ({ ...d }));
+  }
+
+  async setActiveBook(discipline, bookId) {
+    if (discipline === "siamsi") {
+      throw new Error("ศาสตร์เซียมซีเปิดให้ผู้ดูเลือกตำราเองได้หน้าเว็บ ไม่สามารถล็อกตำราจากหลังบ้าน");
+    }
+    if (discipline !== "tarot" && discipline !== "palm") {
+      throw new Error("ศาสตร์พยากรณ์ไม่ถูกต้อง");
+    }
+    const docs = this.getDocumentsByDiscipline(discipline);
+    const target = docs.find(d => d.id === bookId);
+    if (!target) {
+      throw new Error("ไม่พบตำราที่เลือกในคลังศาสตร์นี้");
+    }
+
+    const updated = this._saveActiveBooks({
+      ...this.activeBooks,
+      [discipline]: bookId
+    });
+
+    await this._apiJson("/api/rag-active", {
+      method: "POST",
+      body: JSON.stringify({ discipline, bookId })
+    });
+
+    this._notifyUpdated();
+    return updated;
+  }
+
+  async setSiamsiDocViewerEnabled(docId, enabled) {
+    const docs = this._loadCustomDocuments();
+    const idx = docs.findIndex(d => d.id === docId);
+    if (idx === -1) return null;
+    docs[idx].enabledForViewer = Boolean(enabled);
+    this._saveCustomDocuments(docs);
+
+    await this._apiJson(`/api/rag-docs/${encodeURIComponent(docId)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ enabledForViewer: Boolean(enabled) })
+    });
+
+    this._notifyUpdated();
+    return docs[idx];
+  }
+
+  addDocument({ title, content, source = "NotebookLM Upload", sourceType = "NotebookLM Upload", discipline = "tarot", targetScope = "tarot" }) {
     if (!content || !content.trim()) {
       throw new Error("กรุณาใส่เนื้อหาสรุปตำรา หรือเลือกไฟล์ที่ต้องการอัปโหลด");
     }
+    const rawDisc = discipline || targetScope || "tarot";
+    const cleanDisc = ["tarot", "palm", "siamsi"].includes(rawDisc) ? rawDisc : "tarot";
     const chunks = this._splitIntoChunks(content);
-    const scope = discipline || targetScope || "tarot";
     const now = Date.now();
-    const doc = {
+    const doc = this._normalizeCustomDoc({
       id: "rag-" + now + "-" + Math.random().toString(36).substring(2, 6),
-      title: (title && title.trim()) ? title.trim() : `ตำราพยากรณ์ NotebookLM (${new Date().toLocaleDateString("th-TH")})`,
+      title: (title && title.trim()) ? title.trim() : `ตำรา${DISCIPLINE_META[cleanDisc].shortLabel} (NotebookLM)`,
       source: source || sourceType,
-      sourceType: source || sourceType,
-      discipline: scope,
-      targetScope: scope,
+      sourceType: sourceType || source,
+      styleTag: `ตำราอัปโหลด NotebookLM • ${chunks.length} หัวข้อ`,
+      description: `อัปโหลดเพิ่มเติมสำหรับศาสตร์${DISCIPLINE_META[cleanDisc].shortLabel}`,
+      discipline: cleanDisc,
+      targetScope: cleanDisc,
+      enabledForViewer: true,
       uploadedAt: now,
       createdAt: now,
       chunks,
       chunksCount: chunks.length,
       content: content.trim()
-    };
-    const docs = this._loadDocuments();
+    });
+    const docs = this._loadCustomDocuments();
     docs.unshift(doc);
-    this._saveDocuments(docs);
+    this._saveCustomDocuments(docs);
     return doc;
   }
 
-  async uploadKnowledgeDocument(params) {
-    return this.addDocument(params);
+  async uploadKnowledgeDocument(params = {}) {
+    const activateAfterUpload = params.activateAfterUpload === true;
+    const doc = this.addDocument(params);
+    if (activateAfterUpload && (doc.discipline === "tarot" || doc.discipline === "palm")) {
+      this._saveActiveBooks({
+        ...this.activeBooks,
+        [doc.discipline]: doc.id
+      });
+    }
+    await this._apiJson("/api/rag-docs", {
+      method: "POST",
+      body: JSON.stringify({ ...doc, activateAfterUpload })
+    });
+    this._notifyUpdated();
+    return doc;
   }
 
-  deleteDocument(docId) {
-    const docs = this._loadDocuments().filter(d => d.id !== docId);
-    this._saveDocuments(docs);
-    return docs;
+  async deleteDocument(docId) {
+    const builtInIds = new Set(buildBuiltinTextbooks().map(b => b.id));
+    if (builtInIds.has(docId)) {
+      throw new Error("ไม่สามารถลบตำราหลักในระบบได้");
+    }
+    const docs = this._loadCustomDocuments().filter(d => d.id !== docId);
+    this._saveCustomDocuments(docs);
+
+    const nextActive = { ...this.activeBooks };
+    if (nextActive.tarot === docId) nextActive.tarot = DEFAULT_ACTIVE_BOOKS.tarot;
+    if (nextActive.palm === docId) nextActive.palm = DEFAULT_ACTIVE_BOOKS.palm;
+    this._saveActiveBooks(nextActive);
+
+    await this._apiJson(`/api/rag-docs/${encodeURIComponent(docId)}`, {
+      method: "DELETE"
+    });
+    this._notifyUpdated();
+    return this.getAllDocuments();
   }
 
-  /**
-   * ค้นหาความรู้จากคลัง RAG (NotebookLM) ที่ตรงกับไพ่ใบที่จับได้ + หมวดหมู่ + ตำแหน่ง
-   */
+  // ===========================================================================
+  // TAROT RETRIEVAL (อ้างอิงเฉพาะตำราไพ่ทาโรต์ที่ Admin เลือกใช้งาน)
+  // ===========================================================================
   retrieveCardInsight({ card, isReversed, category, loveStatus, positionTitle }) {
-    const docs = this.documents.filter(d => d.targetScope === "all" || d.targetScope === "tarot");
-    if (docs.length === 0 || !card) return "";
+    const activeBook = this.getActiveBook("tarot");
+    if (!activeBook || !card) return "";
 
+    const chunks = activeBook.chunks || this._splitIntoChunks(activeBook.content || "");
     const cardNameTh = (card.name_th || "").toLowerCase();
     const cardNameEn = (card.name_en || "").toLowerCase();
     const catNameMap = { love: "ความรัก", career: "การงาน", finance: "การเงิน", health: "สุขภาพ" };
     const catKw = catNameMap[category] || "";
     const statusKw = category === "love" ? (loveStatus === "single" ? "คนโสด" : "มีคนในใจ") : "";
     const orientKw = isReversed ? "กลับหัว" : "ตั้งตรง";
+    const shortPos = positionTitle
+      ? positionTitle.split("—")[0].replace(/ใบที่\s*\d+\s*:\s*/, "").trim().toLowerCase()
+      : "";
 
-    let bestChunk = "";
-    let bestScore = 0;
+    let bestCardChunk = "";
+    let bestCardScore = 0;
+    let bestGeneralChunk = "";
+    let bestGeneralScore = 0;
 
-    for (const doc of docs) {
-      const chunks = this._splitIntoChunks(doc.content);
-      for (const chunk of chunks) {
-        const lower = chunk.toLowerCase();
-        let score = 0;
+    for (const chunk of chunks) {
+      const lower = chunk.toLowerCase();
+      const matchesCardName =
+        (cardNameTh && lower.includes(cardNameTh)) ||
+        (cardNameEn && lower.includes(cardNameEn)) ||
+        (card.id && lower.includes(card.id.toLowerCase()));
 
-        // ต้องตรงกับชื่อไพ่ใบนั้นๆ จึงจะดึงคำทำนายเฉพาะไพ่ใบนั้นมาแสดง
-        const matchesCardName = (cardNameTh && lower.includes(cardNameTh)) ||
-          (cardNameEn && lower.includes(cardNameEn)) ||
-          (card.id && lower.includes(card.id.toLowerCase()));
+      let score = 0;
+      if (catKw && lower.includes(catKw)) score += 4;
+      if (statusKw && lower.includes(statusKw)) score += 4;
+      if (lower.includes(orientKw)) score += 2;
+      if (shortPos && lower.includes(shortPos)) score += 3;
 
-        if (!matchesCardName) continue;
-
-        score += 10;
-        if (catKw && lower.includes(catKw)) score += 4;
-        if (statusKw && lower.includes(statusKw)) score += 3;
-        if (lower.includes(orientKw)) score += 2;
-        if (positionTitle) {
-          const shortPos = positionTitle.split("—")[0].replace(/ใบที่\s*\d+\s*:\s*/, "").trim().toLowerCase();
-          if (shortPos && lower.includes(shortPos)) score += 3;
+      const cleanChunk = chunk.replace(/^#+\s*/, "").replace(/^\[[^\]]+\]\s*/, "").trim();
+      if (matchesCardName) {
+        const total = score + 10;
+        if (total > bestCardScore) {
+          bestCardScore = total;
+          bestCardChunk = cleanChunk;
         }
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestChunk = chunk.replace(/^#+\s*/, "").trim();
-        }
+      } else if (score > bestGeneralScore) {
+        bestGeneralScore = score;
+        bestGeneralChunk = cleanChunk;
       }
     }
 
-    return bestScore >= 10 ? bestChunk : "";
+    if (bestCardChunk) return bestCardChunk;
+
+    // Built-in distinct textbook interpretive lens per selected Tarot tradition
+    const kw = (isReversed ? card.reversed?.keywords?.th?.[0] : card.upright?.keywords?.th?.[0]) || "";
+    const advice = (isReversed ? card.reversed?.advice?.th : card.upright?.advice?.th) || "";
+    const cleanPos = shortPos || "ตำแหน่งนี้";
+
+    if (!activeBook.isBuiltIn && bestGeneralChunk) {
+      return `${bestGeneralChunk} (เชื่อมโยงกับไพ่ ${card.name_th}: เด่นเรื่อง "${kw}")`;
+    }
+    if (!activeBook.isBuiltIn && chunks.length > 0) {
+      return `${chunks[0].replace(/^#+\s*/, "").replace(/^\[[^\]]+\]\s*/, "").trim()} — สะท้อนผ่านหน้าไพ่ ${card.name_th} ("${kw}")`;
+    }
+
+    if (activeBook.id === "tarot_modern_psych") {
+      const psychFocus = {
+        love: loveStatus === "single"
+          ? `เชิงจิตวิทยาความรัก: พลังงานของ "${kw}" ใน${cleanPos} สะท้อนเกณฑ์ภายในใจที่ใช้วัดความปลอดภัยทางอารมณ์`
+          : `เชิงจิตวิทยาความสัมพันธ์: "${kw}" ใน${cleanPos} แสดงวิธีตอบสนองและขอบเขตทางอารมณ์ระหว่างคุณกับอีกฝ่าย`,
+        career: `มุมมองพฤติกรรมการทำงาน: "${kw}" ใน${cleanPos} บอกถึงรูปแบบการรับมือความกดดันและกลยุทธ์ที่ช่วยให้คุมเกมงานได้มั่นคง`,
+        finance: `จิตวิทยาการเงิน: "${kw}" ใน${cleanPos} ชี้ให้สังเกตแรงจูงใจในการใช้จ่ายและจังหวะวางแผนสำรองอย่างมีสติ`,
+        health: `สมดุล Mind-Body: "${kw}" ใน${cleanPos} สะท้อนความเครียดสะสมที่ส่งผลต่อพลังงานกาย แนะนำให้ปรับจังหวะพักสมอง`
+      };
+      return `${psychFocus[category] || psychFocus.career} ${advice ? `• แนวคิดปรับใช้: ${advice}` : ""}`.trim();
+    }
+
+    if (activeBook.id === "tarot_karma_spiritual") {
+      const karmaFocus = {
+        love: loveStatus === "single"
+          ? `ตำราเคล็ดกรรมความรัก: ไพ่ ${card.name_th} ใน${cleanPos} บอกจังหวะบุญวาสนาเปิดทางผ่าน "${kw}" แนะนำทำบุญด้วยดอกไม้หอมหรือของคู่เพื่อเสริมเมตตา`
+          : `ตำรากรรมสัมพันธ์: "${kw}" ใน${cleanPos} เป็นตัวเชื่อมบุญเก่าและบทเรียนใจของทั้งคู่ แนะนำลดทิฐิและทำบุญร่วมกันเพื่อลดแรงปะทะ`,
+        career: `ตำราวาสนาการงาน: "${kw}" ใน${cleanPos} ชี้จังหวะเปิดดวงผู้ใหญ่เมตตา หมั่นสวดมนต์ตั้งจิตก่อนเริ่มงานใหญ่และรักษาสัจจะ`,
+        finance: `ตำราเปิดทรัพย์: พลัง "${kw}" ใน${cleanPos} แนะนำหมั่นแบ่งปันทานบารมีและเก็บออมให้เป็นระเบียบเพื่อรับโชคลาภระยะยาว`,
+        health: `ตำราปรับธาตุเสริมชะตา: "${kw}" ใน${cleanPos} แนะนำแผ่เมตตาให้เจ้ากรรมนายเวร พักผ่อนให้เพียงพอเพื่อปรับสมดุลธาตุในกาย`
+      };
+      return `${karmaFocus[category] || karmaFocus.career}`.trim();
+    }
+
+    // Default tarot_classic_rw
+    if (bestGeneralChunk) {
+      return `${bestGeneralChunk} • สำหรับ${cleanPos}ของไพ่ ${card.name_th} ให้ยึดแก่นเรื่อง "${kw}" เป็นหลัก`;
+    }
+    return `ตามคัมภีร์มาตรฐาน (${cleanPos}): พลัง "${kw}" จากไพ่ ${card.name_th} คือกุญแจสำคัญในการขับเคลื่อนสถานการณ์${catKw || ""}`;
   }
 
-  /**
-   * ดึงเคล็ดลับภาพรวมจากคลังตำรา NotebookLM มาเสริมในกล่องบทสรุปฟันธง
-   */
-  retrieveSpreadSynthesis({ drawnCards = [], category = "love", loveStatus = "couple" }) {
-    const docs = this.documents.filter(d => d.targetScope === "all" || d.targetScope === "tarot");
-    if (docs.length === 0) return "";
+  retrieveSpreadSynthesis({ drawnCards = [], category = "love", loveStatus = "couple", verdictType = "neutral" }) {
+    const activeBook = this.getActiveBook("tarot");
+    if (!activeBook) return null;
 
-    const catTagMap = {
-      love_single: "ความรัก คนโสด",
-      love_couple: "ความรัก ไม่โสด",
-      career: "การงาน",
-      finance: "การเงิน",
-      health: "สุขภาพ"
-    };
-    const key = category === "love" ? (loveStatus === "single" ? "love_single" : "love_couple") : category;
-    const targetTag = catTagMap[key] || "";
+    const chunks = activeBook.chunks || this._splitIntoChunks(activeBook.content || "");
+    const catNameMap = { love: "ความรัก", career: "การงาน", finance: "การเงิน", health: "สุขภาพ" };
+    const catKw = catNameMap[category] || "";
+    const statusKw = category === "love" ? (loveStatus === "single" ? "คนโสด" : "ไม่โสด") : "";
     const cardNames = drawnCards.map(item => (item.card ? item.card.name_th : "")).filter(Boolean);
 
     let matchedChunk = "";
     let maxScore = 0;
 
-    for (const doc of docs) {
-      const chunks = this._splitIntoChunks(doc.content);
-      for (const chunk of chunks) {
-        let score = 0;
-        for (const cName of cardNames) {
-          if (cName && chunk.includes(cName)) score += 5;
-        }
-        if (targetTag && chunk.includes(targetTag.split(" ")[0])) score += 2;
-        if (key === "love_single" && chunk.includes("คนโสด")) score += 3;
-        if (key === "love_couple" && (chunk.includes("ความรู้สึกเรา") || chunk.includes("ความรู้สึกอีกฝ่าย") || chunk.includes("ไม่โสด"))) score += 3;
-
-        if (score > maxScore && score >= 5) {
-          maxScore = score;
-          matchedChunk = chunk.replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
-        }
+    for (const chunk of chunks) {
+      let score = 0;
+      for (const cName of cardNames) {
+        if (cName && chunk.includes(cName)) score += 5;
+      }
+      if (catKw && chunk.includes(catKw)) score += 3;
+      if (statusKw && chunk.includes(statusKw)) score += 4;
+      if (score > maxScore) {
+        maxScore = score;
+        matchedChunk = chunk.replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
       }
     }
 
-    return matchedChunk;
+    if (!matchedChunk && chunks.length > 0) {
+      matchedChunk = chunks[0].replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
+    }
+
+    return {
+      bookId: activeBook.id,
+      bookTitle: activeBook.title,
+      styleTag: activeBook.styleTag || activeBook.source,
+      isBuiltIn: Boolean(activeBook.isBuiltIn),
+      synthesisText: matchedChunk,
+      verdictType
+    };
   }
 
-  getNotebookLMPromptTemplate() {
-    return `โปรดสรุปตำราพยากรณ์ฉบับนี้เพื่อนำไปใช้เป็นฐานข้อมูล RAG สำหรับระบบ "เซียมซีทาโรต์" โดยจัดรูปแบบแยกเป็นหัวข้อดังนี้:
+  // ===========================================================================
+  // PALM READING RETRIEVAL (อ้างอิงเฉพาะตำราลายมือที่ Admin เลือกใช้งาน)
+  // ===========================================================================
+  retrievePalmReadingInsights({ leftScan, rightScan, baseAspects = {} }) {
+    const activeBook = this.getActiveBook("palm");
+    if (!activeBook) return null;
 
-1. ระบุชื่อไพ่ทาโรต์ (ทั้งภาษาไทยและอังกฤษ เช่น The Lovers / ไพ่เดอะเลิฟเวอร์) หรือ หมายเลขใบเซียมซี
+    const chunks = activeBook.chunks || this._splitIntoChunks(activeBook.content || "");
+    const rLines = (rightScan && rightScan.lines) || (leftScan && leftScan.lines) || {};
+    const lLines = (leftScan && leftScan.lines) || {};
+
+    const aspectKeywords = {
+      life: ["สุขภาพ", "พลังชีวิต", "เส้นชีวิต", "life", "เนินศุกร์", "ร่างกาย"],
+      intellect: ["ความคิด", "การงาน", "เส้นสมอง", "head", "ตัดสินใจ", "บริหาร"],
+      love: ["ความรัก", "เส้นหัวใจ", "heart", "คู่ครอง", "สัมพันธ์"],
+      wealth: ["การเงิน", "วาสนา", "เส้นวาสนา", "เส้นอาทิตย์", "fate", "sun", "ธุรกิจ", "โชค"],
+      guidance: ["คำแนะนำ", "เสริมดวง", "เส้นพุธ", "mercury", "บุญ", "สมดุล"]
+    };
+
+    const aspectInsights = {};
+    Object.keys(aspectKeywords).forEach((aspKey) => {
+      const kws = aspectKeywords[aspKey];
+      let bestChunk = "";
+      let bestScore = 0;
+
+      for (const chunk of chunks) {
+        let score = 0;
+        for (const kw of kws) {
+          if (chunk.toLowerCase().includes(kw.toLowerCase())) score += 3;
+        }
+        if (score > bestScore) {
+          bestScore = score;
+          bestChunk = chunk.replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
+        }
+      }
+
+      if (!activeBook.isBuiltIn) {
+        if (!bestChunk && chunks.length > 0) {
+          bestChunk = chunks[0].replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
+        }
+        aspectInsights[aspKey] = bestChunk;
+        return;
+      }
+
+      // Tailored built-in textbook lens per aspect
+      if (activeBook.id === "palm_western_chirology") {
+        const chiroMap = {
+          life: "มุมจิตวิทยาพลังงาน (Modern Chirology): ประเมินการฟื้นตัวและอัตราความทนทานของระบบประสาทจากส่วนโค้งเส้นชีวิตและฐานนิ้วโป้ง",
+          intellect: `มุมกลไกความคิด: รูปทรงเส้นสมอง (${rLines.head?.traits?.slope === "curved_moon" ? "โน้มสู่เนินจันทร์" : "แนวระนาบเป็นระบบ"}) ชี้ความถนัดด้านการคิดแก้ปัญหาและวิธีสื่อสารในงาน`,
+          love: "มุมพฤติกรรมความสัมพันธ์: เส้นหัวใจบอกรูปแบบการให้พื้นที่และความคาดหวังด้านการสื่อสารกับคู่ครอง",
+          wealth: "มุมความมั่นคงและการสร้างคุณค่า: ความต่อเนื่องของเส้นวาสนาและเส้นอาทิตย์สะท้อนวินัยในการต่อยอดรายได้ระยะยาว",
+          guidance: "แนวทางปรับนิสัยเชิงพฤติกรรม: จัดตารางพักสมองและโฟกัสงานสำคัญทีละขั้นเพื่อลดภาระความเครียดสะสม"
+        };
+        aspectInsights[aspKey] = chiroMap[aspKey] || bestChunk;
+      } else if (activeBook.id === "palm_wealth_career") {
+        const hasFate = Boolean(rLines.fate?.detected || lLines.fate?.detected);
+        const hasSun = Boolean(rLines.sun?.detected || lLines.sun?.detected);
+        const wealthMap = {
+          life: "เกณฑ์ความอึดลุยธุรกิจ: พลังชีวิตและเนินศุกร์เป็นฐานทุนความทรหดในการรับมือภาระงานและลูกค้าจำนวนมาก",
+          intellect: "คมความคิดเชิงกลยุทธ์: เส้นสมองชี้จังหวะการตัดสินใจขยายโปรเจกต์และการวางแผนรับความเสี่ยงทางธุรกิจ",
+          love: "จุดสมดุลชีวิตงานและคู่ครอง: เน้นการสื่อสารชัดเจนให้คนใกล้ตัวเข้าใจจังหวะการทุ่มเทสร้างฐานะ",
+          wealth: `รหัสโภคทรัพย์บนฝ่ามือ: ${(hasFate && hasSun) ? "พบทั้งเส้นวาสนาและเส้นอาทิตย์เกื้อหนุนกัน เด่นเรื่องชื่อเสียง เครดิต และรายรับจากผลงาน" : "เน้นสร้างรายได้หลายช่องทางและต่อยอดจากงานถนัดที่มีความสม่ำเสมอ"}`,
+          guidance: "กลยุทธ์เปิดทางทรัพย์: รักษาเครดิตการส่งมอบงานตรงเวลา บริหารเงินสำรอง 30% และต่อยอดคอนเนกชันที่เชื่อถือได้"
+        };
+        aspectInsights[aspKey] = wealthMap[aspKey] || bestChunk;
+      } else {
+        // palm_thai_classical
+        aspectInsights[aspKey] = bestChunk || (baseAspects[aspKey] && baseAspects[aspKey].rightNote) || "";
+      }
+    });
+
+    const lensSummaryLabel = activeBook.id === "palm_western_chirology"
+      ? "วิเคราะห์ตามตำราหัตถศาสตร์สากล (Modern Chirology)"
+      : (activeBook.id === "palm_wealth_career"
+        ? "วิเคราะห์ตามตำราลายมือเศรษฐี การงานและการเงิน"
+        : (activeBook.isBuiltIn ? "วิเคราะห์ตามคัมภีร์หัตถศาสตร์ไทย-จีนโบราณ" : `อ้างอิงตำรา: ${activeBook.title}`));
+
+    return {
+      bookId: activeBook.id,
+      bookTitle: activeBook.title,
+      styleTag: activeBook.styleTag || activeBook.source,
+      isBuiltIn: Boolean(activeBook.isBuiltIn),
+      lensSummaryLabel,
+      aspectInsights
+    };
+  }
+
+  // ===========================================================================
+  // SIAMSI SUPPLEMENT RETRIEVAL (อ้างอิงตำราที่ผู้ดูเลือกเองหน้าเว็บ)
+  // ===========================================================================
+  retrieveSiamsiSupplement({ sign, deck = "wongtaisin", customBookId = "" }) {
+    if (!sign || !customBookId) return null;
+    const enabledCustom = this.getViewerEnabledSiamsiSupplements();
+    const book = enabledCustom.find(d => d.id === customBookId);
+    if (!book) return null;
+
+    const chunks = book.chunks || this._splitIntoChunks(book.content || "");
+    const numStr = String(sign.number || "");
+    const fortune = String(sign.fortune_level || "");
+    let bestChunk = "";
+    let bestScore = 0;
+
+    for (const chunk of chunks) {
+      let score = 0;
+      if (numStr && (chunk.includes(`เบอร์ ${numStr}`) || chunk.includes(`ใบที่ ${sign.stick_num || sign.id}`) || chunk.includes(numStr))) score += 8;
+      if (fortune && chunk.includes(fortune)) score += 4;
+      if (chunk.includes(deck === "tanjai" ? "ทันใจ" : "หว่องไทซิน")) score += 2;
+      if (score > bestScore) {
+        bestScore = score;
+        bestChunk = chunk.replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
+      }
+    }
+
+    if (!bestChunk && chunks.length > 0) {
+      bestChunk = chunks[0].replace(/^\[[^\]]+\]\s*/, "").replace(/^#+\s*/, "").trim();
+    }
+
+    return bestChunk
+      ? { bookId: book.id, bookTitle: book.title, text: bestChunk }
+      : null;
+  }
+
+  getNotebookLMPromptTemplate(discipline = "tarot") {
+    if (discipline === "palm") {
+      return `โปรดสรุปตำราหัตถศาสตร์ (สแกนลายมือ) ฉบับนี้เป็นฐานข้อมูล RAG โดยจัดหัวข้อแยกให้ชัดเจนดังนี้:
+
+1. แยกหัวข้อด้วยเครื่องหมายวงเล็บเหลี่ยมดังนี้:
+   - [สุขภาพ และพลังชีวิต] (หลักเกณฑ์ดูเส้นชีวิต และเนินศุกร์ มือซ้ายเทียบมือขวา)
+   - [ความคิด การงาน และการตัดสินใจ] (หลักเกณฑ์ดูเส้นสมอง ความโค้ง ความยาว และเนินพฤหัส)
+   - [ความรัก และความสัมพันธ์] (หลักเกณฑ์ดูเส้นหัวใจ จุดสิ้นสุด และความมั่นคงทางใจ)
+   - [การเงิน โอกาส และความมั่นคง] (หลักเกณฑ์ดูเส้นวาสนา เส้นอาทิตย์ และช่องทางโชคลาภ)
+   - [คำแนะนำที่ใช้ได้จริง] (การดูเส้นพุธ เนินทั้ง 7 และเคล็ดลับปรับชีวิตที่คนทั่วไปเข้าใจง่าย)
+2. เขียนภาษาคนธรรมดา อ่านเข้าใจง่าย ไม่ใช้ศัพท์เทคนิคที่ชวนสับสน`;
+    }
+    if (discipline === "siamsi") {
+      return `โปรดสรุปตำราเซียมซีฉบับนี้เป็นฐานข้อมูลเสริม RAG โดยจัดรูปแบบแยกตามใบหรือระดับโชคชะตาดังนี้:
+
+1. ระบุหมายเลขใบเซียมซี เช่น เบอร์ 01, เบอร์ 02 หรือระดับคำทำนาย (ดีที่สุด / ปานกลาง / ควรระวัง)
+2. สรุปคำแนะนำเชิงลึกด้าน อาชีพการงาน โชคลาภการเงิน ความรัก สุขภาพ และข้อควรระวังแบบกระชับเข้าใจง่าย`;
+    }
+    return `โปรดสรุปตำราพยากรณ์ไพ่ทาโรต์ฉบับนี้เพื่อนำไปใช้เป็นฐานข้อมูล RAG สำหรับระบบ "เซียมซีทาโรต์" โดยจัดรูปแบบแยกเป็นหัวข้อดังนี้:
+
+1. ระบุชื่อไพ่ทาโรต์ (ทั้งภาษาไทยและอังกฤษ เช่น The Lovers / ไพ่เดอะเลิฟเวอร์)
 2. แยกคำทำนายเฉพาะด้านให้ชัดเจน:
    - [ความรัก คนโสด] (สำหรับการเรียงไพ่: อดีต ➔ ปัจจุบัน ➔ แนวโน้มในอนาคต)
    - [ความรัก ไม่โสด/มีคนในใจ] (สำหรับการเรียงไพ่: ความรู้สึกเรา ➔ ความรู้สึกอีกฝ่าย ➔ แนวโน้มในอนาคต)

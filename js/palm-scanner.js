@@ -555,6 +555,20 @@ class PalmScannerEngine {
     const mentalSummary = headSlopeR === "curved_moon" ? "หัวไวด้านไอเดียและการสื่อสาร" : "ความคิดเป็นระบบและรอบคอบ";
     const fortuneSummary = (fateR || sunR) ? "มีจังหวะเติบโตจากการลงมือทำและผู้ใหญ่หนุน" : "หาโอกาสและรายได้เสริมได้หลายช่องทาง";
 
+    const ragPalm = (typeof window !== "undefined" && window.ragEngine && typeof window.ragEngine.retrievePalmReadingInsights === "function")
+      ? window.ragEngine.retrievePalmReadingInsights({ leftScan: lScan, rightScan: rScan, baseAspects: aspects })
+      : null;
+
+    if (ragPalm && ragPalm.aspectInsights) {
+      Object.keys(aspects).forEach((k) => {
+        if (ragPalm.aspectInsights[k]) {
+          aspects[k].ragInsight = ragPalm.aspectInsights[k];
+        }
+      });
+    }
+
+    const lensNote = (ragPalm && ragPalm.lensSummaryLabel) ? ` (${ragPalm.lensSummaryLabel})` : "";
+
     return {
       hand: "both",
       handMeta: {
@@ -562,8 +576,11 @@ class PalmScannerEngine {
         role: "เปรียบเทียบพื้นนิสัยเดิมกับทิศทางชีวิตปัจจุบัน"
       },
       avgConfidence: avgPct,
+      textbookId: (ragPalm && ragPalm.bookId) || "palm_thai_classical",
+      textbookTitle: (ragPalm && ragPalm.bookTitle) || "คัมภีร์หัตถศาสตร์ไทย-จีนโบราณ",
+      textbookStyle: (ragPalm && ragPalm.styleTag) || "",
       aspects,
-      summaryVerdict: `ภาพรวมทั้ง 2 มือ (ความชัดเฉลี่ย ${avgPct}%): พื้นฐานร่างกายและกำลังใจดี ${mentalSummary} และ${fortuneSummary}`
+      summaryVerdict: `ภาพรวมทั้ง 2 มือ (ความชัดเฉลี่ย ${avgPct}%)${lensNote}: พื้นฐานร่างกายและกำลังใจดี ${mentalSummary} และ${fortuneSummary}`
     };
   }
 
@@ -2134,6 +2151,9 @@ class PalmApp {
             hand: "both",
             handMeta: this.dualReading.handMeta,
             avgConfidence: this.dualReading.avgConfidence,
+            textbookId: this.dualReading.textbookId || "",
+            textbookTitle: this.dualReading.textbookTitle || "",
+            textbookStyle: this.dualReading.textbookStyle || "",
             summaryVerdict: this.dualReading.summaryVerdict,
             aspects: this.dualReading.aspects
           },
@@ -2561,12 +2581,30 @@ class PalmApp {
     const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
     if (!reading || !reading.aspects) return;
 
+    const activePalmBook = (typeof window !== "undefined" && window.ragEngine && typeof window.ragEngine.getActiveBook === "function")
+      ? window.ragEngine.getActiveBook("palm")
+      : null;
+    const bookTitle = reading.textbookTitle || (activePalmBook && activePalmBook.title) || "คัมภีร์หัตถศาสตร์ไทย-จีนโบราณ";
+    const bookBannerHtml = `
+      <div class="palm-textbook-active-banner" id="palm-textbook-active-banner">
+        <span>📖 <strong>ตำราหัตถศาสตร์ที่ใช้พยากรณ์:</strong> ${bookTitle}</span>
+      </div>
+    `;
+
     const cardsHtml = Object.values(reading.aspects).map(asp => {
       const breakdownHtml = (asp.leftNote || asp.rightNote)
         ? `
           <div class="aspect-dual-breakdown">
             ${asp.leftNote ? `<div class="aspect-hand-note"><strong>✋ มือซ้าย (พื้นดวงเดิม):</strong> ${asp.leftNote.replace(/^มือซ้าย \(พื้นดวงเดิม\):\s*/, "")}</div>` : ""}
             ${asp.rightNote ? `<div class="aspect-hand-note right-note"><strong>🤚 มือขวา (ปัจจุบัน-อนาคต):</strong> ${asp.rightNote.replace(/^มือขวา \(ปัจจุบัน-อนาคต\):\s*/, "")}</div>` : ""}
+          </div>
+        `
+        : "";
+      const ragCalloutHtml = asp.ragInsight
+        ? `
+          <div class="rag-insight-callout">
+            <div class="rag-insight-head">📚 เกร็ดคำทำนายจากตำรา: ${bookTitle}</div>
+            <p class="rag-insight-text">${asp.ragInsight}</p>
           </div>
         `
         : "";
@@ -2581,11 +2619,12 @@ class PalmApp {
           </div>
           <p class="aspect-text">${asp.text || ""}</p>
           ${breakdownHtml}
+          ${ragCalloutHtml}
         </div>
       `;
     }).join("");
 
-    this.readingAspectsContainer.innerHTML = cardsHtml;
+    this.readingAspectsContainer.innerHTML = `${bookBannerHtml}${cardsHtml}`;
 
     if (this.summaryVerdictText) {
       this.summaryVerdictText.textContent = reading.summaryVerdict || "";
@@ -2625,6 +2664,7 @@ class PalmApp {
       leftConfidence: leftConf,
       rightConfidence: rightConf,
       summaryVerdict: reading.summaryVerdict || "",
+      textbookTitle: reading.textbookTitle || "",
       aspects: reading.aspects || {},
       leftHudDataUrl,
       rightHudDataUrl,

@@ -17,6 +17,8 @@ class AdminBackoffice {
   constructor() {
     this.codes = [];
     this.lastCreatedCodeObj = null;
+    this.activeRagDiscipline = "tarot";
+    this.expandedRagDocIds = new Set();
 
     this.initDOM();
     this.bindEvents();
@@ -28,6 +30,14 @@ class AdminBackoffice {
         this.refreshData(true);
       }
     }, 8000);
+  }
+
+  escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   initDOM() {
@@ -60,6 +70,11 @@ class AdminBackoffice {
     this.ragDocContent = document.getElementById("rag-doc-content");
     this.ragDocsList = document.getElementById("rag-docs-list");
     this.btnCopyNotebookLmPrompt = document.getElementById("btn-copy-notebooklm-prompt");
+    this.ragActiveSummaryBar = document.getElementById("rag-active-summary-bar");
+    this.ragDisciplineTabs = document.getElementById("rag-discipline-tabs");
+    this.ragDisciplineNotice = document.getElementById("rag-discipline-notice");
+    this.ragActivateOnUpload = document.getElementById("rag-activate-on-upload");
+    this.ragActivateUploadWrap = document.getElementById("rag-activate-upload-wrap");
 
     // Create Code Form
     this.createForm = document.getElementById("create-code-form");
@@ -251,6 +266,22 @@ class AdminBackoffice {
       });
     }
 
+    if (this.ragDisciplineTabs) {
+      this.ragDisciplineTabs.querySelectorAll("[data-rag-tab]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const disc = btn.getAttribute("data-rag-tab");
+          this.setActiveRagTab(disc, true);
+        });
+      });
+    }
+
+    if (this.ragDocDiscipline) {
+      this.ragDocDiscipline.addEventListener("change", () => {
+        const disc = this.ragDocDiscipline.value || "tarot";
+        this.setActiveRagTab(disc, false);
+      });
+    }
+
     if (this.ragUploadForm) {
       this.ragUploadForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -258,6 +289,7 @@ class AdminBackoffice {
         const title = this.ragDocTitle ? this.ragDocTitle.value.trim() : "";
         const discipline = this.ragDocDiscipline ? this.ragDocDiscipline.value : "tarot";
         const content = this.ragDocContent ? this.ragDocContent.value.trim() : "";
+        const activateAfterUpload = (discipline !== "siamsi") && Boolean(this.ragActivateOnUpload && this.ragActivateOnUpload.checked);
         if (!content) {
           this.showToast("⚠️ กรุณาวางเนื้อหาสรุปตำราหรือเลือกไฟล์ก่อนอัปโหลด");
           return;
@@ -266,26 +298,51 @@ class AdminBackoffice {
           title: title || "ตำราพยากรณ์เสริม (NotebookLM)",
           source: "NotebookLM Upload",
           discipline,
-          content
+          content,
+          activateAfterUpload
         });
+        this.activeRagDiscipline = doc.discipline || discipline;
         if (this.ragDocTitle) this.ragDocTitle.value = "";
         if (this.ragDocContent) this.ragDocContent.value = "";
         if (this.ragFileInput) this.ragFileInput.value = "";
         this.renderRagKnowledgeBase();
         this.renderStats();
-        this.showToast(`📚 อัปโหลดตำรา "${doc.title}" (${(doc.chunks || []).length} หัวข้อ) เข้าระบบพยากรณ์ RAG สำเร็จ!`);
+        const activatedNote = activateAfterUpload ? " และตั้งเป็นตำราหลักของศาสตร์นี้แล้ว!" : "";
+        this.showToast(`📚 อัปโหลดตำรา "${doc.title}" (${(doc.chunks || []).length} หัวข้อ)${activatedNote}`);
       });
     }
 
     if (this.btnCopyNotebookLmPrompt) {
       this.btnCopyNotebookLmPrompt.addEventListener("click", () => {
         if (!window.ragEngine) return;
-        const promptText = window.ragEngine.getNotebookLMPromptTemplate();
+        const promptText = window.ragEngine.getNotebookLMPromptTemplate(this.activeRagDiscipline);
         navigator.clipboard.writeText(promptText).then(() => {
-          this.showToast("📋 คัดลอก Prompt สำหรับนำไปสั่ง Google NotebookLM สรุปตำราเรียบร้อยแล้ว!");
+          const discMeta = window.ragEngine.getDisciplineMeta(this.activeRagDiscipline);
+          this.showToast(`📋 คัดลอก Prompt สำหรับสั่ง NotebookLM สรุปตำรา "${discMeta.shortLabel}" เรียบร้อยแล้ว!`);
         });
       });
     }
+  }
+
+  setActiveRagTab(discipline, syncSelect = true) {
+    const cleanDisc = ["tarot", "palm", "siamsi"].includes(discipline) ? discipline : "tarot";
+    this.activeRagDiscipline = cleanDisc;
+    if (syncSelect && this.ragDocDiscipline) {
+      this.ragDocDiscipline.value = cleanDisc;
+    }
+    if (this.ragActivateUploadWrap) {
+      this.ragActivateUploadWrap.style.display = cleanDisc === "siamsi" ? "none" : "flex";
+    }
+    if (this.ragDocContent) {
+      if (cleanDisc === "palm") {
+        this.ragDocContent.placeholder = "[สุขภาพ และพลังชีวิต] ...\n[ความคิด การงาน และการตัดสินใจ] ...\n[ความรัก และความสัมพันธ์] ...\n[การเงิน โอกาส และความมั่นคง] ...";
+      } else if (cleanDisc === "siamsi") {
+        this.ragDocContent.placeholder = "เบอร์ 01: คำอธิบายเสริมพิเศษหรือข้อแนะนำเพิ่มเติมสำหรับใบเซียมซี...";
+      } else {
+        this.ragDocContent.placeholder = "# The Lovers (ไพ่เดอะเลิฟเวอร์)\n- ความรักคนโสด: มีเกณฑ์พบรักที่มีแรงดึงดูดสูงมาก...\n- ความรักคนมีคู่: ความรู้สึกเชื่อมโยงลึกซึ้ง...\n- การงาน: ได้พาร์ทเนอร์หรือหุ้นส่วนที่เกื้อหนุน...";
+      }
+    }
+    this.renderRagKnowledgeBase();
   }
 
   switchAdminTab(tabName) {
@@ -311,9 +368,9 @@ class AdminBackoffice {
     if (!this.selectLockedCategory) return;
     if (mode === "siamsi") {
       this.selectLockedCategory.innerHTML = `
-        <option value="">ให้ลูกค้าเลือกตำราเซียมซีเอง</option>
-        <option value="wongtaisin">🏛️ ล็อกตำรา: เซียมซีหว่องไทซิน (100 ใบ)</option>
-        <option value="tanjai">🪷 ล็อกตำรา: เซียมซีหลวงพ่อทันใจ (100 ใบ)</option>
+        <option value="">🎋 ให้ผู้ดูเลือกตำราเซียมซีเองหน้าเว็บ (แนะนำ)</option>
+        <option value="wongtaisin">🏛️ ค่าเริ่มต้น: เซียมซีหว่องไทซิน (ผู้ดูสลับเองได้)</option>
+        <option value="tanjai">🪷 ค่าเริ่มต้น: เซียมซีหลวงพ่อทันใจ (ผู้ดูสลับเองได้)</option>
       `;
     } else {
       this.selectLockedCategory.innerHTML = `
@@ -414,6 +471,12 @@ class AdminBackoffice {
   async refreshData(silent = false) {
     this.codes = await window.codeManager.getAllCodes();
 
+    if (window.ragEngine && typeof window.ragEngine.syncFromServer === "function") {
+      if (!silent) {
+        await window.ragEngine.syncFromServer().catch(() => {});
+      }
+    }
+
     if (this.syncModeBadge) {
       if (window.codeManager.apiAvailable) {
         this.syncModeBadge.textContent = "🟢 เชื่อมต่อฐานข้อมูล Server API แล้ว";
@@ -454,43 +517,193 @@ class AdminBackoffice {
     if (this.statRagChunks && window.ragEngine) {
       const docs = window.ragEngine.getAllDocuments();
       const totalChunks = docs.reduce((acc, d) => acc + ((d.chunks && d.chunks.length) || 0), 0);
-      this.statRagChunks.textContent = `${totalChunks} หัวข้อ (${docs.length} ตำรา)`;
+      this.statRagChunks.textContent = `${totalChunks} หัวข้อ (${docs.length} ตำรา / 3 ศาสตร์)`;
     }
   }
 
   renderRagKnowledgeBase() {
     if (!this.ragDocsList || !window.ragEngine) return;
-    const docs = window.ragEngine.getAllDocuments();
+
+    const tarotActive = window.ragEngine.getActiveBook("tarot");
+    const palmActive = window.ragEngine.getActiveBook("palm");
+
+    // 1. Summary Bar showing active book per discipline
+    if (this.ragActiveSummaryBar) {
+      this.ragActiveSummaryBar.innerHTML = `
+        <div class="rag-summary-chip ${this.activeRagDiscipline === "tarot" ? "is-focused" : ""}" data-summary-disc="tarot">
+          <div class="rag-summary-label">
+            <span>🔮 ไพ่ทาโรต์</span>
+            <span class="rag-summary-mode-pill">Admin เลือก</span>
+          </div>
+          <div class="rag-summary-book">${this.escapeHtml(tarotActive ? tarotActive.title : "-")}</div>
+        </div>
+        <div class="rag-summary-chip ${this.activeRagDiscipline === "palm" ? "is-focused" : ""}" data-summary-disc="palm">
+          <div class="rag-summary-label">
+            <span>✋ สแกนลายมือ</span>
+            <span class="rag-summary-mode-pill">Admin เลือก</span>
+          </div>
+          <div class="rag-summary-book">${this.escapeHtml(palmActive ? palmActive.title : "-")}</div>
+        </div>
+        <div class="rag-summary-chip viewer-choice ${this.activeRagDiscipline === "siamsi" ? "is-focused" : ""}" data-summary-disc="siamsi">
+          <div class="rag-summary-label">
+            <span>🎋 เซียมซีศักดิ์สิทธิ์</span>
+            <span class="rag-summary-mode-pill viewer">ผู้ดูเลือกเองได้</span>
+          </div>
+          <div class="rag-summary-book">ผู้ดูเลือกใช้หน้าเว็บ (หว่องไทซิน / หลวงพ่อทันใจ)</div>
+        </div>
+      `;
+      this.ragActiveSummaryBar.querySelectorAll("[data-summary-disc]").forEach(el => {
+        el.addEventListener("click", () => {
+          this.setActiveRagTab(el.getAttribute("data-summary-disc"), true);
+        });
+      });
+    }
+
+    // 2. Sync discipline tab states & counts
+    const counts = {
+      tarot: window.ragEngine.getDocumentsByDiscipline("tarot").length,
+      palm: window.ragEngine.getDocumentsByDiscipline("palm").length,
+      siamsi: window.ragEngine.getDocumentsByDiscipline("siamsi").length
+    };
+    if (this.ragDisciplineTabs) {
+      this.ragDisciplineTabs.querySelectorAll("[data-rag-tab]").forEach(btn => {
+        const t = btn.getAttribute("data-rag-tab");
+        const isOn = t === this.activeRagDiscipline;
+        btn.classList.toggle("active", isOn);
+        btn.setAttribute("aria-selected", String(isOn));
+      });
+      this.ragDisciplineTabs.querySelectorAll("[data-rag-count]").forEach(span => {
+        const t = span.getAttribute("data-rag-count");
+        span.textContent = String(counts[t] || 0);
+      });
+    }
+
+    // 3. Discipline policy notice
+    const disc = this.activeRagDiscipline;
+    if (this.ragDisciplineNotice) {
+      if (disc === "siamsi") {
+        this.ragDisciplineNotice.className = "rag-discipline-notice is-viewer-mode";
+        this.ragDisciplineNotice.innerHTML = `🔓 <strong>ศาสตร์เซียมซี (ข้อยกเว้น):</strong> ระบบเปิดสิทธิ์ให้ <strong>ผู้ดู / ลูกค้า</strong> เลือกตำราเซียมซีที่ต้องการเองได้โดยตรงบนหน้าเว็บ (หว่องไทซิน / หลวงพ่อทันใจ) และสามารถเลือกอ่านตำราเสริมที่ Admin เปิดไว้ได้`;
+      } else if (disc === "palm") {
+        this.ragDisciplineNotice.className = "rag-discipline-notice";
+        this.ragDisciplineNotice.innerHTML = `✋ <strong>คลังตำราหัตถศาสตร์ (สแกนลายมือ):</strong> Admin สามารถกด <strong>"🎯 เลือกใช้ตำรานี้"</strong> เพื่อกำหนดตำราหลักที่ระบบจะใช้แปลผลลายมือ 2 ข้างให้ลูกค้าทุกคน`;
+      } else {
+        this.ragDisciplineNotice.className = "rag-discipline-notice";
+        this.ragDisciplineNotice.innerHTML = `🔮 <strong>คลังตำราไพ่ทาโรต์:</strong> Admin สามารถกด <strong>"🎯 เลือกใช้ตำรานี้"</strong> เพื่อกำหนดสำนัก/แนวทางตำราหลักที่ระบบจะใช้วิเคราะห์ไพ่ 3 ใบให้ลูกค้าทุกคน`;
+      }
+    }
+
+    // 4. Render documents for current discipline tab
+    const docs = window.ragEngine.getDocumentsByDiscipline(disc);
     if (docs.length === 0) {
-      this.ragDocsList.innerHTML = `<div style="padding:1rem; color:var(--text-muted);">ยังไม่มีตำราในคลังความรู้</div>`;
+      this.ragDocsList.innerHTML = `<div style="padding:1rem; color:var(--text-muted);">ยังไม่มีตำราในคลังศาสตร์นี้</div>`;
       return;
     }
 
-    const discLabel = { tarot: "🔮 ไพ่ทาโรต์", siamsi: "🎋 เซียมซี", all: "🌟 ทุกศาสตร์" };
-    this.ragDocsList.innerHTML = docs.map(doc => `
-      <div class="rag-doc-card">
-        <div class="rag-doc-card-main">
-          <div class="rag-doc-title-row">
-            <strong>📖 ${doc.title}</strong>
-            <span class="rag-chunk-pill">${(doc.chunks || []).length} หัวข้อความรู้</span>
+    this.ragDocsList.innerHTML = docs.map(doc => {
+      const isExpanded = this.expandedRagDocIds.has(doc.id);
+      const safeTitle = this.escapeHtml(doc.title);
+      const safeSource = this.escapeHtml(doc.source || "NotebookLM");
+      const safeStyle = this.escapeHtml(doc.styleTag || "");
+      const safeDesc = this.escapeHtml(doc.description || "");
+      const safeContent = this.escapeHtml(doc.content || "");
+      const chunkCount = (doc.chunks || []).length;
+
+      let statusControlHtml = "";
+      if (disc === "siamsi") {
+        if (doc.isBuiltIn) {
+          statusControlHtml = `<span class="rag-viewer-pill">👤 ผู้ดูเลือกเองหน้าเว็บ</span>`;
+        } else {
+          const isOn = doc.enabledForViewer !== false;
+          statusControlHtml = `
+            <button type="button" class="${isOn ? "rag-active-pill" : "btn-preview-rag"}" data-toggle-siamsi-rag="${doc.id}" style="cursor:pointer;">
+              ${isOn ? "✅ เปิดให้ผู้ดูเลือก" : "⏸️ ปิดชั่วคราว"}
+            </button>
+          `;
+        }
+      } else {
+        if (doc.isActive) {
+          statusControlHtml = `<span class="rag-active-pill">✅ ใช้งานอยู่</span>`;
+        } else {
+          statusControlHtml = `<button type="button" class="btn-activate-rag" data-act-rag="${doc.id}" data-act-disc="${disc}">🎯 เลือกใช้ตำรานี้</button>`;
+        }
+      }
+
+      const cardActiveClass = (disc !== "siamsi" && doc.isActive) ? "is-active-book" : "";
+
+      return `
+        <div class="rag-doc-card ${cardActiveClass}" data-rag-doc-id="${doc.id}">
+          <div class="rag-doc-card-head">
+            <div class="rag-doc-card-main">
+              <div class="rag-doc-title-row">
+                <strong>📖 ${safeTitle}</strong>
+                <span class="rag-chunk-pill">${chunkCount} หัวข้อความรู้</span>
+                ${safeStyle ? `<span class="rag-style-pill">${safeStyle}</span>` : ""}
+              </div>
+              ${safeDesc ? `<div class="rag-doc-desc">${safeDesc}</div>` : ""}
+              <div class="rag-doc-meta">
+                <span>• แหล่งที่มา: ${safeSource}</span>
+                <span>• อัปเดต: ${doc.isBuiltIn ? "ตำรามาตรฐานในระบบ" : this.formatDateTime(doc.uploadedAt)}</span>
+              </div>
+            </div>
+            <div class="rag-doc-actions">
+              ${statusControlHtml}
+              <div class="rag-doc-action-row">
+                <button type="button" class="btn-preview-rag" data-preview-rag="${doc.id}">
+                  ${isExpanded ? "🔼 ซ่อนตัวอย่าง" : "👁️ อ่านตัวอย่าง"}
+                </button>
+                ${!doc.isBuiltIn ? `<button type="button" class="btn-row-act btn-danger" data-del-rag="${doc.id}">🗑️ ลบ</button>` : ""}
+              </div>
+            </div>
           </div>
-          <div class="rag-doc-meta">
-            <span>${discLabel[doc.discipline] || "🔮 พยากรณ์"}</span>
-            <span>• แหล่งที่มา: ${doc.source || "NotebookLM"}</span>
-            <span>• อัปเดต: ${this.formatDateTime(doc.uploadedAt)}</span>
-          </div>
+          ${isExpanded ? `<div class="rag-doc-preview-box">${safeContent}</div>` : ""}
         </div>
-        <div class="rag-doc-actions">
-          ${doc.id !== "doc_default_master_tarot"
-            ? `<button type="button" class="btn-row-act btn-danger" data-del-rag="${doc.id}">🗑️ ลบตำรา</button>`
-            : `<span class="badge-success" style="font-size:0.75rem;">ตำราหลักตั้งต้น</span>`}
-        </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
+
+    // Bind card buttons
+    this.ragDocsList.querySelectorAll("[data-act-rag]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const docId = btn.getAttribute("data-act-rag");
+        const targetDisc = btn.getAttribute("data-act-disc");
+        try {
+          await window.ragEngine.setActiveBook(targetDisc, docId);
+          const activeNow = window.ragEngine.getActiveBook(targetDisc);
+          this.renderRagKnowledgeBase();
+          this.showToast(`✅ เปลี่ยนตำราประจำศาสตร์เป็น "${activeNow ? activeNow.title : docId}" เรียบร้อยแล้ว!`);
+        } catch (err) {
+          this.showToast(`⚠️ ${err.message || "ไม่สามารถเปลี่ยนตำราได้"}`);
+        }
+      });
+    });
+
+    this.ragDocsList.querySelectorAll("[data-toggle-siamsi-rag]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const docId = btn.getAttribute("data-toggle-siamsi-rag");
+        const curDoc = docs.find(d => d.id === docId);
+        const nextState = !(curDoc && curDoc.enabledForViewer !== false);
+        await window.ragEngine.setSiamsiDocViewerEnabled(docId, nextState);
+        this.renderRagKnowledgeBase();
+        this.showToast(nextState ? "✅ เปิดตำราเสริมเซียมซีให้ผู้ดูเลือกใช้ได้แล้ว" : "⏸️ พักตำราเสริมเซียมซีไว้ชั่วคราวแล้ว");
+      });
+    });
+
+    this.ragDocsList.querySelectorAll("[data-preview-rag]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const docId = btn.getAttribute("data-preview-rag");
+        if (this.expandedRagDocIds.has(docId)) {
+          this.expandedRagDocIds.delete(docId);
+        } else {
+          this.expandedRagDocIds.add(docId);
+        }
+        this.renderRagKnowledgeBase();
+      });
+    });
 
     this.ragDocsList.querySelectorAll("[data-del-rag]").forEach(btn => {
       btn.addEventListener("click", async () => {
         const docId = btn.getAttribute("data-del-rag");
+        this.expandedRagDocIds.delete(docId);
         await window.ragEngine.deleteDocument(docId);
         this.renderRagKnowledgeBase();
         this.renderStats();

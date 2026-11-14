@@ -252,31 +252,110 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { ok: true, passcode: clean });
   }
 
-  // RAG Knowledge Base Endpoints (NotebookLM Summaries)
+  // RAG Knowledge Base Endpoints (Per-Discipline Library & Active Book Selection)
+  const DEFAULT_ACTIVE_RAG_BOOKS = {
+    tarot: "tarot_classic_rw",
+    palm: "palm_thai_classical",
+    siamsi: "viewer_choice"
+  };
+
+  const normalizeActiveRagBooks = (raw) => {
+    const src = (raw && typeof raw === "object") ? raw : {};
+    return {
+      tarot: (typeof src.tarot === "string" && src.tarot.trim()) ? src.tarot.trim() : DEFAULT_ACTIVE_RAG_BOOKS.tarot,
+      palm: (typeof src.palm === "string" && src.palm.trim()) ? src.palm.trim() : DEFAULT_ACTIVE_RAG_BOOKS.palm,
+      siamsi: "viewer_choice"
+    };
+  };
+
   if (pathname === "/api/rag-docs" && req.method === "GET") {
     const db = readDb();
-    return sendJson(res, 200, { docs: db.ragDocs || [] });
+    return sendJson(res, 200, {
+      docs: db.ragDocs || [],
+      activeBooks: normalizeActiveRagBooks(db.ragActiveBooks)
+    });
   }
 
   if (pathname === "/api/rag-docs" && req.method === "POST") {
     const body = await parseBody(req);
     const db = readDb();
     db.ragDocs = Array.isArray(db.ragDocs) ? db.ragDocs : [];
+    db.ragActiveBooks = normalizeActiveRagBooks(db.ragActiveBooks);
     if (body && body.id) {
-      db.ragDocs = db.ragDocs.filter(d => d.id !== body.id);
-      db.ragDocs.unshift(body);
+      const disc = ["tarot", "palm", "siamsi"].includes(body.discipline) ? body.discipline : "tarot";
+      const docRecord = {
+        ...body,
+        discipline: disc,
+        targetScope: disc,
+        enabledForViewer: body.enabledForViewer !== false
+      };
+      delete docRecord.activateAfterUpload;
+      db.ragDocs = db.ragDocs.filter(d => d.id !== docRecord.id);
+      db.ragDocs.unshift(docRecord);
+      if (body.activateAfterUpload && (disc === "tarot" || disc === "palm")) {
+        db.ragActiveBooks[disc] = docRecord.id;
+      }
       writeDb(db);
+      return sendJson(res, 201, { doc: docRecord, activeBooks: db.ragActiveBooks });
     }
-    return sendJson(res, 201, { doc: body });
+    return sendJson(res, 400, { error: "Missing document id" });
   }
 
-  const ragDelMatch = pathname.match(/^\/api\/rag-docs\/([^/]+)$/);
-  if (ragDelMatch && req.method === "DELETE") {
-    const docId = ragDelMatch[1];
+  const ragDocMatch = pathname.match(/^\/api\/rag-docs\/([^/]+)$/);
+  if (ragDocMatch && req.method === "PATCH") {
+    const docId = decodeURIComponent(ragDocMatch[1]);
+    const body = await parseBody(req);
+    const db = readDb();
+    db.ragDocs = Array.isArray(db.ragDocs) ? db.ragDocs : [];
+    const idx = db.ragDocs.findIndex(d => d.id === docId);
+    if (idx === -1) {
+      return sendJson(res, 404, { error: "Document not found" });
+    }
+    if (typeof body.enabledForViewer === "boolean") {
+      db.ragDocs[idx].enabledForViewer = body.enabledForViewer;
+    }
+    writeDb(db);
+    return sendJson(res, 200, { doc: db.ragDocs[idx] });
+  }
+
+  if (ragDocMatch && req.method === "DELETE") {
+    const docId = decodeURIComponent(ragDocMatch[1]);
     const db = readDb();
     db.ragDocs = (db.ragDocs || []).filter(d => d.id !== docId);
+    db.ragActiveBooks = normalizeActiveRagBooks(db.ragActiveBooks);
+    if (db.ragActiveBooks.tarot === docId) db.ragActiveBooks.tarot = DEFAULT_ACTIVE_RAG_BOOKS.tarot;
+    if (db.ragActiveBooks.palm === docId) db.ragActiveBooks.palm = DEFAULT_ACTIVE_RAG_BOOKS.palm;
     writeDb(db);
-    return sendJson(res, 200, { deleted: true });
+    return sendJson(res, 200, { deleted: true, activeBooks: db.ragActiveBooks });
+  }
+
+  if (pathname === "/api/rag-active" && req.method === "GET") {
+    const db = readDb();
+    return sendJson(res, 200, { activeBooks: normalizeActiveRagBooks(db.ragActiveBooks) });
+  }
+
+  if (pathname === "/api/rag-active" && req.method === "POST") {
+    const body = await parseBody(req);
+    const db = readDb();
+    const current = normalizeActiveRagBooks(db.ragActiveBooks);
+
+    if (body && body.discipline === "siamsi") {
+      return sendJson(res, 400, {
+        error: "ศาสตร์เซียมซีเปิดให้ผู้ดูเลือกตำราเองได้หน้าเว็บ ไม่สามารถล็อกตำราจากหลังบ้าน",
+        activeBooks: current
+      });
+    }
+
+    if (body && (body.discipline === "tarot" || body.discipline === "palm") && body.bookId) {
+      current[body.discipline] = String(body.bookId).trim();
+    } else if (body && body.activeBooks && typeof body.activeBooks === "object") {
+      if (body.activeBooks.tarot) current.tarot = String(body.activeBooks.tarot).trim();
+      if (body.activeBooks.palm) current.palm = String(body.activeBooks.palm).trim();
+    }
+
+    db.ragActiveBooks = normalizeActiveRagBooks(current);
+    writeDb(db);
+    return sendJson(res, 200, { ok: true, activeBooks: db.ragActiveBooks });
   }
 
   // Social Auto-Post Endpoints
