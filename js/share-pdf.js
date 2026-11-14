@@ -941,6 +941,9 @@ class ShareAndPdfEngine {
     });
 
     // คำพยากรณ์ 5 ด้านสำคัญ (จัดสรรลงตัวใน 1 หน้าเดียว พร้อมบรรทัดมือซ้าย & มือขวาครบไม่ขาดคำ)
+    if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
+      window.PalmScannerEngine.normalizePalmReading(readingData);
+    }
     const aspects = readingData.aspects || {};
     const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
     let curY = vY + vH + 14;
@@ -1056,6 +1059,9 @@ class ShareAndPdfEngine {
     if (!readingData) return "";
 
     if (readingData.mode === "palm") {
+      if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
+        window.PalmScannerEngine.normalizePalmReading(readingData);
+      }
       const aspects = readingData.aspects || {};
       const order = ["life", "intellect", "love", "wealth", "guidance"];
       const aspectText = order

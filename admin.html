@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบหลังบ้านจัดการโค้ด & ตำราพยากรณ์ RAG | เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE)</title>
-  <link rel="stylesheet" href="css/style.css?v=20261114b">
-  <link rel="stylesheet" href="css/admin.css?v=20261114b">
+  <link rel="stylesheet" href="css/style.css?v=20261114d">
+  <link rel="stylesheet" href="css/admin.css?v=20261114d">
 </head>
 <body class="admin-body">
 
@@ -18,7 +18,7 @@
       </div>
       <div>
         <h1>เซียมซีทาโรต์ (SIAMSI TAROT • ORACLE) — ระบบหลังบ้าน</h1>
-        <p>จัดการโค้ดลูกค้า Fastwork • อัปโหลดตำราพยากรณ์ RAG (NotebookLM) • ตรวจสอบ Log & ดาวน์โหลดไฟล์ PDF</p>
+        <p>จัดการโค้ดลูกค้า Fastwork • อัปโหลดตำราพยากรณ์ RAG (NotebookLM) • ตั้งค่าฟอนต์และขนาดอักษร</p>
       </div>
     </div>
     <div class="admin-header-actions">
@@ -28,7 +28,10 @@
           <span>🔑</span> จัดการโค้ดลูกค้า
         </button>
         <button type="button" id="btn-admin-tab-rag" class="btn-admin-tab" role="tab" aria-selected="false">
-          <span>📚</span> อัปโหลดตำรา RAG (NotebookLM)
+          <span>📚</span> ตำรา RAG
+        </button>
+        <button type="button" id="btn-admin-tab-display" class="btn-admin-tab" role="tab" aria-selected="false">
+          <span>🎨</span> อักษร & ฟอนต์ลูกค้า
         </button>
       </div>
       <button type="button" id="btn-refresh-codes" class="btn-admin-secondary">
@@ -344,6 +347,121 @@
       </div>
     </section>
 
+    <!-- ================================================================= -->
+    <!-- VIEW 3: ปรับขนาดตัวอักษร & ฟอนต์หน้าลูกค้า (Admin เป็นผู้กำหนด) -->
+    <!-- ================================================================= -->
+    <section class="admin-panel-card rag-knowledge-section" id="display-settings-section" style="display: none;">
+      <div class="section-head-row" style="align-items:flex-start; flex-wrap:wrap; gap:0.85rem; margin-bottom:1.25rem;">
+        <div>
+          <h2>🎨 ปรับขนาดตัวอักษร & ฟอนต์หน้าลูกค้า</h2>
+          <p class="section-desc">
+            ตั้งค่าฟอนต์และสัดส่วนตัวอักษรสำหรับหน้าเว็บฝั่งลูกค้า (มีผลกับทั้ง <strong>ดูดวงไพ่ทาโรต์, เซียมซี และสแกนลายมือ</strong> โดยเฉพาะหน้าจอมือถือที่ต้องการให้อ่านง่ายขึ้น)
+          </p>
+        </div>
+        <button type="button" id="btn-back-to-codes-from-display" class="btn-admin-secondary">
+          ← กลับไปหน้าจัดการโค้ด
+        </button>
+      </div>
+
+      <div class="display-settings-grid">
+        <!-- ฝั่งซ้าย: ตัวควบคุมฟอนต์และขนาด -->
+        <div class="display-controls-col">
+          <div class="display-control-block">
+            <div class="display-block-head">
+              <h3>1. เลือกแบบฟอนต์ (Font Family)</h3>
+              <span class="display-current-pill" id="display-active-font-pill">Prompt</span>
+            </div>
+            <div class="display-font-grid" id="display-font-grid">
+              <!-- Rendered by admin.js -->
+            </div>
+          </div>
+
+          <div class="display-control-block">
+            <div class="display-block-head">
+              <h3>2. ขนาดตัวอักษรบนมือถือ (Mobile Readability)</h3>
+              <span class="display-current-pill mobile-pill" id="mobile-font-scale-badge">100% (~19px)</span>
+            </div>
+            <p class="display-help-note">ปรับขยายขนาดข้อความคำทำนายเฉพาะเมื่อลูกค้าเปิดผ่านมือถือ เพื่อให้อ่านสบายตาไม่เล็กเกินไป</p>
+            <div class="display-preset-row" id="mobile-font-scale-presets">
+              <button type="button" class="btn-scale-preset" data-mobile-scale="100">ปกติ (100%)</button>
+              <button type="button" class="btn-scale-preset" data-mobile-scale="115">ใหญ่อ่านง่าย (115%)</button>
+              <button type="button" class="btn-scale-preset" data-mobile-scale="130">ใหญ่พิเศษ (130%)</button>
+              <button type="button" class="btn-scale-preset" data-mobile-scale="145">ใหญ่ชัดเจนสุด (145%)</button>
+            </div>
+            <div class="display-slider-row">
+              <span>90%</span>
+              <input type="range" id="input-mobile-font-scale" min="90" max="160" step="5" value="100" />
+              <span>160%</span>
+            </div>
+          </div>
+
+          <div class="display-control-block">
+            <div class="display-block-head">
+              <h3>3. ขนาดตัวอักษรบนคอมพิวเตอร์ / แท็บเล็ต (Desktop)</h3>
+              <span class="display-current-pill" id="desktop-font-scale-badge">100% (~16px)</span>
+            </div>
+            <div class="display-preset-row" id="desktop-font-scale-presets">
+              <button type="button" class="btn-scale-preset" data-desktop-scale="90">กะทัดรัด (90%)</button>
+              <button type="button" class="btn-scale-preset" data-desktop-scale="100">ปกติ (100%)</button>
+              <button type="button" class="btn-scale-preset" data-desktop-scale="115">ใหญ่อ่านง่าย (115%)</button>
+              <button type="button" class="btn-scale-preset" data-desktop-scale="130">ใหญ่พิเศษ (130%)</button>
+            </div>
+            <div class="display-slider-row">
+              <span>85%</span>
+              <input type="range" id="input-desktop-font-scale" min="85" max="150" step="5" value="100" />
+              <span>150%</span>
+            </div>
+          </div>
+
+          <div class="display-save-actions">
+            <button type="button" id="btn-save-display-settings" class="btn-admin-primary">
+              <span>💾</span> บันทึก & ใช้งานกับหน้าลูกค้าทันที
+            </button>
+            <button type="button" id="btn-reset-display-settings" class="btn-admin-secondary">
+              <span>🔄</span> คืนค่ามาตรฐาน (100%)
+            </button>
+          </div>
+        </div>
+
+        <!-- ฝั่งขวา: ตัวอย่างการแสดงผลจริงฝั่งลูกค้า -->
+        <div class="display-preview-col">
+          <div class="display-preview-toolbar">
+            <span>👁️ ตัวอย่างการแสดงผลหน้าลูกค้า (Live Preview)</span>
+            <div class="preview-device-toggle">
+              <button type="button" class="btn-preview-dev active" data-preview-device="mobile">📱 มือถือ</button>
+              <button type="button" class="btn-preview-dev" data-preview-device="desktop">💻 คอมฯ</button>
+            </div>
+          </div>
+
+          <div class="display-preview-stage" id="display-preview-stage">
+            <div class="display-preview-frame is-mobile" id="display-live-preview-frame">
+              <div class="preview-reading-summary" id="preview-sample-verdict">
+                ภาพรวมทั้ง 2 มือ: พื้นฐานร่างกายและกำลังใจดี ความคิดเป็นระบบและรอบคอบ มีจังหวะเติบโตตามความสม่ำเสมอ
+              </div>
+              <div class="preview-aspect-card">
+                <div class="preview-aspect-head">
+                  <span>🌿</span>
+                  <div>
+                    <h4 id="preview-sample-title">คำแนะนำดวงชะตา</h4>
+                    <span class="preview-grade" id="preview-sample-grade">จังหวะชีวิตค่อยเป็นค่อยไป</span>
+                  </div>
+                </div>
+                <p id="preview-sample-body">
+                  ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น
+                </p>
+                <div class="preview-note-box" id="preview-sample-note">
+                  <strong>✋ มือซ้าย (พื้นดวงเดิม):</strong> จังหวะชีวิตเป็นแนวค่อยเป็นค่อยไป เน้นความพอดีและสมดุลในแต่ละวัน
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="display-sync-tip">
+            💡 ระบบจะซิงค์การตั้งค่าไปยังฐานข้อมูลและแนบไว้ในลิงก์ส่งลูกค้า (<code>?code=...&amp;t=...</code>) โดยอัตโนมัติ ลูกค้าที่เปิดบนมือถือจะเห็นฟอนต์และขนาดอักษรตามที่แอดมินตั้งไว้ทันที
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Modal 1: ดูคำทำนายฉบับเต็ม & ประวัติ Log ของโค้ด -->
@@ -364,9 +482,9 @@
   <script src="js/palm-data.js"></script>
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
-  <script src="js/rag-engine.js?v=20261114c"></script>
-  <script src="js/code-manager.js?v=20261114b"></script>
-  <script src="js/share-pdf.js?v=20261114b"></script>
-  <script src="js/admin.js?v=20261114b"></script>
+  <script src="js/rag-engine.js?v=20261114d"></script>
+  <script src="js/code-manager.js?v=20261114d"></script>
+  <script src="js/share-pdf.js?v=20261114d"></script>
+  <script src="js/admin.js?v=20261114d"></script>
 </body>
 </html>

@@ -19,6 +19,11 @@ class AdminBackoffice {
     this.lastCreatedCodeObj = null;
     this.activeRagDiscipline = "tarot";
     this.expandedRagDocIds = new Set();
+    this.previewDeviceMode = "mobile";
+    this._displayEditSeq = 0;
+    this.pendingDisplaySettings = window.displaySettingsEngine
+      ? window.displaySettingsEngine.getSettings()
+      : { fontFamilyKey: "prompt", desktopFontScale: 100, mobileFontScale: 100 };
 
     this.initDOM();
     this.bindEvents();
@@ -47,9 +52,28 @@ class AdminBackoffice {
     // Admin Menu Tabs & Views
     this.btnTabCodes = document.getElementById("btn-admin-tab-codes");
     this.btnTabRag = document.getElementById("btn-admin-tab-rag");
+    this.btnTabDisplay = document.getElementById("btn-admin-tab-display");
     this.btnBackToCodesView = document.getElementById("btn-back-to-codes-view");
+    this.btnBackFromDisplay = document.getElementById("btn-back-to-codes-from-display");
     this.adminViewCodes = document.getElementById("admin-view-codes");
     this.ragKnowledgeSection = document.getElementById("rag-knowledge-section");
+    this.displaySettingsSection = document.getElementById("display-settings-section");
+
+    // Customer Display Settings Elements
+    this.displayFontGrid = document.getElementById("display-font-grid");
+    this.displayActiveFontPill = document.getElementById("display-active-font-pill");
+    this.inputMobileFontScale = document.getElementById("input-mobile-font-scale");
+    this.mobileFontScaleBadge = document.getElementById("mobile-font-scale-badge");
+    this.inputDesktopFontScale = document.getElementById("input-desktop-font-scale");
+    this.desktopFontScaleBadge = document.getElementById("desktop-font-scale-badge");
+    this.btnSaveDisplaySettings = document.getElementById("btn-save-display-settings");
+    this.btnResetDisplaySettings = document.getElementById("btn-reset-display-settings");
+    this.displayLivePreviewFrame = document.getElementById("display-live-preview-frame");
+    this.previewSampleVerdict = document.getElementById("preview-sample-verdict");
+    this.previewSampleTitle = document.getElementById("preview-sample-title");
+    this.previewSampleGrade = document.getElementById("preview-sample-grade");
+    this.previewSampleBody = document.getElementById("preview-sample-body");
+    this.previewSampleNote = document.getElementById("preview-sample-note");
 
     // Stats
     this.statTotal = document.getElementById("stat-total-codes");
@@ -116,14 +140,24 @@ class AdminBackoffice {
     if (this.btnTabRag) {
       this.btnTabRag.addEventListener("click", () => this.switchAdminTab("rag"));
     }
+    if (this.btnTabDisplay) {
+      this.btnTabDisplay.addEventListener("click", () => this.switchAdminTab("display"));
+    }
     if (this.btnBackToCodesView) {
       this.btnBackToCodesView.addEventListener("click", () => this.switchAdminTab("codes"));
     }
+    if (this.btnBackFromDisplay) {
+      this.btnBackFromDisplay.addEventListener("click", () => this.switchAdminTab("codes"));
+    }
     if (window.location.hash === "#rag-knowledge-section") {
       this.switchAdminTab("rag");
+    } else if (window.location.hash === "#display-settings-section") {
+      this.switchAdminTab("display");
     } else {
       this.switchAdminTab("codes");
     }
+
+    this.bindDisplaySettingsEvents();
 
     if (this.btnRefreshCodes) {
       this.btnRefreshCodes.addEventListener("click", () => {
@@ -324,6 +358,154 @@ class AdminBackoffice {
     }
   }
 
+  bindDisplaySettingsEvents() {
+    if (this.inputMobileFontScale) {
+      this.inputMobileFontScale.addEventListener("input", () => {
+        this._displayEditSeq++;
+        this.pendingDisplaySettings.mobileFontScale = Number(this.inputMobileFontScale.value) || 100;
+        this.renderDisplaySettingsPanel();
+      });
+      this.inputMobileFontScale.addEventListener("change", () => this.persistDisplaySettings(false));
+    }
+
+    if (this.inputDesktopFontScale) {
+      this.inputDesktopFontScale.addEventListener("input", () => {
+        this._displayEditSeq++;
+        this.pendingDisplaySettings.desktopFontScale = Number(this.inputDesktopFontScale.value) || 100;
+        this.renderDisplaySettingsPanel();
+      });
+      this.inputDesktopFontScale.addEventListener("change", () => this.persistDisplaySettings(false));
+    }
+
+    document.querySelectorAll("[data-mobile-scale]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        this._displayEditSeq++;
+        this.pendingDisplaySettings.mobileFontScale = Number(btn.getAttribute("data-mobile-scale")) || 100;
+        this.renderDisplaySettingsPanel();
+        await this.persistDisplaySettings(true);
+      });
+    });
+
+    document.querySelectorAll("[data-desktop-scale]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        this._displayEditSeq++;
+        this.pendingDisplaySettings.desktopFontScale = Number(btn.getAttribute("data-desktop-scale")) || 100;
+        this.renderDisplaySettingsPanel();
+        await this.persistDisplaySettings(true);
+      });
+    });
+
+    document.querySelectorAll("[data-preview-device]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        this.previewDeviceMode = btn.getAttribute("data-preview-device") === "desktop" ? "desktop" : "mobile";
+        document.querySelectorAll("[data-preview-device]").forEach(b => {
+          b.classList.toggle("active", b === btn);
+        });
+        this.renderDisplaySettingsPanel();
+      });
+    });
+
+    if (this.btnSaveDisplaySettings) {
+      this.btnSaveDisplaySettings.addEventListener("click", () => this.persistDisplaySettings(true));
+    }
+
+    if (this.btnResetDisplaySettings) {
+      this.btnResetDisplaySettings.addEventListener("click", async () => {
+        if (!window.displaySettingsEngine) return;
+        const seqAtReset = ++this._displayEditSeq;
+        const resetCfg = await window.displaySettingsEngine.resetSettings();
+        if (this._displayEditSeq === seqAtReset) {
+          this.pendingDisplaySettings = { ...resetCfg };
+          this.renderDisplaySettingsPanel();
+        }
+        this.showToast("🔄 คืนค่าฟอนต์และขนาดอักษรเป็นมาตรฐาน (Prompt 100%) แล้ว");
+      });
+    }
+  }
+
+  async persistDisplaySettings(withToast = true) {
+    if (!window.displaySettingsEngine) return;
+    const seqAtStart = this._displayEditSeq;
+    const payload = { ...this.pendingDisplaySettings };
+    const saved = await window.displaySettingsEngine.saveSettings(payload);
+    if (this._displayEditSeq === seqAtStart) {
+      this.pendingDisplaySettings = { ...saved };
+      this.renderDisplaySettingsPanel();
+    }
+    if (withToast && this._displayEditSeq === seqAtStart) {
+      const fontOpt = window.displaySettingsEngine.getFontOption(saved.fontFamilyKey);
+      this.showToast(`🎨 บันทึกการแสดงผลลูกค้าแล้ว (${fontOpt.label} • มือถือ ${saved.mobileFontScale}% / คอม ${saved.desktopFontScale}%)`);
+    }
+  }
+
+  renderDisplaySettingsPanel() {
+    if (!window.displaySettingsEngine || !this.displayFontGrid) return;
+    const cfg = window.displaySettingsEngine.normalize(this.pendingDisplaySettings || window.displaySettingsEngine.getSettings());
+    this.pendingDisplaySettings = cfg;
+    const fonts = window.displaySettingsEngine.getFontCatalog();
+    const activeFont = window.displaySettingsEngine.getFontOption(cfg.fontFamilyKey);
+
+    if (this.displayActiveFontPill) {
+      this.displayActiveFontPill.textContent = activeFont.label;
+    }
+
+    const mobilePx = (18.88 * (cfg.mobileFontScale / 100)).toFixed(1);
+    const desktopPx = (16.32 * (cfg.desktopFontScale / 100)).toFixed(1);
+
+    if (this.inputMobileFontScale) this.inputMobileFontScale.value = String(cfg.mobileFontScale);
+    if (this.mobileFontScaleBadge) this.mobileFontScaleBadge.textContent = `${cfg.mobileFontScale}% (~${mobilePx}px)`;
+    if (this.inputDesktopFontScale) this.inputDesktopFontScale.value = String(cfg.desktopFontScale);
+    if (this.desktopFontScaleBadge) this.desktopFontScaleBadge.textContent = `${cfg.desktopFontScale}% (~${desktopPx}px)`;
+
+    document.querySelectorAll("[data-mobile-scale]").forEach(btn => {
+      btn.classList.toggle("active", Number(btn.getAttribute("data-mobile-scale")) === cfg.mobileFontScale);
+    });
+    document.querySelectorAll("[data-desktop-scale]").forEach(btn => {
+      btn.classList.toggle("active", Number(btn.getAttribute("data-desktop-scale")) === cfg.desktopFontScale);
+    });
+
+    this.displayFontGrid.innerHTML = fonts.map(f => {
+      const isSelected = f.key === cfg.fontFamilyKey;
+      return `
+        <button type="button" class="display-font-card ${isSelected ? "active" : ""}" data-select-font="${f.key}" style="font-family:${this.escapeHtml(f.stack)};">
+          <div class="display-font-card-head">
+            <span class="display-font-name">${this.escapeHtml(f.label)}</span>
+            <span class="display-font-badge">${this.escapeHtml(f.badge)}</span>
+          </div>
+          <div class="display-font-sample">กขค ดวงชะตาแจ่มใส อ่านง่ายชัดเจน ๑๒๓</div>
+          <div class="display-font-desc">${this.escapeHtml(f.desc)}</div>
+        </button>
+      `;
+    }).join("");
+
+    this.displayFontGrid.querySelectorAll("[data-select-font]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        this._displayEditSeq++;
+        this.pendingDisplaySettings.fontFamilyKey = btn.getAttribute("data-select-font") || "prompt";
+        this.renderDisplaySettingsPanel();
+        await this.persistDisplaySettings(true);
+      });
+    });
+
+    // Update Live Preview Box
+    if (this.displayLivePreviewFrame) {
+      const isMob = this.previewDeviceMode !== "desktop";
+      this.displayLivePreviewFrame.classList.toggle("is-mobile", isMob);
+      this.displayLivePreviewFrame.style.fontFamily = activeFont.stack;
+      const scale = (isMob ? cfg.mobileFontScale : cfg.desktopFontScale) / 100;
+      const baseVerdict = isMob ? 18.88 : 16.32;
+      const baseTitle = isMob ? 20.8 : 17.92;
+      const baseBody = isMob ? 18.88 : 16.32;
+      const baseNote = isMob ? 17.6 : 15.2;
+
+      if (this.previewSampleVerdict) this.previewSampleVerdict.style.fontSize = `${(baseVerdict * scale).toFixed(2)}px`;
+      if (this.previewSampleTitle) this.previewSampleTitle.style.fontSize = `${(baseTitle * scale).toFixed(2)}px`;
+      if (this.previewSampleGrade) this.previewSampleGrade.style.fontSize = `${(baseNote * scale).toFixed(2)}px`;
+      if (this.previewSampleBody) this.previewSampleBody.style.fontSize = `${(baseBody * scale).toFixed(2)}px`;
+      if (this.previewSampleNote) this.previewSampleNote.style.fontSize = `${(baseNote * scale).toFixed(2)}px`;
+    }
+  }
+
   setActiveRagTab(discipline, syncSelect = true) {
     const cleanDisc = ["tarot", "palm", "siamsi"].includes(discipline) ? discipline : "tarot";
     this.activeRagDiscipline = cleanDisc;
@@ -346,20 +528,30 @@ class AdminBackoffice {
   }
 
   switchAdminTab(tabName) {
-    const isRag = tabName === "rag";
+    const mode = ["codes", "rag", "display"].includes(tabName) ? tabName : "codes";
     if (this.adminViewCodes) {
-      this.adminViewCodes.style.display = isRag ? "none" : "block";
+      this.adminViewCodes.style.display = mode === "codes" ? "block" : "none";
     }
     if (this.ragKnowledgeSection) {
-      this.ragKnowledgeSection.style.display = isRag ? "block" : "none";
+      this.ragKnowledgeSection.style.display = mode === "rag" ? "block" : "none";
+    }
+    if (this.displaySettingsSection) {
+      this.displaySettingsSection.style.display = mode === "display" ? "block" : "none";
     }
     if (this.btnTabCodes) {
-      this.btnTabCodes.classList.toggle("active", !isRag);
-      this.btnTabCodes.setAttribute("aria-selected", String(!isRag));
+      this.btnTabCodes.classList.toggle("active", mode === "codes");
+      this.btnTabCodes.setAttribute("aria-selected", String(mode === "codes"));
     }
     if (this.btnTabRag) {
-      this.btnTabRag.classList.toggle("active", isRag);
-      this.btnTabRag.setAttribute("aria-selected", String(isRag));
+      this.btnTabRag.classList.toggle("active", mode === "rag");
+      this.btnTabRag.setAttribute("aria-selected", String(mode === "rag"));
+    }
+    if (this.btnTabDisplay) {
+      this.btnTabDisplay.classList.toggle("active", mode === "display");
+      this.btnTabDisplay.setAttribute("aria-selected", String(mode === "display"));
+    }
+    if (mode === "display") {
+      this.renderDisplaySettingsPanel();
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -476,6 +668,15 @@ class AdminBackoffice {
         await window.ragEngine.syncFromServer().catch(() => {});
       }
     }
+    if (window.displaySettingsEngine && typeof window.displaySettingsEngine.syncFromServer === "function") {
+      if (!silent) {
+        const seqBeforeSync = this._displayEditSeq;
+        const synced = await window.displaySettingsEngine.syncFromServer().catch(() => null);
+        if (synced && this._displayEditSeq === seqBeforeSync) {
+          this.pendingDisplaySettings = { ...synced };
+        }
+      }
+    }
 
     if (this.syncModeBadge) {
       if (window.codeManager.apiAvailable) {
@@ -486,6 +687,7 @@ class AdminBackoffice {
     }
 
     this.renderRagKnowledgeBase();
+    this.renderDisplaySettingsPanel();
     this.renderStats();
     this.renderTable();
   }
@@ -1181,13 +1383,34 @@ class AdminBackoffice {
 
   _buildAdminPalmPayload(codeObj, palmRes) {
     const r = (palmRes && palmRes.reading) || palmRes || {};
+    const rawAspects = r.aspects || palmRes.aspects || {};
+    const aspects = {};
+    Object.keys(rawAspects).forEach((k) => {
+      const src = rawAspects[k];
+      if (!src || typeof src !== "object") return;
+      const copy = { ...src };
+      if (copy.ragInsight !== undefined) delete copy.ragInsight;
+      if (copy.title === "คำแนะนำที่ใช้ได้จริง") copy.title = "คำแนะนำดวงชะตา";
+      if (copy.grade === "รักษาสมดุลแล้วเดินหน้าต่อ") copy.grade = "จังหวะชีวิตค่อยเป็นค่อยไป";
+      if (copy.grade === "สื่อสารให้ชัด เปิดรับโอกาส") copy.grade = "เด่นด้านการสังเกตและการสื่อสาร";
+      if (copy.grade === "เคล็ดเสริมดวงประจำตัว") copy.grade = "แนวโน้มภาพรวมดวงชะตา";
+      if (k === "guidance" || copy.title === "คำแนะนำดวงชะตา") {
+        const txt = String(copy.text || "");
+        if (txt.includes("ชีวิตช่วงนี้เน้นความนิ่ง") || txt.includes("อย่าเร่งกดดัน")) {
+          copy.text = "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
+        } else if (txt.includes("จุดแข็งของคุณอยู่ที่การพูดคุย") || txt.includes("ทำบุญทำทาน")) {
+          copy.text = "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว";
+        }
+      }
+      aspects[k] = copy;
+    });
     return {
       mode: "palm",
       hand: palmRes.hand || r.hand || "both",
       code: (codeObj && codeObj.code) || "",
       confidence: palmRes.confidence || r.avgConfidence || 92,
       summaryVerdict: palmRes.summary || r.summaryVerdict || "วิเคราะห์ลายมือครบ 2 มือสำเร็จ",
-      aspects: palmRes.aspects || r.aspects || {},
+      aspects,
       leftHudDataUrl: palmRes.leftHudThumbDataUrl || palmRes.leftHudDataUrl || "",
       rightHudDataUrl: palmRes.rightHudThumbDataUrl || palmRes.rightHudDataUrl || "",
       timestamp: (codeObj && codeObj.logs && (codeObj.logs.palmAnalyzedAt || codeObj.logs.palmDrawnAt)) || Date.now()

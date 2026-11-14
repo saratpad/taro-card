@@ -446,6 +446,7 @@ class CodeManager {
   async verifyAndAccessCode(rawCode, recordAccess = true) {
     if (!rawCode) return { valid: false, reason: "empty" };
     const cleanCode = String(rawCode).trim().toUpperCase();
+    this.applyUrlDisplayTokenIfPresent(cleanCode);
 
     const apiRes = await this._apiRequest(`/api/codes/${encodeURIComponent(cleanCode)}?access=${recordAccess ? "1" : "0"}`);
     if (apiRes && apiRes.codeObj) {
@@ -718,18 +719,40 @@ class CodeManager {
   encodeCodeToken(codeObj) {
     if (!codeObj) return "";
     try {
+      const ds = (typeof window !== "undefined" && window.displaySettingsEngine && typeof window.displaySettingsEngine.toCompactToken === "function")
+        ? window.displaySettingsEngine.toCompactToken()
+        : null;
       const minPayload = {
         c: codeObj.code,
         o: codeObj.fastworkOrder || "",
         m: codeObj.mode || "tarot",
         l: codeObj.lockedCategory || "",
         s: codeObj.createdAt || Date.now(),
-        e: codeObj.expiresAt || (Date.now() + 24 * 60 * 60 * 1000)
+        e: codeObj.expiresAt || (Date.now() + 24 * 60 * 60 * 1000),
+        ...(ds ? { ds } : {})
       };
       return btoa(encodeURIComponent(JSON.stringify(minPayload)));
     } catch (e) {
       return "";
     }
+  }
+
+  applyUrlDisplayTokenIfPresent(expectedCode = "") {
+    if (typeof window === "undefined") return false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("t");
+      if (!token) return false;
+      const parsed = JSON.parse(decodeURIComponent(atob(token)));
+      if (!parsed) return false;
+      if (expectedCode && String(parsed.c || "").toUpperCase() !== String(expectedCode).toUpperCase()) {
+        return false;
+      }
+      if (parsed.ds && window.displaySettingsEngine && typeof window.displaySettingsEngine.applyFromUrlToken === "function") {
+        return window.displaySettingsEngine.applyFromUrlToken(parsed.ds);
+      }
+    } catch (_) {}
+    return false;
   }
 
   _reconstructCrossDeviceCode(cleanCode) {
@@ -743,6 +766,9 @@ class CodeManager {
       if (token) {
         const parsed = JSON.parse(decodeURIComponent(atob(token)));
         if (parsed && String(parsed.c).toUpperCase() === cleanCode) {
+          if (parsed.ds && typeof window !== "undefined" && window.displaySettingsEngine && typeof window.displaySettingsEngine.applyFromUrlToken === "function") {
+            window.displaySettingsEngine.applyFromUrlToken(parsed.ds);
+          }
           return this._normalizeCodeObj({
             code: cleanCode,
             customerName: "",

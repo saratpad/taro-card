@@ -1055,5 +1055,275 @@ class RAGKnowledgeEngine {
   }
 }
 
+// ===========================================================================
+// CUSTOMER DISPLAY TYPOGRAPHY ENGINE (ขนาดตัวอักษร & ฟอนต์หน้าลูกค้าโดย Admin)
+// ===========================================================================
+const STORAGE_KEY_DISPLAY_SETTINGS = "siamsi_customer_display_settings_v1";
+
+const CUSTOMER_FONT_CATALOG = [
+  {
+    key: "prompt",
+    label: "Prompt (พร้อมพ์)",
+    badge: "ค่าเริ่มต้น • สมดุล",
+    desc: "ทันสมัย โปร่ง สวยงาม อ่านสบายทั้งหัวข้อและเนื้อหา",
+    stack: "'Prompt', -apple-system, sans-serif"
+  },
+  {
+    key: "sarabun",
+    label: "Sarabun (สารบรรณ)",
+    badge: "แนะนำบนมือถือ ⭐",
+    desc: "ฟอนต์มีหัว ตัวอักษรใหญ่คมชัดมาก อ่านง่ายที่สุดในหน้าจอมือถือ",
+    stack: "'Sarabun', -apple-system, sans-serif"
+  },
+  {
+    key: "noto",
+    label: "Noto Sans Thai",
+    badge: "คมชัดมาตรฐาน",
+    desc: "เส้นสม่ำเสมอ อ่านง่ายทั้ง iOS และ Android แม้ขนาดอักษรใหญ่",
+    stack: "'Noto Sans Thai', -apple-system, sans-serif"
+  },
+  {
+    key: "kanit",
+    label: "Kanit (คณิต)",
+    badge: "เส้นหนาเด่นชัด",
+    desc: "ตัวหนาโค้งมน อ่านชัดเจนโดดเด่นแม้ในที่แสงจ้า",
+    stack: "'Kanit', -apple-system, sans-serif"
+  },
+  {
+    key: "ibm",
+    label: "IBM Plex Sans Thai",
+    badge: "มินิมอลหรูหรา",
+    desc: "เรียบร้อย อ่านง่าย สัดส่วนตัวอักษรสบายตาแบบงาน Editorial",
+    stack: "'IBM Plex Sans Thai', -apple-system, sans-serif"
+  },
+  {
+    key: "pridi",
+    label: "Pridi (ปรีดี)",
+    badge: "มีหัวกึ่งคัมภีร์",
+    desc: "ตัวอักษรมีหัวกึ่งขลัง เหมาะกับคำทำนายยาวๆ แบบคัมภีร์โบราณ",
+    stack: "'Pridi', 'Sarabun', serif"
+  }
+];
+
+const DEFAULT_CUSTOMER_DISPLAY = {
+  fontFamilyKey: "prompt",
+  desktopFontScale: 100,
+  mobileFontScale: 100,
+  updatedAt: 0
+};
+
+class CustomerDisplayEngine {
+  constructor() {
+    this.settings = this._loadLocal();
+    this._syncPromise = null;
+    this._saveSeq = 0;
+    this._saveQueue = Promise.resolve();
+    this._bindLifecycle();
+    this.applyToDocument();
+    this.syncFromServer();
+  }
+
+  getFontCatalog() {
+    return CUSTOMER_FONT_CATALOG;
+  }
+
+  getFontOption(key) {
+    return CUSTOMER_FONT_CATALOG.find(f => f.key === key) || CUSTOMER_FONT_CATALOG[0];
+  }
+
+  _clamp(val, min, max, fallback) {
+    const n = Number(val);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.round(Math.max(min, Math.min(max, n)));
+  }
+
+  normalize(raw) {
+    const src = (raw && typeof raw === "object") ? raw : {};
+    const rawKey = String(src.fontFamilyKey || "").trim().toLowerCase();
+    const validFont = CUSTOMER_FONT_CATALOG.some(f => f.key === rawKey)
+      ? rawKey
+      : DEFAULT_CUSTOMER_DISPLAY.fontFamilyKey;
+    return {
+      fontFamilyKey: validFont,
+      desktopFontScale: this._clamp(src.desktopFontScale, 85, 150, DEFAULT_CUSTOMER_DISPLAY.desktopFontScale),
+      mobileFontScale: this._clamp(src.mobileFontScale, 90, 160, DEFAULT_CUSTOMER_DISPLAY.mobileFontScale),
+      updatedAt: Number(src.updatedAt) || 0
+    };
+  }
+
+  _loadLocal() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_DISPLAY_SETTINGS);
+      if (raw) return this.normalize(JSON.parse(raw));
+    } catch (_) {}
+    return { ...DEFAULT_CUSTOMER_DISPLAY };
+  }
+
+  _saveLocal(settings) {
+    const norm = this.normalize(settings);
+    this.settings = norm;
+    try {
+      localStorage.setItem(STORAGE_KEY_DISPLAY_SETTINGS, JSON.stringify(norm));
+    } catch (_) {}
+    return norm;
+  }
+
+  getSettings() {
+    return { ...this.settings };
+  }
+
+  toCompactToken() {
+    const s = this.getSettings();
+    return {
+      f: s.fontFamilyKey,
+      d: s.desktopFontScale,
+      m: s.mobileFontScale,
+      u: s.updatedAt || 0
+    };
+  }
+
+  applyFromUrlToken(compact) {
+    if (!compact || typeof compact !== "object") return false;
+    const incoming = this.normalize({
+      fontFamilyKey: compact.f || compact.fontFamilyKey,
+      desktopFontScale: compact.d ?? compact.desktopFontScale,
+      mobileFontScale: compact.m ?? compact.mobileFontScale,
+      updatedAt: compact.u ?? compact.updatedAt ?? Date.now()
+    });
+    const curTime = Number(this.settings.updatedAt) || 0;
+    const nextTime = Number(incoming.updatedAt) || 0;
+    if (nextTime >= curTime || curTime === 0) {
+      this._saveLocal(incoming);
+      this.applyToDocument();
+      return true;
+    }
+    return false;
+  }
+
+  async syncFromServer() {
+    if (this._syncPromise) return this._syncPromise;
+    const seqAtStart = this._saveSeq;
+    this._syncPromise = (async () => {
+      if (typeof fetch !== "function") return this.getSettings();
+      try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch("/api/display-settings", { signal: controller.signal });
+        clearTimeout(tid);
+        if (res.ok && this._saveSeq === seqAtStart) {
+          const data = await res.json();
+          if (data && data.settings && this._saveSeq === seqAtStart) {
+            const serverNorm = this.normalize(data.settings);
+            const localTime = Number(this.settings.updatedAt) || 0;
+            if ((serverNorm.updatedAt || 0) > localTime || localTime === 0) {
+              this._saveLocal(serverNorm);
+              this.applyToDocument();
+              this._dispatchUpdated();
+            }
+          }
+        }
+      } catch (_) {}
+      this._syncPromise = null;
+      return this.getSettings();
+    })();
+    return this._syncPromise;
+  }
+
+  async saveSettings(partial) {
+    const seq = ++this._saveSeq;
+    const monotonicTime = Math.max(Date.now(), (Number(this.settings.updatedAt) || 0) + 1);
+    const next = this.normalize({
+      ...this.settings,
+      ...(partial || {}),
+      updatedAt: monotonicTime
+    });
+    this._saveLocal(next);
+    this.applyToDocument();
+    this._dispatchUpdated();
+
+    const snapshot = this.getSettings();
+    this._saveQueue = this._saveQueue.then(async () => {
+      // Skip superseded intermediate snapshots; the latest call in the queue will persist the newest state.
+      if (seq !== this._saveSeq) return;
+      if (typeof fetch !== "function") return;
+      try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch("/api/display-settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(snapshot),
+          signal: controller.signal
+        });
+        clearTimeout(tid);
+        if (res.ok && seq === this._saveSeq) {
+          const data = await res.json();
+          if (data && data.settings && seq === this._saveSeq) {
+            this._saveLocal(data.settings);
+            this._dispatchUpdated();
+          }
+        }
+      } catch (_) {}
+    }).catch(() => {});
+
+    await this._saveQueue;
+    return this.getSettings();
+  }
+
+  async resetSettings() {
+    return this.saveSettings({
+      ...DEFAULT_CUSTOMER_DISPLAY,
+      updatedAt: Date.now()
+    });
+  }
+
+  _dispatchUpdated() {
+    if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+      try {
+        window.dispatchEvent(new CustomEvent("customer-display-updated", {
+          detail: { settings: this.getSettings() }
+        }));
+      } catch (_) {}
+    }
+  }
+
+  applyToDocument() {
+    if (typeof document === "undefined") return;
+    const applyNow = () => {
+      if (!document.body || document.body.classList.contains("admin-body")) return;
+      const cfg = this.getSettings();
+      const fontOpt = this.getFontOption(cfg.fontFamilyKey);
+      const isMobile = typeof window !== "undefined" ? window.innerWidth <= 768 : false;
+      const pct = isMobile ? cfg.mobileFontScale : cfg.desktopFontScale;
+      const scale = Math.max(0.85, Math.min(1.65, pct / 100));
+
+      document.body.classList.add("customer-display-active");
+      document.body.setAttribute("data-customer-font", fontOpt.key);
+      document.documentElement.style.setProperty("--font-thai", fontOpt.stack);
+      document.documentElement.style.setProperty("--customer-font-scale", String(scale));
+    };
+
+    if (document.body) {
+      applyNow();
+    } else if (typeof window !== "undefined") {
+      window.addEventListener("DOMContentLoaded", applyNow, { once: true });
+    }
+  }
+
+  _bindLifecycle() {
+    if (typeof window === "undefined") return;
+    window.addEventListener("resize", () => this.applyToDocument());
+    window.addEventListener("DOMContentLoaded", () => this.applyToDocument());
+    window.addEventListener("storage", (ev) => {
+      if (ev && ev.key === STORAGE_KEY_DISPLAY_SETTINGS) {
+        this.settings = this._loadLocal();
+        this.applyToDocument();
+        this._dispatchUpdated();
+      }
+    });
+  }
+}
+
 window.brandThemeEngine = new BrandThemeEngine();
 window.ragEngine = new RAGKnowledgeEngine();
+window.displaySettingsEngine = new CustomerDisplayEngine();

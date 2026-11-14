@@ -510,3 +510,136 @@
     padding: 0.18rem 0.45rem;
   }
 }
+
+/* =========================================================================
+ * CUSTOMER DISPLAY TYPOGRAPHY CONTROLS (ตั้งค่าฟอนต์และขนาดตัวอักษรโดย Admin)
+ * ใช้ --customer-font-scale และ --font-thai ร่วมกันทั้ง Desktop และ Mobile
+ * ========================================================================= */
+body.customer-display-active {
+  font-size: calc(16px * var(--customer-font-scale, 1));
+  overflow-wrap: break-word;
+}
+
+body.customer-display-active h1,
+body.customer-display-active h2,
+body.customer-display-active h3,
+body.customer-display-active h4,
+body.customer-display-active p,
+body.customer-display-active span,
+body.customer-display-active strong,
+body.customer-display-active label,
+body.customer-display-active input,
+body.customer-display-active textarea,
+body.customer-display-active button {
+  overflow-wrap: break-word;
+}
+
+body.customer-display-active .gate-title,
+body.customer-display-active .hero-title,
+body.customer-display-active .palm-hero h2 {
+  font-family: var(--font-thai);
+}
+
+body.customer-display-active .gate-subtitle {
+  font-size: calc(1rem * var(--customer-font-scale, 1));
+}
+
+body.customer-display-active .verdict-text,
+body.customer-display-active .verdict-conclusion,
+body.customer-display-active .verdict-content,
+body.customer-display-active .verdict-content p,
+body.customer-display-active .verdict-storyline-card p,
+body.customer-display-active .tarot-card-desc,
+body.customer-display-active .prediction-text-content,
+body.customer-display-active .prediction-text-content p,
+body.customer-display-active #results-verdict-summary,
+body.customer-display-active .tarot-verdict-body,
+body.customer-display-active .palm-aspect-card .aspect-text,
+body.customer-display-active #palm-summary-verdict,
+body.customer-display-active .aspect-deep-detail p,
+body.customer-display-active .siamsi-poem-th {
+  font-size: calc(1.02rem * var(--customer-font-scale, 1));
+  line-height: 1.78;
+}
+
+body.customer-display-active .palm-aspect-card .aspect-title-wrap h4,
+body.customer-display-active .prediction-title,
+body.customer-display-active .pos-title,
+body.customer-display-active .card-name-main,
+body.customer-display-active .aspect-title,
+body.customer-display-active .aspect-title-wrap h4 {
+  font-size: calc(1.12rem * var(--customer-font-scale, 1));
+  line-height: 1.4;
+}
+
+body.customer-display-active .aspect-hand-note,
+body.customer-display-active .aspect-summary-callout,
+body.customer-display-active .do-box,
+body.customer-display-active .dont-box,
+body.customer-display-active .love-status-focused-box .love-status-text,
+body.customer-display-active .rag-insight-text,
+body.customer-display-active .palm-textbook-active-banner {
+  font-size: calc(0.95rem * var(--customer-font-scale, 1));
+  line-height: 1.7;
+}
+
+body.customer-display-active .aspect-grade-pill,
+body.customer-display-active .line-mini-badge,
+body.customer-display-active #palm-dual-step-banner {
+  font-size: calc(0.9rem * var(--customer-font-scale, 1));
+}
+
+@media (max-width: 768px) {
+  body.customer-display-active {
+    font-size: calc(18px * var(--customer-font-scale, 1));
+  }
+
+  body.customer-display-active .gate-subtitle {
+    font-size: calc(1.08rem * var(--customer-font-scale, 1));
+  }
+
+  body.customer-display-active .verdict-text,
+  body.customer-display-active .verdict-conclusion,
+  body.customer-display-active .verdict-content,
+  body.customer-display-active .verdict-content p,
+  body.customer-display-active .verdict-storyline-card p,
+  body.customer-display-active .tarot-card-desc,
+  body.customer-display-active .prediction-text-content,
+  body.customer-display-active .prediction-text-content p,
+  body.customer-display-active #results-verdict-summary,
+  body.customer-display-active .tarot-verdict-body,
+  body.customer-display-active .palm-aspect-card .aspect-text,
+  body.customer-display-active #palm-summary-verdict,
+  body.customer-display-active .aspect-deep-detail p,
+  body.customer-display-active .siamsi-poem-th {
+    font-size: calc(1.18rem * var(--customer-font-scale, 1));
+    line-height: 1.8;
+  }
+
+  body.customer-display-active .palm-aspect-card .aspect-title-wrap h4,
+  body.customer-display-active .prediction-title,
+  body.customer-display-active .pos-title,
+  body.customer-display-active .card-name-main,
+  body.customer-display-active .aspect-title,
+  body.customer-display-active .aspect-title-wrap h4 {
+    font-size: calc(1.3rem * var(--customer-font-scale, 1));
+    line-height: 1.45;
+  }
+
+  body.customer-display-active .aspect-hand-note,
+  body.customer-display-active .aspect-summary-callout,
+  body.customer-display-active .do-box,
+  body.customer-display-active .dont-box,
+  body.customer-display-active .love-status-focused-box .love-status-text,
+  body.customer-display-active .rag-insight-text,
+  body.customer-display-active .palm-textbook-active-banner {
+    font-size: calc(1.1rem * var(--customer-font-scale, 1));
+    line-height: 1.74;
+  }
+
+  body.customer-display-active .aspect-grade-pill,
+  body.customer-display-active .line-mini-badge,
+  body.customer-display-active #palm-dual-step-banner {
+    font-size: calc(1.02rem * var(--customer-font-scale, 1));
+  }
+}

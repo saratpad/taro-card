@@ -358,6 +358,48 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { ok: true, activeBooks: db.ragActiveBooks });
   }
 
+  // Customer Display Typography Settings (Font Family + Desktop/Mobile Font Scale controlled by Admin)
+  const ALLOWED_DISPLAY_FONTS = ["prompt", "sarabun", "kanit", "noto", "ibm", "pridi"];
+  const DEFAULT_DISPLAY_SETTINGS = {
+    fontFamilyKey: "prompt",
+    desktopFontScale: 100,
+    mobileFontScale: 100,
+    updatedAt: 0
+  };
+  const clampScale = (val, min, max, fallback) => {
+    const n = Number(val);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.round(Math.max(min, Math.min(max, n)));
+  };
+  const normalizeDisplaySettings = (raw) => {
+    const src = (raw && typeof raw === "object") ? raw : {};
+    const fKey = String(src.fontFamilyKey || "").trim().toLowerCase();
+    return {
+      fontFamilyKey: ALLOWED_DISPLAY_FONTS.includes(fKey) ? fKey : DEFAULT_DISPLAY_SETTINGS.fontFamilyKey,
+      desktopFontScale: clampScale(src.desktopFontScale, 85, 150, DEFAULT_DISPLAY_SETTINGS.desktopFontScale),
+      mobileFontScale: clampScale(src.mobileFontScale, 90, 160, DEFAULT_DISPLAY_SETTINGS.mobileFontScale),
+      updatedAt: Number(src.updatedAt) || 0
+    };
+  };
+
+  if (pathname === "/api/display-settings" && req.method === "GET") {
+    const db = readDb();
+    return sendJson(res, 200, { settings: normalizeDisplaySettings(db.displaySettings) });
+  }
+
+  if (pathname === "/api/display-settings" && req.method === "POST") {
+    const body = await parseBody(req);
+    const db = readDb();
+    const merged = normalizeDisplaySettings({
+      ...(db.displaySettings || {}),
+      ...(body || {}),
+      updatedAt: Date.now()
+    });
+    db.displaySettings = merged;
+    writeDb(db);
+    return sendJson(res, 200, { ok: true, settings: merged });
+  }
+
   // Social Auto-Post Endpoints
   if (pathname === "/api/social/posts" && req.method === "GET") {
     const db = readDb();

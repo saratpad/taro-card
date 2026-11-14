@@ -15,6 +15,51 @@
  */
 
 class PalmScannerEngine {
+  static normalizePalmReading(reading) {
+    if (!reading || typeof reading !== "object" || !reading.aspects) return reading;
+
+    const legacyTitleMap = {
+      "คำแนะนำที่ใช้ได้จริง": "คำแนะนำดวงชะตา"
+    };
+    const legacyGradeMap = {
+      "รักษาสมดุลแล้วเดินหน้าต่อ": "จังหวะชีวิตค่อยเป็นค่อยไป",
+      "สื่อสารให้ชัด เปิดรับโอกาส": "เด่นด้านการสังเกตและการสื่อสาร",
+      "เคล็ดเสริมดวงประจำตัว": "แนวโน้มภาพรวมดวงชะตา"
+    };
+
+    Object.keys(reading.aspects).forEach((key) => {
+      const asp = reading.aspects[key];
+      if (!asp || typeof asp !== "object") return;
+      if (asp.ragInsight !== undefined) {
+        delete asp.ragInsight;
+      }
+      if (asp.title && legacyTitleMap[asp.title.trim()]) {
+        asp.title = legacyTitleMap[asp.title.trim()];
+      }
+      if (asp.grade && legacyGradeMap[asp.grade.trim()]) {
+        asp.grade = legacyGradeMap[asp.grade.trim()];
+      }
+      if (key === "guidance" || asp.title === "คำแนะนำดวงชะตา") {
+        const txt = String(asp.text || "");
+        if (txt.includes("ชีวิตช่วงนี้เน้นความนิ่ง") || txt.includes("อย่าเร่งกดดัน")) {
+          asp.text = "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
+        } else if (txt.includes("จุดแข็งของคุณอยู่ที่การพูดคุย") || txt.includes("ทำบุญทำทาน")) {
+          asp.text = "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว";
+        } else if (txt.includes("เสริมด้วยการช่วยเหลือผู้อื่น") || txt.includes("ปล่อยวางเรื่องจุกจิกบ้าง")) {
+          asp.text = "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสมดุลระหว่างเรื่องงานกับการพักผ่อน ไม่เร่งรัดตัวเองเกินพอดี ความสม่ำเสมอในสิ่งที่ทำอยู่จะค่อยๆ ส่งผลดีตามจังหวะเวลา";
+        }
+        if (asp.leftNote && asp.leftNote.includes("รักษาจังหวะชีวิตให้สมดุล พักผ่อนให้พอ")) {
+          asp.leftNote = "มือซ้าย (พื้นดวงเดิม): จังหวะชีวิตเป็นแนวค่อยเป็นค่อยไป เน้นความพอดีและสมดุลในแต่ละวัน";
+        }
+        if (asp.rightNote && asp.rightNote.includes("ทิศทางต่อจากนี้เน้นความต่อเนื่อง")) {
+          asp.rightNote = "มือขวา (ปัจจุบัน-อนาคต): แนวโน้มช่วงนี้เหมาะกับการประคองจังหวะชีวิตให้พอดี ไม่หักโหมจนเกินไป";
+        }
+      }
+    });
+
+    return reading;
+  }
+
   constructor() {
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
@@ -1878,13 +1923,13 @@ class PalmApp {
     this.savedLockedData = savedPalm;
     this.isEntitlementLocked = options.locked !== false;
 
-    const reading = savedPalm.reading || {
+    const reading = PalmScannerEngine.normalizePalmReading(savedPalm.reading || {
       hand: "both",
       handMeta: { name: "ฝ่ามือทั้ง 2 ข้าง (ซ้าย + ขวา)", role: "วิเคราะห์ครบพื้นดวงเดิมและปัจจุบัน-อนาคต" },
       avgConfidence: savedPalm.confidence || 92,
       summaryVerdict: savedPalm.summary || savedPalm.summaryVerdict || "วิเคราะห์ลายมือครบ 2 มือสำเร็จ",
       aspects: savedPalm.aspects || {}
-    };
+    });
 
     this.dualReading = reading;
     this.hudThumbs = {
@@ -2583,7 +2628,8 @@ class PalmApp {
 
   renderReadingAspects() {
     if (!this.readingAspectsContainer) return;
-    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    const rawReading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    const reading = PalmScannerEngine.normalizePalmReading(rawReading);
     if (!reading || !reading.aspects) return;
 
     const activePalmBook = (typeof window !== "undefined" && window.ragEngine && typeof window.ragEngine.getActiveBook === "function")
@@ -2638,7 +2684,8 @@ class PalmApp {
   }
 
   buildPalmSharePayload() {
-    const reading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    const rawReading = this.dualReading || (this.scanResult && this.scanResult.reading);
+    const reading = PalmScannerEngine.normalizePalmReading(rawReading);
     if (!reading) return null;
     const avgConf = this.dualReading
       ? this.dualReading.avgConfidence

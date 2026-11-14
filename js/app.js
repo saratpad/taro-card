@@ -908,6 +908,9 @@ class TarotApp {
     this.activeCodeObj = codeObj;
     this.seekerName = "";
     window.codeManager.saveActiveSessionCode(codeObj.code);
+    if (window.displaySettingsEngine && typeof window.displaySettingsEngine.syncFromServer === "function") {
+      await window.displaySettingsEngine.syncFromServer();
+    }
 
     window.mysticAudio.playCrystalBell(784, 1.4);
 
