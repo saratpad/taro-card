@@ -940,73 +940,87 @@ class ShareAndPdfEngine {
       ctx.fillText(line, W / 2, vStartY + idx * 30);
     });
 
-    // คำพยากรณ์ 5 ด้านสำคัญ (จัดสรรลงตัวใน 1 หน้าเดียว พร้อมบรรทัดมือซ้าย & มือขวาครบไม่ขาดคำ)
-    if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
+    // คำพยากรณ์ 5 ด้านสำคัญ (จัดสรรลงตัวใน 1 หน้าเดียว: 4 ด้านแรกเทียบซ้าย-ขวา ส่วนคำแนะนำดวงชะตาขยายเต็มกล่องโดยไม่แบ่งมือ)
+    if (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.normalizePalmReading === "function") {
+      window.PalmReadingUtils.normalizePalmReading(readingData);
+    } else if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
       window.PalmScannerEngine.normalizePalmReading(readingData);
     }
     const aspects = readingData.aspects || {};
     const orderedKeys = ["life", "intellect", "love", "wealth", "guidance"];
     let curY = vY + vH + 14;
-    const boxH = 158;
-    const gap = 10;
+    const gap = 8;
 
     orderedKeys.forEach((key, idx) => {
       const asp = aspects[key];
       if (!asp) return;
 
-      this._drawGlassCard(ctx, 70, curY, W - 140, boxH, 16, "rgba(243, 207, 122, 0.38)", "rgba(8, 15, 42, 0.88)");
+      const isGuidance = key === "guidance" || String(asp.title || "").trim() === "คำแนะนำดวงชะตา";
+      const curBoxH = isGuidance ? 248 : 140;
 
-      ctx.fillStyle = idx % 2 === 0 ? "#f3cf7a" : "#38bdf8";
-      this.drawRoundedRect(ctx, 70, curY, 9, boxH, 4.5);
+      this._drawGlassCard(
+        ctx,
+        70,
+        curY,
+        W - 140,
+        curBoxH,
+        16,
+        isGuidance ? "rgba(110, 231, 183, 0.45)" : "rgba(243, 207, 122, 0.38)",
+        "rgba(8, 15, 42, 0.88)"
+      );
+
+      ctx.fillStyle = isGuidance ? "#34d399" : (idx % 2 === 0 ? "#f3cf7a" : "#38bdf8");
+      this.drawRoundedRect(ctx, 70, curY, 9, curBoxH, 4.5);
       ctx.fill();
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#fde68a";
       ctx.font = "700 22px 'Prompt', sans-serif";
-      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 96, curY + 32, W - 460);
+      ctx.fillText(`${asp.icon || "✦"} ${asp.title || ""}`, 96, curY + 29, W - 460);
 
       if (asp.grade) {
         ctx.textAlign = "right";
         ctx.fillStyle = "#86efac";
-        ctx.font = "600 18.5px 'Prompt', sans-serif";
-        ctx.fillText(asp.grade, W - 94, curY + 32, 340);
+        ctx.font = "600 18px 'Prompt', sans-serif";
+        ctx.fillText(asp.grade, W - 94, curY + 29, 340);
       }
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#f1f5f9";
-      ctx.font = "400 18.5px 'Prompt', sans-serif";
+      ctx.font = isGuidance ? "400 16.5px 'Prompt', sans-serif" : "400 17.5px 'Prompt', sans-serif";
       const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
-      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 200);
-      const hasNote = Boolean(asp.leftNote || asp.rightNote);
-      const maxBody = hasNote ? 2 : 3;
+      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 196);
+      const hasNote = !isGuidance && Boolean(asp.leftNote || asp.rightNote);
+      const maxBody = isGuidance ? 9 : (hasNote ? 2 : 3);
+      const lineStep = isGuidance ? 21.5 : 22;
       const bodyLines = allWrapped.slice(0, maxBody);
       if (allWrapped.length > maxBody && bodyLines[maxBody - 1]) {
         bodyLines[maxBody - 1] = bodyLines[maxBody - 1].slice(0, Math.max(10, bodyLines[maxBody - 1].length - 1)) + "…";
       }
       bodyLines.forEach((ln, li) => {
-        ctx.fillText(ln, 96, curY + 62 + li * 25);
+        ctx.fillText(ln, 96, curY + 56 + li * lineStep);
       });
 
       if (hasNote) {
-        const lShort = String(asp.leftNote || "").replace(/^(?:✋|🤚)\s*มือซ้าย\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
-        const rShort = String(asp.rightNote || "").replace(/^(?:✋|🤚)\s*มือขวา\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+        const lShort = String(asp.leftNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือซ้าย\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+        const rShort = String(asp.rightNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือขวา\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
         if (lShort) {
           ctx.fillStyle = "#7dd3fc";
-          ctx.font = "500 16px 'Prompt', sans-serif";
+          ctx.font = "500 15.5px 'Prompt', sans-serif";
           const lTxt = `✋ มือซ้าย: ${lShort}`;
           const lLine = this.wrapTextLines(ctx, lTxt, W - 200)[0] || lTxt;
-          ctx.fillText(lLine, 96, curY + 120, W - 200);
+          ctx.fillText(lLine, 96, curY + 107, W - 200);
         }
         if (rShort) {
           ctx.fillStyle = "#fde68a";
-          ctx.font = "500 16px 'Prompt', sans-serif";
+          ctx.font = "500 15.5px 'Prompt', sans-serif";
           const rTxt = `🤚 มือขวา: ${rShort}`;
           const rLine = this.wrapTextLines(ctx, rTxt, W - 200)[0] || rTxt;
-          ctx.fillText(rLine, 96, curY + 144, W - 200);
+          ctx.fillText(rLine, 96, curY + 129, W - 200);
         }
       }
 
-      curY += boxH + gap;
+      curY += curBoxH + gap;
     });
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • คัมภีร์วิเคราะห์หัตถศาสตร์เฉพาะบุคคล");
@@ -1059,18 +1073,21 @@ class ShareAndPdfEngine {
     if (!readingData) return "";
 
     if (readingData.mode === "palm") {
-      if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
+      if (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.normalizePalmReading === "function") {
+        window.PalmReadingUtils.normalizePalmReading(readingData);
+      } else if (typeof window !== "undefined" && window.PalmScannerEngine && typeof window.PalmScannerEngine.normalizePalmReading === "function") {
         window.PalmScannerEngine.normalizePalmReading(readingData);
       }
       const aspects = readingData.aspects || {};
       const order = ["life", "intellect", "love", "wealth", "guidance"];
       const aspectText = order
-        .map(k => aspects[k])
-        .filter(Boolean)
-        .map(a => {
+        .map(k => ({ k, a: aspects[k] }))
+        .filter(item => Boolean(item.a))
+        .map(({ k, a }) => {
+          const isGuidance = k === "guidance" || String(a.title || "").trim() === "คำแนะนำดวงชะตา";
           const lines = [`${a.icon || "✦"} ${a.title} (${a.grade || ""})`, `${a.text || ""}`];
-          if (a.leftNote) lines.push(`  • ${a.leftNote}`);
-          if (a.rightNote) lines.push(`  • ${a.rightNote}`);
+          if (!isGuidance && a.leftNote) lines.push(`  • ${a.leftNote}`);
+          if (!isGuidance && a.rightNote) lines.push(`  • ${a.rightNote}`);
           return lines.join("\n");
         })
         .join("\n\n");

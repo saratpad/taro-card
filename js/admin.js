@@ -1384,33 +1384,23 @@ class AdminBackoffice {
   _buildAdminPalmPayload(codeObj, palmRes) {
     const r = (palmRes && palmRes.reading) || palmRes || {};
     const rawAspects = r.aspects || palmRes.aspects || {};
-    const aspects = {};
+    const clonedAspects = {};
     Object.keys(rawAspects).forEach((k) => {
       const src = rawAspects[k];
-      if (!src || typeof src !== "object") return;
-      const copy = { ...src };
-      if (copy.ragInsight !== undefined) delete copy.ragInsight;
-      if (copy.title === "คำแนะนำที่ใช้ได้จริง") copy.title = "คำแนะนำดวงชะตา";
-      if (copy.grade === "รักษาสมดุลแล้วเดินหน้าต่อ") copy.grade = "จังหวะชีวิตค่อยเป็นค่อยไป";
-      if (copy.grade === "สื่อสารให้ชัด เปิดรับโอกาส") copy.grade = "เด่นด้านการสังเกตและการสื่อสาร";
-      if (copy.grade === "เคล็ดเสริมดวงประจำตัว") copy.grade = "แนวโน้มภาพรวมดวงชะตา";
-      if (k === "guidance" || copy.title === "คำแนะนำดวงชะตา") {
-        const txt = String(copy.text || "");
-        if (txt.includes("ชีวิตช่วงนี้เน้นความนิ่ง") || txt.includes("อย่าเร่งกดดัน")) {
-          copy.text = "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
-        } else if (txt.includes("จุดแข็งของคุณอยู่ที่การพูดคุย") || txt.includes("ทำบุญทำทาน")) {
-          copy.text = "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว";
-        }
+      if (src && typeof src === "object") {
+        clonedAspects[k] = { ...src };
       }
-      aspects[k] = copy;
     });
+    const normalized = (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.normalizePalmReading === "function")
+      ? window.PalmReadingUtils.normalizePalmReading({ aspects: clonedAspects })
+      : { aspects: clonedAspects };
     return {
       mode: "palm",
       hand: palmRes.hand || r.hand || "both",
       code: (codeObj && codeObj.code) || "",
       confidence: palmRes.confidence || r.avgConfidence || 92,
       summaryVerdict: palmRes.summary || r.summaryVerdict || "วิเคราะห์ลายมือครบ 2 มือสำเร็จ",
-      aspects,
+      aspects: normalized.aspects,
       leftHudDataUrl: palmRes.leftHudThumbDataUrl || palmRes.leftHudDataUrl || "",
       rightHudDataUrl: palmRes.rightHudThumbDataUrl || palmRes.rightHudDataUrl || "",
       timestamp: (codeObj && codeObj.logs && (codeObj.logs.palmAnalyzedAt || codeObj.logs.palmDrawnAt)) || Date.now()

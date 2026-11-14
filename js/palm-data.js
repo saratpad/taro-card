@@ -279,14 +279,168 @@ const PALM_KNOWLEDGE_BASE = {
     },
     guidance: {
       icon: "🌿",
-      title: "คำแนะนำเสริมดวงชะตาและสิริมงคล",
+      title: "คำแนะนำดวงชะตา",
       summaryKey: "guidanceSummary"
     }
   }
 };
 
+/**
+ * Shared holistic palm guidance synthesis & legacy normalization helpers
+ * Used by both customer scanner UI and admin backoffice.
+ */
+const PalmReadingUtils = {
+  /**
+   * Build a cohesive, plain-Thai guidance & cautionary life reflection directly from
+   * analyzed palm traits without dividing into left/right hands or separate advice/warning lists.
+   */
+  buildHolisticGuidance(traits = {}) {
+    const lifeProfile = traits.lifeProfile || "steady";
+    const headProfile = traits.headProfile || "practical";
+    const loveProfile = traits.loveProfile || "balanced";
+    const wealthProfile = traits.wealthProfile || "flexible";
+    const hasMercury = Boolean(traits.hasMercury);
+
+    let lifePara = "";
+    if (lifeProfile === "strong") {
+      lifePara = "จากภาพรวมเส้นลายมือ คุณเป็นคนที่มีพลังกายและแรงฮึดติดตัวดี เวลาตั้งใจเรื่องใดมักทุ่มเทได้เต็มที่ แต่สิ่งที่ควรระวังควบคู่กันคือชอบแบกธุระแทนคนอื่นหรือโหมงานต่อเนื่องจนความล้าสะสม ควรแบ่งเวลาพักผ่อนให้เป็นกิจวัตรก่อนจะหมดแรงจะช่วยให้เดินหน้าได้ยาวนานกว่าการฝืนลุยรวดเดียว";
+    } else if (lifeProfile === "delicate") {
+      lifePara = "ลักษณะเส้นลายมือสะท้อนว่าคุณรับรู้ความรู้สึกและสภาพแวดล้อมรอบตัวได้ไว พลังงานในแต่ละวันจึงขึ้นอยู่กับการพักผ่อนเป็นหลัก ควรวางจังหวะชีวิตให้พอดีกับกำลัง รักษาเวลานอนและพื้นที่ส่วนตัวให้ชัด เลี่ยงการรับปากช่วยเหลือคนอื่นเกินตัวในวันที่ยังไม่พร้อมเพื่อไม่ให้ใจล้าเกินจำเป็น";
+    } else {
+      lifePara = "จากภาพรวมเส้นลายมือบ่งบอกว่าคุณมีจังหวะชีวิตแบบสม่ำเสมอ ค่อยๆ ปรับตัวและเดินหน้าตามกำลังที่คุมได้ แต่สิ่งที่อยากให้ระวังควบคู่กันคืออย่านำความเร่งรีบของคนรอบตัวมากดดันตัวเองจนเกิดความเครียดเงียบๆ หากเริ่มรู้สึกเหนื่อยล้าหรือหลับไม่สนิทควรผ่อนภาระลงบ้างแล้วฟื้นร่างกายให้สมดุลก่อน";
+    }
+
+    let headPara = "";
+    if (headProfile === "creative") {
+      headPara = "ด้านความคิดและการทำงาน คุณมีไหวพริบและมองเห็นมุมใหม่ๆ ได้ไว แต่อาจเผลอคิดวนหลายเรื่องพร้อมกันหรือเก็บคำพูดของคนอื่นมาคิดมาก เวลาทำสิ่งสำคัญควรจัดลำดับขั้นตอนให้ชัดและลงมือทำให้จบทีละเรื่อง อย่าปล่อยให้ความกังวลชั่วคราวมาดึงจังหวะให้ลังเล";
+    } else if (headProfile === "analytical") {
+      headPara = "ด้านความคิดและการงาน เส้นลายมือชี้ถึงความละเอียดรอบคอบและตั้งใจจริง ทว่าข้อพึงระวังคือการตั้งมาตรฐานสูงเกินไปจนกดดันตัวเองหรือวิเคราะห์นานจนเสียจังหวะที่ดี ลองอนุญาตให้ตัวเองเริ่มจากจุดที่พร้อมพอสมควรแล้วปรับแก้หน้างาน รวมถึงแบ่งงานให้คนรอบข้างช่วยเมื่อภาระตึงมือ";
+    } else {
+      headPara = "แนวโน้มการทำงานเด่นตรงที่เน้นลงมือทำจริงและเรียนรู้จากประสบการณ์ แต่ช่วงที่เรื่องประดังเข้ามาอาจเผลอเสียสมาธิกับเรื่องจุกจิกหรือลังเลในจุดที่ควรฟันธง การวางแผนล่วงหน้าและเลือกโฟกัสเฉพาะเป้าหมายหลักจะช่วยลดความเหนื่อยเปล่าได้มาก";
+    }
+
+    let loveSentence = "";
+    if (loveProfile === "earnest") {
+      loveSentence = "เรื่องความสัมพันธ์ ความจริงใจคือเสน่ห์ของคุณ แต่อย่าเผลอคาดหวังให้อีกฝ่ายเข้าใจไปเองโดยไม่บอกตรงๆ เพื่อไม่ให้ความน้อยใจสะสมเงียบๆ";
+    } else if (loveProfile === "reserved") {
+      loveSentence = "เรื่องความสัมพันธ์ คุณมักดูแลคนใกล้ตัวด้วยการลงมือทำมากกว่าคำพูด แต่อย่าเก็บเรื่องอึดอัดไว้คนเดียวจนกลายเป็นระยะห่าง การพูดเปิดอกอย่างใจเย็นจะช่วยให้เข้าใจกันดีขึ้น";
+    } else {
+      loveSentence = "เรื่องความสัมพันธ์ จุดแข็งอยู่ที่ความเข้าใจกันด้วยเหตุผล แต่อย่าปล่อยให้ความยุ่งของงานทำให้เวลาคุณภาพกับคนสำคัญลดลงโดยไม่ทันรู้ตัว";
+    }
+
+    const mercuryTail = hasMercury
+      ? " นอกจากนี้ด้วยไหวพริบการสื่อสารที่มี ควรระวังจังหวะคำพูดที่อาจเผลอสั้นหรือตรงเกินไปในวันที่เหนื่อยล้า"
+      : " ความใจเย็นและวินัยเรื่องเล็กๆ จะช่วยประคองดวงชะตาให้มั่นคงในระยะยาว";
+
+    let wealthSentence = "";
+    if (wealthProfile === "abundant") {
+      wealthSentence = "ส่วนการเงินและโอกาสขยับได้ดีจากความน่าเชื่อถือ แต่ยิ่งช่วงที่ทุกอย่างคล่องตัว ยิ่งต้องรอบคอบเรื่องสัญญา เอกสาร การรับปากแทนใคร และคุมรายจ่ายตามอารมณ์" + mercuryTail;
+    } else if (wealthProfile === "moon_network") {
+      wealthSentence = "ส่วนการงานและการเงินมักได้แรงส่งจากการติดต่อผู้คนและคำบอกต่อ จึงควรรักษาเครดิตให้ดีและระวังความใจร้อนลงทุนตามคำชวนโดยยังไม่ได้ตรวจข้อมูลให้ครบ" + mercuryTail;
+    } else if (wealthProfile === "steady_growth") {
+      wealthSentence = "ส่วนการเงินจะค่อยๆ มั่นคงตามความต่อเนื่องของงาน ระวังเพียงความใจร้อนอยากเห็นผลไวจนเปลี่ยนแผนกลางคัน ควรกันเงินสำรองไว้ก่อนใช้และเลี่ยงการแบกภาระแทนคนอื่นเกินตัว" + mercuryTail;
+    } else {
+      wealthSentence = "ส่วนการเงินต่อยอดได้หลายช่องทางตามความถนัด ควรจับงานหลักให้มั่นคงสัก 1–2 ทางพร้อมจดคุมรายรับรายจ่ายและกันเงินออมล่วงหน้า เพื่อไม่ให้ช่วงที่รายได้ขึ้นลงมากระทบความสบายใจ" + mercuryTail;
+    }
+
+    const text = `${lifePara} ${headPara}\n\n${loveSentence} ${wealthSentence}`;
+    const grade = hasMercury ? "เด่นด้านการสังเกตและการสื่อสาร" : "แนวโน้มภาพรวมดวงชะตา";
+    const shortNote = "คำแนะนำจากภาพรวมเส้นลายมือและเนินบนฝ่ามือสำหรับประคองจังหวะชีวิตอย่างสมดุล";
+
+    return { grade, shortNote, text };
+  },
+
+  extractTraitsFromAspects(aspects = {}, legacyTxt = "", legacyGrade = "") {
+    const lifeBlob = `${(aspects.life && aspects.life.grade) || ""} ${(aspects.life && aspects.life.text) || ""}`;
+    const intellectBlob = `${(aspects.intellect && aspects.intellect.grade) || ""} ${(aspects.intellect && aspects.intellect.text) || ""}`;
+    const loveBlob = `${(aspects.love && aspects.love.grade) || ""} ${(aspects.love && aspects.love.text) || ""}`;
+    const wealthBlob = `${(aspects.wealth && aspects.wealth.grade) || ""} ${(aspects.wealth && aspects.wealth.text) || ""}`;
+    const guideBlob = `${legacyGrade} ${legacyTxt}`;
+
+    const lifeProfile = /แข็งแรง|อึด|ฟื้นตัว|ลุยงานหนัก/.test(lifeBlob)
+      ? "strong"
+      : (/พักผ่อนน้อย|อ่อนเพลีย|ต้องใส่ใจ/.test(lifeBlob) ? "delicate" : "steady");
+
+    const headProfile = /ไอเดีย|สร้างสรรค์|จินตนาการ|เข้าใจคน/.test(intellectBlob)
+      ? "creative"
+      : (/ระบบ|ตัดสินใจคม|วางแผนแม่น|ขั้นตอน/.test(intellectBlob) ? "analytical" : "practical");
+
+    const loveProfile = /ทุ่มเท|จริงใจสูง|ชัดเจนเต็ม|คาดหวัง/.test(loveBlob)
+      ? "earnest"
+      : (/นิ่ง|ไม่หวือหวา|ไม่เปลี่ยนใจ/.test(loveBlob) ? "reserved" : "balanced");
+
+    const wealthProfile = /สนับสนุน|การเงินเด่น|เครดิตดี|ยศ|เข้าตา/.test(wealthBlob)
+      ? "abundant"
+      : (/ติดต่อ|ต่างถิ่น|บอกต่อ/.test(wealthBlob)
+        ? "moon_network"
+        : (/วินัย|เก็บออม|มั่นคง|สม่ำเสมอ|สองมือ/.test(wealthBlob) ? "steady_growth" : "flexible"));
+
+    const hasMercury = /สังเกต|สื่อสาร|พูดคุย|พูดจา/.test(guideBlob);
+    return { lifeProfile, headProfile, loveProfile, wealthProfile, hasMercury };
+  },
+
+  normalizePalmReading(reading) {
+    if (!reading || typeof reading !== "object" || !reading.aspects) return reading;
+
+    const legacyTitleMap = {
+      "คำแนะนำที่ใช้ได้จริง": "คำแนะนำดวงชะตา",
+      "คำแนะนำเสริมดวงชะตาและสิริมงคล": "คำแนะนำดวงชะตา"
+    };
+    const legacyGradeMap = {
+      "รักษาสมดุลแล้วเดินหน้าต่อ": "จังหวะชีวิตค่อยเป็นค่อยไป",
+      "สื่อสารให้ชัด เปิดรับโอกาส": "เด่นด้านการสังเกตและการสื่อสาร",
+      "เคล็ดเสริมดวงประจำตัว": "แนวโน้มภาพรวมดวงชะตา"
+    };
+
+    const legacyGuideMarkers = [
+      "ชีวิตช่วงนี้เน้นความนิ่ง",
+      "อย่าเร่งกดดันตัวเอง",
+      "จุดแข็งของคุณอยู่ที่การพูดคุย",
+      "ทำบุญทำทาน",
+      "เสริมด้วยการช่วยเหลือผู้อื่น",
+      "ปล่อยวางเรื่องจุกจิกบ้าง",
+      "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป",
+      "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกต",
+      "ภาพรวมดวงชะตามีไหวพริบในการสังเกต",
+      "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป"
+    ];
+
+    Object.keys(reading.aspects).forEach((key) => {
+      const asp = reading.aspects[key];
+      if (!asp || typeof asp !== "object") return;
+      if (asp.ragInsight !== undefined) {
+        delete asp.ragInsight;
+      }
+      if (asp.title && legacyTitleMap[asp.title.trim()]) {
+        asp.title = legacyTitleMap[asp.title.trim()];
+      }
+      if (asp.grade && legacyGradeMap[asp.grade.trim()]) {
+        asp.grade = legacyGradeMap[asp.grade.trim()];
+      }
+      if (key === "guidance" || asp.title === "คำแนะนำดวงชะตา") {
+        // คำแนะนำดวงชะตาไม่แบ่งซ้าย-ขวา
+        if (asp.leftNote !== undefined) delete asp.leftNote;
+        if (asp.rightNote !== undefined) delete asp.rightNote;
+        if (asp.shortNote && /มือซ้าย|มือขวา/.test(asp.shortNote)) delete asp.shortNote;
+
+        const txt = String(asp.text || "").trim();
+        const isLegacyShort = txt.length < 280 || legacyGuideMarkers.some(m => txt.includes(m));
+        if (isLegacyShort) {
+          const traits = this.extractTraitsFromAspects(reading.aspects, txt, asp.grade || "");
+          const holistic = this.buildHolisticGuidance(traits);
+          asp.text = holistic.text;
+          if (!asp.grade) asp.grade = holistic.grade;
+        }
+      }
+    });
+
+    return reading;
+  }
+};
+
 if (typeof window !== "undefined") {
   window.PALM_KNOWLEDGE_BASE = PALM_KNOWLEDGE_BASE;
+  window.PalmReadingUtils = PalmReadingUtils;
 }
 if (typeof module !== "undefined" && module.exports) {
   module.exports = PALM_KNOWLEDGE_BASE;

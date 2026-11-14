@@ -16,47 +16,9 @@
 
 class PalmScannerEngine {
   static normalizePalmReading(reading) {
-    if (!reading || typeof reading !== "object" || !reading.aspects) return reading;
-
-    const legacyTitleMap = {
-      "คำแนะนำที่ใช้ได้จริง": "คำแนะนำดวงชะตา"
-    };
-    const legacyGradeMap = {
-      "รักษาสมดุลแล้วเดินหน้าต่อ": "จังหวะชีวิตค่อยเป็นค่อยไป",
-      "สื่อสารให้ชัด เปิดรับโอกาส": "เด่นด้านการสังเกตและการสื่อสาร",
-      "เคล็ดเสริมดวงประจำตัว": "แนวโน้มภาพรวมดวงชะตา"
-    };
-
-    Object.keys(reading.aspects).forEach((key) => {
-      const asp = reading.aspects[key];
-      if (!asp || typeof asp !== "object") return;
-      if (asp.ragInsight !== undefined) {
-        delete asp.ragInsight;
-      }
-      if (asp.title && legacyTitleMap[asp.title.trim()]) {
-        asp.title = legacyTitleMap[asp.title.trim()];
-      }
-      if (asp.grade && legacyGradeMap[asp.grade.trim()]) {
-        asp.grade = legacyGradeMap[asp.grade.trim()];
-      }
-      if (key === "guidance" || asp.title === "คำแนะนำดวงชะตา") {
-        const txt = String(asp.text || "");
-        if (txt.includes("ชีวิตช่วงนี้เน้นความนิ่ง") || txt.includes("อย่าเร่งกดดัน")) {
-          asp.text = "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
-        } else if (txt.includes("จุดแข็งของคุณอยู่ที่การพูดคุย") || txt.includes("ทำบุญทำทาน")) {
-          asp.text = "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว";
-        } else if (txt.includes("เสริมด้วยการช่วยเหลือผู้อื่น") || txt.includes("ปล่อยวางเรื่องจุกจิกบ้าง")) {
-          asp.text = "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสมดุลระหว่างเรื่องงานกับการพักผ่อน ไม่เร่งรัดตัวเองเกินพอดี ความสม่ำเสมอในสิ่งที่ทำอยู่จะค่อยๆ ส่งผลดีตามจังหวะเวลา";
-        }
-        if (asp.leftNote && asp.leftNote.includes("รักษาจังหวะชีวิตให้สมดุล พักผ่อนให้พอ")) {
-          asp.leftNote = "มือซ้าย (พื้นดวงเดิม): จังหวะชีวิตเป็นแนวค่อยเป็นค่อยไป เน้นความพอดีและสมดุลในแต่ละวัน";
-        }
-        if (asp.rightNote && asp.rightNote.includes("ทิศทางต่อจากนี้เน้นความต่อเนื่อง")) {
-          asp.rightNote = "มือขวา (ปัจจุบัน-อนาคต): แนวโน้มช่วงนี้เหมาะกับการประคองจังหวะชีวิตให้พอดี ไม่หักโหมจนเกินไป";
-        }
-      }
-    });
-
+    if (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.normalizePalmReading === "function") {
+      return window.PalmReadingUtils.normalizePalmReading(reading);
+    }
     return reading;
   }
 
@@ -556,18 +518,34 @@ class PalmScannerEngine {
       wealthDualText = "เส้นทางการเงินเป็นแบบอิสระ เติบโตจากไหวพริบและความสามารถเฉพาะตัว ไม่ถูกจำกัดด้วยทางเดียว ช่วงนี้มีช่องทางรายได้เสริมหรืองานโปรเจกต์ใหม่เข้ามาให้หยิบจับได้ดี";
     }
 
-    // 5. คำแนะนำดวงชะตา (เป็นกลาง ไม่เร่งนำพา)
-    const guidanceGrade = mercBoth ? "เด่นด้านการสังเกตและการสื่อสาร" : "จังหวะชีวิตค่อยเป็นค่อยไป";
-    const guidanceDualText = mercBoth
-      ? "ภาพรวมดวงชะตามีจุดเด่นด้านการสังเกตและการพูดคุยสื่อสาร จังหวะช่วงนี้เหมาะกับการแลกเปลี่ยนมุมมองอย่างใจเย็น และแบ่งเวลาพักผ่อนให้พอดีเพื่อประคองสมดุลชีวิตในระยะยาว"
-      : "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการเดินหน้าทีละขั้นแบบไม่เร่งกดดันตัวเอง ความสม่ำเสมอและการแบ่งเวลาพักผ่อนให้เหมาะสมจะช่วยให้เรื่องต่างๆ คลี่คลายไปอย่างราบรื่น";
+    // 5. คำแนะนำดวงชะตา (สังเคราะห์รวมจากผลการวิเคราะห์ลายมือทั้งหมด ไม่แบ่งซ้าย-ขวา ผสานคำแนะนำกับคำเตือนใจไว้ด้วยกัน)
+    const dualGuidanceTraits = {
+      lifeProfile: (lifeR.detected && (lifeArcR === "wide" || venusFullR || venusFullL))
+        ? "strong"
+        : ((!lifeR.detected && !lifeL.detected) ? "delicate" : "steady"),
+      headProfile: headSlopeR === "curved_moon"
+        ? "creative"
+        : ((headLenR >= 60 || (rMounts.saturn && rMounts.saturn.fullness === "full")) ? "analytical" : "practical"),
+      loveProfile: heartTargetR === "jupiter"
+        ? "earnest"
+        : (heartTargetR === "between" ? "balanced" : "reserved"),
+      wealthProfile: (fateR && sunR)
+        ? "abundant"
+        : ((fateR || fateL) ? (fateOrigR === "moon" ? "moon_network" : "steady_growth") : "flexible"),
+      hasMercury: mercBoth
+    };
+    const guidanceBuilt = (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.buildHolisticGuidance === "function")
+      ? window.PalmReadingUtils.buildHolisticGuidance(dualGuidanceTraits)
+      : {
+          grade: mercBoth ? "เด่นด้านการสังเกตและการสื่อสาร" : "แนวโน้มภาพรวมดวงชะตา",
+          text: "ภาพรวมดวงชะตาช่วงนี้เป็นจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสุขภาพ พักผ่อนให้เพียงพอ และเดินหน้าเรื่องงานกับความสัมพันธ์อย่างรอบคอบ"
+        };
 
     const rightConfirmFallback = {
       life: "ช่วงปัจจุบันสุขภาพและแรงกายยังหนุนได้ดี ควรรักษาเวลานอนให้สม่ำเสมอแล้วพลังจะอยู่ตัวนาน",
       intellect: "แนวโน้มช่วงนี้ตัดสินใจเรื่องงานและวางแผนได้คมขึ้นเมื่อโฟกัสทีละเป้าหมาย",
       love: "ช่วงนี้ความสัมพันธ์พัฒนาไปในทางที่มั่นคงขึ้นเมื่อเปิดใจสื่อสารกันตรงๆ",
-      wealth: "จังหวะปัจจุบันเดินหน้าต่อได้สวย เน้นลงมือทำสม่ำเสมอแล้วรายรับจะค่อยๆ ชัดเจนขึ้น",
-      guidance: "แนวโน้มช่วงนี้เหมาะกับการประคองจังหวะชีวิตให้พอดี ไม่หักโหมจนเกินไป"
+      wealth: "จังหวะปัจจุบันเดินหน้าต่อได้สวย เน้นลงมือทำสม่ำเสมอแล้วรายรับจะค่อยๆ ชัดเจนขึ้น"
     };
 
     const buildMergedAspect = (key, defaultIcon, defaultTitle, dualGrade, plainText) => {
@@ -594,7 +572,12 @@ class PalmScannerEngine {
       intellect: buildMergedAspect("intellect", "🧠", "ความคิด การงาน และการตัดสินใจ", intellectGrade, intellectDualText),
       love: buildMergedAspect("love", "💖", "ความรัก และความสัมพันธ์", loveGrade, loveDualText),
       wealth: buildMergedAspect("wealth", "💰", "การเงิน โอกาส และความมั่นคง", wealthGrade, wealthDualText),
-      guidance: buildMergedAspect("guidance", "🌿", "คำแนะนำดวงชะตา", guidanceGrade, guidanceDualText)
+      guidance: {
+        icon: "🌿",
+        title: "คำแนะนำดวงชะตา",
+        grade: guidanceBuilt.grade,
+        text: guidanceBuilt.text
+      }
     };
 
     const mentalSummary = headSlopeR === "curved_moon" ? "หัวไวด้านไอเดียและการสื่อสาร" : "ความคิดเป็นระบบและรอบคอบ";
@@ -743,14 +726,33 @@ class PalmScannerEngine {
       wealthText = "เส้นทางการเงินของคุณไม่ได้ถูกจำกัดแค่ทางเดียว สามารถพลิกแพลงหาช่องทางสร้างรายได้เสริมหรืองานอิสระได้ดี ช่วงนี้หากลองจับงานถนัดมาต่อยอดอย่างจริงจังและจดบันทึกรายรับรายจ่ายให้ชัด จะเห็นเงินเหลือเก็บชัดขึ้นมาก";
     }
 
-    // 5. คำแนะนำดวงชะตา (เป็นกลาง ไม่เร่งนำพา)
+    // 5. คำแนะนำดวงชะตา (สังเคราะห์รวมจากผลการวิเคราะห์ลายมือ ไม่แบ่งซ้าย-ขวา ผสานคำแนะนำกับคำเตือนใจไว้ด้วยกัน)
     const mercury = (lines && lines.mercury) || {};
-    const guidanceShort = mercury.detected
-      ? "พื้นดวงมีจุดเด่นด้านการสังเกตและการสื่อสารกับคนรอบตัว"
-      : "จังหวะชีวิตเป็นแนวค่อยเป็นค่อยไป เน้นความพอดีและสมดุลในแต่ละวัน";
-    const guidanceText = mercury.detected
-      ? "ภาพรวมดวงชะตามีไหวพริบในการสังเกตและการสื่อสารกับผู้คนรอบตัว เป็นช่วงที่การพูดคุยอย่างใจเย็นและชัดเจนมักช่วยให้เรื่องงานและความสัมพันธ์ดำเนินไปได้ราบรื่น ควบคู่กับการพักผ่อนอย่างเหมาะสม"
-      : "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสมดุลระหว่างเรื่องงานกับการพักผ่อน ไม่เร่งรัดตัวเองเกินพอดี ความสม่ำเสมอในสิ่งที่ทำอยู่จะค่อยๆ ส่งผลดีตามจังหวะเวลา";
+    const singleGuidanceTraits = {
+      lifeProfile: !life.detected
+        ? "delicate"
+        : ((lT.arc === "wide" || venusM.fullness === "full") ? "strong" : "steady"),
+      headProfile: hdT.slope === "curved_moon"
+        ? "creative"
+        : (((headL.lengthPercentage || 0) >= 62 || saturnM.fullness === "full") ? "analytical" : "practical"),
+      loveProfile: (hT.endTarget === "jupiter" || jupiterM.fullness === "full")
+        ? "earnest"
+        : (hT.endTarget === "between" ? "balanced" : "reserved"),
+      wealthProfile: (fate.detected && sun.detected) || sunM.fullness === "full"
+        ? "abundant"
+        : (fate.detected ? (fateOrigin === "moon" ? "moon_network" : "steady_growth") : "flexible"),
+      hasMercury: Boolean(mercury.detected)
+    };
+    const singleGuidanceBuilt = (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.buildHolisticGuidance === "function")
+      ? window.PalmReadingUtils.buildHolisticGuidance(singleGuidanceTraits)
+      : {
+          grade: mercury.detected ? "เด่นด้านการสังเกตและการสื่อสาร" : "แนวโน้มภาพรวมดวงชะตา",
+          shortNote: "คำแนะนำจากภาพรวมเส้นลายมือและเนินบนฝ่ามือสำหรับประคองจังหวะชีวิตอย่างสมดุล",
+          text: "ภาพรวมดวงชะตามีจังหวะที่ค่อยเป็นค่อยไป เหมาะกับการดูแลสมดุลระหว่างเรื่องงานกับการพักผ่อน ไม่เร่งรัดตัวเองเกินพอดี ความสม่ำเสมอในสิ่งที่ทำอยู่จะค่อยๆ ส่งผลดีตามจังหวะเวลา"
+        };
+    const guidanceShort = singleGuidanceBuilt.shortNote;
+    const guidanceText = singleGuidanceBuilt.text;
+    const guidanceGradeSingle = singleGuidanceBuilt.grade;
 
     const confPct = (confidence && confidence.percentage) || 88;
     const summaryVerdict = `ผลสแกน${handMeta.name} (ความชัด ${confPct}%): ${lifeShort} ส่วนเรื่องงานและความคิด${headShort.replace(/^คิด/, "เป็นคนคิด")}`;
@@ -792,7 +794,7 @@ class PalmScannerEngine {
           title: "คำแนะนำดวงชะตา",
           text: guidanceText,
           shortNote: guidanceShort,
-          grade: "แนวโน้มภาพรวมดวงชะตา"
+          grade: guidanceGradeSingle
         }
       },
       summaryVerdict
@@ -2642,8 +2644,9 @@ class PalmApp {
       </div>
     `;
 
-    const cardsHtml = Object.values(reading.aspects).map(asp => {
-      const breakdownHtml = (asp.leftNote || asp.rightNote)
+    const cardsHtml = Object.entries(reading.aspects).map(([aspKey, asp]) => {
+      const isGuidance = aspKey === "guidance" || String(asp.title || "").trim() === "คำแนะนำดวงชะตา";
+      const breakdownHtml = (!isGuidance && (asp.leftNote || asp.rightNote))
         ? `
           <div class="aspect-dual-breakdown">
             ${asp.leftNote ? `<div class="aspect-hand-note"><strong>✋ มือซ้าย (พื้นดวงเดิม):</strong> ${asp.leftNote.replace(/^มือซ้าย \(พื้นดวงเดิม\):\s*/, "")}</div>` : ""}
@@ -2652,7 +2655,7 @@ class PalmApp {
         `
         : "";
       return `
-        <div class="palm-aspect-card">
+        <div class="palm-aspect-card${isGuidance ? " palm-aspect-guidance" : ""}">
           <div class="aspect-card-header">
             <span class="aspect-icon">${asp.icon || "✦"}</span>
             <div class="aspect-title-wrap">

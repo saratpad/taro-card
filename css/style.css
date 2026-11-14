@@ -7287,6 +7287,12 @@ body {
   line-height: 1.78;
   color: #e2e8f0;
   margin: 0;
+  white-space: pre-line;
+}
+
+.palm-aspect-card.palm-aspect-guidance {
+  border-color: rgba(110, 231, 183, 0.38);
+  background: linear-gradient(155deg, rgba(11, 22, 50, 0.94), rgba(16, 40, 42, 0.88));
 }
 
 .aspect-dual-breakdown {
