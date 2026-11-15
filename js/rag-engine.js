@@ -539,10 +539,13 @@ class RAGKnowledgeEngine {
   }
 
   async _apiJson(url, options = {}) {
+    if (typeof window !== "undefined" && window.tarotApiClient && typeof window.tarotApiClient.request === "function") {
+      return await window.tarotApiClient.request(url, options);
+    }
     if (typeof fetch !== "function") return null;
     try {
       const controller = new AbortController();
-      const tid = setTimeout(() => controller.abort(), 2000);
+      const tid = setTimeout(() => controller.abort(), 3000);
       const res = await fetch(url, {
         ...options,
         headers: {
@@ -1206,10 +1209,17 @@ class CustomerDisplayEngine {
     this._syncPromise = (async () => {
       if (typeof fetch !== "function") return this.getSettings();
       try {
-        const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch("/api/display-settings", { signal: controller.signal });
-        clearTimeout(tid);
+        let res = null;
+        if (typeof window !== "undefined" && window.tarotApiClient && typeof window.tarotApiClient.requestRaw === "function") {
+          const raw = await window.tarotApiClient.requestRaw("/api/display-settings", { method: "GET" });
+          if (raw.networkError) throw new Error(raw.error || "Network error");
+          res = { ok: raw.ok, status: raw.status, json: async () => raw.data };
+        } else {
+          const controller = new AbortController();
+          const tid = setTimeout(() => controller.abort(), 2000);
+          res = await fetch("/api/display-settings", { signal: controller.signal });
+          clearTimeout(tid);
+        }
         if (res.ok && this._saveSeq === seqAtStart) {
           const data = await res.json();
           if (data && data.settings && this._saveSeq === seqAtStart) {
@@ -1247,14 +1257,25 @@ class CustomerDisplayEngine {
       if (seq !== this._saveSeq) return;
       if (typeof fetch !== "function") return;
       try {
-        const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch("/api/display-settings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(snapshot),
-          signal: controller.signal
-        });
+        let res = null;
+        let tid = null;
+        if (typeof window !== "undefined" && window.tarotApiClient && typeof window.tarotApiClient.requestRaw === "function") {
+          const raw = await window.tarotApiClient.requestRaw("/api/display-settings", {
+            method: "POST",
+            body: JSON.stringify(snapshot)
+          });
+          if (raw.networkError) throw new Error(raw.error || "Network error");
+          res = { ok: raw.ok, status: raw.status, json: async () => raw.data };
+        } else {
+          const controller = new AbortController();
+          tid = setTimeout(() => controller.abort(), 2000);
+          res = await fetch("/api/display-settings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(snapshot),
+            signal: controller.signal
+          });
+        }
         clearTimeout(tid);
         if (res.ok && seq === this._saveSeq) {
           const data = await res.json();

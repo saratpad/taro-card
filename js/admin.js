@@ -687,10 +687,20 @@ class AdminBackoffice {
 
     if (this.syncModeBadge) {
       if (window.codeManager.apiAvailable) {
-        this.syncModeBadge.textContent = "🟢 เชื่อมต่อฐานข้อมูล Server API แล้ว";
+        if (window.codeManager.backendType === "supabase") {
+          this.syncModeBadge.textContent = "🟢 เชื่อมต่อฐานข้อมูล Supabase Cloud แล้ว";
+        } else {
+          this.syncModeBadge.textContent = "🟢 เชื่อมต่อฐานข้อมูล Server API แล้ว";
+        }
       } else {
-        this.syncModeBadge.textContent = "🟢 โหมดพร้อมใช้งาน (Local & Smart Sync)";
+        this.syncModeBadge.textContent = "🟡 โหมดออฟไลน์ชั่วคราว (Local Storage)";
       }
+    }
+
+    if (window.codeManager.lastLegacyImportedCount > 0) {
+      const imported = window.codeManager.lastLegacyImportedCount;
+      window.codeManager.lastLegacyImportedCount = 0;
+      this.showToast(`☁️ ซิงก์โค้ดเก่าจากเครื่องนี้ขึ้น Supabase สำเร็จ ${imported} รายการ`);
     }
 
     this.renderRagKnowledgeBase();

@@ -2813,20 +2813,16 @@ class TarotApp {
         if (this.activeCode) {
           window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าแชร์ภาพ Info + คำทำนายผ่าน Share Sheet (${meta.name})`);
         }
-        fetch("/api/social/post", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            platform,
-            account: "Mobile Share Sheet",
-            privacy: "public",
-            device: "mobile",
-            code: this.activeCode || "",
-            mode: payload.mode || "tarot",
-            hasInfoImage: true,
-            caption: fullCaption
-          })
-        }).catch(() => {});
+        this._postSocialShareLog({
+          platform,
+          account: "Mobile Share Sheet",
+          privacy: "public",
+          device: "mobile",
+          code: this.activeCode || "",
+          mode: payload.mode || "tarot",
+          hasInfoImage: true,
+          caption: fullCaption
+        });
         this.showToast(`✅ ส่งภาพ Info Card + คำทำนายเข้า ${meta.name} เรียบร้อยแล้ว!`);
         return;
       } catch (err) {
@@ -3061,20 +3057,34 @@ class TarotApp {
       window.codeManager.recordActionLog(this.activeCode, "share", `ลูกค้าเตรียมภาพ Info Card + คำทำนายและเปิดหน้า ${meta.name}`);
     }
 
+    this._postSocialShareLog({
+      platform,
+      account: "Guided Post Assistant",
+      privacy: "public",
+      device: this.isMobileDevice() ? "mobile" : "desktop",
+      code: this.activeCode || "",
+      mode: payload.mode || "tarot",
+      hasInfoImage: true,
+      caption: fullCaption
+    });
+  }
+
+  /**
+   * Dispatches non-blocking social share telemetry via active API backend.
+   */
+  _postSocialShareLog(postData) {
     try {
+      if (window.tarotApiClient && typeof window.tarotApiClient.request === "function") {
+        window.tarotApiClient.request("/api/social/post", {
+          method: "POST",
+          body: JSON.stringify(postData)
+        }).catch(() => {});
+        return;
+      }
       fetch("/api/social/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          platform,
-          account: "Guided Post Assistant",
-          privacy: "public",
-          device: this.isMobileDevice() ? "mobile" : "desktop",
-          code: this.activeCode || "",
-          mode: payload.mode || "tarot",
-          hasInfoImage: true,
-          caption: fullCaption
-        })
+        body: JSON.stringify(postData)
       }).catch(() => {});
     } catch (_) {}
   }

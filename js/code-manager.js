@@ -234,10 +234,22 @@ class CodeManager {
     }
   }
 
-  async _apiRequest(path, options = {}) {
+  /**
+   * Low-level API call returning structured status so HTTP errors (e.g. 404/409)
+   * can be distinguished from true network/offline failures.
+   */
+  async _apiCall(path, options = {}) {
+    if (typeof window !== "undefined" && window.tarotApiClient && typeof window.tarotApiClient.requestRaw === "function") {
+      const res = await window.tarotApiClient.requestRaw(path, options);
+      this.lastApiResult = res;
+      this.apiAvailable = !res.networkError;
+      this.backendType = res.backendType || (res.networkError ? "offline" : "local");
+      return res;
+    }
+
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
       const res = await fetch(path, {
         ...options,
         headers: {
@@ -247,23 +259,83 @@ class CodeManager {
         signal: controller.signal
       });
       clearTimeout(timeoutId);
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `HTTP ${res.status}`);
-      }
+      const data = await res.json().catch(() => null);
       this.apiAvailable = true;
-      return await res.json();
+      this.backendType = "local";
+      if (!res.ok) {
+        const msg = (data && data.error) ? String(data.error) : `HTTP ${res.status}`;
+        return { ok: false, status: res.status, data, error: msg, networkError: false, backendMode: "local_server", backendType: "local" };
+      }
+      return { ok: true, status: res.status, data, error: null, networkError: false, backendMode: "local_server", backendType: "local" };
     } catch (e) {
       this.apiAvailable = false;
-      return null;
+      this.backendType = "offline";
+      return { ok: false, status: 0, data: null, error: e && e.message ? e.message : "Network error", networkError: true, backendMode: "offline", backendType: "offline" };
     }
   }
 
+  async _apiRequest(path, options = {}) {
+    const res = await this._apiCall(path, options);
+    return res.ok ? res.data : null;
+  }
+
+  /**
+   * One-time migration of pre-Supabase non-demo codes from browser localStorage
+   * up to Supabase so codes previously created on mobile/PC appear everywhere.
+   * Returns true if local migration is complete or unnecessary.
+   */
+  async syncLegacyLocalCodesIfNeeded() {
+    const MIGRATION_FLAG = "siamsi_tarot_supabase_migrated_v1";
+    this.lastLegacyImportedCount = 0;
+
+    if (typeof window === "undefined" || !window.tarotApiClient) return true;
+    const mode = await window.tarotApiClient.resolveBackend();
+    if (mode !== "supabase") return true;
+
+    try {
+      if (localStorage.getItem(MIGRATION_FLAG) === "1") {
+        return true;
+      }
+    } catch (_) {
+      return true;
+    }
+
+    const localCodes = this._loadLocalCodes().filter(c => !this.isDemoCode(c));
+    if (localCodes.length === 0) {
+      return true;
+    }
+
+    const syncRes = await this._apiCall("/api/codes/sync-legacy", {
+      method: "POST",
+      body: JSON.stringify({ codes: localCodes })
+    });
+
+    if (syncRes.ok) {
+      try {
+        localStorage.setItem(MIGRATION_FLAG, "1");
+      } catch (_) {}
+      const imported = Number(syncRes.data && syncRes.data.importedCount) || 0;
+      this.lastLegacyImportedCount = imported;
+      return true;
+    }
+    return false;
+  }
+
   async getAllCodes() {
-    const apiData = await this._apiRequest("/api/codes");
-    if (apiData && Array.isArray(apiData.codes)) {
-      const normalized = apiData.codes.map(c => this._normalizeCodeObj(c));
-      this._saveLocalCodes(normalized);
+    const migrationReady = await this.syncLegacyLocalCodesIfNeeded();
+
+    const apiCallRes = await this._apiCall("/api/codes");
+    if (apiCallRes.ok && apiCallRes.data && Array.isArray(apiCallRes.data.codes)) {
+      if (this.backendType === "supabase" && migrationReady) {
+        try {
+          localStorage.setItem("siamsi_tarot_supabase_migrated_v1", "1");
+        } catch (_) {}
+      }
+      const normalized = apiCallRes.data.codes.map(c => this._normalizeCodeObj(c));
+      if (migrationReady) {
+        this._saveLocalCodes(normalized);
+      }
+      this.codesCache = normalized;
       return normalized;
     }
     this.codesCache = this._loadLocalCodes();
@@ -317,7 +389,7 @@ class CodeManager {
     if (!codeOrObj) return false;
     const codeStr = typeof codeOrObj === "string" ? codeOrObj : (codeOrObj.code || "");
     const clean = String(codeStr).trim().toUpperCase();
-    return clean === "TAROT99" || clean === "SIAMSI99" || clean === "COMBO99";
+    return clean === "TAROT99" || clean === "SIAMSI99" || clean === "COMBO99" || clean === "PALM99";
   }
 
   /**
@@ -420,14 +492,18 @@ class CodeManager {
       ]
     };
 
-    const apiRes = await this._apiRequest("/api/codes", {
+    const apiCallRes = await this._apiCall("/api/codes", {
       method: "POST",
       body: JSON.stringify(newCodeObj)
     });
 
-    if (apiRes && apiRes.codeObj) {
+    if (apiCallRes.ok && apiCallRes.data && apiCallRes.data.codeObj) {
       await this.getAllCodes();
-      return this._normalizeCodeObj(apiRes.codeObj);
+      return this._normalizeCodeObj(apiCallRes.data.codeObj);
+    }
+
+    if (!apiCallRes.networkError) {
+      throw new Error(apiCallRes.error || "ไม่สามารถบันทึกโค้ดลงฐานข้อมูลได้");
     }
 
     const codes = this._loadLocalCodes();
@@ -441,6 +517,36 @@ class CodeManager {
   }
 
   /**
+   * Returns true only when URL carries a `?t=` customer-link token matching `cleanCode`.
+   */
+  _hasUrlTokenForCode(cleanCode) {
+    try {
+      if (typeof window === "undefined" || !window.location) return false;
+      const params = new URLSearchParams(window.location.search || "");
+      const token = params.get("t");
+      if (!token) return false;
+      const urlCode = (params.get("code") || "").trim().toUpperCase();
+      if (urlCode && urlCode === cleanCode) return true;
+
+      const b64 = token.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+      const binStr = atob(padded);
+      let jsonStr;
+      try {
+        const bytes = Uint8Array.from(binStr, ch => ch.charCodeAt(0));
+        jsonStr = new TextDecoder().decode(bytes);
+      } catch (_) {
+        jsonStr = decodeURIComponent(escape(binStr));
+      }
+      const payload = JSON.parse(jsonStr);
+      const tokenCode = String((payload && (payload.c || payload.code)) || "").trim().toUpperCase();
+      return tokenCode === cleanCode;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /**
    * ตรวจสอบโค้ดและบันทึก Log การเข้าสู่ระบบ
    */
   async verifyAndAccessCode(rawCode, recordAccess = true) {
@@ -448,9 +554,9 @@ class CodeManager {
     const cleanCode = String(rawCode).trim().toUpperCase();
     this.applyUrlDisplayTokenIfPresent(cleanCode);
 
-    const apiRes = await this._apiRequest(`/api/codes/${encodeURIComponent(cleanCode)}?access=${recordAccess ? "1" : "0"}`);
-    if (apiRes && apiRes.codeObj) {
-      const codeObj = this._normalizeCodeObj(apiRes.codeObj);
+    const apiCallRes = await this._apiCall(`/api/codes/${encodeURIComponent(cleanCode)}?access=${recordAccess ? "1" : "0"}`);
+    if (apiCallRes.ok && apiCallRes.data && apiCallRes.data.codeObj) {
+      const codeObj = this._normalizeCodeObj(apiCallRes.data.codeObj);
       this._syncSingleCodeToLocal(codeObj);
       if (this.isCodeExpired(codeObj)) {
         return { valid: false, reason: "expired", codeObj };
@@ -458,16 +564,27 @@ class CodeManager {
       return { valid: true, codeObj };
     }
 
+    let codeObj = null;
     const codes = this._loadLocalCodes();
-    let codeObj = codes.find(c => c.code.toUpperCase() === cleanCode);
 
-    // Fallback for static hosting (e.g., GitHub Pages) across different devices:
-    // 1. Check URL token parameter (?t=base64) or 2. Auto-recognize valid prefix (TR-, SS-, VIP-, CB-)
-    if (!codeObj) {
-      codeObj = this._reconstructCrossDeviceCode(cleanCode);
-      if (codeObj) {
-        codes.unshift(codeObj);
-        this._saveLocalCodes(codes);
+    if (!apiCallRes.networkError) {
+      // Backend explicitly responded (e.g., 404). Only reconstruct legacy `?t=` links
+      // created before database sync; do not resurrect deleted or fake prefix codes.
+      if (this._hasUrlTokenForCode(cleanCode)) {
+        codeObj = this._reconstructCrossDeviceCode(cleanCode);
+        if (codeObj) {
+          codes.unshift(codeObj);
+          this._saveLocalCodes(codes);
+        }
+      }
+    } else {
+      codeObj = codes.find(c => c.code.toUpperCase() === cleanCode);
+      if (!codeObj) {
+        codeObj = this._reconstructCrossDeviceCode(cleanCode);
+        if (codeObj) {
+          codes.unshift(codeObj);
+          this._saveLocalCodes(codes);
+        }
       }
     }
 
