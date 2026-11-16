@@ -13,13 +13,20 @@ class ShareAndPdfEngine {
   }
 
   /**
-   * โหลดรูปภาพและคืนค่าเป็น HTMLImageElement (หลีกเลี่ยง crossOrigin mismatch ของ Safari บนโดเมนเดียวกัน)
+   * โหลดรูปภาพและคืนค่าเป็น HTMLImageElement (ป้องกัน tainted canvas บน file:// และ CORS mismatch ของ Safari)
    */
-  loadImage(src) {
+  loadImage(src, opts = {}) {
     return new Promise((resolve) => {
       if (!src) return resolve(null);
-      let encoded = String(src);
-      if (!/^(?:data:|blob:)/i.test(encoded)) {
+      const rawStr = String(src);
+      const isInline = /^(?:data:|blob:)/i.test(rawStr);
+      const isFileProto = typeof window !== "undefined" && window.location && window.location.protocol === "file:";
+      if (!isInline && (opts.skipExternalFiles || isFileProto)) {
+        return resolve(null);
+      }
+
+      let encoded = rawStr;
+      if (!isInline) {
         try {
           encoded = encodeURI(decodeURI(encoded));
         } catch (_) {
@@ -365,7 +372,7 @@ class ShareAndPdfEngine {
     const logoUrl = (window.brandThemeEngine && typeof window.brandThemeEngine.getLogoUrl === "function")
       ? window.brandThemeEngine.getLogoUrl()
       : "assets/logo.jpg";
-    const logoImg = await this.loadImage(logoUrl);
+    const logoImg = await this.loadImage(logoUrl, opts);
 
     // โลโก้ล้อมรัศมีวงแหวนเวทย์กลางบน
     const logoCx = W / 2;
@@ -408,6 +415,30 @@ class ShareAndPdfEngine {
       ctx.fill();
       ctx.clip();
       ctx.drawImage(logoImg, logoCx - logoR, logoCy - logoR, logoR * 2, logoR * 2);
+    } else {
+      // Crisp vector celestial crest fallback (never taints Canvas on file://)
+      ctx.beginPath();
+      ctx.arc(logoCx, logoCy, logoR, 0, Math.PI * 2);
+      const crestGrad = ctx.createRadialGradient(logoCx, logoCy - 8, 6, logoCx, logoCy, logoR);
+      crestGrad.addColorStop(0, "#2b1b54");
+      crestGrad.addColorStop(1, "#0b1230");
+      ctx.fillStyle = crestGrad;
+      ctx.fill();
+      ctx.strokeStyle = "#f3cf7a";
+      ctx.lineWidth = 2.4;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(logoCx, logoCy, logoR - 9, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(125, 211, 252, 0.55)";
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      this._drawFourPointStar(ctx, logoCx, logoCy - 2, 18, "#f3cf7a", 0.95);
+      ctx.fillStyle = "#fff1be";
+      ctx.font = "700 11px 'Cinzel', 'Prompt', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("ORACLE", logoCx, logoCy + 28);
     }
     ctx.restore();
 
@@ -493,7 +524,7 @@ class ShareAndPdfEngine {
   /**
    * สร้างรูป Info Card / ใบพยากรณ์หน้าเดียวสำหรับไพ่ทาโรต์ 3 ใบ (1240 x 1754 • Single Page A4 Proportions)
    */
-  async generateTarotInfoCard(readingData) {
+  async generateTarotInfoCard(readingData, options = {}) {
     if (document.fonts && document.fonts.ready) {
       try { await document.fonts.ready; } catch (_) {}
     }
@@ -533,7 +564,8 @@ class ShareAndPdfEngine {
       pillText: domainLabel,
       pillBorder: "rgba(243, 207, 122, 0.75)",
       pillColor: "#fff1be",
-      metaLine
+      metaLine,
+      skipExternalFiles: Boolean(options.skipExternalFiles)
     });
 
     // วาดรูปไพ่ทั้ง 3 ใบ พร้อมรัศมีและลูกศรทอง
@@ -545,7 +577,7 @@ class ShareAndPdfEngine {
     const startX = (W - totalCardsW) / 2;
     const cardY = 348;
 
-    const loadedImages = await Promise.all(cards.map(c => this.loadImage(c.image)));
+    const loadedImages = await Promise.all(cards.map(c => this.loadImage(c.image, options)));
 
     for (let i = 0; i < cards.length; i++) {
       const c = cards[i];
@@ -595,16 +627,62 @@ class ShareAndPdfEngine {
         }
         ctx.restore();
       } else {
+        // Vector sacred tarot card artwork (works offline/file:// without tainting Canvas)
         ctx.save();
+        const cardGrad = ctx.createLinearGradient(x, imgBoxY, x + cardW, imgBoxY + cardH);
+        cardGrad.addColorStop(0, "#171c47");
+        cardGrad.addColorStop(0.5, "#0d1233");
+        cardGrad.addColorStop(1, "#1e1342");
+        ctx.fillStyle = cardGrad;
+        this.drawRoundedRect(ctx, x + 6, imgBoxY + 6, cardW - 12, cardH - 12, 12);
+        ctx.fill();
+
         ctx.strokeStyle = "rgba(243, 207, 122, 0.48)";
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.arc(x + cardW / 2, imgBoxY + cardH / 2, 58, 0, Math.PI * 2);
+        ctx.lineWidth = 1.4;
+        this.drawRoundedRect(ctx, x + 16, imgBoxY + 16, cardW - 32, cardH - 32, 8);
         ctx.stroke();
+
+        const cx = x + cardW / 2;
+        const cy = imgBoxY + cardH / 2 - 14;
+        if (c.isReversed) {
+          ctx.translate(cx, cy);
+          ctx.rotate(Math.PI);
+          ctx.translate(-cx, -cy);
+        }
+
         ctx.beginPath();
-        ctx.arc(x + cardW / 2, imgBoxY + cardH / 2, 42, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 62, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(243, 207, 122, 0.55)";
+        ctx.lineWidth = 1.8;
         ctx.stroke();
-        this._drawFourPointStar(ctx, x + cardW / 2, imgBoxY + cardH / 2, 22, "#f3cf7a", 0.85);
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 46, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(125, 211, 252, 0.45)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        const cid = String(c.id || "");
+        const suitSymbol = cid.startsWith("wands") ? "🪄"
+          : (cid.startsWith("cups") ? "🏆"
+            : (cid.startsWith("swords") ? "⚔️"
+              : (cid.startsWith("pentacles") ? "🪙" : "✦")));
+        this._drawFourPointStar(ctx, cx, cy - 2, 24, "#f3cf7a", 0.32);
+        ctx.font = "700 38px 'Prompt', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#fde68a";
+        ctx.fillText(suitSymbol, cx, cy + 12);
+        ctx.restore();
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#fff1be";
+        ctx.font = "700 18px 'Cinzel', 'Prompt', sans-serif";
+        const enTitle = String(c.name_en || c.name_th || "TAROT").replace(/\([^)]*\)/g, "").trim().toUpperCase();
+        ctx.fillText(enTitle, x + cardW / 2, imgBoxY + cardH - 46, cardW - 42);
+        ctx.fillStyle = "#93c5fd";
+        ctx.font = "500 13px 'Prompt', sans-serif";
+        ctx.fillText("SIAMSI TAROT", x + cardW / 2, imgBoxY + cardH - 25, cardW - 42);
         ctx.restore();
       }
 
@@ -785,7 +863,9 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");
 
-    return this._finalizeCanvasAsset(canvas, readingData);
+    return this._finalizeCanvasAsset(canvas, readingData, options.skipExternalFiles
+      ? null
+      : () => this.generateTarotInfoCard(readingData, { skipExternalFiles: true }));
   }
 
   _getCleanSiamsiAspectText(item, readingData = null) {
@@ -823,7 +903,7 @@ class ShareAndPdfEngine {
   /**
    * สร้างรูป Info Card หน้าเดียวสำหรับเซียมซี (1240 x 1754 • ธีมโหราศาสตร์ขลังอลังการ)
    */
-  async generateSiamsiInfoCard(readingData) {
+  async generateSiamsiInfoCard(readingData, options = {}) {
     if (document.fonts && document.fonts.ready) {
       try { await document.fonts.ready; } catch (_) {}
     }
@@ -854,7 +934,8 @@ class ShareAndPdfEngine {
       pillText: `🎋 ${readingData.deckName || "ตำราเซียมซีศักดิ์สิทธิ์"}`,
       pillBorder: "rgba(243, 207, 122, 0.78)",
       pillColor: "#fff1be",
-      metaLine
+      metaLine,
+      skipExternalFiles: Boolean(options.skipExternalFiles)
     });
 
     // ป้ายเหรียญตราเลขเซียมซี & ระดับดวง
@@ -992,15 +1073,17 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
-    return this._finalizeCanvasAsset(canvas, readingData);
+    return this._finalizeCanvasAsset(canvas, readingData, options.skipExternalFiles
+      ? null
+      : () => this.generateSiamsiInfoCard(readingData, { skipExternalFiles: true }));
   }
 
   /**
    * โหลดภาพแบบ Optional สำหรับ HUD ลายมือ
    */
-  _loadOptionalImage(src) {
+  _loadOptionalImage(src, opts = {}) {
     if (!src) return Promise.resolve(null);
-    return this.loadImage(src).catch(() => null);
+    return this.loadImage(src, opts).catch(() => null);
   }
 
   _drawContainImage(ctx, img, x, y, w, h) {
@@ -1016,7 +1099,7 @@ class ShareAndPdfEngine {
   /**
    * สร้างรูป Info Card / คัมภีร์หน้าเดียวสำหรับสแกนลายมือ 2 มือ (1240 x 1754 • ธีมหัตถศาสตร์ขลังอลังการ)
    */
-  async generatePalmInfoCard(readingData) {
+  async generatePalmInfoCard(readingData, options = {}) {
     if (document.fonts && document.fonts.ready) {
       try { await document.fonts.ready; } catch (_) {}
     }
@@ -1048,12 +1131,13 @@ class ShareAndPdfEngine {
       pillText: `🎯 ความแม่นยำการตรวจจับเส้นลายมือและเนินทั้ง 7 : ${confVal}%`,
       pillBorder: "rgba(52, 211, 153, 0.72)",
       pillColor: "#86efac",
-      metaLine
+      metaLine,
+      skipExternalFiles: Boolean(options.skipExternalFiles)
     });
 
     // กรอบภาพสแกนฝ่ามือซ้าย + ขวาคู่กันอย่างสง่างาม
-    const leftImg = await this._loadOptionalImage(readingData.leftHudDataUrl);
-    const rightImg = await this._loadOptionalImage(readingData.rightHudDataUrl);
+    const leftImg = await this._loadOptionalImage(readingData.leftHudDataUrl, options);
+    const rightImg = await this._loadOptionalImage(readingData.rightHudDataUrl, options);
     const cardY = 346;
     const cardW = 532;
     const cardH = 338;
@@ -1194,11 +1278,16 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • คัมภีร์วิเคราะห์หัตถศาสตร์เฉพาะบุคคล");
 
-    return this._finalizeCanvasAsset(canvas, readingData);
+    return this._finalizeCanvasAsset(canvas, readingData, options.skipExternalFiles
+      ? null
+      : () => this.generatePalmInfoCard(readingData, { skipExternalFiles: true }));
   }
 
   buildShareableReadingUrl(readingData) {
-    const baseUrl = window.location.origin + window.location.pathname;
+    const isFileOrNull = typeof window === "undefined" || !window.location || window.location.protocol === "file:" || window.location.origin === "null" || !window.location.origin;
+    const baseUrl = isFileOrNull
+      ? "https://taro-card-smoky.vercel.app/"
+      : (window.location.origin + window.location.pathname);
     if (!readingData) return baseUrl;
 
     const params = new URLSearchParams();
@@ -1469,16 +1558,7 @@ class ShareAndPdfEngine {
 
     const codePart = readingData.code ? `_${readingData.code}` : "";
     const fileName = customFilename || `SiamSiTarot_${readingData.mode || "Reading"}${codePart}.pdf`;
-
-    const url = URL.createObjectURL(pdfBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-    return true;
+    return this._triggerDownload(pdfBlob, "", fileName);
   }
 
   getInfoCardFilename(readingData) {
@@ -1505,7 +1585,16 @@ class ShareAndPdfEngine {
     return Boolean(this._currentCacheKey && this._currentCacheKey === this._getReadingCacheKey(readingData));
   }
 
-  async _finalizeCanvasAsset(canvas, readingData) {
+  async _finalizeCanvasAsset(canvas, readingData, retryNoExternalFn = null) {
+    let dataUrl = "";
+    try {
+      dataUrl = canvas.toDataURL("image/png");
+    } catch (_) {
+      dataUrl = "";
+    }
+    if (!dataUrl && typeof retryNoExternalFn === "function") {
+      return retryNoExternalFn();
+    }
     const blob = await new Promise((res) => {
       try {
         canvas.toBlob((b) => res(b), "image/png");
@@ -1513,10 +1602,6 @@ class ShareAndPdfEngine {
         res(null);
       }
     });
-    let dataUrl = "";
-    try {
-      dataUrl = canvas.toDataURL("image/png");
-    } catch (_) {}
     let finalBlob = blob;
     if (!finalBlob && dataUrl) {
       try {
