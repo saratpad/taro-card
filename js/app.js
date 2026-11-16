@@ -3327,6 +3327,9 @@ class TarotApp {
     window.mysticAudio.playClick();
     this._activeDownloadPayload = payload;
     window.shareAndPdfEngine.currentReadingData = payload;
+    if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.ensureInfoAsset === "function") {
+      window.shareAndPdfEngine.ensureInfoAsset(payload).catch(() => {});
+    }
 
     if (this.downloadDialogSubtitle) {
       const modeName = payload.mode === "palm"
@@ -3348,34 +3351,46 @@ class TarotApp {
     const payload = readingPayload || this._resolvePayloadByMode("active");
     if (!payload) return;
 
-    if (format === "png") {
-      window.mysticAudio.playClick();
-      this.showToast("⏳ กำลังสร้างรูปภาพ Info Card (.PNG)...");
-      const ok = await window.shareAndPdfEngine.downloadInfoImageFile(payload);
-      if (ok) {
-        if (this.activeCode) {
-          await window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดรูปภาพ Info Card (.PNG)");
+    try {
+      if (format === "png") {
+        window.mysticAudio.playClick();
+        const isAlreadyCached = window.shareAndPdfEngine &&
+          typeof window.shareAndPdfEngine._hasMatchingCachedInfo === "function" &&
+          window.shareAndPdfEngine._hasMatchingCachedInfo(payload);
+        if (!isAlreadyCached) {
+          this.showToast("⏳ กำลังสร้างรูปภาพ Info Card (.PNG)...");
         }
-        this.showToast("🖼️ ดาวน์โหลดรูปภาพ Info Card (.PNG) ลงเครื่องเรียบร้อยแล้ว!");
-        window.mysticAudio.playCrystalBell(880, 1.3);
-      }
-      return;
-    }
-
-    if (format === "txt") {
-      window.mysticAudio.playClick();
-      const ok = window.shareAndPdfEngine.downloadReadingTextFile(payload);
-      if (ok) {
-        if (this.activeCode) {
-          await window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT)");
+        const ok = await window.shareAndPdfEngine.downloadInfoImageFile(payload);
+        if (ok) {
+          this.showToast("🖼️ ดาวน์โหลดรูปภาพ Info Card (.PNG) ลงเครื่องเรียบร้อยแล้ว!");
+          window.mysticAudio.playCrystalBell(880, 1.3);
+          if (this.activeCode) {
+            window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดรูปภาพ Info Card (.PNG)").catch(() => {});
+          }
+        } else {
+          this.showToast("❌ ไม่สามารถสร้างไฟล์รูปภาพได้ กรุณาลองใหม่อีกครั้ง");
         }
-        this.showToast("📝 ดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT) ลงเครื่องเรียบร้อยแล้ว!");
-        window.mysticAudio.playCrystalBell(880, 1.2);
+        return;
       }
-      return;
-    }
 
-    await this.downloadDirectPDF(payload);
+      if (format === "txt") {
+        window.mysticAudio.playClick();
+        const ok = window.shareAndPdfEngine.downloadReadingTextFile(payload);
+        if (ok) {
+          this.showToast("📝 ดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT) ลงเครื่องเรียบร้อยแล้ว!");
+          window.mysticAudio.playCrystalBell(880, 1.2);
+          if (this.activeCode) {
+            window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT)").catch(() => {});
+          }
+        }
+        return;
+      }
+
+      await this.downloadDirectPDF(payload);
+    } catch (err) {
+      console.error("[Download Format Error]:", err);
+      this.showToast("❌ เกิดข้อผิดพลาดในการสร้างไฟล์ดาวน์โหลด กรุณาลองใหม่อีกครั้ง");
+    }
   }
 
   async _copyTextWithFallback(text) {

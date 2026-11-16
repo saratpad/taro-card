@@ -13,22 +13,37 @@ class ShareAndPdfEngine {
   }
 
   /**
-   * โหลดรูปภาพและคืนค่าเป็น HTMLImageElement
+   * โหลดรูปภาพและคืนค่าเป็น HTMLImageElement (หลีกเลี่ยง crossOrigin mismatch ของ Safari บนโดเมนเดียวกัน)
    */
   loadImage(src) {
     return new Promise((resolve) => {
       if (!src) return resolve(null);
+      let encoded = String(src);
+      if (!/^(?:data:|blob:)/i.test(encoded)) {
+        try {
+          encoded = encodeURI(decodeURI(encoded));
+        } catch (_) {
+          encoded = encodeURI(encoded);
+        }
+      }
+
+      let isSameOrigin = true;
+      try {
+        const resolved = new URL(encoded, window.location.href);
+        isSameOrigin = (
+          resolved.origin === window.location.origin ||
+          resolved.protocol === "data:" ||
+          resolved.protocol === "blob:"
+        );
+      } catch (_) {}
+
       const img = new Image();
-      img.crossOrigin = "anonymous";
+      if (!isSameOrigin) {
+        img.crossOrigin = "anonymous";
+      }
       img.onload = () => resolve(img);
-      img.onerror = () => {
-        // Retry with encodeURI if needed
-        const fallbackImg = new Image();
-        fallbackImg.onload = () => resolve(fallbackImg);
-        fallbackImg.onerror = () => resolve(null);
-        fallbackImg.src = encodeURI(src);
-      };
-      img.src = src;
+      img.onerror = () => resolve(null);
+      img.src = encoded;
     });
   }
 
@@ -770,12 +785,7 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");
 
-    const dataUrl = canvas.toDataURL("image/png", 0.95);
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png", 0.95));
-    this.currentInfoDataUrl = dataUrl;
-    this.currentInfoBlob = blob;
-    this.currentReadingData = readingData;
-    return { dataUrl, blob, canvas };
+    return this._finalizeCanvasAsset(canvas, readingData);
   }
 
   _getCleanSiamsiAspectText(item, readingData = null) {
@@ -982,12 +992,7 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
-    const dataUrl = canvas.toDataURL("image/png", 0.95);
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png", 0.95));
-    this.currentInfoDataUrl = dataUrl;
-    this.currentInfoBlob = blob;
-    this.currentReadingData = readingData;
-    return { dataUrl, blob, canvas };
+    return this._finalizeCanvasAsset(canvas, readingData);
   }
 
   /**
@@ -1189,12 +1194,7 @@ class ShareAndPdfEngine {
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • คัมภีร์วิเคราะห์หัตถศาสตร์เฉพาะบุคคล");
 
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 0.95));
-    const dataUrl = canvas.toDataURL("image/png", 0.95);
-    this.currentInfoDataUrl = dataUrl;
-    this.currentInfoBlob = blob;
-    this.currentReadingData = readingData;
-    return { dataUrl, blob, canvas };
+    return this._finalizeCanvasAsset(canvas, readingData);
   }
 
   buildShareableReadingUrl(readingData) {
@@ -1487,9 +1487,81 @@ class ShareAndPdfEngine {
     return `SiamSiTarot_InfoCard${modePart}${codePart}.png`;
   }
 
+  _getReadingCacheKey(readingData) {
+    if (!readingData) return "";
+    if (readingData.mode === "siamsi") {
+      return `siamsi|${readingData.code || ""}|${readingData.deck || ""}|${readingData.signNumber || readingData.stickNum || ""}|${readingData.supplementTitle || ""}`;
+    }
+    if (readingData.mode === "palm") {
+      return `palm|${readingData.code || ""}|${readingData.hand || "both"}|${readingData.confidence || ""}|${Object.keys(readingData.aspects || {}).length}`;
+    }
+    const cardIds = (readingData.cards || []).map(c => `${c.id}:${c.isReversed ? 1 : 0}`).join(",");
+    return `tarot|${readingData.code || ""}|${readingData.category || ""}|${readingData.loveStatus || ""}|${cardIds}|${readingData.textbookId || ""}`;
+  }
+
+  _hasMatchingCachedInfo(readingData) {
+    if (!readingData || !this.currentInfoBlob) return false;
+    if (this.currentReadingData === readingData) return true;
+    return Boolean(this._currentCacheKey && this._currentCacheKey === this._getReadingCacheKey(readingData));
+  }
+
+  async _finalizeCanvasAsset(canvas, readingData) {
+    const blob = await new Promise((res) => {
+      try {
+        canvas.toBlob((b) => res(b), "image/png");
+      } catch (_) {
+        res(null);
+      }
+    });
+    let dataUrl = "";
+    try {
+      dataUrl = canvas.toDataURL("image/png");
+    } catch (_) {}
+    let finalBlob = blob;
+    if (!finalBlob && dataUrl) {
+      try {
+        const res = await fetch(dataUrl);
+        finalBlob = await res.blob();
+      } catch (_) {}
+    }
+    this.currentInfoDataUrl = dataUrl;
+    this.currentInfoBlob = finalBlob;
+    this.currentReadingData = readingData;
+    this._currentCacheKey = this._getReadingCacheKey(readingData);
+    return { dataUrl, blob: finalBlob, canvas };
+  }
+
+  _triggerDownload(blob, fallbackDataUrl, fileName) {
+    let objectUrl = "";
+    try {
+      if (blob instanceof Blob) {
+        objectUrl = URL.createObjectURL(blob);
+      }
+    } catch (_) {
+      objectUrl = "";
+    }
+    const href = objectUrl || fallbackDataUrl;
+    if (!href) return false;
+
+    const a = document.createElement("a");
+    a.href = href;
+    a.download = fileName;
+    a.rel = "noopener";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      if (a.parentNode) a.parentNode.removeChild(a);
+      if (objectUrl) {
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 25000);
+      }
+    }, 100);
+    return true;
+  }
+
   async ensureInfoAsset(readingData) {
     if (!readingData) return null;
-    if (!this.currentInfoBlob || !this.currentInfoDataUrl || this.currentReadingData !== readingData) {
+    if (!this._hasMatchingCachedInfo(readingData)) {
       if (readingData.mode === "palm") {
         await this.generatePalmInfoCard(readingData);
       } else if (readingData.mode === "siamsi") {
@@ -1559,30 +1631,20 @@ class ShareAndPdfEngine {
     const codePart = readingData.code ? `_${readingData.code}` : "";
     const fileName = `SiamSiTarot_${readingData.mode || "Reading"}${codePart}.txt`;
     const blob = new Blob(["\uFEFF" + content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-    return true;
+    return this._triggerDownload(blob, "", fileName);
   }
 
   /**
-   * ดาวน์โหลดไฟล์รูป Info Card (.png) ลงเครื่อง
+   * ดาวน์โหลดไฟล์รูป Info Card (.png) ลงเครื่อง (ใช้ Blob URL + fast-path เพื่อรองรับ Safari / iOS 100%)
    */
   async downloadInfoImageFile(readingData) {
+    if (!readingData) return false;
+    if (this._hasMatchingCachedInfo(readingData)) {
+      return this._triggerDownload(this.currentInfoBlob, this.currentInfoDataUrl, this.getInfoCardFilename(readingData));
+    }
     const asset = await this.ensureInfoAsset(readingData);
-    if (!asset || !asset.dataUrl) return false;
-    const a = document.createElement("a");
-    a.href = asset.dataUrl;
-    a.download = asset.fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    return true;
+    if (!asset || (!asset.blob && !asset.dataUrl)) return false;
+    return this._triggerDownload(asset.blob, asset.dataUrl, asset.fileName);
   }
 }
 
