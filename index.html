@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261116a">
+  <link rel="stylesheet" href="css/style.css?v=20261116b">
   <link rel="stylesheet" href="css/responsive.css?v=20261116a">
 </head>
 <body>
@@ -241,9 +241,10 @@
               <div class="form-group">
                 <label class="form-label">
                   <span>✦</span>
-                  <span data-i18n="label_category">เลือกหมวดหมู่ที่ต้องการพยากรณ์ (เฉพาะด้าน)</span>
+                  <span id="tarot-category-label" data-i18n="label_category">เลือกหมวดหมู่ที่ต้องการพยากรณ์ (เฉพาะด้าน)</span>
                 </label>
-                <div class="category-chips-grid four-cats-grid">
+                <div id="locked-category-banner" class="locked-category-banner" style="display: none;" role="status"></div>
+                <div class="category-chips-grid four-cats-grid" id="tarot-category-chips-grid">
                   <button type="button" class="cat-chip active" data-cat="love">
                     <span class="chip-icon">💖</span>
                     <span class="chip-title" data-i18n="cat_love">ความรัก</span>
@@ -754,7 +755,7 @@
                 <button type="button" class="siamsi-aspect-filter-chip" data-aspect="health" data-i18n="siamsi_tab_health">🌿 สุขภาพ</button>
                 <button type="button" class="siamsi-aspect-filter-chip" data-aspect="study" data-i18n="siamsi_tab_study">🎓 การเรียน</button>
                 <button type="button" class="siamsi-aspect-filter-chip" data-aspect="home" data-i18n="siamsi_tab_home">🏡 ครอบครัว</button>
-                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general" data-i18n="siamsi_tab_general">🔮 ภาพรวม</button>
+                <button type="button" class="siamsi-aspect-filter-chip" data-aspect="general" data-i18n="siamsi_tab_general">🔮 ภาพรวมและสรุปคำทำนาย</button>
               </div>
 
               <div class="siamsi-aspects-grid" id="siamsi-aspects-grid"></div>
@@ -1532,10 +1533,10 @@
   <script src="js/particles.js"></script>
   <script src="js/supabase-client.js?v=20261115a"></script>
   <script src="js/rag-engine.js?v=20261115a"></script>
-  <script src="js/code-manager.js?v=20261115a"></script>
-  <script src="js/share-pdf.js?v=20261116a"></script>
-  <script src="js/siamsi.js?v=20261116a"></script>
-  <script src="js/app.js?v=20261116a"></script>
+  <script src="js/code-manager.js?v=20261116b"></script>
+  <script src="js/share-pdf.js?v=20261116b"></script>
+  <script src="js/siamsi.js?v=20261116b"></script>
+  <script src="js/app.js?v=20261116b"></script>
 
 </body>
 </html>

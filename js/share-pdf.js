@@ -886,7 +886,7 @@ class ShareAndPdfEngine {
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff1be";
     ctx.font = "700 22px 'Prompt', sans-serif";
-    ctx.fillText("🔮 คำทำนายภาพรวม & ข้อแนะนำประจำใบเซียมซี", 96, ovY + 36, W - 200);
+    ctx.fillText("🔮 ภาพรวมและสรุปคำทำนาย พร้อมแนวทางปฏิบัติ", 96, ovY + 36, W - 200);
 
     const overviewParts = [];
     if (generalItem) {
@@ -895,10 +895,8 @@ class ShareAndPdfEngine {
     }
     if (readingData.supplementText) {
       overviewParts.push(`ตำราเสริม (${readingData.supplementTitle || "เพิ่มเติม"}): ${readingData.supplementText}`);
-    } else if (readingData.storyExcerpt && (!generalItem || this._getCleanSiamsiAspectText(generalItem, readingData).length < 240)) {
-      overviewParts.push(`แก่นตำนานประจำใบ: ${readingData.storyExcerpt}`);
     }
-    const finalOverviewText = overviewParts.join(" • ") || `ระดับดวงชะตา: ${readingData.fortuneLevel || "ปานกลาง"} — ${readingData.oneLine || ""}`;
+    const finalOverviewText = overviewParts.join(" • ") || `เกณฑ์ดวงชะตา "${readingData.fortuneLevel || "ปานกลาง"}" — ${readingData.oneLine || ""}`;
 
     const isOverviewConcise = finalOverviewText.length <= 360;
     ctx.fillStyle = "#f8fafc";
@@ -1468,8 +1466,8 @@ class ShareAndPdfEngine {
       .trim();
 
     const extraParts = [];
-    if (readingData.mode === "tarot" && readingData.ragSynthesis) {
-      extraParts.push(`📚 สรุปตามตำราที่ใช้งาน (${readingData.textbookTitle || "ตำราไพ่ทาโรต์"}):\n${readingData.ragSynthesis}`);
+    if (readingData.mode === "tarot" && readingData.ragSynthesis && readingData.textbookId && readingData.textbookId !== "tarot_classic_rw") {
+      extraParts.push(`📖 มุมมองเพิ่มเติม (${readingData.textbookTitle || "ตำราที่เลือก"}):\n${readingData.ragSynthesis}`);
     }
     if (readingData.mode === "siamsi" && readingData.storyExcerpt) {
       extraParts.push(`📜 ตำนาน/คติประจำใบ:\n${readingData.storyExcerpt}`);

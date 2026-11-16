@@ -564,6 +564,10 @@ class AdminBackoffice {
         <option value="wongtaisin">🏛️ ค่าเริ่มต้น: เซียมซีหว่องไทซิน (ผู้ดูสลับเองได้)</option>
         <option value="tanjai">🪷 ค่าเริ่มต้น: เซียมซีหลวงพ่อทันใจ (ผู้ดูสลับเองได้)</option>
       `;
+    } else if (mode === "palm") {
+      this.selectLockedCategory.innerHTML = `
+        <option value="">✋ สแกนลายมือวิเคราะห์ครบ 5 ด้านอัตโนมัติ (ไม่ล็อกเฉพาะด้าน)</option>
+      `;
     } else {
       this.selectLockedCategory.innerHTML = `
         <option value="">ให้ลูกค้าเลือกหมวดหมู่เอง (ความรัก/การงาน/การเงิน/สุขภาพ)</option>
@@ -644,7 +648,8 @@ class AdminBackoffice {
         const modeTitleMap = {
           tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
           siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
-          combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี (อย่างละ 1 ครั้ง)"
+          combo: "แพ็กเกจ 3: รวม 3 ศาสตร์ (อย่างละ 1 ครั้ง)",
+          palm: "แพ็กเกจ 4: สแกนดูลายมือ"
         };
         this.newlyCreatedBox.style.display = "block";
         this.newlyCreatedCodeLabel.textContent = `รหัสโค้ด: ${codeObj.code}`;
@@ -1279,7 +1284,7 @@ class AdminBackoffice {
         health: "🌿 สุขภาพพลานามัย",
         study: "🎓 การเรียนการสอบ",
         home: "🏡 ครอบครัวเคหสถาน",
-        general: "🔮 ภาพรวมดวงชะตา"
+        general: "🔮 ภาพรวมและสรุปคำทำนาย"
       };
       const aspectsSummary = [];
       if (sign.aspects) {

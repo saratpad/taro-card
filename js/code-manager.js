@@ -557,6 +557,10 @@ class CodeManager {
     const apiCallRes = await this._apiCall(`/api/codes/${encodeURIComponent(cleanCode)}?access=${recordAccess ? "1" : "0"}`);
     if (apiCallRes.ok && apiCallRes.data && apiCallRes.data.codeObj) {
       const codeObj = this._normalizeCodeObj(apiCallRes.data.codeObj);
+      const urlTokenData = this._getUrlTokenPayload(cleanCode);
+      if (!codeObj.lockedCategory && urlTokenData && urlTokenData.l) {
+        codeObj.lockedCategory = String(urlTokenData.l);
+      }
       this._syncSingleCodeToLocal(codeObj);
       if (this.isCodeExpired(codeObj)) {
         return { valid: false, reason: "expired", codeObj };
@@ -854,21 +858,28 @@ class CodeManager {
     }
   }
 
-  applyUrlDisplayTokenIfPresent(expectedCode = "") {
-    if (typeof window === "undefined") return false;
+  _getUrlTokenPayload(expectedCode = "") {
+    if (typeof window === "undefined") return null;
     try {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("t");
-      if (!token) return false;
+      if (!token) return null;
       const parsed = JSON.parse(decodeURIComponent(atob(token)));
-      if (!parsed) return false;
+      if (!parsed) return null;
       if (expectedCode && String(parsed.c || "").toUpperCase() !== String(expectedCode).toUpperCase()) {
-        return false;
+        return null;
       }
-      if (parsed.ds && window.displaySettingsEngine && typeof window.displaySettingsEngine.applyFromUrlToken === "function") {
-        return window.displaySettingsEngine.applyFromUrlToken(parsed.ds);
-      }
-    } catch (_) {}
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  applyUrlDisplayTokenIfPresent(expectedCode = "") {
+    const parsed = this._getUrlTokenPayload(expectedCode);
+    if (parsed && parsed.ds && window.displaySettingsEngine && typeof window.displaySettingsEngine.applyFromUrlToken === "function") {
+      return window.displaySettingsEngine.applyFromUrlToken(parsed.ds);
+    }
     return false;
   }
 

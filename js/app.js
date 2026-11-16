@@ -313,7 +313,11 @@ class TarotApp {
 
     // Screen 1: Intention
     this.seekerNameInput = document.getElementById("seeker-name-input");
+    this.tarotCategoryChipsGrid = document.getElementById("tarot-category-chips-grid");
+    this.tarotCategoryLabel = document.getElementById("tarot-category-label");
+    this.lockedCategoryBanner = document.getElementById("locked-category-banner");
     this.catChips = document.querySelectorAll(".cat-chip");
+    this._lockedTarotCategory = "";
     this.loveStatusGroup = document.getElementById("love-status-group");
     this.loveStatusChips = document.querySelectorAll(".love-status-chip");
     this.ritualBannerBadge = document.getElementById("ritual-banner-badge");
@@ -587,7 +591,10 @@ class TarotApp {
     // Category Selector (4 categories: love, career, finance, health)
     this.catChips.forEach(chip => {
       chip.addEventListener("click", () => {
-        if (chip.disabled) return;
+        if (chip.disabled || (this._lockedTarotCategory && chip.dataset.cat !== this._lockedTarotCategory)) {
+          this.showToast("🔒 สิทธิ์โค้ดนี้กำหนดดูดวงเฉพาะด้านที่แอดมินตั้งไว้เท่านั้น");
+          return;
+        }
         window.mysticAudio.playClick();
         this.catChips.forEach(c => c.classList.remove("active"));
         chip.classList.add("active");
@@ -617,6 +624,9 @@ class TarotApp {
         if (tarotCount >= 1 && tarotSaved) {
           this.restoreSavedTarotReading(tarotSaved);
           return;
+        }
+        if (this._lockedTarotCategory) {
+          this.category = this._lockedTarotCategory;
         }
         this.spreadCount = 3;
         window.mysticAudio.playCardShuffle();
@@ -932,6 +942,7 @@ class TarotApp {
   }
 
   showAccessGate() {
+    this.applyLockedCategoryPolicy("");
     if (this.accessGateScreen) this.accessGateScreen.classList.add("active");
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
@@ -993,8 +1004,12 @@ class TarotApp {
     if (this.activeCodeBanner) {
       this.activeCodeBanner.style.display = "inline-flex";
       const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "แพ็กเกจรวม", palm: "สแกนลายมือ" };
+      const lockedCatNames = { love: "ความรัก", career: "การงาน", finance: "การเงิน", health: "สุขภาพ" };
+      const lockedSuffix = (codeObj.lockedCategory && lockedCatNames[codeObj.lockedCategory])
+        ? ` • เฉพาะด้าน${lockedCatNames[codeObj.lockedCategory]}`
+        : "";
       if (this.activeCodeText) {
-        this.activeCodeText.textContent = `🔑 ${codeObj.code} • ${shortLabelMap[codeObj.mode] || "ดูดวง"}`;
+        this.activeCodeText.textContent = `🔑 ${codeObj.code} • ${shortLabelMap[codeObj.mode] || "ดูดวง"}${lockedSuffix}`;
       }
       if (this.activeCodeExpiry) {
         this.activeCodeExpiry.textContent = window.codeManager.getRemainingTimeText(codeObj, this.lang);
@@ -1069,9 +1084,18 @@ class TarotApp {
       }
     }
     if (this.btnComboTarotLabel) {
+      const lockedCatMap = {
+        love: "ความรัก",
+        career: "การงาน",
+        finance: "การเงิน",
+        health: "สุขภาพ",
+      };
+      const lockedSuffix = lockedCatMap[codeObj.lockedCategory]
+        ? ` (เฉพาะด้าน${lockedCatMap[codeObj.lockedCategory]})`
+        : "";
       this.btnComboTarotLabel.textContent = tarotDone
-        ? "เปิดดูผลคำทำนายไพ่ทาโรต์ 3 ใบของคุณ"
-        : "เริ่มเปิดดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)";
+        ? `เปิดดูผลคำทำนายไพ่ทาโรต์ 3 ใบของคุณ${lockedSuffix}`
+        : `เริ่มเปิดดวงไพ่ทาโรต์ 3 ใบ (1 ครั้ง)${lockedSuffix}`;
     }
 
     if (this.comboSiamsiStatus) {
@@ -1117,6 +1141,64 @@ class TarotApp {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  applyLockedCategoryPolicy(lockedCategory = "") {
+    const validCats = ["love", "career", "finance", "health"];
+    const catNames = {
+      love: "💖 ความรัก",
+      career: "💼 การงาน",
+      finance: "💰 การเงิน",
+      health: "🌿 สุขภาพ"
+    };
+    const isLocked = Boolean(lockedCategory && validCats.includes(lockedCategory));
+    this._lockedTarotCategory = isLocked ? lockedCategory : "";
+
+    if (isLocked) {
+      this.category = lockedCategory;
+    }
+
+    this.catChips.forEach((chip) => {
+      const cat = chip.dataset.cat;
+      if (isLocked) {
+        const isMatch = cat === lockedCategory;
+        chip.classList.toggle("active", isMatch);
+        chip.classList.toggle("is-locked-chip", isMatch);
+        chip.disabled = !isMatch;
+        chip.hidden = !isMatch;
+        chip.style.display = isMatch ? "" : "none";
+        chip.setAttribute("aria-disabled", String(!isMatch));
+      } else {
+        chip.disabled = false;
+        chip.hidden = false;
+        chip.style.display = "";
+        chip.classList.remove("is-locked-chip");
+        chip.removeAttribute("aria-disabled");
+        chip.classList.toggle("active", cat === this.category);
+      }
+    });
+
+    if (this.tarotCategoryChipsGrid) {
+      this.tarotCategoryChipsGrid.classList.toggle("is-single-locked", isLocked);
+    }
+    if (this.tarotCategoryLabel) {
+      this.tarotCategoryLabel.textContent = isLocked
+        ? (this.lang === "en" ? "Assigned Divination Domain (Locked)" : "หมวดหมู่พยากรณ์ที่ได้รับสิทธิ์ (กำหนดโดยแอดมิน)")
+        : I18N[this.lang].label_category;
+    }
+    if (this.lockedCategoryBanner) {
+      if (isLocked) {
+        this.lockedCategoryBanner.style.display = "flex";
+        this.lockedCategoryBanner.innerHTML = this.lang === "en"
+          ? `🔒 Access code locked to: <strong>${catNames[lockedCategory] || lockedCategory}</strong>`
+          : `🔒 สิทธิ์โค้ดนี้กำหนดดูดวงเฉพาะด้าน: <strong>${catNames[lockedCategory] || lockedCategory}</strong> (ไม่สามารถเปลี่ยนเป็นด้านอื่นได้)`;
+      } else {
+        this.lockedCategoryBanner.style.display = "none";
+        this.lockedCategoryBanner.innerHTML = "";
+      }
+    }
+
+    this.updateCategoryPreviewPills();
+  }
+
   openTarotServiceForCode(codeObj) {
     if (!codeObj) return;
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
@@ -1126,14 +1208,8 @@ class TarotApp {
 
     if (window.palmApp) window.palmApp.stopCamera();
 
-    // Check if category is pre-locked by admin
-    if (codeObj.lockedCategory && ["love", "career", "finance", "health"].includes(codeObj.lockedCategory)) {
-      this.category = codeObj.lockedCategory;
-      this.catChips.forEach(c => {
-        c.classList.toggle("active", c.dataset.cat === this.category);
-      });
-      this.updateCategoryPreviewPills();
-    }
+    // Apply or reset category lock strictly based on Admin configuration
+    this.applyLockedCategoryPolicy(codeObj.lockedCategory || "");
 
     const savedTarot = codeObj.tarotResult || (codeObj.readingResult && codeObj.readingResult.mode === "tarot" ? codeObj.readingResult : null);
     const tarotUsed = (codeObj.tarotDrawCount || 0) >= 1 || (codeObj.mode === "tarot" && codeObj.drawCount >= 1);
@@ -1818,6 +1894,9 @@ class TarotApp {
   }
 
   renderResults() {
+    if (this._lockedTarotCategory && ["love", "career", "finance", "health"].includes(this._lockedTarotCategory)) {
+      this.category = this._lockedTarotCategory;
+    }
     const dict = I18N[this.lang];
     const domainName = I18N[this.lang]["cat_" + this.category] || I18N[this.lang].cat_love;
     const positions = this.getPositions();
@@ -1856,7 +1935,8 @@ class TarotApp {
       : null;
 
     if (this.resultsQuestionRecap) {
-      const bookBadgeHtml = activeTarotBook
+      const showBookBadge = activeTarotBook && activeTarotBook.id && activeTarotBook.id !== "tarot_classic_rw";
+      const bookBadgeHtml = showBookBadge
         ? `<span style="margin: 0 0.6rem; opacity:0.5;">•</span><span>📖 ตำรา: </span><strong style="color:#7dd3fc;">${activeTarotBook.title}</strong>`
         : "";
       this.resultsQuestionRecap.innerHTML = `
@@ -2101,22 +2181,22 @@ class TarotApp {
     }).filter(Boolean);
 
     const combinedDoAction = `${verdictData.doAction} โดยแนวทางสำคัญในการก้าวต่อไปคือ ${cardsGuidanceSentences.join(" • ")} ${verdictData.luckyBoost}`;
-    const ragBookHtml = (ragSynthesisObj && ragSynthesisObj.synthesisText)
-      ? `
-        <div class="rag-insight-callout" style="margin-top:0.9rem;">
-          <div class="rag-insight-head">📚 สรุปตามตำราที่ใช้งาน: ${ragSynthesisObj.bookTitle}</div>
-          <p class="rag-insight-text">${ragSynthesisObj.synthesisText}</p>
-        </div>
-      `
-      : "";
+    const hasCustomSynthesis = Boolean(
+      ragSynthesisObj &&
+      ragSynthesisObj.bookId &&
+      ragSynthesisObj.bookId !== "tarot_classic_rw" &&
+      ragSynthesisObj.synthesisText
+    );
+    const enrichedDeepNarrative = hasCustomSynthesis
+      ? `${verdictData.deepNarrative} ตามมุมมองของ${ragSynthesisObj.bookTitle}: ${ragSynthesisObj.synthesisText}`
+      : verdictData.deepNarrative;
 
     if (this.verdictContent) {
       this.verdictContent.innerHTML = `
         <div class="verdict-storyline-card">
           <div class="verdict-sub-section-title">🔮 สรุปและวิเคราะห์ดวงชะตา</div>
           <p class="storyline-lead" style="margin-bottom:0.85rem; line-height:1.85; color:#f8fafc;">${verdictData.plainText}</p>
-          <p class="storyline-deep" style="margin:0; line-height:1.85; color:#e2e8f0;">${verdictData.deepNarrative}</p>
-          ${ragBookHtml}
+          <p class="storyline-deep" style="margin:0; line-height:1.85; color:#e2e8f0;">${enrichedDeepNarrative}</p>
         </div>
       `;
     }

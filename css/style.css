@@ -8099,4 +8099,33 @@ dialog.mystic-native-dialog::backdrop {
   flex-shrink: 0;
 }
 
+/* Locked Tarot Category Notice & Single-Category Layout */
+.locked-category-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-bottom: 0.8rem;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(243, 207, 122, 0.55);
+  color: #fef3c7;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.category-chips-grid.is-single-locked {
+  grid-template-columns: minmax(220px, 340px);
+  justify-content: center;
+}
+
+.cat-chip.is-locked-chip {
+  cursor: default;
+  border-color: #f3cf7a;
+  box-shadow: 0 0 22px rgba(243, 207, 122, 0.26);
+}
+
+
 

@@ -1282,6 +1282,173 @@ class SiamsiApp {
     `;
   }
 
+  _extractSiamsiAdviceTail(rawDetail, summary, sign) {
+    const raw = String(rawDetail || "")
+      .replace(/^(?:การงานตามใบเซียมซี|โชคลาภตามบทเซียมซี|เรื่องความรักตามบทเซียมซี|เรื่องสุขภาพตามบทเซียมซี|เรื่องการศึกษาตามบทเซียมซี|เรื่องครอบครัวและเคหสถาน|ภาพรวม[^:]*|คำทำนายภาพรวม)\s*:\s*"[^"]*"\s*/u, "")
+      .trim();
+    if (!raw) return String(summary || "").trim();
+
+    const poemHead = Array.isArray(sign && sign.poem_th) && sign.poem_th[0] ? String(sign.poem_th[0]).trim() : "";
+    const genericFilter = /ขอให้ตั้งมั่นในความซื่อสัตย์สุจริต|หมั่นทำบุญสร้างกุศล|ตำนานดั้งเดิมประจำใบนี้กล่าวถึงคติธรรม/;
+    const paras = raw
+      .split(/\n\n+/)
+      .map(p => p.replace(/\s+/g, " ").trim())
+      .filter(p => p && p.length >= 16 && !genericFilter.test(p) && (!poemHead || !p.startsWith(poemHead)));
+
+    const candidate = paras.length > 0 ? paras[paras.length - 1] : String(summary || "").trim();
+    const cleanSummary = String(summary || "").trim();
+    if (candidate === cleanSummary || candidate.length <= 240) {
+      return candidate;
+    }
+    // Trim long narrative tail down to final 1-2 crisp sentences without fluff
+    const sentences = candidate.split(/(?<=[.!?])\s+|(?<=ครับ|ค่ะ|นะ|เลย|กัน|ดี|ได้|แล้ว|ไว้|ตัว)\s+/).filter(Boolean);
+    if (sentences.length > 2) {
+      return sentences.slice(-2).join(" ").trim();
+    }
+    return candidate.slice(-220).trim();
+  }
+
+  /**
+   * Synthesizes a high-signal, zero-fluff Overview Summary & Actionable Advice
+   * across all pillars of a Siamsi stick (used for Web UI, Info Card, PDF, and Gemini).
+   */
+  buildQualityOverviewAndAdvice(sign, isEn = false) {
+    if (!sign) return { summary: "", detail: "" };
+    if (isEn && sign.en && sign.en.aspects) {
+      const enAsp = sign.en.aspects;
+      const lvl = (sign.en.fortune_level || sign.fortune_level || "").trim();
+      const essence = (sign.en.one_line_summary || "").trim();
+      const summary = lvl ? `${lvl}: ${essence}` : essence;
+      const points = [
+        enAsp.career && enAsp.career.summary ? `Career: ${enAsp.career.summary}` : "",
+        enAsp.wealth && enAsp.wealth.summary ? `Wealth: ${enAsp.wealth.summary}` : "",
+        enAsp.love && enAsp.love.summary ? `Love: ${enAsp.love.summary}` : "",
+        enAsp.health && enAsp.health.summary ? `Health: ${enAsp.health.summary}` : ""
+      ].filter(Boolean).join(" • ");
+      return {
+        summary,
+        detail: `Key Outlook: ${points}\n\nPractical Direction: Prioritize steady execution aligned with this omen (${lvl || "Balanced"}) and avoid hasty overcommitment.`
+      };
+    }
+
+    const asp = sign.aspects || {};
+    const level = String(sign.fortune_level || "ปานกลาง").trim();
+    const poem0 = Array.isArray(sign.poem_th) && sign.poem_th[0] ? String(sign.poem_th[0]).trim() : "";
+    const rawOneLine = String(sign.one_line_summary || "").trim();
+    const isPoemEcho = Boolean(poem0 && rawOneLine && rawOneLine.includes(poem0.slice(0, Math.min(14, poem0.length))));
+
+    const getSum = (k) => String((asp[k] && asp[k].summary) || "").trim();
+    const getTail = (k) => asp[k] ? this._extractSiamsiAdviceTail(asp[k].detail, asp[k].summary, sign) : "";
+
+    const careerSum = getSum("career");
+    const wealthSum = getSum("wealth");
+    const loveSum = getSum("love");
+    const healthSum = getSum("health");
+    const studySum = getSum("study");
+    const homeSum = getSum("home");
+
+    const stanceByLevel = {
+      "ดีที่สุด": "จังหวะดวงเปิดกว้างมากที่สุด เหมาะกับการลงมือทำเต็มที่และคว้าโอกาสตรงหน้า",
+      "ดีมาก": "ดวงอยู่ในเกณฑ์ขาขึ้น แรงหนุนรอบด้านพร้อมต่อยอดความสำเร็จได้ชัดเจน",
+      "ดี": "ทิศทางโดยรวมคล่องตัว เดินหน้าตามแผนอย่างต่อเนื่องแล้วจะเห็นผลลัพธ์ดี",
+      "ค่อนข้างดี": "ภาพรวมมีจุดเด่นให้ต่อยอดได้ แต่ยังต้องเลือกโฟกัสและรักษาจังหวะให้พอดี",
+      "ปานกลาง": "จังหวะชะตาอยู่ในช่วงทรงตัว ประคองฐานเดิมให้มั่นคงก่อนค่อยขยับขยาย",
+      "ต้องระวัง": "ช่วงนี้เน้นตั้งรับและรอบคอบเป็นพิเศษ ชะลอเรื่องเสี่ยงแล้วผลลัพธ์จะปลอดภัยขึ้น"
+    };
+
+    const trimClause = (txt, maxLen = 82) => {
+      let s = String(txt || "")
+        .replace(/^ใบที่\s*\d+[^:]*:\s*/, "")
+        .replace(/\s*\([^)]{12,}\)\s*/g, " ")
+        .replace(/\s*—\s*(?:อยาก|บทกลอน|ในเรื่อง|ในบท|เรื่องราว|เถา|ซี|หลี่|หวัง|ขง|หาน|จู|เล่า|ซุน|เตียว)[\s\S]*$/u, "")
+        .replace(/\s+(?:บทกลอนเล่า|ในเรื่องราวของ|เรื่องนี้สอน|เหมือนในเรื่อง)[\s\S]*$/u, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (s.length > maxLen) {
+        const cut = s.slice(0, maxLen);
+        const lastSpace = cut.lastIndexOf(" ");
+        s = (lastSpace >= Math.floor(maxLen * 0.55) ? cut.slice(0, lastSpace) : cut).trim();
+      }
+      return s;
+    };
+
+    const isNearDuplicate = (candidate, pool) => {
+      const norm = String(candidate || "").replace(/\s+/g, " ").trim();
+      if (!norm) return true;
+      const head = norm.slice(0, Math.min(14, norm.length));
+      const tail = norm.slice(Math.max(0, norm.length - 14));
+      return pool.some((existing) => {
+        const ex = String(existing || "");
+        return ex.includes(head) || norm.includes(ex.slice(0, Math.min(14, ex.length))) || (tail.length >= 12 && ex.includes(tail));
+      });
+    };
+
+    const summaryHead = !isPoemEcho && rawOneLine
+      ? `เกณฑ์ "${level}" — ${rawOneLine}`
+      : `เกณฑ์ "${level}" — ${stanceByLevel[level] || stanceByLevel["ปานกลาง"]}`;
+
+    const crispPoint = (label, sum, tail) => {
+      const cleanedSum = trimClause(sum, 66);
+      const fallbackTail = trimClause(tail, 66);
+      const useText = (cleanedSum && !cleanedSum.endsWith("?") && cleanedSum.length >= 10) ? cleanedSum : (fallbackTail || cleanedSum);
+      return useText ? `${label}: ${useText}` : "";
+    };
+
+    const domainSummaries = [
+      crispPoint("การงาน", careerSum, getTail("career")),
+      crispPoint("การเงิน", wealthSum, getTail("wealth")),
+      crispPoint("ความรัก", loveSum, getTail("love")),
+      crispPoint("สุขภาพ", healthSum, getTail("health")),
+      crispPoint("การเรียน/บ้าน", studySum || homeSum, "")
+    ].filter(Boolean);
+
+    const uniqueTails = [];
+    ["career", "wealth", "love", "health", "study"].forEach((k) => {
+      if (uniqueTails.length >= 2) return;
+      const t = trimClause(getTail(k), 88);
+      if (!t || t.length < 12) return;
+      if (!isNearDuplicate(t, [...domainSummaries, ...uniqueTails])) {
+        uniqueTails.push(t);
+      }
+    });
+
+    const cautionMatches = [];
+    const cautionRegex = /([^.!?\n•]*(?:อย่า|ไม่ควร|ระวัง|หลีกเลี่ยง|ห้าม|ชะลอ|อย่าเพิ่ง)[^.!?\n•]*)/gu;
+    ["career", "wealth", "love", "health", "home"].forEach((k) => {
+      if (cautionMatches.length >= 2) return;
+      const blob = `${getSum(k)} ${getTail(k)}`;
+      const hits = blob.match(cautionRegex) || [];
+      hits.forEach((h) => {
+        if (cautionMatches.length >= 2) return;
+        const cleanHit = trimClause(h.replace(/^[•\-\s]+/, ""), 84);
+        if (cleanHit.length >= 14 && !isNearDuplicate(cleanHit, [...domainSummaries, ...uniqueTails, ...cautionMatches])) {
+          cautionMatches.push(cleanHit);
+        }
+      });
+    });
+
+    const paraOverview = `📌 สรุปภาพรวมชะตาประจำใบ (${level}):\n${domainSummaries.join(" • ")}`;
+    const paraAdvice = uniqueTails.length > 0
+      ? `🎯 คำแนะนำเชิงปฏิบัติ (ลงมือทำได้ทันที):\n${uniqueTails.join(" • ")}`
+      : `🎯 คำแนะนำเชิงปฏิบัติ (ลงมือทำได้ทันที):\n${stanceByLevel[level] || stanceByLevel["ปานกลาง"]}`;
+    const paraCaution = cautionMatches.length > 0
+      ? `⚠️ จุดต้องระวังและสิ่งที่ควรเลี่ยง:\n${cautionMatches.join(" • ")}`
+      : (level.includes("ดี")
+        ? `⚠️ จุดต้องระวังและสิ่งที่ควรเลี่ยง:\nต่อยอดบนสิ่งที่ถนัดและวางระบบจัดการให้รัดกุม อย่าประมาทหรือกระจายความเสี่ยงเกินกำลัง`
+        : `⚠️ จุดต้องระวังและสิ่งที่ควรเลี่ยง:\nเลี่ยงการตัดสินใจเร่งด่วนด้วยอารมณ์ รักษาวินัยรายจ่ายและรอจังหวะที่ข้อมูลชัดเจนก่อนขยับ`);
+
+    return {
+      summary: summaryHead,
+      detail: `${paraOverview}\n\n${paraAdvice}\n\n${paraCaution}`,
+      compactDomains: domainSummaries.slice(0, 4).join(" • "),
+      compactAdvice: uniqueTails.length > 0 ? uniqueTails.join(" • ") : (stanceByLevel[level] || stanceByLevel["ปานกลาง"]),
+      compactCaution: cautionMatches.length > 0
+        ? cautionMatches.join(" • ")
+        : (level.includes("ดี") ? "อย่าประมาทหรือขยายเกินกำลัง รักษาสมดุลรอบด้าน" : "เลี่ยงการตัดสินใจเร่งด่วน รอจังหวะที่มั่นใจค่อยขยับ"),
+      isPoemEcho
+    };
+  }
+
   renderAspectCards(sign) {
     if (!this.aspectCardsContainer) return;
     this.aspectCardsContainer.innerHTML = "";
@@ -1314,7 +1481,7 @@ class SiamsiApp {
       },
       general: {
         icon: "🔮",
-        label: isEn ? "Overall Situation" : "ภาพรวมและเรื่องทั่วไป"
+        label: isEn ? "Overall Summary & Advice" : "ภาพรวมและสรุปคำทำนาย"
       }
     };
 
@@ -1324,7 +1491,11 @@ class SiamsiApp {
       let summary = "";
       let detail = "";
 
-      if (isEn && sign.en && sign.en.aspects && sign.en.aspects[key]) {
+      if (key === "general") {
+        const synth = this.buildQualityOverviewAndAdvice(sign, isEn);
+        summary = synth.summary;
+        detail = synth.detail;
+      } else if (isEn && sign.en && sign.en.aspects && sign.en.aspects[key]) {
         const enData = sign.en.aspects[key];
         summary = enData.summary || "";
         detail = enData.detail || "";
@@ -1357,7 +1528,13 @@ class SiamsiApp {
           </div>
           ${hasDetail ? `
             <div class="aspect-deep-detail">
-              ${detail.split("\n\n").map(p => `<p>${p.trim()}</p>`).join("")}
+              ${detail.split("\n\n").map(p => {
+                const lines = p.trim().split("\n");
+                if (lines.length > 1 && /^[📌🎯⚠️🔮]/.test(lines[0])) {
+                  return `<p><strong style="color:#fde68a;">${lines[0]}</strong><br>${lines.slice(1).join("<br>")}</p>`;
+                }
+                return `<p>${p.trim().replace(/\n/g, "<br>")}</p>`;
+              }).join("")}
             </div>
           ` : ""}
         </div>
@@ -1597,7 +1774,7 @@ Divinate online at: ${window.location.origin}${window.location.pathname}#siamsi=
       health: "🌿 สุขภาพพลานามัย",
       study: "🎓 การเรียนการสอบ",
       home: "🏡 ครอบครัวเคหสถาน",
-      general: "🔮 ภาพรวมดวงชะตา"
+      general: "🔮 ภาพรวมและสรุปคำทำนาย"
     };
 
     const stripPoemEcho = (rawDetail) => {
@@ -1608,9 +1785,25 @@ Divinate online at: ${window.location.origin}${window.location.pathname}#siamsi=
         .trim();
     };
 
+    const overviewSynth = this.buildQualityOverviewAndAdvice(sign, false);
     const aspectsSummary = [];
     if (sign.aspects) {
       Object.keys(aspectLabels).forEach(k => {
+        if (k === "general") {
+          const compactInfoText = [
+            overviewSynth.compactDomains,
+            `แนะนำ: ${overviewSynth.compactAdvice}`,
+            `ระวัง: ${overviewSynth.compactCaution}`
+          ].filter(Boolean).join(" • ");
+          aspectsSummary.push({
+            key: "general",
+            label: aspectLabels.general,
+            text: overviewSynth.summary || "",
+            detail: overviewSynth.detail || "",
+            richText: compactInfoText || overviewSynth.summary || ""
+          });
+          return;
+        }
         if (sign.aspects[k]) {
           const sum = String(sign.aspects[k].summary || "").trim();
           const cleanedDetail = stripPoemEcho(sign.aspects[k].detail || "");
@@ -1661,7 +1854,7 @@ Divinate online at: ${window.location.origin}${window.location.pathname}#siamsi=
       signTitle: sign.thai_title || "",
       chineseTitle: sign.chinese_title || "",
       fortuneLevel: sign.fortune_level || "",
-      oneLine: sign.one_line_summary || "",
+      oneLine: (overviewSynth.isPoemEcho && overviewSynth.summary) ? overviewSynth.summary : (sign.one_line_summary || ""),
       poemLines: sign.poem_th || [],
       storyExcerpt: cleanStory,
       supplementTitle,
