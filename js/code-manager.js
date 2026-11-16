@@ -342,6 +342,15 @@ class CodeManager {
     return this.codesCache;
   }
 
+  findCode(rawCode) {
+    if (!rawCode) return null;
+    const clean = String(rawCode).trim().toUpperCase();
+    const list = (Array.isArray(this.codesCache) && this.codesCache.length > 0)
+      ? this.codesCache
+      : this._loadLocalCodes();
+    return list.find(c => String((c && c.code) || "").toUpperCase() === clean) || null;
+  }
+
   isCodeExpired(codeObj) {
     if (!codeObj) return true;
     return Date.now() > codeObj.expiresAt;

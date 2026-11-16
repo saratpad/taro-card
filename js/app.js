@@ -3520,7 +3520,9 @@ class TarotApp {
       // 0. กรณีเป็นลิงก์แชร์ผลวิเคราะห์ลายมือครบ 2 มือ (?share=1&palm=1&...)
       if (params.get("palm") === "1") {
         const sharedCode = params.get("code") || "";
-        const foundCode = sharedCode && window.codeManager ? window.codeManager.findCode(sharedCode) : null;
+        const foundCode = (sharedCode && window.codeManager && typeof window.codeManager.findCode === "function")
+          ? window.codeManager.findCode(sharedCode)
+          : null;
         const saved = foundCode && foundCode.palmResult
           ? foundCode.palmResult
           : {
@@ -3532,11 +3534,15 @@ class TarotApp {
                 life: { icon: "🌟", title: "วาสนาชีวิต & สุขภาพ", grade: "แชร์สาธารณะ", text: params.get("sum") || "กดดูใบคำทำนายฉบับเต็มหรือสแกนด้วยสิทธิ์ของคุณเองเพื่อดูรายละเอียดครบทั้ง 2 มือ" }
               }
             };
+        this.isSharedView = true;
         if (this.accessGateScreen) this.accessGateScreen.classList.remove("active");
-        this.openPalmServiceForCode({ palmDrawCount: 1, palmResult: saved });
-        if (sharedCode && window.codeManager && !foundCode && typeof window.codeManager.verifyCodeRemote === "function") {
-          Promise.resolve(window.codeManager.verifyCodeRemote(sharedCode)).then(remoteRes => {
-            if (remoteRes && remoteRes.codeObj && remoteRes.codeObj.palmResult) {
+        this._pendingSharedPalmCode = sharedCode;
+        this.openPalmServiceForCode({ code: sharedCode || "SHARED-PALM", palmDrawCount: 1, palmResult: saved });
+        if (sharedCode && window.codeManager && !(foundCode && foundCode.palmResult) && typeof window.codeManager.verifyAndAccessCode === "function") {
+          Promise.resolve(window.codeManager.verifyAndAccessCode(sharedCode, false)).then(remoteRes => {
+            if (remoteRes && remoteRes.codeObj && remoteRes.codeObj.palmResult && window.palmApp && typeof window.palmApp.restoreSavedPalmReading === "function") {
+              this.activeCode = remoteRes.codeObj.code || sharedCode;
+              this.activeCodeObj = remoteRes.codeObj;
               window.palmApp.restoreSavedPalmReading(remoteRes.codeObj.palmResult, { locked: true, codeObj: remoteRes.codeObj });
             }
           }).catch(() => {});
@@ -3672,8 +3678,11 @@ window.addEventListener("DOMContentLoaded", () => {
     window.tarotApp.palmApp = window.palmApp;
     if (window.tarotApp._pendingSharedPalm) {
       const savedPending = window.tarotApp._pendingSharedPalm;
+      const savedPendingCode = window.tarotApp._pendingSharedPalmCode || "SHARED-PALM";
       window.tarotApp._pendingSharedPalm = null;
-      window.tarotApp.openPalmServiceForCode({ palmDrawCount: 1, palmResult: savedPending });
+      window.tarotApp._pendingSharedPalmCode = "";
+      window.tarotApp.activeCode = savedPendingCode;
+      window.tarotApp.openPalmServiceForCode({ code: savedPendingCode, palmDrawCount: 1, palmResult: savedPending });
     }
   }
   if (window.siamsiApp) {

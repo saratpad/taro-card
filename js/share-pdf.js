@@ -793,7 +793,7 @@ class ShareAndPdfEngine {
       itemY += boxH + cardGap;
     }
 
-    // กล่องบทสรุปเต็ม + คำแนะนำเต็ม + ข้อควรระวัง + QR Code โทนสีเข้ากับธีม (ขนาดกะทัดรัด)
+    // กล่องบทสรุปเต็ม + คำแนะนำเต็ม + ข้อควรระวัง + QR Code มุมล่างขวา
     const verdictY = itemY - cardGap + 14 + extraVerdictGap;
     const verdictH = verdictLayout.totalH + boxExtraH;
     const boxX = 70;
@@ -814,17 +814,11 @@ class ShareAndPdfEngine {
     const gapExtraSub = Math.max(0, boxExtraH - padExtra * 2 - gapExtraDiv * 2);
     const topPad = p.outerPadY + padExtra;
 
-    // วางกรอบ QR ธีมทองคำ-กรมท่าขนาดกะทัดรัดตรงมุมขวาบนของส่วนสรุป
-    const shareUrl = this.buildShareableReadingUrl(readingData);
-    const qrPlaqueX = boxX + boxW - padX - qrPlaqueW;
-    const qrPlaqueY = verdictY + topPad + Math.max(0, Math.round((verdictLayout.topBandH - qrPlaqueH) / 2));
-    this._drawTarotQrPlaque(ctx, qrPlaqueX, qrPlaqueY, qrPlaqueW, qrPlaqueH, qrBoxSize, shareUrl);
-
-    // สรุปคำทำนายเต็มด้านซ้ายคู่กับ QR Plaque
+    // 1. สรุปดวงชะตาเต็มความกว้างด้านบน
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff1be";
     ctx.font = `700 ${p.headerSize}px 'Prompt', sans-serif`;
-    ctx.fillText(`👑 สรุปดวงชะตา: ${readingData.verdictBadge || ""}`, innerX, verdictY + topPad + p.headerBaselineOffset, verdictLayout.leftW);
+    ctx.fillText(`👑 สรุปดวงชะตา: ${readingData.verdictBadge || ""}`, innerX, verdictY + topPad + p.headerBaselineOffset, innerW);
 
     let sumY = verdictY + topPad + p.headerBlockH;
     ctx.fillStyle = "#f1f5f9";
@@ -850,12 +844,14 @@ class ShareAndPdfEngine {
     this._drawFourPointStar(ctx, boxX + boxW / 2, divY, 6, "#f3cf7a", 0.88);
     ctx.restore();
 
-    let subY = divY + p.secGap + gapExtraDiv;
+    const lowerTopY = divY + p.secGap + gapExtraDiv;
+    const leftW = verdictLayout.leftW;
+    let subY = lowerTopY;
 
-    // กล่องคำแนะนำฉบับเต็ม (✅ คำแนะนำและแนวทางที่ควรทำ)
+    // 2. กล่องคำแนะนำฉบับเต็มด้านซ้าย (✅ คำแนะนำและแนวทางที่ควรทำ)
     if (verdictLayout.adviceLines.length > 0) {
       const aH = verdictLayout.adviceBoxH;
-      this._drawGlassCard(ctx, innerX, subY, innerW, aH, 12, "rgba(134, 239, 172, 0.36)", "rgba(8, 36, 48, 0.52)");
+      this._drawGlassCard(ctx, innerX, subY, leftW, aH, 12, "rgba(134, 239, 172, 0.36)", "rgba(8, 36, 48, 0.52)");
       ctx.fillStyle = "#4ade80";
       this.drawRoundedRect(ctx, innerX, subY, 6, aH, 3);
       ctx.fill();
@@ -875,10 +871,11 @@ class ShareAndPdfEngine {
       subY += aH + p.secGap + gapExtraSub;
     }
 
-    // กล่องข้อควรระวังฉบับเต็ม (⚠️ ข้อควรระวัง)
+    // 3. กล่องข้อควรระวังฉบับเต็มด้านซ้ายล่าง (⚠️ ข้อควรระวัง)
+    let subBottomY = subY;
     if (verdictLayout.cautionLines.length > 0) {
       const cH = verdictLayout.cautionBoxH;
-      this._drawGlassCard(ctx, innerX, subY, innerW, cH, 12, "rgba(252, 165, 165, 0.36)", "rgba(48, 14, 36, 0.54)");
+      this._drawGlassCard(ctx, innerX, subY, leftW, cH, 12, "rgba(252, 165, 165, 0.36)", "rgba(48, 14, 36, 0.54)");
       ctx.fillStyle = "#fb7185";
       this.drawRoundedRect(ctx, innerX, subY, 6, cH, 3);
       ctx.fill();
@@ -895,7 +892,20 @@ class ShareAndPdfEngine {
         ctx.fillText(line, innerX + 20, cy);
         cy += p.step;
       });
+      subBottomY = subY + cH;
     }
+
+    // 4. กรอบ QR Code ธีมทอง-กรมท่า อยู่มุมล่างขวาของกล่องบทสรุป
+    const shareUrl = this.buildShareableReadingUrl(readingData);
+    const qrPlaqueX = boxX + boxW - padX - qrPlaqueW;
+    const qrPlaqueY = Math.max(lowerTopY, subBottomY - qrPlaqueH, verdictY + verdictH - p.outerPadY - padExtra - qrPlaqueH);
+    const spaceAboveQr = qrPlaqueY - lowerTopY;
+    if (spaceAboveQr >= 42) {
+      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2, lowerTopY + spaceAboveQr / 2, 11, "#f3cf7a", 0.38);
+      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2 - 28, lowerTopY + spaceAboveQr / 2 + 6, 5, "#bae6fd", 0.45);
+      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2 + 28, lowerTopY + spaceAboveQr / 2 - 6, 5, "#fde68a", 0.45);
+    }
+    this._drawSacredCornerQrPlaque(ctx, qrPlaqueX, qrPlaqueY, qrPlaqueW, qrPlaqueH, qrBoxSize, shareUrl, "เจาะลึก 3 ใบ & ถาม Gemini");
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");
 
@@ -942,7 +952,7 @@ class ShareAndPdfEngine {
     const padX = 24;
     const innerW = opts.boxW - padX * 2;
     const leftW = innerW - opts.qrPlaqueW - 18;
-    const subTextMaxW = innerW - 36;
+    const subTextMaxW = leftW - 36;
 
     const presets = [
       { body: 18, step: 24, headerSize: 22, headerBaselineOffset: 22, headerBlockH: 52, subTitle: 17.5, subHeaderOffset: 15, subTitleRowH: 38, subPadY: 11, outerPadY: 17, secGap: 11 },
@@ -956,12 +966,11 @@ class ShareAndPdfEngine {
     let chosen = null;
     for (const preset of presets) {
       ctx.font = `400 ${preset.body}px 'Prompt', sans-serif`;
-      const sumLines = this.wrapTextLines(ctx, opts.fullSummaryText, leftW);
+      const sumLines = this.wrapTextLines(ctx, opts.fullSummaryText, innerW);
       const adviceLines = opts.fullAdviceText ? this.wrapTextLines(ctx, opts.fullAdviceText, subTextMaxW) : [];
       const cautionLines = opts.fullCautionText ? this.wrapTextLines(ctx, opts.fullCautionText, subTextMaxW) : [];
 
-      const topLeftH = preset.headerBlockH + Math.max(0, sumLines.length - 1) * preset.step + 8;
-      const topBandH = Math.max(opts.qrPlaqueH, topLeftH);
+      const topBandH = preset.headerBlockH + Math.max(0, sumLines.length - 1) * preset.step + 8;
 
       const calcSubH = (lines) => lines.length === 0
         ? 0
@@ -970,17 +979,20 @@ class ShareAndPdfEngine {
       const adviceBoxH = calcSubH(adviceLines);
       const cautionBoxH = calcSubH(cautionLines);
 
-      let totalH = preset.outerPadY * 2 + topBandH + preset.secGap * 2;
-      if (adviceBoxH > 0) totalH += adviceBoxH;
-      if (cautionBoxH > 0) totalH += (adviceBoxH > 0 ? preset.secGap : 0) + cautionBoxH;
+      let lowerLeftH = 0;
+      if (adviceBoxH > 0) lowerLeftH += adviceBoxH;
+      if (cautionBoxH > 0) lowerLeftH += (adviceBoxH > 0 ? preset.secGap : 0) + cautionBoxH;
+      const lowerBandH = Math.max(opts.qrPlaqueH, lowerLeftH);
 
-      chosen = { preset, padX, leftW, sumLines, adviceLines, cautionLines, topBandH, adviceBoxH, cautionBoxH, totalH };
+      const totalH = preset.outerPadY * 2 + topBandH + preset.secGap * 2 + lowerBandH;
+
+      chosen = { preset, padX, leftW, sumLines, adviceLines, cautionLines, topBandH, lowerBandH, adviceBoxH, cautionBoxH, totalH };
       if (totalH <= opts.maxAvailH) break;
     }
     return chosen;
   }
 
-  _drawTarotQrPlaque(ctx, plaqueX, plaqueY, plaqueW, plaqueH, qrBoxSize, shareUrl) {
+  _drawSacredCornerQrPlaque(ctx, plaqueX, plaqueY, plaqueW, plaqueH, qrBoxSize, shareUrl, subLineText = "อ่านคำทำนายเต็ม & ถาม Gemini") {
     ctx.save();
     const glow = ctx.createRadialGradient(
       plaqueX + plaqueW / 2,
@@ -994,7 +1006,6 @@ class ShareAndPdfEngine {
     glow.addColorStop(1, "rgba(0, 0, 0, 0)");
     ctx.fillStyle = glow;
     ctx.fillRect(plaqueX - 14, plaqueY - 14, plaqueW + 28, plaqueH + 28);
-    ctx.restore();
 
     const pGrad = ctx.createLinearGradient(plaqueX, plaqueY, plaqueX, plaqueY + plaqueH);
     pGrad.addColorStop(0, "rgba(12, 18, 48, 0.94)");
@@ -1002,14 +1013,12 @@ class ShareAndPdfEngine {
     this._drawGlassCard(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 14, "rgba(243, 207, 122, 0.72)", pGrad);
 
     // กรอบเส้นทองชั้นในพร้อมประกายดาว 4 มุม
-    ctx.save();
     ctx.strokeStyle = "rgba(243, 207, 122, 0.26)";
     ctx.lineWidth = 1;
     this.drawRoundedRect(ctx, plaqueX + 5, plaqueY + 5, plaqueW - 10, plaqueH - 10, 10);
     ctx.stroke();
     this._drawFourPointStar(ctx, plaqueX + 10, plaqueY + 10, 4.2, "#f3cf7a", 0.85);
     this._drawFourPointStar(ctx, plaqueX + plaqueW - 10, plaqueY + 10, 4.2, "#f3cf7a", 0.85);
-    ctx.restore();
 
     const qrX = plaqueX + Math.floor((plaqueW - qrBoxSize) / 2);
     const qrY = plaqueY + 10;
@@ -1032,7 +1041,8 @@ class ShareAndPdfEngine {
     ctx.fillText("สแกนดูคำทำนายเต็ม", plaqueX + plaqueW / 2, qrY + qrBoxSize + 18, plaqueW - 14);
     ctx.fillStyle = "#bae6fd";
     ctx.font = "400 11.5px 'Prompt', sans-serif";
-    ctx.fillText("เจาะลึก 3 ใบ & ถาม Gemini", plaqueX + plaqueW / 2, qrY + qrBoxSize + 35, plaqueW - 14);
+    ctx.fillText(subLineText, plaqueX + plaqueW / 2, qrY + qrBoxSize + 35, plaqueW - 14);
+    ctx.restore();
   }
 
   _getCleanSiamsiAspectText(item, readingData = null) {
@@ -1226,17 +1236,43 @@ class ShareAndPdfEngine {
     }
     const finalOverviewText = overviewParts.join(" • ") || `เกณฑ์ดวงชะตา "${readingData.fortuneLevel || "ปานกลาง"}" — ${readingData.oneLine || ""}`;
 
-    const isOverviewConcise = finalOverviewText.length <= 360;
-    ctx.fillStyle = "#f8fafc";
-    ctx.font = `400 ${isOverviewConcise ? 20 : 18}px 'Prompt', sans-serif`;
-    const ovWrapped = this.wrapTextLines(ctx, finalOverviewText, W - 200);
-    const ovMax = isOverviewConcise ? 6 : 8;
-    const ovStep = isOverviewConcise ? 28 : 22.5;
-    const ovLines = ovWrapped.slice(0, ovMax);
-    if (ovWrapped.length > ovMax && ovLines[ovMax - 1]) {
-      ovLines[ovMax - 1] = ovLines[ovMax - 1].slice(0, Math.max(10, ovLines[ovMax - 1].length - 1)) + "…";
+    // วาง QR Code มุมล่างขวาของใบเซียมซี เข้ากับธีมทอง-กรมท่า
+    const siamsiQrW = 148;
+    const siamsiQrH = 166;
+    const siamsiQrSize = 114;
+    const siamsiQrX = W - 70 - 22 - siamsiQrW;
+    const siamsiQrY = ovY + ovH - 16 - siamsiQrH;
+    const siamsiShareUrl = this.buildShareableReadingUrl(readingData);
+    this._drawSacredCornerQrPlaque(ctx, siamsiQrX, siamsiQrY, siamsiQrW, siamsiQrH, siamsiQrSize, siamsiShareUrl, "อ่านเซียมซีเต็ม & ถาม Gemini");
+
+    // เนื้อหาภาพรวมด้านซ้าย ปรับขนาดให้พอดีโดยไม่ชน QR มุมล่างขวา
+    const ovTextW = siamsiQrX - 20 - 96;
+    const ovMaxH = ovH - 72;
+    const ovPresets = [
+      { size: 19, step: 25 },
+      { size: 18, step: 23.5 },
+      { size: 17, step: 22 },
+      { size: 16, step: 20.5 },
+      { size: 15, step: 19 },
+      { size: 14, step: 17.5 }
+    ];
+    let ovChosen = ovPresets[ovPresets.length - 1];
+    let ovWrapped = [];
+    for (const pr of ovPresets) {
+      ctx.font = `400 ${pr.size}px 'Prompt', sans-serif`;
+      const wrapped = this.wrapTextLines(ctx, finalOverviewText, ovTextW);
+      ovChosen = pr;
+      ovWrapped = wrapped;
+      if (wrapped.length * pr.step <= ovMaxH) break;
     }
-    ovLines.forEach((l, i) => ctx.fillText(l, 96, ovY + 70 + i * ovStep));
+    const ovMaxLines = Math.max(1, Math.floor(ovMaxH / ovChosen.step));
+    const ovLines = ovWrapped.slice(0, ovMaxLines);
+    if (ovWrapped.length > ovMaxLines && ovLines[ovMaxLines - 1]) {
+      ovLines[ovMaxLines - 1] = ovLines[ovMaxLines - 1].slice(0, Math.max(10, ovLines[ovMaxLines - 1].length - 1)) + "…";
+    }
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = `400 ${ovChosen.size}px 'Prompt', sans-serif`;
+    ovLines.forEach((l, i) => ctx.fillText(l, 96, ovY + 68 + i * ovChosen.step));
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
@@ -1407,36 +1443,77 @@ class ShareAndPdfEngine {
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#f1f5f9";
-      ctx.font = isGuidance ? "400 16.5px 'Prompt', sans-serif" : "400 17.5px 'Prompt', sans-serif";
       const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
-      const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 196);
-      const hasNote = !isGuidance && Boolean(asp.leftNote || asp.rightNote);
-      const maxBody = isGuidance ? 9 : (hasNote ? 2 : 3);
-      const lineStep = isGuidance ? 21.5 : 22;
-      const bodyLines = allWrapped.slice(0, maxBody);
-      if (allWrapped.length > maxBody && bodyLines[maxBody - 1]) {
-        bodyLines[maxBody - 1] = bodyLines[maxBody - 1].slice(0, Math.max(10, bodyLines[maxBody - 1].length - 1)) + "…";
-      }
-      bodyLines.forEach((ln, li) => {
-        ctx.fillText(ln, 96, curY + 56 + li * lineStep);
-      });
 
-      if (hasNote) {
-        const lShort = String(asp.leftNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือซ้าย\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
-        const rShort = String(asp.rightNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือขวา\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
-        if (lShort) {
-          ctx.fillStyle = "#7dd3fc";
-          ctx.font = "500 15.5px 'Prompt', sans-serif";
-          const lTxt = `✋ มือซ้าย: ${lShort}`;
-          const lLine = this.wrapTextLines(ctx, lTxt, W - 200)[0] || lTxt;
-          ctx.fillText(lLine, 96, curY + 107, W - 200);
+      if (isGuidance) {
+        // กล่องสุดท้าย (คำแนะนำดวงชะตา): วาง QR Code มุมล่างขวา และจัดข้อความด้านซ้ายให้สมดุล
+        const palmQrW = 148;
+        const palmQrH = 166;
+        const palmQrSize = 114;
+        const palmQrX = W - 70 - 22 - palmQrW;
+        const palmQrY = curY + curBoxH - 16 - palmQrH;
+        const palmShareUrl = this.buildShareableReadingUrl(readingData);
+        this._drawSacredCornerQrPlaque(ctx, palmQrX, palmQrY, palmQrW, palmQrH, palmQrSize, palmShareUrl, "ดูลายมือ 2 มือ & ถาม Gemini");
+
+        const gTextW = palmQrX - 20 - 96;
+        const gMaxH = curBoxH - 60;
+        const gPresets = [
+          { size: 16.5, step: 21.5 },
+          { size: 15.5, step: 20 },
+          { size: 14.5, step: 18.8 },
+          { size: 13.5, step: 17.5 },
+          { size: 12.5, step: 16.2 }
+        ];
+        let gChosen = gPresets[gPresets.length - 1];
+        let gWrapped = [];
+        for (const pr of gPresets) {
+          ctx.font = `400 ${pr.size}px 'Prompt', sans-serif`;
+          const wrapped = this.wrapTextLines(ctx, cleanBody, gTextW);
+          gChosen = pr;
+          gWrapped = wrapped;
+          if (wrapped.length * pr.step <= gMaxH) break;
         }
-        if (rShort) {
-          ctx.fillStyle = "#fde68a";
-          ctx.font = "500 15.5px 'Prompt', sans-serif";
-          const rTxt = `🤚 มือขวา: ${rShort}`;
-          const rLine = this.wrapTextLines(ctx, rTxt, W - 200)[0] || rTxt;
-          ctx.fillText(rLine, 96, curY + 129, W - 200);
+        const gMaxLines = Math.max(1, Math.floor(gMaxH / gChosen.step));
+        const gLines = gWrapped.slice(0, gMaxLines);
+        if (gWrapped.length > gMaxLines && gLines[gMaxLines - 1]) {
+          gLines[gMaxLines - 1] = gLines[gMaxLines - 1].slice(0, Math.max(10, gLines[gMaxLines - 1].length - 1)) + "…";
+        }
+        ctx.fillStyle = "#f1f5f9";
+        ctx.font = `400 ${gChosen.size}px 'Prompt', sans-serif`;
+        gLines.forEach((ln, li) => {
+          ctx.fillText(ln, 96, curY + 56 + li * gChosen.step);
+        });
+      } else {
+        ctx.font = "400 17.5px 'Prompt', sans-serif";
+        const allWrapped = this.wrapTextLines(ctx, cleanBody, W - 196);
+        const hasNote = Boolean(asp.leftNote || asp.rightNote);
+        const maxBody = hasNote ? 2 : 3;
+        const lineStep = 22;
+        const bodyLines = allWrapped.slice(0, maxBody);
+        if (allWrapped.length > maxBody && bodyLines[maxBody - 1]) {
+          bodyLines[maxBody - 1] = bodyLines[maxBody - 1].slice(0, Math.max(10, bodyLines[maxBody - 1].length - 1)) + "…";
+        }
+        bodyLines.forEach((ln, li) => {
+          ctx.fillText(ln, 96, curY + 56 + li * lineStep);
+        });
+
+        if (hasNote) {
+          const lShort = String(asp.leftNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือซ้าย\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+          const rShort = String(asp.rightNote || "").replace(/^(?:(?:✋|🤚)\s*)?มือขวา\s*(?:\([^)]*\))?\s*:\s*/i, "").trim();
+          if (lShort) {
+            ctx.fillStyle = "#7dd3fc";
+            ctx.font = "500 15.5px 'Prompt', sans-serif";
+            const lTxt = `✋ มือซ้าย: ${lShort}`;
+            const lLine = this.wrapTextLines(ctx, lTxt, W - 200)[0] || lTxt;
+            ctx.fillText(lLine, 96, curY + 107, W - 200);
+          }
+          if (rShort) {
+            ctx.fillStyle = "#fde68a";
+            ctx.font = "500 15.5px 'Prompt', sans-serif";
+            const rTxt = `🤚 มือขวา: ${rShort}`;
+            const rLine = this.wrapTextLines(ctx, rTxt, W - 200)[0] || rTxt;
+            ctx.fillText(rLine, 96, curY + 129, W - 200);
+          }
         }
       }
 
@@ -1465,8 +1542,17 @@ class ShareAndPdfEngine {
       params.set("hand", String(readingData.hand || "both"));
       params.set("conf", String(readingData.confidence || "92"));
       if (readingData.code) params.set("code", readingData.code);
-      const shortSum = String(readingData.summaryVerdict || "").slice(0, 180);
-      if (shortSum) params.set("sum", shortSum);
+      if (!readingData.code) {
+        const rawSum = String(readingData.summaryVerdict || "").replace(/\s+/g, " ").trim();
+        for (let len = Math.min(rawSum.length, 48); len >= 0; len -= 6) {
+          const testParams = new URLSearchParams(params.toString());
+          if (len > 0) testParams.set("sum", rawSum.slice(0, len));
+          if (`${baseUrl}?${testParams.toString()}`.length <= 185) {
+            if (len > 0) params.set("sum", rawSum.slice(0, len));
+            break;
+          }
+        }
+      }
       return `${baseUrl}?${params.toString()}`;
     }
 
