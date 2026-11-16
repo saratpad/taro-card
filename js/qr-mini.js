@@ -391,9 +391,6 @@
     const qr = encodeQRMatrix(text);
     const quietModules = typeof options.quiet === "number" ? options.quiet : 4;
     const totalModules = qr.size + quietModules * 2;
-    const cell = Math.max(2, Math.floor(drawSize / totalModules));
-    const gridPx = cell * qr.size;
-    const offset = Math.floor((drawSize - gridPx) / 2);
     const bg = options.background || "#ffffff";
     const fg = options.foreground || "#0a1026";
     const radius = typeof options.radius === "number" ? options.radius : 12;
@@ -410,16 +407,51 @@
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
-    ctx.fillStyle = bg;
+    if (options.backgroundGradient && options.backgroundGradient.top && options.backgroundGradient.bottom) {
+      const grad = ctx.createLinearGradient(x, y, x, y + drawSize);
+      grad.addColorStop(0, options.backgroundGradient.top);
+      grad.addColorStop(1, options.backgroundGradient.bottom);
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = bg;
+    }
     ctx.fill();
 
     ctx.fillStyle = fg;
-    for (let r = 0; r < qr.size; r++) {
-      for (let c = 0; c < qr.size; c++) {
-        if (qr.modules[r][c]) {
-          ctx.fillRect(x + offset + c * cell, y + offset + r * cell, cell, cell);
+    if (options.fitToBox) {
+      const quietPx = Math.max(4, Math.round((drawSize / totalModules) * quietModules));
+      const availGrid = Math.max(qr.size * 2, drawSize - quietPx * 2);
+      const modSize = availGrid / qr.size;
+      const startX = x + Math.floor((drawSize - availGrid) / 2);
+      const startY = y + Math.floor((drawSize - availGrid) / 2);
+      for (let r = 0; r < qr.size; r++) {
+        const py = startY + Math.round(r * modSize);
+        const ph = Math.max(1, startY + Math.round((r + 1) * modSize) - py);
+        for (let c = 0; c < qr.size; c++) {
+          if (qr.modules[r][c]) {
+            const px = startX + Math.round(c * modSize);
+            const pw = Math.max(1, startX + Math.round((c + 1) * modSize) - px);
+            ctx.fillRect(px, py, pw, ph);
+          }
         }
       }
+    } else {
+      const cell = Math.max(2, Math.floor(drawSize / totalModules));
+      const gridPx = cell * qr.size;
+      const offset = Math.floor((drawSize - gridPx) / 2);
+      for (let r = 0; r < qr.size; r++) {
+        for (let c = 0; c < qr.size; c++) {
+          if (qr.modules[r][c]) {
+            ctx.fillRect(x + offset + c * cell, y + offset + r * cell, cell, cell);
+          }
+        }
+      }
+    }
+
+    if (options.frameStroke) {
+      ctx.strokeStyle = options.frameStroke;
+      ctx.lineWidth = typeof options.frameWidth === "number" ? options.frameWidth : 1.5;
+      ctx.stroke();
     }
     ctx.restore();
     return qr;
