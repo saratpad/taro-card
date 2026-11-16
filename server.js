@@ -531,6 +531,7 @@ const server = http.createServer(async (req, res) => {
       const body = await parseBody(req);
       const actionType = body.actionType;
       const extraDetail = body.extraDetail || "";
+      codeObj.logs = codeObj.logs || {};
       codeObj.events = codeObj.events || [];
 
       if (actionType === "share") {

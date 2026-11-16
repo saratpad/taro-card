@@ -379,6 +379,31 @@ const PalmReadingUtils = {
     return { lifeProfile, headProfile, loveProfile, wealthProfile, hasMercury };
   },
 
+  orderAspectEntries(aspects) {
+    if (!aspects || typeof aspects !== "object") return [];
+    const primaryOrder = ["life", "intellect", "love", "wealth"];
+    const entries = Object.entries(aspects).filter(([, asp]) => asp && typeof asp === "object");
+    const isGuidanceEntry = ([key, asp]) =>
+      key === "guidance" || String(asp.title || "").trim() === "คำแนะนำดวงชะตา";
+
+    const ordered = [];
+    primaryOrder.forEach((key) => {
+      const match = entries.find(([k]) => k === key);
+      if (match) ordered.push(match);
+    });
+    entries.forEach((entry) => {
+      if (!primaryOrder.includes(entry[0]) && !isGuidanceEntry(entry)) {
+        ordered.push(entry);
+      }
+    });
+    entries.forEach((entry) => {
+      if (isGuidanceEntry(entry) && !ordered.some(([k]) => k === entry[0])) {
+        ordered.push(entry);
+      }
+    });
+    return ordered;
+  },
+
   normalizePalmReading(reading) {
     if (!reading || typeof reading !== "object" || !reading.aspects) return reading;
 
@@ -433,6 +458,13 @@ const PalmReadingUtils = {
         }
       }
     });
+
+    // Enforce canonical aspect order so `guidance` ALWAYS appears last (even after JSONB round-trip)
+    const reordered = {};
+    this.orderAspectEntries(reading.aspects).forEach(([k, v]) => {
+      reordered[k] = v;
+    });
+    reading.aspects = reordered;
 
     return reading;
   }

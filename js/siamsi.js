@@ -485,7 +485,9 @@ class SiamsiApp {
       this.btnDownloadPdf.addEventListener("click", () => {
         if (!this.currentSign) return;
         const payload = this.buildSiamsiReadingPayload(this.currentSign);
-        if (this.app && this.app.downloadDirectPDF) {
+        if (this.app && typeof this.app.openDownloadFormatModal === "function") {
+          this.app.openDownloadFormatModal(payload);
+        } else if (this.app && this.app.downloadDirectPDF) {
           this.app.downloadDirectPDF(payload);
         }
       });
@@ -1245,6 +1247,10 @@ class SiamsiApp {
         this.renderViewerCustomTextbookPicker();
         if (this.currentSign) {
           this.renderSiamsiSupplement(this.currentSign);
+          if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.ensureInfoAsset === "function") {
+            const refreshedPayload = this.buildSiamsiReadingPayload(this.currentSign);
+            window.shareAndPdfEngine.ensureInfoAsset(refreshedPayload).catch(() => {});
+          }
         }
       });
     });
@@ -1553,24 +1559,15 @@ ${poem}
 
 Divinate online at: ${window.location.origin}${window.location.pathname}#siamsi=${sign.number}`;
     } else {
-      const poem = Array.isArray(sign.poem_th) ? sign.poem_th.join("\n") : "";
-      const deckHeader = isTanjai ? "🎋 ผลการเสี่ยงเซียมซีหลวงพ่อทันใจ" : "🎋 ผลการเสี่ยงเซียมซีหว่องไทซิน";
-      const titleLine = sign.chinese_title ? `📜 ${sign.chinese_title} (${sign.thai_title})` : `📜 ${sign.thai_title}`;
-      text = `${deckHeader}
-เบอร์ ${sign.number} (ใบที่ ${sign.stick_num || sign.id})
-✨ ระดับ: ${sign.fortune_level}
-${titleLine}
-💡 สรุป: "${sign.one_line_summary || ""}"
-
-บทกลอน:
-${poem}
-
-💼 อาชีพ: ${sign.aspects && sign.aspects.career ? sign.aspects.career.summary : "-"}
-💰 โชคลาภ: ${sign.aspects && sign.aspects.wealth ? sign.aspects.wealth.summary : "-"}
-❤️ ความรัก: ${sign.aspects && sign.aspects.love ? sign.aspects.love.summary : "-"}
-🌿 สุขภาพ: ${sign.aspects && sign.aspects.health ? sign.aspects.health.summary : "-"}
-
-เสี่ยงเซียมซีออนไลน์ได้ที่: ${window.location.origin}${window.location.pathname}#siamsi=${sign.number}`;
+      const payload = this.buildSiamsiReadingPayload(sign);
+      if (window.shareAndPdfEngine && typeof window.shareAndPdfEngine.buildFullSocialCaption === "function" && payload) {
+        text = window.shareAndPdfEngine.buildFullSocialCaption(payload);
+      } else {
+        const poem = Array.isArray(sign.poem_th) ? sign.poem_th.join("\n") : "";
+        const deckHeader = isTanjai ? "🎋 ผลการเสี่ยงเซียมซีหลวงพ่อทันใจ" : "🎋 ผลการเสี่ยงเซียมซีหว่องไทซิน";
+        const titleLine = sign.chinese_title ? `📜 ${sign.chinese_title} (${sign.thai_title})` : `📜 ${sign.thai_title}`;
+        text = `${deckHeader}\nเบอร์ ${sign.number} (ใบที่ ${sign.stick_num || sign.id})\n✨ ระดับ: ${sign.fortune_level}\n${titleLine}\n💡 สรุป: "${sign.one_line_summary || ""}"\n\nบทกลอน:\n${poem}`;
+      }
     }
 
     const toastMsg = isEn ? "📋 Siamsi reading copied to clipboard!" : "📋 คัดลอกคำทำนายเซียมซีเรียบร้อยแล้ว";
@@ -1602,19 +1599,56 @@ ${poem}
       home: "🏡 ครอบครัวเคหสถาน",
       general: "🔮 ภาพรวมดวงชะตา"
     };
+
+    const stripPoemEcho = (rawDetail) => {
+      return String(rawDetail || "")
+        .replace(/^(?:การงานตามใบเซียมซี|โชคลาภตามบทเซียมซี|เรื่องความรักตามบทเซียมซี|เรื่องสุขภาพตามบทเซียมซี|เรื่องการศึกษาตามบทเซียมซี|เรื่องครอบครัวและเคหสถาน|ภาพรวม[^:]*|คำทำนายภาพรวม)\s*:\s*"[^"]*"\s*/u, "")
+        .replace(/\n{2,}/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    };
+
     const aspectsSummary = [];
     if (sign.aspects) {
       Object.keys(aspectLabels).forEach(k => {
         if (sign.aspects[k]) {
+          const sum = String(sign.aspects[k].summary || "").trim();
+          const cleanedDetail = stripPoemEcho(sign.aspects[k].detail || "");
+          let combined = sum;
+          if (cleanedDetail && cleanedDetail !== sum) {
+            combined = sum && !cleanedDetail.includes(sum.slice(0, Math.min(28, sum.length)))
+              ? `${sum} — ${cleanedDetail}`
+              : cleanedDetail;
+          }
           aspectsSummary.push({
             key: k,
             label: aspectLabels[k],
-            text: sign.aspects[k].summary || "",
-            detail: sign.aspects[k].detail || sign.aspects[k].summary || ""
+            text: sum,
+            detail: cleanedDetail || sum,
+            richText: combined
           });
         }
       });
     }
+
+    let supplementTitle = "";
+    let supplementText = "";
+    if (this.viewerCustomRagId && window.ragEngine && typeof window.ragEngine.retrieveSiamsiSupplement === "function") {
+      const sup = window.ragEngine.retrieveSiamsiSupplement({
+        sign,
+        deck: this.currentDeck,
+        customBookId: this.viewerCustomRagId
+      });
+      if (sup && sup.text) {
+        supplementTitle = sup.bookTitle || "";
+        supplementText = sup.text || "";
+      }
+    }
+
+    const cleanStory = String(sign.story || "")
+      .replace(/^ตำนานดั้งเดิมประจำใบนี้กล่าวถึงคติธรรมเรื่อง[^\n]*$/u, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
     return {
       mode: "siamsi",
@@ -1629,6 +1663,9 @@ ${poem}
       fortuneLevel: sign.fortune_level || "",
       oneLine: sign.one_line_summary || "",
       poemLines: sign.poem_th || [],
+      storyExcerpt: cleanStory,
+      supplementTitle,
+      supplementText,
       aspectsSummary,
       timestamp: Date.now()
     };

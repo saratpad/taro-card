@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261114f">
-  <link rel="stylesheet" href="css/responsive.css?v=20261114f">
+  <link rel="stylesheet" href="css/style.css?v=20261116a">
+  <link rel="stylesheet" href="css/responsive.css?v=20261116a">
 </head>
 <body>
 
@@ -434,107 +434,47 @@
             <div class="verdict-actions-summary" id="verdict-actions-summary"></div>
           </div>
 
-          <!-- ปุ่มแชร์โซเชียลดีไซน์ทันสมัย มีปุ่มกดแชร์แยกตามแพลตฟอร์มชัดเจน (Facebook, IG, TikTok, LINE, X) + ดาวน์โหลด PDF -->
-          <div class="results-action-panel social-hub-panel">
-            <div class="social-hub-top">
-              <div class="social-hub-title-group">
-                <span class="social-hub-eyebrow">AUTO-POST & DIRECT SOCIAL SHARE</span>
-                <h4>แชร์และโพสต์ผลคำทำนายไปยังโซเชียลมีเดียอัตโนมัติ</h4>
-                <p>คลิกเลือกแอปโซเชียลที่ต้องการ เพื่อให้ระบบแชร์รูป Info Card และโพสต์คำทำนายฉบับเต็มไปยังบัญชีของคุณโดยตรง (หากยังไม่ได้เชื่อมต่อ ระบบจะเด้งหน้าต่างล็อกอินให้อัตโนมัติ)</p>
-              </div>
-            </div>
+          <!-- แถวสลับโหมดสำหรับแพ็กคู่ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
+          <div class="combo-quick-switch-row">
+            <button type="button" id="btn-tarot-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
+              <span>🎋</span>
+              <span>ไปใช้สิทธิ์เสี่ยงเซียมซี (แพ็กคู่)</span>
+            </button>
+            <button type="button" id="btn-ask-again" class="btn-secondary-mystic" style="display: none;">
+              <span>✨</span>
+              <span data-i18n="btn_ask_again">ดูดวงใหม่อีกครั้ง</span>
+            </button>
+          </div>
 
-            <!-- ปุ่มกดแชร์ตรงไปยัง Facebook / IG / TikTok / LINE / X -->
-            <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อให้ระบบแชร์ผลคำทำนาย">
-              <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="tarot">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>Facebook</strong>
-                  <small data-plat-status="facebook">เข้า Facebook (ภาพ Info + คำทำนาย)</small>
+          <!-- ส่วนการแชร์และดาวน์โหลด (2 ปุ่มหลัก + ปุ่มคัดลอกข้อมูลถาม Gemini บรรทัดสุดท้าย) -->
+          <div class="results-action-panel social-hub-panel result-export-panel">
+            <div class="result-primary-two-btns" role="group" aria-label="ตัวเลือกบันทึกและแชร์คำทำนายไพ่ทาโรต์">
+              <button type="button" id="btn-download-pdf" class="btn-result-choice btn-choice-download" data-download-mode="tarot">
+                <span class="choice-icon" aria-hidden="true">📥</span>
+                <span class="choice-label-wrap">
+                  <strong data-i18n="btn_download_reading">โหลดผลคำทำนาย</strong>
+                  <small>เลือกไฟล์รูปภาพ Info (.PNG), เอกสาร PDF หรือข้อความ</small>
                 </span>
               </button>
 
-              <button type="button" class="btn-platform-share plat-instagram" data-share-platform="instagram" data-share-mode="tarot">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>Instagram (IG)</strong>
-                  <small data-plat-status="instagram">เข้า IG (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-tiktok" data-share-platform="tiktok" data-share-mode="tarot">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>TikTok</strong>
-                  <small data-plat-status="tiktok">เข้า TikTok (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-line" data-share-platform="line" data-share-mode="tarot">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>LINE</strong>
-                  <small data-plat-status="line">เข้า LINE (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-x" data-share-platform="x" data-share-mode="tarot">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>X (Twitter)</strong>
-                  <small data-plat-status="x">เข้า X (ภาพ Info + คำทำนาย)</small>
+              <button type="button" id="btn-social-share" class="btn-result-choice btn-choice-share" data-share-mode="tarot">
+                <span class="choice-icon" aria-hidden="true">🌐</span>
+                <span class="choice-label-wrap">
+                  <strong data-i18n="btn_share_reading">แชร์คำทำนาย</strong>
+                  <small>แชร์ภาพ Info &amp; คำทำนายไปโซเชียลทุกช่องทาง</small>
                 </span>
               </button>
             </div>
 
-            <div class="social-share-actions-grid">
-              <button id="btn-social-share" class="btn-social-share-modern">
-                <span class="share-btn-svg-wrap">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <div class="result-gemini-last-row">
+              <button type="button" id="btn-tarot-ask-gemini" class="btn-ask-gemini-row" data-ask-gemini="tarot">
+                <span class="gemini-spark" aria-hidden="true">✨</span>
+                <span class="gemini-btn-text">
+                  <strong>คัดลอกข้อมูลถาม Gemini</strong>
+                  <small>คัดลอกผลคำทำนายและเปิดหน้า Gemini — กด Ctrl+V วางถามต่อได้เลย</small>
                 </span>
-                <span class="share-btn-label-wrap">
-                  <strong data-i18n="btn_share_reading">ดูตัวอย่างภาพกราฟิก Info Card & ตั้งค่าการแชร์โซเชียล</strong>
-                  <small>พรีวิวภาพกราฟิกสรุปหน้าไพ่ 3 ใบ พร้อมแชร์ไปยังทุกแพลตฟอร์มอัตโนมัติ</small>
-                </span>
-                <span class="share-btn-pill-cta">พรีวิว Info ↗</span>
               </button>
-
-              <div class="results-action-row secondary-share-grid">
-                <button id="btn-download-pdf" class="btn-secondary-mystic btn-pdf-action">
-                  <span>📄</span>
-                  <span data-i18n="btn_download_pdf">ดาวน์โหลดใบคำทำนาย PDF</span>
-                </button>
-
-                <button id="btn-copy-reading" class="btn-secondary-mystic">
-                  <span>💬</span>
-                  <span data-i18n="btn_copy_reading">คัดลอกคำทำนายฉบับเต็ม</span>
-                </button>
-
-                <button type="button" id="btn-check-posts-tarot" class="btn-secondary-mystic btn-check-shared-posts">
-                  <span>🔍</span>
-                  <span>ตรวจสอบโพสต์ & ประวัติการแชร์</span>
-                </button>
-
-                <button type="button" id="btn-tarot-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
-                  <span>🎋</span>
-                  <span>ไปใช้สิทธิ์เสี่ยงเซียมซี (แพ็กคู่)</span>
-                </button>
-
-                <button id="btn-ask-again" class="btn-secondary-mystic" style="display: none;">
-                  <span>✨</span>
-                  <span data-i18n="btn_ask_again">ดูดวงใหม่อีกครั้ง</span>
-                </button>
-              </div>
+              <span class="gemini-copy-tip" role="status"></span>
             </div>
           </div>
 
@@ -820,107 +760,51 @@
               <div class="siamsi-aspects-grid" id="siamsi-aspects-grid"></div>
             </div>
 
-            <!-- Result Actions -->
-            <div class="results-action-panel social-hub-panel">
-              <div class="social-hub-top">
-                <div class="social-hub-title-group">
-                  <span class="social-hub-eyebrow">AUTO-POST & DIRECT SOCIAL SHARE</span>
-                  <h4>แชร์และโพสต์ผลคำทำนายเซียมซีไปยังโซเชียลมีเดียอัตโนมัติ</h4>
-                  <p>คลิกเลือกแอปโซเชียลที่ต้องการ เพื่อให้ระบบแชร์รูปใบเซียมซี (Info Card) และโพสต์คำทำนายฉบับเต็มไปยังบัญชีของคุณโดยตรง (หากยังไม่ได้เชื่อมต่อ ระบบจะเด้งหน้าต่างล็อกอินให้อัตโนมัติ)</p>
-                </div>
-              </div>
+            <!-- แถวสลับโหมดสำหรับแพ็กคู่ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
+            <div class="combo-quick-switch-row">
+              <button type="button" id="btn-siamsi-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
+                <span>✨</span>
+                <span>ไปใช้สิทธิ์ดูดวงไพ่ทาโรต์ (แพ็กคู่)</span>
+              </button>
+              <button type="button" id="btn-siamsi-reshake" class="btn-secondary-mystic" style="display: none;">
+                <span>🎋</span>
+                <span data-i18n="btn_siamsi_reshake">เสี่ยงเซียมซีใหม่อีกครั้ง</span>
+              </button>
+              <button type="button" id="btn-siamsi-view-directory" class="btn-secondary-mystic" style="display: none;">
+                <span>📖</span>
+                <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
+              </button>
+            </div>
 
-              <!-- ปุ่มกดแชร์ตรงไปยัง Facebook / IG / TikTok / LINE / X -->
-              <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อให้ระบบแชร์ผลเซียมซี">
-                <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="siamsi">
-                  <span class="plat-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
-                  </span>
-                  <span class="plat-text">
-                    <strong>Facebook</strong>
-                    <small data-plat-status="facebook">เข้า Facebook (ภาพ Info + คำทำนาย)</small>
+            <!-- Result Actions (2 ปุ่มหลัก + ปุ่มคัดลอกข้อมูลถาม Gemini บรรทัดสุดท้าย) -->
+            <div class="results-action-panel social-hub-panel result-export-panel">
+              <div class="result-primary-two-btns" role="group" aria-label="ตัวเลือกบันทึกและแชร์คำทำนายเซียมซี">
+                <button type="button" id="btn-siamsi-download-pdf" class="btn-result-choice btn-choice-download" data-download-mode="siamsi">
+                  <span class="choice-icon" aria-hidden="true">📥</span>
+                  <span class="choice-label-wrap">
+                    <strong>โหลดผลคำทำนาย</strong>
+                    <small>เลือกไฟล์รูปภาพ Info (.PNG), เอกสาร PDF หรือข้อความ</small>
                   </span>
                 </button>
 
-                <button type="button" class="btn-platform-share plat-instagram" data-share-platform="instagram" data-share-mode="siamsi">
-                  <span class="plat-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
-                  </span>
-                  <span class="plat-text">
-                    <strong>Instagram (IG)</strong>
-                    <small data-plat-status="instagram">เข้า IG (ภาพ Info + คำทำนาย)</small>
-                  </span>
-                </button>
-
-                <button type="button" class="btn-platform-share plat-tiktok" data-share-platform="tiktok" data-share-mode="siamsi">
-                  <span class="plat-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-                  </span>
-                  <span class="plat-text">
-                    <strong>TikTok</strong>
-                    <small data-plat-status="tiktok">เข้า TikTok (ภาพ Info + คำทำนาย)</small>
-                  </span>
-                </button>
-
-                <button type="button" class="btn-platform-share plat-line" data-share-platform="line" data-share-mode="siamsi">
-                  <span class="plat-icon">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314z"/></svg>
-                  </span>
-                  <span class="plat-text">
-                    <strong>LINE</strong>
-                    <small data-plat-status="line">เข้า LINE (ภาพ Info + คำทำนาย)</small>
-                  </span>
-                </button>
-
-                <button type="button" class="btn-platform-share plat-x" data-share-platform="x" data-share-mode="siamsi">
-                  <span class="plat-icon">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  </span>
-                  <span class="plat-text">
-                    <strong>X (Twitter)</strong>
-                    <small data-plat-status="x">เข้า X (ภาพ Info + คำทำนาย)</small>
+                <button type="button" id="btn-siamsi-share-result" class="btn-result-choice btn-choice-share" data-share-mode="siamsi">
+                  <span class="choice-icon" aria-hidden="true">🌐</span>
+                  <span class="choice-label-wrap">
+                    <strong data-i18n="btn_siamsi_share_result">แชร์คำทำนาย</strong>
+                    <small>แชร์ภาพใบเซียมซี &amp; คำทำนายไปโซเชียลทุกช่องทาง</small>
                   </span>
                 </button>
               </div>
 
-              <div class="social-share-actions-grid">
-                <button type="button" id="btn-siamsi-share-result" class="btn-social-share-modern">
-                  <span class="share-btn-svg-wrap">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <div class="result-gemini-last-row">
+                <button type="button" id="btn-siamsi-ask-gemini" class="btn-ask-gemini-row" data-ask-gemini="siamsi">
+                  <span class="gemini-spark" aria-hidden="true">✨</span>
+                  <span class="gemini-btn-text">
+                    <strong>คัดลอกข้อมูลถาม Gemini</strong>
+                    <small>คัดลอกผลเซียมซีและเปิดหน้า Gemini — กด Ctrl+V วางถามต่อได้เลย</small>
                   </span>
-                  <span class="share-btn-label-wrap">
-                    <strong data-i18n="btn_siamsi_share_result">ดูตัวอย่างภาพกราฟิก Info Card & ตั้งค่าการแชร์โซเชียล</strong>
-                    <small>พรีวิวภาพกราฟิกใบเซียมซี พร้อมแชร์ไปยังทุกแพลตฟอร์มอัตโนมัติ</small>
-                  </span>
-                  <span class="share-btn-pill-cta">พรีวิว Info ↗</span>
                 </button>
-
-                <div class="results-action-row secondary-share-grid siamsi-actions-footer">
-                  <button type="button" id="btn-siamsi-download-pdf" class="btn-secondary-mystic">
-                    <span>📄</span>
-                    <span>ดาวน์โหลดใบเซียมซี PDF</span>
-                  </button>
-                  <button type="button" id="btn-siamsi-copy-result" class="btn-secondary-mystic">
-                    <span>💬</span>
-                    <span data-i18n="btn_siamsi_copy_result">คัดลอกคำทำนายเต็ม</span>
-                  </button>
-                  <button type="button" id="btn-check-posts-siamsi" class="btn-secondary-mystic btn-check-shared-posts">
-                    <span>🔍</span>
-                    <span>ตรวจสอบโพสต์ & ประวัติการแชร์</span>
-                  </button>
-                  <button type="button" id="btn-siamsi-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
-                    <span>✨</span>
-                    <span>ไปใช้สิทธิ์ดูดวงไพ่ทาโรต์ (แพ็กคู่)</span>
-                  </button>
-                  <button type="button" id="btn-siamsi-reshake" class="btn-secondary-mystic" style="display: none;">
-                    <span>🎋</span>
-                    <span data-i18n="btn_siamsi_reshake">เสี่ยงเซียมซีใหม่อีกครั้ง</span>
-                  </button>
-                  <button type="button" id="btn-siamsi-view-directory" class="btn-secondary-mystic" style="display: none;">
-                    <span>📖</span>
-                    <span data-i18n="btn_siamsi_view_directory">สารบัญ 100 ใบ</span>
-                  </button>
-                </div>
+                <span class="gemini-copy-tip" role="status"></span>
               </div>
             </div>
 
@@ -1204,82 +1088,36 @@
             <div class="palm-aspects-grid" id="palm-reading-aspects"></div>
           </div>
 
-          <!-- Direct Social Share Grid on Palm Result (กดเลือกแพลตฟอร์มไหน เข้าแพลตฟอร์มนั้นเลยพร้อมภาพ Info + คำทำนาย) -->
-          <div class="social-hub-panel palm-direct-share-panel">
-            <div class="social-hub-top">
-              <span class="social-hub-label">🌐 แชร์ภาพ Info ลายมือ + คำทำนายไปยังโซเชียลของคุณโดยตรง</span>
-              <button type="button" id="btn-check-posts-palm" class="btn-check-posts-link">
-                <span>📋</span>
-                <span>ตรวจสอบประวัติการแชร์</span>
-              </button>
-            </div>
-            <div class="direct-social-platforms-grid" role="group" aria-label="เลือกโซเชียลมีเดียเพื่อแชร์ผลสแกนลายมือ">
-              <button type="button" class="btn-platform-share plat-facebook" data-share-platform="facebook" data-share-mode="palm">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>Facebook</strong>
-                  <small data-plat-status="facebook">เข้า Facebook (ภาพ Info + คำทำนาย)</small>
+          <!-- ส่วนการแชร์และดาวน์โหลดลายมือ (2 ปุ่มหลัก + ปุ่มคัดลอกข้อมูลถาม Gemini บรรทัดสุดท้าย) -->
+          <div class="social-hub-panel palm-direct-share-panel result-export-panel">
+            <div class="result-primary-two-btns" role="group" aria-label="ตัวเลือกบันทึกและแชร์ผลสแกนลายมือ">
+              <button type="button" id="btn-palm-download-pdf" class="btn-result-choice btn-choice-download" data-download-mode="palm">
+                <span class="choice-icon" aria-hidden="true">📥</span>
+                <span class="choice-label-wrap">
+                  <strong>โหลดผลคำทำนาย</strong>
+                  <small>เลือกไฟล์รูปภาพ Info (.PNG), เอกสาร PDF หรือข้อความ</small>
                 </span>
               </button>
 
-              <button type="button" class="btn-platform-share plat-instagram" data-share-platform="instagram" data-share-mode="palm">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>Instagram (IG)</strong>
-                  <small data-plat-status="instagram">เข้า IG (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-tiktok" data-share-platform="tiktok" data-share-mode="palm">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>TikTok</strong>
-                  <small data-plat-status="tiktok">เข้า TikTok (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-line" data-share-platform="line" data-share-mode="palm">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>LINE</strong>
-                  <small data-plat-status="line">เข้า LINE (ภาพ Info + คำทำนาย)</small>
-                </span>
-              </button>
-
-              <button type="button" class="btn-platform-share plat-x" data-share-platform="x" data-share-mode="palm">
-                <span class="plat-icon">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                </span>
-                <span class="plat-text">
-                  <strong>X (Twitter)</strong>
-                  <small data-plat-status="x">เข้า X (ภาพ Info + คำทำนาย)</small>
+              <button type="button" id="btn-palm-share-social" class="btn-result-choice btn-choice-share" data-share-mode="palm">
+                <span class="choice-icon" aria-hidden="true">🌐</span>
+                <span class="choice-label-wrap">
+                  <strong>แชร์คำทำนาย</strong>
+                  <small>แชร์ภาพ Info ลายมือ &amp; คำทำนายไปโซเชียลทุกช่องทาง</small>
                 </span>
               </button>
             </div>
-          </div>
 
-          <!-- Result Actions -->
-          <div class="palm-result-actions">
-            <button type="button" id="btn-palm-copy-reading" class="btn-mystic-primary">
-              <span>📋</span>
-              <span>คัดลอกผลการสแกนลายมือ</span>
-            </button>
-            <button type="button" id="btn-palm-share-social" class="btn-secondary-mystic">
-              <span>🌐</span>
-              <span>ดูภาพ Info & ตัวเลือกแชร์เพิ่มเติม</span>
-            </button>
-            <button type="button" id="btn-palm-download-pdf" class="btn-secondary-mystic">
-              <span>📄</span>
-              <span>ดาวน์โหลดเอกสารคำทำนาย (PDF)</span>
-            </button>
+            <div class="result-gemini-last-row">
+              <button type="button" id="btn-palm-ask-gemini" class="btn-ask-gemini-row" data-ask-gemini="palm">
+                <span class="gemini-spark" aria-hidden="true">✨</span>
+                <span class="gemini-btn-text">
+                  <strong>คัดลอกข้อมูลถาม Gemini</strong>
+                  <small>คัดลอกผลวิเคราะห์ลายมือและเปิดหน้า Gemini — กด Ctrl+V วางถามต่อได้เลย</small>
+                </span>
+              </button>
+              <span class="gemini-copy-tip" role="status"></span>
+            </div>
           </div>
         </section>
 
@@ -1397,15 +1235,57 @@
               <span>คัดลอกข้อความคำทำนายฉบับเต็มลงคลิปบอร์ด</span>
             </button>
 
-            <button type="button" id="btn-modal-download-pdf" class="btn-secondary-mystic btn-full-width">
-              <span>📄</span>
-              <span>ดาวน์โหลดใบคำทำนายเป็นไฟล์ PDF เก็บลงเครื่อง</span>
+            <button type="button" id="btn-modal-check-posts" class="btn-secondary-mystic btn-full-width">
+              <span>🔍</span>
+              <span>ตรวจสอบโพสต์ & ประวัติการแชร์โซเชียล</span>
             </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- ===================================================================== -->
+  <!-- DOWNLOAD FORMAT PICKER DIALOG (PNG / PDF / TXT via native <dialog>)   -->
+  <!-- ===================================================================== -->
+  <dialog id="download-format-dialog" class="mystic-native-dialog" closedby="any" aria-labelledby="download-dialog-title">
+    <div class="download-dialog-card">
+      <form method="dialog" class="download-dialog-close-form">
+        <button type="submit" value="close" class="modal-close-btn" id="btn-close-download-dialog" aria-label="ปิดหน้าต่างเลือกไฟล์ดาวน์โหลด" autofocus>&times;</button>
+      </form>
+      <div class="download-dialog-header">
+        <span class="share-studio-badge">✦ SAVE READING REPORT ✦</span>
+        <h3 id="download-dialog-title">เลือกรูปแบบไฟล์ที่ต้องการดาวน์โหลด</h3>
+        <p id="download-dialog-subtitle">เลือกรูปแบบไฟล์เพื่อบันทึกผลคำทำนายลงในเครื่องของคุณ</p>
+      </div>
+      <div class="download-format-list">
+        <button type="button" class="btn-download-format-option" id="btn-dl-opt-png" data-download-format="png">
+          <span class="dl-opt-icon" aria-hidden="true">🖼️</span>
+          <span class="dl-opt-text">
+            <strong>รูปภาพ Info Card (.PNG)</strong>
+            <small>ภาพสรุปผลคำทำนาย 1 หน้าความละเอียดสูง เปิดดูหรือส่งต่อในแชทได้ทันที</small>
+          </span>
+          <span class="dl-opt-ext">.PNG</span>
+        </button>
+        <button type="button" class="btn-download-format-option" id="btn-dl-opt-pdf" data-download-format="pdf">
+          <span class="dl-opt-icon" aria-hidden="true">📄</span>
+          <span class="dl-opt-text">
+            <strong>เอกสารคำทำนาย (.PDF)</strong>
+            <small>ไฟล์ PDF มาตรฐาน A4 เหมาะสำหรับเก็บไว้เปิดอ่านหรือสั่งพิมพ์</small>
+          </span>
+          <span class="dl-opt-ext">.PDF</span>
+        </button>
+        <button type="button" class="btn-download-format-option" id="btn-dl-opt-txt" data-download-format="txt">
+          <span class="dl-opt-icon" aria-hidden="true">📝</span>
+          <span class="dl-opt-text">
+            <strong>ไฟล์ข้อความคำทำนาย (.TXT)</strong>
+            <small>บันทึกข้อความคำทำนายฉบับเต็มเป็นไฟล์ข้อความเก็บไว้ในเครื่อง</small>
+          </span>
+          <span class="dl-opt-ext">.TXT</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
 
   <!-- ===================================================================== -->
   <!-- SOCIAL POST ASSISTANT MODAL (ผู้ช่วยเตรียมรูป Info + คำทำนาย + เปิดแพลตฟอร์มจริง) -->
@@ -1644,18 +1524,18 @@
   <script src="js/tarot-love-data.js"></script>
   <script src="js/siamsi-data.js"></script>
   <script src="js/siamsi-tanjai-data.js"></script>
-  <script src="js/palm-data.js?v=20261114f"></script>
+  <script src="js/palm-data.js?v=20261116a"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261114f"></script>
+  <script src="js/palm-scanner.js?v=20261116a"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/supabase-client.js?v=20261115a"></script>
   <script src="js/rag-engine.js?v=20261115a"></script>
   <script src="js/code-manager.js?v=20261115a"></script>
-  <script src="js/share-pdf.js?v=20261114f"></script>
-  <script src="js/siamsi.js?v=20261114f"></script>
-  <script src="js/app.js?v=20261115a"></script>
+  <script src="js/share-pdf.js?v=20261116a"></script>
+  <script src="js/siamsi.js?v=20261116a"></script>
+  <script src="js/app.js?v=20261116a"></script>
 
 </body>
 </html>

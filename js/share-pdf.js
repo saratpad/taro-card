@@ -708,6 +708,38 @@ class ShareAndPdfEngine {
     return { dataUrl, blob, canvas };
   }
 
+  _getCleanSiamsiAspectText(item, readingData = null) {
+    if (!item) return "";
+    let raw = item.richText ? String(item.richText) : "";
+    const stripPoemEcho = (text) => {
+      let clean = String(text || "")
+        .replace(/^(?:การงานตามใบเซียมซี|โชคลาภตามบทเซียมซี|เรื่องความรักตามบทเซียมซี|เรื่องสุขภาพตามบทเซียมซี|เรื่องการศึกษาตามบทเซียมซี|เรื่องครอบครัวและเคหสถาน|ภาพรวม[^:]*|คำทำนายภาพรวม)\s*:\s*"[^"]*"\s*/u, "")
+        .replace(/\n{2,}/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (readingData && Array.isArray(readingData.poemLines) && readingData.poemLines.length > 0) {
+        const fullPoem = readingData.poemLines.join(" ").replace(/\s+/g, " ").trim();
+        const titlePrefix = readingData.signTitle ? `${String(readingData.signTitle).trim()} ` : "";
+        if (fullPoem) {
+          clean = clean.replace(titlePrefix + fullPoem, "").replace(fullPoem, "").replace(/\s+—\s+คำแนะนำ/g, " — คำแนะนำ").trim();
+        }
+      }
+      return clean.replace(/^—\s*/, "").trim();
+    };
+
+    if (raw) {
+      return stripPoemEcho(raw);
+    }
+    const sum = String(item.text || "").trim();
+    const det = stripPoemEcho(item.detail || "");
+    if (det && det !== sum) {
+      return sum && !det.includes(sum.slice(0, Math.min(28, sum.length)))
+        ? `${sum} — ${det}`
+        : det;
+    }
+    return det || sum;
+  }
+
   /**
    * สร้างรูป Info Card หน้าเดียวสำหรับเซียมซี (1240 x 1754 • ธีมโหราศาสตร์ขลังอลังการ)
    */
@@ -746,75 +778,139 @@ class ShareAndPdfEngine {
     });
 
     // ป้ายเหรียญตราเลขเซียมซี & ระดับดวง
-    const numCardY = 356;
-    const numCardH = 148;
+    const numCardY = 342;
+    const numCardH = 118;
     const plaqueGrad = ctx.createLinearGradient(70, numCardY, W - 70, numCardY + numCardH);
     plaqueGrad.addColorStop(0, "rgba(69, 10, 26, 0.88)");
     plaqueGrad.addColorStop(0.5, "rgba(28, 16, 68, 0.92)");
     plaqueGrad.addColorStop(1, "rgba(69, 10, 26, 0.88)");
-    this._drawGlassCard(ctx, 180, numCardY, W - 360, numCardH, 26, this._createGoldGradient(ctx, 180, numCardY, W - 180, numCardY + numCardH), plaqueGrad);
+    this._drawGlassCard(ctx, 180, numCardY, W - 360, numCardH, 24, this._createGoldGradient(ctx, 180, numCardY, W - 180, numCardY + numCardH), plaqueGrad);
 
     ctx.textAlign = "center";
     ctx.fillStyle = "#fff1be";
-    ctx.font = "700 58px 'Prompt', sans-serif";
-    ctx.fillText(`เซียมซีเบอร์ ${readingData.signNumber}`, W / 2, numCardY + 78);
+    ctx.font = "700 48px 'Prompt', sans-serif";
+    ctx.fillText(`เซียมซีเบอร์ ${readingData.signNumber}`, W / 2, numCardY + 62);
 
     ctx.fillStyle = "#fde68a";
-    ctx.font = "600 28px 'Prompt', sans-serif";
-    ctx.fillText(`${readingData.signTitle || ""} ${readingData.fortuneLevel ? `(${readingData.fortuneLevel})` : ""}`, W / 2, numCardY + 124, W - 400);
+    ctx.font = "600 24px 'Prompt', sans-serif";
+    ctx.fillText(`${readingData.signTitle || ""} ${readingData.fortuneLevel ? `(${readingData.fortuneLevel})` : ""}`, W / 2, numCardY + 101, W - 400);
 
-    // แผ่นจารึกบทกลอนพยากรณ์
-    const poemY = 524;
-    const poemH = 236;
+    // แผ่นจารึกบทกลอนพยากรณ์ + หัวใจคำทำนาย
+    const poemY = 472;
+    const poemH = 216;
     this._drawGlassCard(ctx, 70, poemY, W - 140, poemH, 20, "rgba(243, 207, 122, 0.52)", "rgba(8, 15, 42, 0.88)");
 
     ctx.fillStyle = "#f3cf7a";
-    ctx.font = "700 20px 'Prompt', sans-serif";
-    ctx.fillText("✦ จารึกคำกลอนพยากรณ์ ✦", W / 2, poemY + 38);
+    ctx.font = "700 19px 'Prompt', sans-serif";
+    ctx.fillText("✦ จารึกคำกลอนพยากรณ์ ✦", W / 2, poemY + 32);
 
     ctx.fillStyle = "#fff8dc";
-    ctx.font = "500 25px 'Prompt', sans-serif";
+    ctx.font = "500 22px 'Prompt', sans-serif";
     const poemLines = readingData.poemLines || [];
     poemLines.slice(0, 4).forEach((line, idx) => {
-      ctx.fillText(line, W / 2, poemY + 84 + idx * 40, W - 190);
+      ctx.fillText(line, W / 2, poemY + 66 + idx * 31, W - 190);
     });
 
-    // สรุปคำพยากรณ์รายด้าน (ครบใน 1 หน้า)
+    if (readingData.oneLine) {
+      ctx.fillStyle = "rgba(243, 207, 122, 0.2)";
+      ctx.fillRect(110, poemY + 174, W - 220, 1);
+      ctx.fillStyle = "#7dd3fc";
+      ctx.font = "600 18.5px 'Prompt', sans-serif";
+      const essence = this.wrapTextLines(ctx, `💡 แก่นคำทำนาย: "${readingData.oneLine}"`, W - 200)[0] || "";
+      ctx.fillText(essence, W / 2, poemY + 202, W - 200);
+    }
+
+    // คำพยากรณ์รายด้าน (ครบ 6 ด้านในตาราง 2 คอลัมน์ + ภาพรวมและแนวทางปฏิบัติเต็มกว้างด้านล่าง)
     ctx.textAlign = "left";
     ctx.fillStyle = "#f3cf7a";
-    ctx.font = "700 25px 'Prompt', sans-serif";
-    ctx.fillText("✦ คำพยากรณ์สำคัญรายด้าน (ฉบับสมบูรณ์ใน 1 หน้า)", 74, 804);
+    ctx.font = "700 23px 'Prompt', sans-serif";
+    ctx.fillText("✦ คำพยากรณ์เจาะลึกรายด้าน & แนวทางปฏิบัติ (ฉบับสมบูรณ์ใน 1 หน้า)", 74, 720);
 
-    const aspects = (readingData.aspectsSummary || []).slice(0, 5);
-    const startY = 824;
-    const totalAvailH = 1648 - startY;
-    const gap = 12;
-    const itemCount = Math.max(1, aspects.length);
-    const boxH = Math.min(184, Math.floor((totalAvailH - (itemCount - 1) * gap) / itemCount));
+    const allAspects = Array.isArray(readingData.aspectsSummary) ? readingData.aspectsSummary : [];
+    const generalItem = allAspects.find(a => a.key === "general" || /ภาพรวม/.test(String(a.label || "")));
+    const gridAspects = allAspects.filter(a => a !== generalItem).slice(0, 6);
 
-    aspects.forEach((item, idx) => {
-      const ay = startY + idx * (boxH + gap);
-      this._drawGlassCard(ctx, 70, ay, W - 140, boxH, 16, "rgba(243, 207, 122, 0.36)", "rgba(10, 18, 48, 0.88)");
+    const gridStartY = 738;
+    const gapX = 20;
+    const gapY = 12;
+    const colW = Math.floor((W - 140 - gapX) / 2);
+    const boxH = 208;
+    const accentColors = ["#38bdf8", "#f3cf7a", "#fb7185", "#34d399", "#c084fc", "#fbbf24"];
 
-      ctx.fillStyle = idx % 2 === 0 ? "#38bdf8" : "#f3cf7a";
-      this.drawRoundedRect(ctx, 70, ay, 9, boxH, 4.5);
+    gridAspects.forEach((item, idx) => {
+      const col = idx % 2;
+      const row = Math.floor(idx / 2);
+      const ax = 70 + col * (colW + gapX);
+      const ay = gridStartY + row * (boxH + gapY);
+      const accent = accentColors[idx % accentColors.length];
+
+      this._drawGlassCard(ctx, ax, ay, colW, boxH, 16, "rgba(243, 207, 122, 0.36)", "rgba(10, 18, 48, 0.89)");
+
+      ctx.fillStyle = accent;
+      this.drawRoundedRect(ctx, ax, ay, 8, boxH, 4);
       ctx.fill();
 
       ctx.textAlign = "left";
       ctx.fillStyle = idx % 2 === 0 ? "#7dd3fc" : "#fde68a";
-      ctx.font = "700 23px 'Prompt', sans-serif";
-      ctx.fillText(String(item.label || item.title || "คำพยากรณ์รายด้าน"), 98, ay + 38, W - 210);
+      ctx.font = "700 21.5px 'Prompt', sans-serif";
+      ctx.fillText(String(item.label || item.title || "คำพยากรณ์รายด้าน"), ax + 24, ay + 34, colW - 44);
+
+      const richBody = this._getCleanSiamsiAspectText(item, readingData);
+      const isConcise = richBody.length <= 210;
+      const bodyFontSize = isConcise ? 19 : 17.5;
+      const lineStep = isConcise ? 26.5 : 23;
+      const maxLines = isConcise ? 5 : 6;
 
       ctx.fillStyle = "#f1f5f9";
-      ctx.font = "400 20px 'Prompt', sans-serif";
-      const allLines = this.wrapTextLines(ctx, String(item.text || item.detail || ""), W - 208);
-      const maxLines = boxH >= 170 ? 4 : 3;
+      ctx.font = `400 ${bodyFontSize}px 'Prompt', sans-serif`;
+      const allLines = this.wrapTextLines(ctx, richBody, colW - 46);
       const lines = allLines.slice(0, maxLines);
       if (allLines.length > maxLines && lines[maxLines - 1]) {
-        lines[maxLines - 1] = lines[maxLines - 1].slice(0, Math.max(10, lines[maxLines - 1].length - 1)) + "…";
+        lines[maxLines - 1] = lines[maxLines - 1].slice(0, Math.max(8, lines[maxLines - 1].length - 1)) + "…";
       }
-      lines.forEach((l, i) => ctx.fillText(l, 98, ay + 74 + i * 28));
+      lines.forEach((l, li) => ctx.fillText(l, ax + 24, ay + 66 + li * lineStep));
     });
+
+    // กล่องภาพรวมคำทำนาย & คำแนะนำประจำใบเต็มความกว้างด้านล่าง
+    const ovY = gridStartY + 3 * (boxH + gapY);
+    const ovH = 250;
+    const ovGrad = ctx.createLinearGradient(70, ovY, W - 70, ovY + ovH);
+    ovGrad.addColorStop(0, "rgba(18, 28, 72, 0.92)");
+    ovGrad.addColorStop(1, "rgba(38, 18, 66, 0.92)");
+    this._drawGlassCard(ctx, 70, ovY, W - 140, ovH, 18, "#f3cf7a", ovGrad);
+
+    ctx.fillStyle = "#f3cf7a";
+    this.drawRoundedRect(ctx, 70, ovY, 9, ovH, 4.5);
+    ctx.fill();
+
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#fff1be";
+    ctx.font = "700 22px 'Prompt', sans-serif";
+    ctx.fillText("🔮 คำทำนายภาพรวม & ข้อแนะนำประจำใบเซียมซี", 96, ovY + 36, W - 200);
+
+    const overviewParts = [];
+    if (generalItem) {
+      const genText = this._getCleanSiamsiAspectText(generalItem, readingData);
+      if (genText) overviewParts.push(genText);
+    }
+    if (readingData.supplementText) {
+      overviewParts.push(`ตำราเสริม (${readingData.supplementTitle || "เพิ่มเติม"}): ${readingData.supplementText}`);
+    } else if (readingData.storyExcerpt && (!generalItem || this._getCleanSiamsiAspectText(generalItem, readingData).length < 240)) {
+      overviewParts.push(`แก่นตำนานประจำใบ: ${readingData.storyExcerpt}`);
+    }
+    const finalOverviewText = overviewParts.join(" • ") || `ระดับดวงชะตา: ${readingData.fortuneLevel || "ปานกลาง"} — ${readingData.oneLine || ""}`;
+
+    const isOverviewConcise = finalOverviewText.length <= 360;
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = `400 ${isOverviewConcise ? 20 : 18}px 'Prompt', sans-serif`;
+    const ovWrapped = this.wrapTextLines(ctx, finalOverviewText, W - 200);
+    const ovMax = isOverviewConcise ? 6 : 8;
+    const ovStep = isOverviewConcise ? 28 : 22.5;
+    const ovLines = ovWrapped.slice(0, ovMax);
+    if (ovWrapped.length > ovMax && ovLines[ovMax - 1]) {
+      ovLines[ovMax - 1] = ovLines[ovMax - 1].slice(0, Math.max(10, ovLines[ovMax - 1].length - 1)) + "…";
+    }
+    ovLines.forEach((l, i) => ctx.fillText(l, 96, ovY + 70 + i * ovStep));
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
@@ -1104,13 +1200,17 @@ class ShareAndPdfEngine {
     if (readingData.mode === "siamsi") {
       const poem = (readingData.poemLines || []).join("\n");
       const aspectsText = (readingData.aspectsSummary || [])
-        .map(a => `${a.label}: ${a.detail || a.text}`)
+        .map(a => `${a.label}: ${this._getCleanSiamsiAspectText(a)}`)
         .join("\n\n");
+      const supplementPart = readingData.supplementText
+        ? `\n📖 ${readingData.supplementTitle || "ตำราเสริม"}: ${readingData.supplementText}\n`
+        : "";
       return `🎋 ผลคำทำนายเซียมซีทาโรต์ (${readingData.deckName || "เซียมซีศักดิ์สิทธิ์"})\n` +
         `✨ ได้เซียมซี เบอร์ ${readingData.signNumber} — ${readingData.signTitle || ""} (ระดับ: ${readingData.fortuneLevel || ""})\n` +
         `💡 หัวใจสำคัญ: "${readingData.oneLine || ""}"\n\n` +
         `📜 บทกลอนประจำใบเซียมซี:\n${poem}\n\n` +
-        `🔮 คำทำนายฉบับเต็ม:\n${aspectsText}\n\n` +
+        `🔮 คำทำนายฉบับเต็ม:\n${aspectsText}\n` +
+        supplementPart + `\n` +
         `#เซียมซีทาโรต์ #ดูดวง #เสี่ยงเซียมซี`;
     }
 
@@ -1359,17 +1459,62 @@ class ShareAndPdfEngine {
   }
 
   /**
+   * Builds a clean structured Thai prompt with full reading context for asking Gemini follow-up questions.
+   */
+  buildGeminiPromptText(readingData) {
+    if (!readingData) return "";
+    const coreText = this.buildFullSocialCaption(readingData)
+      .replace(/\n?#[^\n]+$/u, "")
+      .trim();
+
+    const extraParts = [];
+    if (readingData.mode === "tarot" && readingData.ragSynthesis) {
+      extraParts.push(`📚 สรุปตามตำราที่ใช้งาน (${readingData.textbookTitle || "ตำราไพ่ทาโรต์"}):\n${readingData.ragSynthesis}`);
+    }
+    if (readingData.mode === "siamsi" && readingData.storyExcerpt) {
+      extraParts.push(`📜 ตำนาน/คติประจำใบ:\n${readingData.storyExcerpt}`);
+    }
+
+    const combinedBody = extraParts.length > 0
+      ? `${coreText}\n\n${extraParts.join("\n\n")}`
+      : coreText;
+
+    return `นี่คือข้อมูลผลการดูดวงของฉัน ช่วยอ่านทำความเข้าใจผลคำทำนายนี้ให้ครบถ้วน แล้วช่วยวิเคราะห์ขยายความให้เห็นภาพชัดเจนขึ้น พร้อมรอรับคำถามเพิ่มเติมจากฉันได้เลยครับ/ค่ะ:\n\n${combinedBody}\n\n━━━━━━━━━━━━━━━\n💬 คำถามที่ฉันอยากถามต่อจากผลนี้คือ: `;
+  }
+
+  /**
+   * ดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT) ลงเครื่องทันที
+   */
+  downloadReadingTextFile(readingData) {
+    if (!readingData) return false;
+    const content = this.buildFullSocialCaption(readingData);
+    const codePart = readingData.code ? `_${readingData.code}` : "";
+    const fileName = `SiamSiTarot_${readingData.mode || "Reading"}${codePart}.txt`;
+    const blob = new Blob(["\uFEFF" + content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    return true;
+  }
+
+  /**
    * ดาวน์โหลดไฟล์รูป Info Card (.png) ลงเครื่อง
    */
   async downloadInfoImageFile(readingData) {
     const asset = await this.ensureInfoAsset(readingData);
-    if (!asset || !asset.dataUrl) return;
+    if (!asset || !asset.dataUrl) return false;
     const a = document.createElement("a");
     a.href = asset.dataUrl;
     a.download = asset.fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    return true;
   }
 }
 

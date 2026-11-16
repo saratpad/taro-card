@@ -2667,7 +2667,17 @@ class PalmApp {
       </div>
     `;
 
-    const cardsHtml = Object.entries(reading.aspects).map(([aspKey, asp]) => {
+    const orderedEntries = (typeof window !== "undefined" && window.PalmReadingUtils && typeof window.PalmReadingUtils.orderAspectEntries === "function")
+      ? window.PalmReadingUtils.orderAspectEntries(reading.aspects)
+      : Object.entries(reading.aspects).sort(([ka, a], [kb, b]) => {
+          const aGuide = ka === "guidance" || String((a && a.title) || "").trim() === "คำแนะนำดวงชะตา";
+          const bGuide = kb === "guidance" || String((b && b.title) || "").trim() === "คำแนะนำดวงชะตา";
+          if (aGuide && !bGuide) return 1;
+          if (!aGuide && bGuide) return -1;
+          return 0;
+        });
+
+    const cardsHtml = orderedEntries.map(([aspKey, asp]) => {
       const isGuidance = aspKey === "guidance" || String(asp.title || "").trim() === "คำแนะนำดวงชะตา";
       const breakdownHtml = (!isGuidance && (asp.leftNote || asp.rightNote))
         ? `
@@ -2772,7 +2782,9 @@ class PalmApp {
   downloadPalmPdf() {
     const payload = this.buildPalmSharePayload();
     if (!payload) return;
-    if (window.taroApp && typeof window.taroApp.downloadDirectPDF === "function") {
+    if (window.taroApp && typeof window.taroApp.openDownloadFormatModal === "function") {
+      window.taroApp.openDownloadFormatModal(payload);
+    } else if (window.taroApp && typeof window.taroApp.downloadDirectPDF === "function") {
       window.taroApp.downloadDirectPDF(payload);
     }
   }

@@ -52,8 +52,9 @@ const I18N = {
     keywords: "พลังงานหลัก",
 
     reading_for_user: "ใบพยากรณ์ดวงชะตาสำหรับ {name}",
-    btn_share_reading: "แชร์โซเชียล (รูป Info + คำทำนายเต็ม)",
-    btn_download_pdf: "บันทึกเป็นไฟล์ PDF ลงเครื่อง",
+    btn_share_reading: "แชร์คำทำนาย",
+    btn_download_reading: "โหลดผลคำทำนาย",
+    btn_download_pdf: "โหลดผลคำทำนาย",
     btn_copy_reading: "คัดลอกคำทำนายฉบับเต็ม",
     btn_ask_again: "ดูดวงใหม่อีกครั้ง",
 
@@ -112,8 +113,9 @@ const I18N = {
     keywords: "Core Energy",
 
     reading_for_user: "Sacred Tarot Reading for {name}",
-    btn_share_reading: "Share (Info Image + Full Reading)",
-    btn_download_pdf: "Save Reading as PDF",
+    btn_share_reading: "Share Reading",
+    btn_download_reading: "Download Reading",
+    btn_download_pdf: "Download Reading",
     btn_copy_reading: "Copy Full Reading Text",
     btn_ask_again: "New Reading",
 
@@ -367,6 +369,12 @@ class TarotApp {
     this.btnNativeShareAll = document.getElementById("btn-native-share-all");
     this.btnCopyFullCaption = document.getElementById("btn-copy-full-caption");
     this.btnModalDownloadPdf = document.getElementById("btn-modal-download-pdf");
+    this.btnModalCheckPosts = document.getElementById("btn-modal-check-posts");
+    this.downloadFormatDialog = document.getElementById("download-format-dialog");
+    this.downloadDialogSubtitle = document.getElementById("download-dialog-subtitle");
+    this._activeDownloadPayload = null;
+    this._geminiCopyTimers = new WeakMap();
+    this._lastGeminiStatusMsg = "";
 
     // Social Guided Post Assistant Modal
     this.socialConnectModal = document.getElementById("social-connect-post-modal");
@@ -658,7 +666,7 @@ class TarotApp {
 
     if (this.btnDownloadPdf) {
       this.btnDownloadPdf.addEventListener("click", () => {
-        this.downloadDirectPDF(this.currentReadingPayload);
+        this.openDownloadFormatModal(this.currentReadingPayload);
       });
     }
 
@@ -754,6 +762,23 @@ class TarotApp {
         await this.downloadDirectPDF(payload);
       });
     }
+
+    if (this.btnModalCheckPosts) {
+      this.btnModalCheckPosts.addEventListener("click", () => {
+        const payload = window.shareAndPdfEngine.currentReadingData || this.currentReadingPayload;
+        if (this.shareModal) this.shareModal.classList.remove("active");
+        this.openPostVerificationHistoryModal(payload);
+      });
+    }
+
+    this._initDownloadFormatDialog();
+
+    document.querySelectorAll("[data-ask-gemini]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const modeHint = btn.getAttribute("data-ask-gemini") || "active";
+        this.askGeminiWithReading(btn, modeHint);
+      });
+    });
 
     // Direct Social Platform Share Buttons (Facebook, Instagram, TikTok, LINE, X)
     document.querySelectorAll(".btn-platform-share").forEach(btn => {
@@ -2046,37 +2071,16 @@ class TarotApp {
     }
 
     const verdictData = this.generateConciseVerdictText(verdictType);
-    const positions = this.getPositions();
     const activeBook = (window.ragEngine && typeof window.ragEngine.getActiveBook === "function")
       ? window.ragEngine.getActiveBook("tarot")
       : null;
 
-    // เชื่อมเกร็ดความรู้เฉพาะใบจากตำราไพ่ทาโรต์ที่ Admin เลือกใช้งาน
-    if (window.ragEngine && typeof window.ragEngine.retrieveCardInsight === "function" && this.interpretationsFeed) {
-      const feedCards = Array.from(this.interpretationsFeed.children || []);
-      this.drawnCards.forEach((item, idx) => {
-        const cardEl = feedCards[idx];
-        if (!cardEl || !item || !item.card) return;
+    // ไม่แสดงกล่อง "📖 มุมมองจากตำรา:" แยกในไพ่แต่ละใบ (รวมสรุปตามตำราไว้ในกล่องบทสรุปท้ายสุดทีเดียว)
+    if (this.interpretationsFeed) {
+      Array.from(this.interpretationsFeed.children || []).forEach((cardEl) => {
+        if (!cardEl) return;
         const oldCallout = cardEl.querySelector(".rag-insight-callout");
         if (oldCallout) oldCallout.remove();
-
-        const posTitle = positions[idx] ? (positions[idx][this.lang] || "") : "";
-        const insight = window.ragEngine.retrieveCardInsight({
-          card: item.card,
-          isReversed: item.isReversed,
-          category: this.category,
-          loveStatus: this.loveStatus,
-          positionTitle: posTitle
-        });
-        if (insight) {
-          const callout = document.createElement("div");
-          callout.className = "rag-insight-callout";
-          callout.innerHTML = `
-            <div class="rag-insight-head">📖 มุมมองจากตำรา: ${(activeBook && activeBook.title) || "ตำราไพ่ทาโรต์"}</div>
-            <p class="rag-insight-text">${insight}</p>
-          `;
-          cardEl.appendChild(callout);
-        }
       });
     }
 
@@ -3087,6 +3091,202 @@ class TarotApp {
         body: JSON.stringify(postData)
       }).catch(() => {});
     } catch (_) {}
+  }
+
+  _resolvePayloadByMode(modeHint = "active") {
+    if (modeHint === "palm" && window.palmApp) {
+      return window.palmApp.buildPalmSharePayload() || this.activeSocialPayload;
+    }
+    if (modeHint === "siamsi" && this.siamsiApp && this.siamsiApp.currentSign) {
+      return this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign);
+    }
+    if (modeHint === "tarot" && this.currentReadingPayload) {
+      return this.currentReadingPayload;
+    }
+    return window.shareAndPdfEngine.currentReadingData ||
+      this.currentReadingPayload ||
+      (this.siamsiApp && this.siamsiApp.currentSign ? this.siamsiApp.buildSiamsiReadingPayload(this.siamsiApp.currentSign) : null) ||
+      (window.palmApp ? window.palmApp.buildPalmSharePayload() : null);
+  }
+
+  _initDownloadFormatDialog() {
+    const dialog = this.downloadFormatDialog;
+    if (!dialog) return;
+
+    // Reset returnValue cleanly on every close so stale values do not persist
+    dialog.addEventListener("close", () => {
+      dialog.returnValue = "";
+    });
+
+    // Safari fallback for light dismiss (closedby="any")
+    if (!("closedBy" in HTMLDialogElement.prototype)) {
+      const isOutside = (e) => {
+        const r = dialog.getBoundingClientRect();
+        return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      };
+      let pressedOutside = false;
+      dialog.addEventListener("pointerdown", (e) => {
+        pressedOutside = isOutside(e);
+      });
+      dialog.addEventListener("pointerup", (e) => {
+        if (pressedOutside && isOutside(e)) {
+          dialog.close("dismiss");
+        }
+        pressedOutside = false;
+      });
+    }
+
+    dialog.querySelectorAll("[data-download-format]").forEach((optBtn) => {
+      optBtn.addEventListener("click", async () => {
+        const fmt = optBtn.getAttribute("data-download-format") || "pdf";
+        dialog.close(fmt);
+        await this._executeDownloadFormat(fmt, this._activeDownloadPayload);
+      });
+    });
+  }
+
+  openDownloadFormatModal(readingPayload = null, modeHint = "active") {
+    const payload = readingPayload || this._resolvePayloadByMode(modeHint);
+    if (!payload) return;
+    window.mysticAudio.playClick();
+    this._activeDownloadPayload = payload;
+    window.shareAndPdfEngine.currentReadingData = payload;
+
+    if (this.downloadDialogSubtitle) {
+      const modeName = payload.mode === "palm"
+        ? "ผลการวิเคราะห์ลายมือ"
+        : (payload.mode === "siamsi" ? `ใบเซียมซีเบอร์ ${payload.signNumber || ""}` : "ผลคำทำนายไพ่ทาโรต์");
+      this.downloadDialogSubtitle.textContent = `เลือกประเภทไฟล์สำหรับ${modeName}เพื่อบันทึกเก็บลงในเครื่องของคุณ`;
+    }
+
+    if (this.downloadFormatDialog && typeof this.downloadFormatDialog.showModal === "function") {
+      if (!this.downloadFormatDialog.open) {
+        this.downloadFormatDialog.showModal();
+      }
+      return;
+    }
+    this.downloadDirectPDF(payload);
+  }
+
+  async _executeDownloadFormat(format, readingPayload) {
+    const payload = readingPayload || this._resolvePayloadByMode("active");
+    if (!payload) return;
+
+    if (format === "png") {
+      window.mysticAudio.playClick();
+      this.showToast("⏳ กำลังสร้างรูปภาพ Info Card (.PNG)...");
+      const ok = await window.shareAndPdfEngine.downloadInfoImageFile(payload);
+      if (ok) {
+        if (this.activeCode) {
+          await window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดรูปภาพ Info Card (.PNG)");
+        }
+        this.showToast("🖼️ ดาวน์โหลดรูปภาพ Info Card (.PNG) ลงเครื่องเรียบร้อยแล้ว!");
+        window.mysticAudio.playCrystalBell(880, 1.3);
+      }
+      return;
+    }
+
+    if (format === "txt") {
+      window.mysticAudio.playClick();
+      const ok = window.shareAndPdfEngine.downloadReadingTextFile(payload);
+      if (ok) {
+        if (this.activeCode) {
+          await window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT)");
+        }
+        this.showToast("📝 ดาวน์โหลดไฟล์ข้อความคำทำนาย (.TXT) ลงเครื่องเรียบร้อยแล้ว!");
+        window.mysticAudio.playCrystalBell(880, 1.2);
+      }
+      return;
+    }
+
+    await this.downloadDirectPDF(payload);
+  }
+
+  async _copyTextWithFallback(text) {
+    if (!text) return false;
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_) {}
+
+    try {
+      const field = Object.assign(document.createElement("textarea"), { value: text });
+      field.setAttribute("readonly", "");
+      field.style.cssText = "position:fixed;inset-block-start:0;opacity:0";
+      document.body.append(field);
+      field.select();
+      const ok = document.execCommand("copy");
+      field.remove();
+      return Boolean(ok);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  _reportGeminiCopyStatus(button, ok, extraHtml = "") {
+    if (!button) return;
+    const tip = button.nextElementSibling;
+    clearTimeout(this._geminiCopyTimers.get(button));
+    button.removeAttribute("data-copied");
+    button.removeAttribute("data-failed");
+    void button.offsetWidth;
+    button.setAttribute(ok ? "data-copied" : "data-failed", "");
+
+    if (tip) {
+      if (extraHtml) {
+        tip.innerHTML = extraHtml;
+      } else {
+        let msg = ok ? "คัดลอกข้อมูลแล้ว • กด Ctrl+V วางใน Gemini ได้เลย" : "คัดลอกไม่สำเร็จ กรุณาลองอีกครั้ง";
+        if (msg === this._lastGeminiStatusMsg) msg += "\u00A0";
+        this._lastGeminiStatusMsg = msg;
+        tip.textContent = "";
+        requestAnimationFrame(() => {
+          tip.textContent = msg;
+        });
+      }
+    }
+
+    this._geminiCopyTimers.set(button, setTimeout(() => {
+      button.removeAttribute("data-copied");
+      button.removeAttribute("data-failed");
+      if (tip && !extraHtml) tip.textContent = "";
+    }, 3500));
+  }
+
+  async askGeminiWithReading(button, modeHint = "active") {
+    const payload = this._resolvePayloadByMode(modeHint);
+    if (!payload) return;
+    const promptText = window.shareAndPdfEngine.buildGeminiPromptText(payload);
+    if (!promptText) return;
+
+    window.mysticAudio.playClick();
+    const copied = await this._copyTextWithFallback(promptText);
+    const geminiUrl = "https://gemini.google.com/app";
+
+    if (copied && this.activeCode) {
+      window.codeManager.recordActionLog(this.activeCode, "share", "ลูกค้าคัดลอกผลคำทำนายเพื่อถามต่อใน Gemini");
+    }
+
+    const openedWin = window.open(geminiUrl, "_blank", "noopener");
+    if (copied) {
+      if (openedWin) {
+        this._reportGeminiCopyStatus(button, true);
+        this.showToast("✨ คัดลอกผลคำทำนายแล้ว! กำลังเปิด Gemini — กด Ctrl+V วางถามต่อได้เลย");
+      } else {
+        this._reportGeminiCopyStatus(
+          button,
+          true,
+          `คัดลอกข้อมูลแล้ว! <a href="${geminiUrl}" target="_blank" rel="noopener" class="gemini-fallback-link">แตะเพื่อเปิด Gemini ↗</a>`
+        );
+        this.showToast("✨ คัดลอกข้อมูลคำทำนายแล้ว! แตะลิงก์เปิด Gemini แล้วกด Ctrl+V วางได้เลย");
+      }
+      window.mysticAudio.playCrystalBell(880, 1.2);
+    } else {
+      this._reportGeminiCopyStatus(button, false);
+      this.showToast("⚠️ ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาลองกดปุ่มอีกครั้ง");
+    }
   }
 
   async downloadDirectPDF(readingPayload) {

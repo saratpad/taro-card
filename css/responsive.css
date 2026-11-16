@@ -642,4 +642,21 @@ body.customer-display-active #palm-dual-step-banner {
   body.customer-display-active #palm-dual-step-banner {
     font-size: calc(1.02rem * var(--customer-font-scale, 1));
   }
+
+  .result-primary-two-btns {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .result-export-panel {
+    padding: 1rem;
+  }
+
+  .btn-result-choice {
+    min-height: 62px;
+  }
+
+  .btn-ask-gemini-row {
+    justify-content: flex-start;
+  }
 }
