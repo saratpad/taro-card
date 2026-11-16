@@ -281,9 +281,10 @@ class TarotApp {
     this.accessCodeError = document.getElementById("access-code-error");
     this.demoCodeChips = document.querySelectorAll(".demo-code-chip");
 
-    // Combo Selector Screen (Package 3)
+    // Combo Selector Screen (Package 3: All-in-One 3 Disciplines)
     this.comboSelectorScreen = document.getElementById("combo-selector-screen");
     this.comboWelcomeTitle = document.getElementById("combo-welcome-title");
+    this.comboOverallProgress = document.getElementById("combo-overall-progress");
     this.comboTarotStatus = document.getElementById("combo-tarot-status");
     this.comboSiamsiStatus = document.getElementById("combo-siamsi-status");
     this.comboTarotMiniResult = document.getElementById("combo-tarot-mini-result");
@@ -297,7 +298,11 @@ class TarotApp {
     this.btnComboEnterPalm = document.getElementById("btn-combo-enter-palm");
     this.btnComboPalmLabel = document.getElementById("btn-combo-palm-label");
     this.btnTarotGoCombo = document.getElementById("btn-tarot-go-combo");
+    this.btnTarotGoComboLabel = document.getElementById("btn-tarot-go-combo-label");
     this.btnSiamsiGoCombo = document.getElementById("btn-siamsi-go-combo");
+    this.btnSiamsiGoComboLabel = document.getElementById("btn-siamsi-go-combo-label");
+    this.btnPalmGoCombo = document.getElementById("btn-palm-go-combo");
+    this.btnPalmGoComboLabel = document.getElementById("btn-palm-go-combo-label");
 
     this.tarotModeContainer = document.getElementById("tarot-mode-container");
     this.siamsiModeContainer = document.getElementById("siamsi-mode-container");
@@ -529,13 +534,22 @@ class TarotApp {
     if (this.btnTarotGoCombo) {
       this.btnTarotGoCombo.addEventListener("click", () => {
         window.mysticAudio.playClick();
-        this.openSiamsiServiceForCode(this.activeCodeObj);
+        this.refreshActiveCodeState();
+        if (this.activeCodeObj) this.showComboSelector(this.activeCodeObj);
       });
     }
     if (this.btnSiamsiGoCombo) {
       this.btnSiamsiGoCombo.addEventListener("click", () => {
         window.mysticAudio.playClick();
-        this.openTarotServiceForCode(this.activeCodeObj);
+        this.refreshActiveCodeState();
+        if (this.activeCodeObj) this.showComboSelector(this.activeCodeObj);
+      });
+    }
+    if (this.btnPalmGoCombo) {
+      this.btnPalmGoCombo.addEventListener("click", () => {
+        window.mysticAudio.playClick();
+        this.refreshActiveCodeState();
+        if (this.activeCodeObj) this.showComboSelector(this.activeCodeObj);
       });
     }
 
@@ -943,6 +957,7 @@ class TarotApp {
 
   showAccessGate() {
     this.applyLockedCategoryPolicy("");
+    this.syncComboUi(null);
     if (this.accessGateScreen) this.accessGateScreen.classList.add("active");
     if (this.comboSelectorScreen) this.comboSelectorScreen.classList.remove("active");
     if (this.tarotModeContainer) this.tarotModeContainer.style.display = "none";
@@ -1003,7 +1018,7 @@ class TarotApp {
     if (this.sanctuaryModeNav) this.sanctuaryModeNav.style.display = "none";
     if (this.activeCodeBanner) {
       this.activeCodeBanner.style.display = "inline-flex";
-      const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "แพ็กเกจรวม", palm: "สแกนลายมือ" };
+      const shortLabelMap = { tarot: "ไพ่ 3 ใบ", siamsi: "เซียมซี", combo: "เหมา 3 ศาสตร์", palm: "สแกนลายมือ" };
       const lockedCatNames = { love: "ความรัก", career: "การงาน", finance: "การเงิน", health: "สุขภาพ" };
       const lockedSuffix = (codeObj.lockedCategory && lockedCatNames[codeObj.lockedCategory])
         ? ` • เฉพาะด้าน${lockedCatNames[codeObj.lockedCategory]}`
@@ -1019,13 +1034,8 @@ class TarotApp {
       }
     }
 
-    // Show/hide combo switch buttons in results panels
-    if (this.btnTarotGoCombo) {
-      this.btnTarotGoCombo.style.display = codeObj.mode === "combo" ? "inline-flex" : "none";
-    }
-    if (this.btnSiamsiGoCombo) {
-      this.btnSiamsiGoCombo.style.display = codeObj.mode === "combo" ? "inline-flex" : "none";
-    }
+    // Show/hide & synchronize combo quick-switch buttons across all 3 discipline result screens
+    this.syncComboUi(codeObj);
 
     // Route according to the packages:
     // 1. Package 3 (combo): Show the Service Selector Screen first!
@@ -1061,8 +1071,10 @@ class TarotApp {
     if (window.palmApp) window.palmApp.stopCamera();
 
     if (this.comboWelcomeTitle) {
-      this.comboWelcomeTitle.textContent = `ยินดีต้อนรับสู่แพ็กเกจรวมพิเศษ (ไพ่ทาโรต์ • เซียมซี • สแกนลายมือ)`;
+      this.comboWelcomeTitle.textContent = "แพ็กเกจเหมา 3 ศาสตร์ (ดูครบทุกศาสตร์ ศาสตร์ละ 1 ครั้ง)";
     }
+
+    this.syncComboUi(codeObj);
 
     const tarotDone = (codeObj.tarotDrawCount || 0) >= 1 && !!codeObj.tarotResult;
     const siamsiDone = (codeObj.siamsiDrawCount || 0) >= 1 && !!codeObj.siamsiResult;
@@ -1139,6 +1151,58 @@ class TarotApp {
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  syncComboUi(codeObj) {
+    const isCombo = Boolean(codeObj && codeObj.mode === "combo");
+    const tarotDone = Boolean(codeObj && (codeObj.tarotDrawCount || 0) >= 1 && codeObj.tarotResult);
+    const siamsiDone = Boolean(codeObj && (codeObj.siamsiDrawCount || 0) >= 1 && codeObj.siamsiResult);
+    const palmDone = Boolean(codeObj && (codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult);
+    const usedCount = (tarotDone ? 1 : 0) + (siamsiDone ? 1 : 0) + (palmDone ? 1 : 0);
+
+    if (this.comboOverallProgress) {
+      if (isCombo) {
+        this.comboOverallProgress.textContent = usedCount >= 3
+          ? "🎉 ใช้สิทธิ์ครบทั้ง 3 ศาสตร์แล้ว (เปิดดูคำทำนายย้อนหลังได้ทุกศาสตร์)"
+          : `🎯 ใช้สิทธิ์ไปแล้ว ${usedCount} / 3 ศาสตร์ (เหลืออีก ${3 - usedCount} ศาสตร์)`;
+        this.comboOverallProgress.classList.toggle("is-complete", usedCount >= 3);
+      }
+    }
+
+    const buildRemainingPrompt = (excludeKey) => {
+      const candidates = [
+        { key: "tarot", label: "ไพ่ทาโรต์", done: tarotDone },
+        { key: "siamsi", label: "เซียมซี", done: siamsiDone },
+        { key: "palm", label: "สแกนลายมือ", done: palmDone }
+      ];
+      const rem = candidates.filter(c => c.key !== excludeKey && !c.done).map(c => c.label);
+      if (usedCount >= 3) {
+        return "ดูผลย้อนหลังครบทั้ง 3 ศาสตร์ (ใช้ครบ 3/3 แล้ว)";
+      }
+      if (rem.length > 0) {
+        return `ไปดูศาสตร์ที่เหลือในแพ็กเกจเหมา (${rem.join(" / ")}) • ใช้แล้ว ${usedCount}/3`;
+      }
+      return `กลับหน้าแพ็กเกจเหมา 3 ศาสตร์ (ใช้แล้ว ${usedCount}/3)`;
+    };
+
+    if (this.btnTarotGoCombo) {
+      this.btnTarotGoCombo.style.display = isCombo ? "inline-flex" : "none";
+      if (this.btnTarotGoComboLabel) {
+        this.btnTarotGoComboLabel.textContent = buildRemainingPrompt("tarot");
+      }
+    }
+    if (this.btnSiamsiGoCombo) {
+      this.btnSiamsiGoCombo.style.display = isCombo ? "inline-flex" : "none";
+      if (this.btnSiamsiGoComboLabel) {
+        this.btnSiamsiGoComboLabel.textContent = buildRemainingPrompt("siamsi");
+      }
+    }
+    if (this.btnPalmGoCombo) {
+      this.btnPalmGoCombo.style.display = isCombo ? "inline-flex" : "none";
+      if (this.btnPalmGoComboLabel) {
+        this.btnPalmGoComboLabel.textContent = buildRemainingPrompt("palm");
+      }
+    }
   }
 
   applyLockedCategoryPolicy(lockedCategory = "") {
@@ -1751,6 +1815,7 @@ class TarotApp {
         const updated = await window.codeManager.recordReadingDraw(this.activeCode, this.currentReadingPayload);
         if (updated) {
           this.activeCodeObj = updated;
+          this.syncComboUi(updated);
         }
       }
 

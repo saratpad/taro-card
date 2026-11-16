@@ -4546,14 +4546,36 @@ body {
 }
 
 .combo-selector-card {
-  max-width: 780px;
+  max-width: 1080px;
+}
+
+.combo-overall-progress {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  padding: 0.48rem 1.15rem;
+  border-radius: 9999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fde68a;
+  background: rgba(245, 197, 66, 0.14);
+  border: 1.5px solid rgba(245, 197, 66, 0.48);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.combo-overall-progress.is-complete {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(52, 211, 153, 0.55);
 }
 
 .combo-services-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem;
+  margin-top: 1.4rem;
   text-align: left;
 }
 
@@ -4657,7 +4679,7 @@ body {
   color: #a7f3d0 !important;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 860px) {
   .combo-services-grid {
     grid-template-columns: 1fr;
   }

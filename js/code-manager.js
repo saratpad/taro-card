@@ -649,7 +649,10 @@ class CodeManager {
 
     let summaryDetail = "";
     if (readingResult.mode === "tarot") {
-      codeObj.tarotDrawCount = (codeObj.tarotDrawCount || 0) + 1;
+      if ((codeObj.tarotDrawCount || 0) >= 1 && codeObj.tarotResult) {
+        return codeObj;
+      }
+      codeObj.tarotDrawCount = 1;
       codeObj.tarotResult = readingResult;
       codeObj.logs.tarotDrawnAt = now;
       const cardNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
@@ -665,7 +668,10 @@ class CodeManager {
       const handDesc = readingResult.hand === "both" ? "ครบ 2 มือ (ซ้าย+ขวา)" : (readingResult.hand === "left" ? "มือซ้าย" : "มือขวา");
       summaryDetail = `ลูกค้าวิเคราะห์ลายมือ (${handDesc}) ความแม่นยำ ${Number(readingResult.confidence || 92).toFixed(1)}%`;
     } else {
-      codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
+      if ((codeObj.siamsiDrawCount || 0) >= 1 && codeObj.siamsiResult) {
+        return codeObj;
+      }
+      codeObj.siamsiDrawCount = 1;
       codeObj.siamsiResult = readingResult;
       codeObj.logs.siamsiDrawnAt = now;
       summaryDetail = `ลูกค้าเสี่ยงเซียมซี ได้เบอร์ ${readingResult.signNumber} (${readingResult.signTitle || ""})`;

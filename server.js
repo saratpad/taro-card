@@ -493,14 +493,17 @@ const server = http.createServer(async (req, res) => {
       if (readingResult) {
         let detail = "";
         if (readingResult.mode === "tarot") {
-          codeObj.tarotDrawCount = (codeObj.tarotDrawCount || 0) + 1;
+          if ((codeObj.tarotDrawCount || 0) >= 1 && codeObj.tarotResult) {
+            return sendJson(res, 200, { ok: true, alreadyDrawn: true, code: codeObj, codeObj });
+          }
+          codeObj.tarotDrawCount = 1;
           codeObj.tarotResult = readingResult;
           codeObj.logs.tarotDrawnAt = now;
           const cNames = (readingResult.cards || []).map(c => `${c.name_th}${c.isReversed ? " (กลับหัว)" : ""}`).join(", ");
           detail = `ลูกค้าเปิดไพ่ทาโรต์ 3 ใบ หมวด${readingResult.categoryName || readingResult.category}: ${cNames}`;
         } else if (readingResult.mode === "palm") {
           if ((codeObj.palmDrawCount || 0) >= 1 && codeObj.palmResult) {
-            return sendJson(res, 200, { ok: true, alreadyAnalyzed: true, code: codeObj });
+            return sendJson(res, 200, { ok: true, alreadyAnalyzed: true, code: codeObj, codeObj });
           }
           codeObj.palmDrawCount = 1;
           codeObj.palmResult = readingResult;
@@ -509,7 +512,10 @@ const server = http.createServer(async (req, res) => {
           const handDesc = readingResult.hand === "both" ? "ครบ 2 มือ (ซ้าย+ขวา)" : (readingResult.hand === "left" ? "มือซ้าย" : "มือขวา");
           detail = `ลูกค้าวิเคราะห์ลายมือ (${handDesc}) ความแม่นยำ ${Number(readingResult.confidence || 92).toFixed(1)}%`;
         } else {
-          codeObj.siamsiDrawCount = (codeObj.siamsiDrawCount || 0) + 1;
+          if ((codeObj.siamsiDrawCount || 0) >= 1 && codeObj.siamsiResult) {
+            return sendJson(res, 200, { ok: true, alreadyDrawn: true, code: codeObj, codeObj });
+          }
+          codeObj.siamsiDrawCount = 1;
           codeObj.siamsiResult = readingResult;
           codeObj.logs.siamsiDrawnAt = now;
           detail = `ลูกค้าเสี่ยงเซียมซี ได้เบอร์ ${readingResult.signNumber} (${readingResult.signTitle || ""})`;

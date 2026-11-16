@@ -947,7 +947,12 @@ class SiamsiApp {
     const payload = this.buildSiamsiReadingPayload(sign);
     if (this.app && this.app.activeCode && window.codeManager) {
       window.codeManager.recordReadingDraw(this.app.activeCode, payload).then(updated => {
-        if (updated && this.app) this.app.activeCodeObj = updated;
+        if (updated && this.app) {
+          this.app.activeCodeObj = updated;
+          if (typeof this.app.syncComboUi === "function") {
+            this.app.syncComboUi(updated);
+          }
+        }
       });
     }
 

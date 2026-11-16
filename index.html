@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20261116b">
+  <link rel="stylesheet" href="css/style.css?v=20261116c">
   <link rel="stylesheet" href="css/responsive.css?v=20261116a">
 </head>
 <body>
@@ -57,8 +57,8 @@
           <span class="code-pill-id" id="active-code-text">CODE: ----</span>
           <span class="code-pill-Sub" id="active-code-expiry">เหลือเวลา 24 ชม.</span>
         </div>
-        <button type="button" id="btn-back-to-combo" class="btn-combo-switch" style="display: none;" title="สลับบริการในแพ็กเกจคู่">
-          🌟 เลือกบริการแพ็กคู่
+        <button type="button" id="btn-back-to-combo" class="btn-combo-switch" style="display: none;" title="สลับเลือกดูดวงในแพ็กเกจเหมา 3 ศาสตร์">
+          🌟 รวม 3 ศาสตร์
         </button>
         <button type="button" id="btn-change-code" class="btn-change-code" title="เปลี่ยนรหัสโค้ด">
           เปลี่ยนโค้ด
@@ -144,7 +144,7 @@
       </section>
 
       <!-- =================================================================== -->
-      <!-- SCREEN 0.5: COMBO PACKAGE SELECTOR (สำหรับแพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี) -->
+      <!-- SCREEN 0.5: COMBO PACKAGE SELECTOR (สำหรับแพ็กเกจเหมา 3 ศาสตร์ อย่างละ 1 ครั้ง) -->
       <!-- =================================================================== -->
       <section id="combo-selector-screen" class="view-screen">
         <div class="access-gate-card combo-selector-card">
@@ -155,12 +155,13 @@
               </div>
             </div>
           </div>
-          <div class="gate-badge">🌟 SPECIAL VIP COMBO PACKAGE 🌟</div>
-          <h2 class="gate-title" id="combo-welcome-title">แพ็กเกจคู่: ดูดวงไพ่ทาโรต์ & เสี่ยงเซียมซี</h2>
+          <div class="gate-badge">🌟 ALL-IN-ONE 3-IN-1 ORACLE PACKAGE 🌟</div>
+          <h2 class="gate-title" id="combo-welcome-title">แพ็กเกจเหมา 3 ศาสตร์ (ดูครบทุกศาสตร์ ศาสตร์ละ 1 ครั้ง)</h2>
           <p class="gate-subtitle" id="combo-welcome-sub">
-            รหัสโค้ดพิเศษของท่านสามารถใช้บริการเปิดดวงชะตาได้ครบทุกศาสตร์ <strong>(อย่างละ 1 ครั้ง)</strong><br>
-            โปรดเลือกบริการที่ท่านต้องการเปิดคำทำนายก่อน
+            รหัสสิทธิ์เหมาของท่านสามารถใช้บริการเปิดดวงชะตาได้ครบทั้ง 3 ศาสตร์ <strong>(ศาสตร์ละ 1 ครั้ง)</strong><br>
+            เลือกเปิดศาสตร์ที่ต้องการได้อิสระ และกลับมาใช้สิทธิ์ศาสตร์ที่เหลือได้ภายในอายุโค้ด
           </p>
+          <div id="combo-overall-progress" class="combo-overall-progress" role="status">🎯 ใช้สิทธิ์ไปแล้ว 0 / 3 ศาสตร์ (เหลืออีก 3 ศาสตร์)</div>
 
           <div class="combo-services-grid">
             <!-- บริการที่ 1: ดูดวงไพ่ทาโรต์ 3 ใบ -->
@@ -435,11 +436,11 @@
             <div class="verdict-actions-summary" id="verdict-actions-summary"></div>
           </div>
 
-          <!-- แถวสลับโหมดสำหรับแพ็กคู่ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
+          <!-- แถวสลับโหมดสำหรับแพ็กเกจเหมา 3 ศาสตร์ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
           <div class="combo-quick-switch-row">
             <button type="button" id="btn-tarot-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
-              <span>🎋</span>
-              <span>ไปใช้สิทธิ์เสี่ยงเซียมซี (แพ็กคู่)</span>
+              <span>🌟</span>
+              <span id="btn-tarot-go-combo-label">ไปดูศาสตร์อื่นในแพ็กเกจเหมา 3 ศาสตร์</span>
             </button>
             <button type="button" id="btn-ask-again" class="btn-secondary-mystic" style="display: none;">
               <span>✨</span>
@@ -761,11 +762,11 @@
               <div class="siamsi-aspects-grid" id="siamsi-aspects-grid"></div>
             </div>
 
-            <!-- แถวสลับโหมดสำหรับแพ็กคู่ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
+            <!-- แถวสลับโหมดสำหรับแพ็กเกจเหมา 3 ศาสตร์ / ดูซ้ำเฉพาะตอนยังไม่ล็อกสิทธิ์ -->
             <div class="combo-quick-switch-row">
               <button type="button" id="btn-siamsi-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
-                <span>✨</span>
-                <span>ไปใช้สิทธิ์ดูดวงไพ่ทาโรต์ (แพ็กคู่)</span>
+                <span>🌟</span>
+                <span id="btn-siamsi-go-combo-label">ไปดูศาสตร์อื่นในแพ็กเกจเหมา 3 ศาสตร์</span>
               </button>
               <button type="button" id="btn-siamsi-reshake" class="btn-secondary-mystic" style="display: none;">
                 <span>🎋</span>
@@ -1087,6 +1088,14 @@
           <div class="palm-aspects-section">
             <h3 class="aspects-section-title">📜 คำทำนายลายมือ 5 ด้านสำคัญ (วิเคราะห์ครบ 2 มือ)</h3>
             <div class="palm-aspects-grid" id="palm-reading-aspects"></div>
+          </div>
+
+          <!-- แถวสลับศาสตร์สำหรับแพ็กเกจเหมา 3 ศาสตร์ -->
+          <div class="combo-quick-switch-row">
+            <button type="button" id="btn-palm-go-combo" class="btn-secondary-mystic btn-combo-action" style="display: none;">
+              <span>🌟</span>
+              <span id="btn-palm-go-combo-label">ไปดูศาสตร์อื่นในแพ็กเกจเหมา 3 ศาสตร์</span>
+            </button>
           </div>
 
           <!-- ส่วนการแชร์และดาวน์โหลดลายมือ (2 ปุ่มหลัก + ปุ่มคัดลอกข้อมูลถาม Gemini บรรทัดสุดท้าย) -->
@@ -1528,15 +1537,15 @@
   <script src="js/palm-data.js?v=20261116a"></script>
   <script src="js/palm-mediapipe.js"></script>
   <script src="js/palm-vision.js?v=20261113b"></script>
-  <script src="js/palm-scanner.js?v=20261116a"></script>
+  <script src="js/palm-scanner.js?v=20261116c"></script>
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/supabase-client.js?v=20261115a"></script>
   <script src="js/rag-engine.js?v=20261115a"></script>
-  <script src="js/code-manager.js?v=20261116b"></script>
-  <script src="js/share-pdf.js?v=20261116b"></script>
-  <script src="js/siamsi.js?v=20261116b"></script>
-  <script src="js/app.js?v=20261116b"></script>
+  <script src="js/code-manager.js?v=20261116c"></script>
+  <script src="js/share-pdf.js?v=20261116c"></script>
+  <script src="js/siamsi.js?v=20261116c"></script>
+  <script src="js/app.js?v=20261116c"></script>
 
 </body>
 </html>

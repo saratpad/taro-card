@@ -2243,6 +2243,9 @@ class PalmApp {
         if (typeof window.taroApp.refreshActiveCodeState === "function") {
           window.taroApp.refreshActiveCodeState();
         }
+        if (typeof window.taroApp.syncComboUi === "function") {
+          window.taroApp.syncComboUi(window.taroApp.activeCodeObj);
+        }
       } catch (err) {
         console.warn("Palm draw record warning:", err);
       }

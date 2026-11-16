@@ -636,7 +636,10 @@ Deno.serve(async (req: Request) => {
         if (readingResult && typeof readingResult === "object") {
           let detail = "";
           if (readingResult.mode === "tarot") {
-            codeObj.tarotDrawCount = (Number(codeObj.tarotDrawCount) || 0) + 1;
+            if ((Number(codeObj.tarotDrawCount) || 0) >= 1 && codeObj.tarotResult) {
+              return sendJson(200, { ok: true, alreadyDrawn: true, code: codeObj, codeObj });
+            }
+            codeObj.tarotDrawCount = 1;
             codeObj.tarotResult = readingResult;
             logs.tarotDrawnAt = now;
             const cards = Array.isArray(readingResult.cards) ? readingResult.cards : [];
@@ -657,7 +660,10 @@ Deno.serve(async (req: Request) => {
               : (readingResult.hand === "left" ? "มือซ้าย" : "มือขวา");
             detail = `ลูกค้าวิเคราะห์ลายมือ (${handDesc}) ความแม่นยำ ${Number(readingResult.confidence || 92).toFixed(1)}%`;
           } else {
-            codeObj.siamsiDrawCount = (Number(codeObj.siamsiDrawCount) || 0) + 1;
+            if ((Number(codeObj.siamsiDrawCount) || 0) >= 1 && codeObj.siamsiResult) {
+              return sendJson(200, { ok: true, alreadyDrawn: true, code: codeObj, codeObj });
+            }
+            codeObj.siamsiDrawCount = 1;
             codeObj.siamsiResult = readingResult;
             logs.siamsiDrawnAt = now;
             detail = `ลูกค้าเสี่ยงเซียมซี ได้เบอร์ ${readingResult.signNumber} (${readingResult.signTitle || ""})`;

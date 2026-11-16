@@ -595,7 +595,7 @@ class AdminBackoffice {
     const serviceMap = {
       tarot: "🔮 แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ (สิทธิ์สุ่มด้วยตนเอง 1 ครั้ง)",
       siamsi: "🎋 แพ็กเกจ 2: เสี่ยงเซียมซีศักดิ์สิทธิ์ (สิทธิ์เขย่าด้วยตนเอง 1 ครั้ง)",
-      combo: "🌟 แพ็กเกจ 3 (VIP รวม 3 ศาสตร์): ไพ่ทาโรต์ + เซียมซี + สแกนลายมือ (ใช้ได้ทุกบริการ อย่างละ 1 ครั้ง)",
+      combo: "🌟 แพ็กเกจเหมา 3 ศาสตร์: ไพ่ทาโรต์ + เซียมซี + สแกนลายมือ (ดูครบทุกศาสตร์ ศาสตร์ละ 1 ครั้ง)",
       palm: "✋ แพ็กเกจ 4: สแกนดูลายมืออัจฉริยะ (สิทธิ์สแกนด้วยตนเอง 1 ครั้ง)"
     };
     const serviceName = serviceMap[codeObj.mode] || serviceMap.tarot;
@@ -607,7 +607,7 @@ class AdminBackoffice {
       timeStyle: "short"
     });
     const limitRule = codeObj.mode === "combo"
-      ? `- โค้ดพิเศษนี้สามารถเลือกใช้บริการได้ทั้ง "ดูดวงไพ่ทาโรต์ 3 ใบ", "เสี่ยงเซียมซี" และ "สแกนลายมือ" อย่างละ 1 ครั้ง (มีอายุใช้งาน 1 วัน ถึง ${expireStr})`
+      ? `- รหัสสิทธิ์เหมา 3 ศาสตร์นี้สามารถใช้บริการได้ครบทั้ง "ไพ่ทาโรต์ 3 ใบ", "เสี่ยงเซียมซี" และ "สแกนลายมือ 2 ข้าง" ศาสตร์ละ 1 ครั้ง (มีอายุใช้งาน 1 วัน ถึง ${expireStr})`
       : (codeObj.mode === "palm"
         ? `- โค้ดนี้ให้คุณสแกนวิเคราะห์ลายมือครบ 2 มือด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`
         : `- โค้ดนี้ให้คุณกดสุ่มเปิดดวงด้วยตนเองได้ 1 ครั้ง และมีอายุใช้งาน 1 วัน (หมดอายุ: ${expireStr})`);
@@ -648,7 +648,7 @@ class AdminBackoffice {
         const modeTitleMap = {
           tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
           siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
-          combo: "แพ็กเกจ 3: รวม 3 ศาสตร์ (อย่างละ 1 ครั้ง)",
+          combo: "แพ็กเกจเหมา 3 ศาสตร์ (ดูครบทุกศาสตร์ ศาสตร์ละ 1 ครั้ง)",
           palm: "แพ็กเกจ 4: สแกนดูลายมือ"
         };
         this.newlyCreatedBox.style.display = "block";
@@ -1002,11 +1002,13 @@ class AdminBackoffice {
       const hasShared = logs.shareCount > 0;
       const hasPdf = logs.pdfDownloadCount > 0;
 
+      const comboUsedCount = (tarotRes ? 1 : 0) + (siamsiRes ? 1 : 0) + ((palmRes || (codeObj.palmDrawCount || 0) >= 1) ? 1 : 0);
+
       let modeBadge = `<span class="mode-pill tarot">🔮 ทาโรต์ 3 ใบ</span>`;
       if (codeObj.mode === "siamsi") {
         modeBadge = `<span class="mode-pill siamsi">🎋 เซียมซี</span>`;
       } else if (codeObj.mode === "combo") {
-        modeBadge = `<span class="mode-pill combo">🌟 รวม 3 ศาสตร์</span>`;
+        modeBadge = `<span class="mode-pill combo">🌟 เหมา 3 ศาสตร์ (${comboUsedCount}/3)</span>`;
       } else if (codeObj.mode === "palm") {
         modeBadge = `<span class="mode-pill palm" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.45); color: #86efac;">✋ สแกนลายมือ</span>`;
       }
@@ -1452,7 +1454,7 @@ class AdminBackoffice {
     const modeMap = {
       tarot: "แพ็กเกจ 1: ดูดวงไพ่ทาโรต์ 3 ใบ",
       siamsi: "แพ็กเกจ 2: เสี่ยงเซียมซี",
-      combo: "แพ็กเกจ 3: ดูดวง + เสี่ยงเซียมซี + วิเคราะห์ลายมือ (อย่างละ 1 ครั้ง)",
+      combo: "แพ็กเกจเหมา 3 ศาสตร์ (ดูครบทุกศาสตร์ ศาสตร์ละ 1 ครั้ง)",
       palm: "แพ็กเกจ 4: วิเคราะห์ลายมือ (2 มือ)"
     };
 
