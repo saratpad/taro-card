@@ -721,10 +721,6 @@ class ShareAndPdfEngine {
     const baseVisualEndY = cardY + 44 + cardH + 56; // ~830 below orientation tag
     const verdictBottomLimit = H - 102; // 1652 (clear margin above footer divider at 1666)
 
-    const qrPlaqueW = 148;
-    const qrPlaqueH = 168;
-    const qrBoxSize = 114;
-
     const rawVerdictFull = String(readingData.verdictPlain || readingData.verdictBrief || "").replace(/\s+/g, " ").trim();
     const hasCustomBook = Boolean(readingData.textbookId && readingData.textbookId !== "tarot_classic_rw" && readingData.ragSynthesis);
     const fullSummaryText = (hasCustomBook && !rawVerdictFull.includes(String(readingData.ragSynthesis).trim()))
@@ -738,8 +734,6 @@ class ShareAndPdfEngine {
     const maxVerdictAvailH = Math.max(260, verdictBottomLimit - baseVerdictMinY);
     const verdictLayout = this._measureTarotVerdictLayout(ctx, {
       boxW: W - 140,
-      qrPlaqueW,
-      qrPlaqueH,
       maxAvailH: maxVerdictAvailH,
       verdictBadge: readingData.verdictBadge || "",
       fullSummaryText,
@@ -781,19 +775,19 @@ class ShareAndPdfEngine {
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#fff1be";
-      ctx.font = "700 20px 'Prompt', sans-serif";
+      ctx.font = "700 21px 'Prompt', sans-serif";
       ctx.fillText(`${cl.shortPos}  •  ${cl.displayCardName} ${c.isReversed ? "(กลับหัว)" : "(ตั้งตรง)"}`, 140, itemY + 35, W - 234);
 
       ctx.fillStyle = "#f1f5f9";
       ctx.font = `400 ${cl.fontSize}px 'Prompt', sans-serif`;
       cl.lines.forEach((line, lIdx) => {
-        ctx.fillText(line, 140, itemY + 60 + lIdx * cl.lineStep);
+        ctx.fillText(line, 140, itemY + 61 + lIdx * cl.lineStep);
       });
 
       itemY += boxH + cardGap;
     }
 
-    // กล่องบทสรุปเต็ม + คำแนะนำเต็ม + ข้อควรระวัง + QR Code มุมล่างขวา
+    // กล่องบทสรุปเต็ม + คำแนะนำเต็ม + ข้อควรระวัง (ขยายเต็มความกว้าง อักษรใหญ่ อ่านง่ายสบายตา)
     const verdictY = itemY - cardGap + 14 + extraVerdictGap;
     const verdictH = verdictLayout.totalH + boxExtraH;
     const boxX = 70;
@@ -844,14 +838,12 @@ class ShareAndPdfEngine {
     this._drawFourPointStar(ctx, boxX + boxW / 2, divY, 6, "#f3cf7a", 0.88);
     ctx.restore();
 
-    const lowerTopY = divY + p.secGap + gapExtraDiv;
-    const leftW = verdictLayout.leftW;
-    let subY = lowerTopY;
+    let subY = divY + p.secGap + gapExtraDiv;
 
-    // 2. กล่องคำแนะนำฉบับเต็มด้านซ้าย (✅ คำแนะนำและแนวทางที่ควรทำ)
+    // 2. กล่องคำแนะนำฉบับเต็มขยายเต็มความกว้าง (✅ คำแนะนำและแนวทางที่ควรทำ)
     if (verdictLayout.adviceLines.length > 0) {
       const aH = verdictLayout.adviceBoxH;
-      this._drawGlassCard(ctx, innerX, subY, leftW, aH, 12, "rgba(134, 239, 172, 0.36)", "rgba(8, 36, 48, 0.52)");
+      this._drawGlassCard(ctx, innerX, subY, innerW, aH, 12, "rgba(134, 239, 172, 0.36)", "rgba(8, 36, 48, 0.52)");
       ctx.fillStyle = "#4ade80";
       this.drawRoundedRect(ctx, innerX, subY, 6, aH, 3);
       ctx.fill();
@@ -871,11 +863,10 @@ class ShareAndPdfEngine {
       subY += aH + p.secGap + gapExtraSub;
     }
 
-    // 3. กล่องข้อควรระวังฉบับเต็มด้านซ้ายล่าง (⚠️ ข้อควรระวัง)
-    let subBottomY = subY;
+    // 3. กล่องข้อควรระวังฉบับเต็มขยายเต็มความกว้าง (⚠️ ข้อควรระวัง)
     if (verdictLayout.cautionLines.length > 0) {
       const cH = verdictLayout.cautionBoxH;
-      this._drawGlassCard(ctx, innerX, subY, leftW, cH, 12, "rgba(252, 165, 165, 0.36)", "rgba(48, 14, 36, 0.54)");
+      this._drawGlassCard(ctx, innerX, subY, innerW, cH, 12, "rgba(252, 165, 165, 0.36)", "rgba(48, 14, 36, 0.54)");
       ctx.fillStyle = "#fb7185";
       this.drawRoundedRect(ctx, innerX, subY, 6, cH, 3);
       ctx.fill();
@@ -892,20 +883,7 @@ class ShareAndPdfEngine {
         ctx.fillText(line, innerX + 20, cy);
         cy += p.step;
       });
-      subBottomY = subY + cH;
     }
-
-    // 4. กรอบ QR Code ธีมทอง-กรมท่า อยู่มุมล่างขวาของกล่องบทสรุป
-    const shareUrl = this.buildShareableReadingUrl(readingData);
-    const qrPlaqueX = boxX + boxW - padX - qrPlaqueW;
-    const qrPlaqueY = Math.max(lowerTopY, subBottomY - qrPlaqueH, verdictY + verdictH - p.outerPadY - padExtra - qrPlaqueH);
-    const spaceAboveQr = qrPlaqueY - lowerTopY;
-    if (spaceAboveQr >= 42) {
-      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2, lowerTopY + spaceAboveQr / 2, 11, "#f3cf7a", 0.38);
-      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2 - 28, lowerTopY + spaceAboveQr / 2 + 6, 5, "#bae6fd", 0.45);
-      this._drawFourPointStar(ctx, qrPlaqueX + qrPlaqueW / 2 + 28, lowerTopY + spaceAboveQr / 2 - 6, 5, "#fde68a", 0.45);
-    }
-    this._drawSacredCornerQrPlaque(ctx, qrPlaqueX, qrPlaqueY, qrPlaqueW, qrPlaqueH, qrBoxSize, shareUrl, "เจาะลึก 3 ใบ & ถาม Gemini");
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");
 
@@ -924,26 +902,26 @@ class ShareAndPdfEngine {
         : (/^[A-Za-z]/.test(rawCardName) ? `ไพ่ ${rawCardName}` : `ไพ่${rawCardName}`);
 
       const meanSrc = cleanFn(c.shortMeaning || c.domainMeaning || c.advice || "");
-      let fontSize = 18.5;
-      let lineStep = 25;
+      let fontSize = 19.5;
+      let lineStep = 26;
       ctx.font = `400 ${fontSize}px 'Prompt', sans-serif`;
       let lines = this.wrapTextLines(ctx, meanSrc, textMaxW);
 
       if (lines.length > 2) {
-        fontSize = 17;
-        lineStep = 22.5;
+        fontSize = 18;
+        lineStep = 23.5;
         ctx.font = `400 ${fontSize}px 'Prompt', sans-serif`;
         lines = this.wrapTextLines(ctx, meanSrc, textMaxW);
       }
       if (lines.length > 3) {
-        fontSize = 15.5;
-        lineStep = 20.5;
+        fontSize = 16.5;
+        lineStep = 21.5;
         ctx.font = `400 ${fontSize}px 'Prompt', sans-serif`;
         lines = this.wrapTextLines(ctx, meanSrc, textMaxW);
       }
 
       const lineCount = Math.max(1, lines.length);
-      const boxH = 60 + (lineCount - 1) * lineStep + 20;
+      const boxH = 61 + (lineCount - 1) * lineStep + 20;
       return { card: c, shortPos, displayCardName, fontSize, lineStep, lines, boxH };
     });
   }
@@ -951,16 +929,17 @@ class ShareAndPdfEngine {
   _measureTarotVerdictLayout(ctx, opts) {
     const padX = 24;
     const innerW = opts.boxW - padX * 2;
-    const leftW = innerW - opts.qrPlaqueW - 18;
-    const subTextMaxW = leftW - 36;
+    const subTextMaxW = innerW - 36;
 
     const presets = [
-      { body: 18, step: 24, headerSize: 22, headerBaselineOffset: 22, headerBlockH: 52, subTitle: 17.5, subHeaderOffset: 15, subTitleRowH: 38, subPadY: 11, outerPadY: 17, secGap: 11 },
-      { body: 17, step: 22.5, headerSize: 21, headerBaselineOffset: 21, headerBlockH: 50, subTitle: 16.5, subHeaderOffset: 14, subTitleRowH: 36, subPadY: 10, outerPadY: 15, secGap: 10 },
-      { body: 16, step: 21.2, headerSize: 20, headerBaselineOffset: 20, headerBlockH: 47, subTitle: 16, subHeaderOffset: 14, subTitleRowH: 34, subPadY: 9, outerPadY: 14, secGap: 9 },
-      { body: 15, step: 19.8, headerSize: 19, headerBaselineOffset: 19, headerBlockH: 44, subTitle: 15, subHeaderOffset: 13, subTitleRowH: 32, subPadY: 8.5, outerPadY: 13, secGap: 8 },
-      { body: 14.2, step: 18.6, headerSize: 18, headerBaselineOffset: 18, headerBlockH: 42, subTitle: 14.5, subHeaderOffset: 13, subTitleRowH: 30, subPadY: 8, outerPadY: 12, secGap: 7 },
-      { body: 13.4, step: 17.4, headerSize: 17.5, headerBaselineOffset: 18, headerBlockH: 40, subTitle: 13.8, subHeaderOffset: 12, subTitleRowH: 28, subPadY: 7, outerPadY: 11, secGap: 6 }
+      { body: 21, step: 28, headerSize: 24.5, headerBaselineOffset: 24, headerBlockH: 57, subTitle: 20, subHeaderOffset: 17, subTitleRowH: 42, subPadY: 12, outerPadY: 18, secGap: 12 },
+      { body: 20, step: 26.5, headerSize: 23.5, headerBaselineOffset: 23, headerBlockH: 54, subTitle: 19, subHeaderOffset: 16, subTitleRowH: 40, subPadY: 11, outerPadY: 17, secGap: 11 },
+      { body: 19, step: 25.2, headerSize: 22.5, headerBaselineOffset: 22, headerBlockH: 52, subTitle: 18.5, subHeaderOffset: 15, subTitleRowH: 38, subPadY: 11, outerPadY: 16, secGap: 11 },
+      { body: 18, step: 24, headerSize: 22, headerBaselineOffset: 22, headerBlockH: 50, subTitle: 17.5, subHeaderOffset: 15, subTitleRowH: 37, subPadY: 10, outerPadY: 15, secGap: 10 },
+      { body: 17, step: 22.5, headerSize: 21, headerBaselineOffset: 21, headerBlockH: 48, subTitle: 16.5, subHeaderOffset: 14, subTitleRowH: 35, subPadY: 9.5, outerPadY: 14, secGap: 9 },
+      { body: 16, step: 21.2, headerSize: 20, headerBaselineOffset: 20, headerBlockH: 46, subTitle: 16, subHeaderOffset: 14, subTitleRowH: 33, subPadY: 9, outerPadY: 13, secGap: 8 },
+      { body: 15, step: 19.8, headerSize: 19, headerBaselineOffset: 19, headerBlockH: 44, subTitle: 15, subHeaderOffset: 13, subTitleRowH: 31, subPadY: 8.5, outerPadY: 12, secGap: 8 },
+      { body: 14, step: 18.4, headerSize: 18, headerBaselineOffset: 18, headerBlockH: 42, subTitle: 14.2, subHeaderOffset: 12, subTitleRowH: 29, subPadY: 7.5, outerPadY: 11, secGap: 7 }
     ];
 
     let chosen = null;
@@ -979,70 +958,34 @@ class ShareAndPdfEngine {
       const adviceBoxH = calcSubH(adviceLines);
       const cautionBoxH = calcSubH(cautionLines);
 
-      let lowerLeftH = 0;
-      if (adviceBoxH > 0) lowerLeftH += adviceBoxH;
-      if (cautionBoxH > 0) lowerLeftH += (adviceBoxH > 0 ? preset.secGap : 0) + cautionBoxH;
-      const lowerBandH = Math.max(opts.qrPlaqueH, lowerLeftH);
+      let lowerBandH = 0;
+      if (adviceBoxH > 0) lowerBandH += adviceBoxH;
+      if (cautionBoxH > 0) lowerBandH += (adviceBoxH > 0 ? preset.secGap : 0) + cautionBoxH;
 
       const totalH = preset.outerPadY * 2 + topBandH + preset.secGap * 2 + lowerBandH;
 
-      chosen = { preset, padX, leftW, sumLines, adviceLines, cautionLines, topBandH, lowerBandH, adviceBoxH, cautionBoxH, totalH };
+      chosen = { preset, padX, sumLines, adviceLines, cautionLines, topBandH, lowerBandH, adviceBoxH, cautionBoxH, totalH };
       if (totalH <= opts.maxAvailH) break;
     }
     return chosen;
   }
 
-  _drawSacredCornerQrPlaque(ctx, plaqueX, plaqueY, plaqueW, plaqueH, qrBoxSize, shareUrl, subLineText = "อ่านคำทำนายเต็ม & ถาม Gemini") {
-    ctx.save();
-    const glow = ctx.createRadialGradient(
-      plaqueX + plaqueW / 2,
-      plaqueY + plaqueH / 2 - 10,
-      10,
-      plaqueX + plaqueW / 2,
-      plaqueY + plaqueH / 2,
-      plaqueW * 0.8
-    );
-    glow.addColorStop(0, "rgba(243, 207, 122, 0.22)");
-    glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(plaqueX - 14, plaqueY - 14, plaqueW + 28, plaqueH + 28);
-
-    const pGrad = ctx.createLinearGradient(plaqueX, plaqueY, plaqueX, plaqueY + plaqueH);
-    pGrad.addColorStop(0, "rgba(12, 18, 48, 0.94)");
-    pGrad.addColorStop(1, "rgba(22, 14, 52, 0.94)");
-    this._drawGlassCard(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 14, "rgba(243, 207, 122, 0.72)", pGrad);
-
-    // กรอบเส้นทองชั้นในพร้อมประกายดาว 4 มุม
-    ctx.strokeStyle = "rgba(243, 207, 122, 0.26)";
-    ctx.lineWidth = 1;
-    this.drawRoundedRect(ctx, plaqueX + 5, plaqueY + 5, plaqueW - 10, plaqueH - 10, 10);
-    ctx.stroke();
-    this._drawFourPointStar(ctx, plaqueX + 10, plaqueY + 10, 4.2, "#f3cf7a", 0.85);
-    this._drawFourPointStar(ctx, plaqueX + plaqueW - 10, plaqueY + 10, 4.2, "#f3cf7a", 0.85);
-
-    const qrX = plaqueX + Math.floor((plaqueW - qrBoxSize) / 2);
-    const qrY = plaqueY + 10;
-
-    if (typeof window !== "undefined" && window.MiniQR && typeof window.MiniQR.drawToCanvas === "function") {
-      window.MiniQR.drawToCanvas(ctx, shareUrl, qrX, qrY, qrBoxSize, {
-        quiet: 2,
-        fitToBox: true,
-        backgroundGradient: { top: "#faf0d4", bottom: "#ead39c" },
-        foreground: "#0b1033",
-        frameStroke: "#d4af37",
-        frameWidth: 1.8,
-        radius: 9
-      });
+  _fitWrappedTextToHeight(ctx, text, maxW, maxH, presets) {
+    let chosen = presets[presets.length - 1];
+    let wrappedAll = [];
+    for (const pr of presets) {
+      ctx.font = `400 ${pr.size}px 'Prompt', sans-serif`;
+      const wrapped = this.wrapTextLines(ctx, text, maxW);
+      chosen = pr;
+      wrappedAll = wrapped;
+      if (wrapped.length * pr.step <= maxH) break;
     }
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fde68a";
-    ctx.font = "700 13px 'Prompt', sans-serif";
-    ctx.fillText("สแกนดูคำทำนายเต็ม", plaqueX + plaqueW / 2, qrY + qrBoxSize + 18, plaqueW - 14);
-    ctx.fillStyle = "#bae6fd";
-    ctx.font = "400 11.5px 'Prompt', sans-serif";
-    ctx.fillText(subLineText, plaqueX + plaqueW / 2, qrY + qrBoxSize + 35, plaqueW - 14);
-    ctx.restore();
+    const maxLines = Math.max(1, Math.floor(maxH / chosen.step));
+    const lines = wrappedAll.slice(0, maxLines);
+    if (wrappedAll.length > maxLines && lines[maxLines - 1]) {
+      lines[maxLines - 1] = lines[maxLines - 1].slice(0, Math.max(10, lines[maxLines - 1].length - 1)) + "…";
+    }
+    return { chosen, lines };
   }
 
   _getCleanSiamsiAspectText(item, readingData = null) {
@@ -1223,8 +1166,8 @@ class ShareAndPdfEngine {
 
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff1be";
-    ctx.font = "700 22px 'Prompt', sans-serif";
-    ctx.fillText("🔮 ภาพรวมและสรุปคำทำนาย พร้อมแนวทางปฏิบัติ", 96, ovY + 36, W - 200);
+    ctx.font = "700 23px 'Prompt', sans-serif";
+    ctx.fillText("🔮 ภาพรวมและสรุปคำทำนาย พร้อมแนวทางปฏิบัติ", 96, ovY + 38, W - 200);
 
     const overviewParts = [];
     if (generalItem) {
@@ -1236,43 +1179,18 @@ class ShareAndPdfEngine {
     }
     const finalOverviewText = overviewParts.join(" • ") || `เกณฑ์ดวงชะตา "${readingData.fortuneLevel || "ปานกลาง"}" — ${readingData.oneLine || ""}`;
 
-    // วาง QR Code มุมล่างขวาของใบเซียมซี เข้ากับธีมทอง-กรมท่า
-    const siamsiQrW = 148;
-    const siamsiQrH = 166;
-    const siamsiQrSize = 114;
-    const siamsiQrX = W - 70 - 22 - siamsiQrW;
-    const siamsiQrY = ovY + ovH - 16 - siamsiQrH;
-    const siamsiShareUrl = this.buildShareableReadingUrl(readingData);
-    this._drawSacredCornerQrPlaque(ctx, siamsiQrX, siamsiQrY, siamsiQrW, siamsiQrH, siamsiQrSize, siamsiShareUrl, "อ่านเซียมซีเต็ม & ถาม Gemini");
-
-    // เนื้อหาภาพรวมด้านซ้าย ปรับขนาดให้พอดีโดยไม่ชน QR มุมล่างขวา
-    const ovTextW = siamsiQrX - 20 - 96;
-    const ovMaxH = ovH - 72;
-    const ovPresets = [
-      { size: 19, step: 25 },
+    // ขยายเนื้อหาภาพรวมและคำแนะนำเต็มความกว้าง อักษรใหญ่สบายตา
+    const { chosen: ovChosen, lines: ovLines } = this._fitWrappedTextToHeight(ctx, finalOverviewText, W - 196, ovH - 72, [
+      { size: 22.5, step: 29.5 },
+      { size: 21, step: 27.5 },
+      { size: 19.5, step: 25.5 },
       { size: 18, step: 23.5 },
-      { size: 17, step: 22 },
-      { size: 16, step: 20.5 },
-      { size: 15, step: 19 },
-      { size: 14, step: 17.5 }
-    ];
-    let ovChosen = ovPresets[ovPresets.length - 1];
-    let ovWrapped = [];
-    for (const pr of ovPresets) {
-      ctx.font = `400 ${pr.size}px 'Prompt', sans-serif`;
-      const wrapped = this.wrapTextLines(ctx, finalOverviewText, ovTextW);
-      ovChosen = pr;
-      ovWrapped = wrapped;
-      if (wrapped.length * pr.step <= ovMaxH) break;
-    }
-    const ovMaxLines = Math.max(1, Math.floor(ovMaxH / ovChosen.step));
-    const ovLines = ovWrapped.slice(0, ovMaxLines);
-    if (ovWrapped.length > ovMaxLines && ovLines[ovMaxLines - 1]) {
-      ovLines[ovMaxLines - 1] = ovLines[ovMaxLines - 1].slice(0, Math.max(10, ovLines[ovMaxLines - 1].length - 1)) + "…";
-    }
+      { size: 16.5, step: 21.5 },
+      { size: 15, step: 19.5 }
+    ]);
     ctx.fillStyle = "#f8fafc";
     ctx.font = `400 ${ovChosen.size}px 'Prompt', sans-serif`;
-    ovLines.forEach((l, i) => ctx.fillText(l, 96, ovY + 68 + i * ovChosen.step));
+    ovLines.forEach((l, i) => ctx.fillText(l, 96, ovY + 72 + i * ovChosen.step));
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์เซียมซีศักดิ์สิทธิ์");
 
@@ -1446,42 +1364,20 @@ class ShareAndPdfEngine {
       const cleanBody = String(asp.text || "").replace(/\s*\(\s*\)/g, "").trim();
 
       if (isGuidance) {
-        // กล่องสุดท้าย (คำแนะนำดวงชะตา): วาง QR Code มุมล่างขวา และจัดข้อความด้านซ้ายให้สมดุล
-        const palmQrW = 148;
-        const palmQrH = 166;
-        const palmQrSize = 114;
-        const palmQrX = W - 70 - 22 - palmQrW;
-        const palmQrY = curY + curBoxH - 16 - palmQrH;
-        const palmShareUrl = this.buildShareableReadingUrl(readingData);
-        this._drawSacredCornerQrPlaque(ctx, palmQrX, palmQrY, palmQrW, palmQrH, palmQrSize, palmShareUrl, "ดูลายมือ 2 มือ & ถาม Gemini");
-
-        const gTextW = palmQrX - 20 - 96;
-        const gMaxH = curBoxH - 60;
-        const gPresets = [
-          { size: 16.5, step: 21.5 },
-          { size: 15.5, step: 20 },
-          { size: 14.5, step: 18.8 },
-          { size: 13.5, step: 17.5 },
-          { size: 12.5, step: 16.2 }
-        ];
-        let gChosen = gPresets[gPresets.length - 1];
-        let gWrapped = [];
-        for (const pr of gPresets) {
-          ctx.font = `400 ${pr.size}px 'Prompt', sans-serif`;
-          const wrapped = this.wrapTextLines(ctx, cleanBody, gTextW);
-          gChosen = pr;
-          gWrapped = wrapped;
-          if (wrapped.length * pr.step <= gMaxH) break;
-        }
-        const gMaxLines = Math.max(1, Math.floor(gMaxH / gChosen.step));
-        const gLines = gWrapped.slice(0, gMaxLines);
-        if (gWrapped.length > gMaxLines && gLines[gMaxLines - 1]) {
-          gLines[gMaxLines - 1] = gLines[gMaxLines - 1].slice(0, Math.max(10, gLines[gMaxLines - 1].length - 1)) + "…";
-        }
+        // กล่องสุดท้าย (คำแนะนำดวงชะตา): ขยายเต็มความกว้าง อักษรใหญ่ชัดเจน
+        const { chosen: gChosen, lines: gLines } = this._fitWrappedTextToHeight(ctx, cleanBody, W - 196, curBoxH - 60, [
+          { size: 21, step: 27.5 },
+          { size: 19.5, step: 25.5 },
+          { size: 18.5, step: 24 },
+          { size: 17.5, step: 22.5 },
+          { size: 16.5, step: 21 },
+          { size: 15.5, step: 19.8 },
+          { size: 14.5, step: 18.5 }
+        ]);
         ctx.fillStyle = "#f1f5f9";
         ctx.font = `400 ${gChosen.size}px 'Prompt', sans-serif`;
         gLines.forEach((ln, li) => {
-          ctx.fillText(ln, 96, curY + 56 + li * gChosen.step);
+          ctx.fillText(ln, 96, curY + 58 + li * gChosen.step);
         });
       } else {
         ctx.font = "400 17.5px 'Prompt', sans-serif";
