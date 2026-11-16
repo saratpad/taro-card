@@ -877,6 +877,17 @@ body {
   box-shadow: 0 0 25px var(--gold-glow);
 }
 
+.card-3d-flipper + .revealed-card-caption {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.45s ease 0.25s, transform 0.45s ease 0.25s;
+}
+
+.card-3d-flipper.flipped + .revealed-card-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .card-slot-badge {
   background: rgba(192, 132, 252, 0.15);
   border: 1px solid var(--purple-accent);

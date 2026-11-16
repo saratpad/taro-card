@@ -523,12 +523,12 @@ class ShareAndPdfEngine {
 
     // วาดรูปไพ่ทั้ง 3 ใบ พร้อมรัศมีและลูกศรทอง
     const cards = readingData.cards || [];
-    const cardW = 250;
-    const cardH = 398;
+    const cardW = 242;
+    const cardH = 382;
     const gap = 74;
     const totalCardsW = cards.length * cardW + Math.max(0, cards.length - 1) * gap;
     const startX = (W - totalCardsW) / 2;
-    const cardY = 354;
+    const cardY = 348;
 
     const loadedImages = await Promise.all(cards.map(c => this.loadImage(c.image)));
 
@@ -551,7 +551,7 @@ class ShareAndPdfEngine {
       const shortPos = (c.positionTitle || `ใบที่ ${i + 1}`).split("—")[0].trim();
       ctx.fillText(`${i + 1}. ${shortPos}`, x + cardW / 2, cardY + 24, cardW - 28);
 
-      const imgBoxY = cardY + 46;
+      const imgBoxY = cardY + 44;
 
       if (i < cards.length - 1) {
         ctx.fillStyle = "#f3cf7a";
@@ -580,7 +580,6 @@ class ShareAndPdfEngine {
         }
         ctx.restore();
       } else {
-        // Ornate mystic card placeholder when artwork is unavailable
         ctx.save();
         ctx.strokeStyle = "rgba(243, 207, 122, 0.48)";
         ctx.lineWidth = 1.6;
@@ -600,24 +599,35 @@ class ShareAndPdfEngine {
       ctx.stroke();
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "700 22px 'Prompt', sans-serif";
-      ctx.fillText(c.name_th || c.name_en, x + cardW / 2, imgBoxY + cardH + 30, cardW + 30);
+      ctx.font = "700 21.5px 'Prompt', sans-serif";
+      ctx.fillText(c.name_th || c.name_en, x + cardW / 2, imgBoxY + cardH + 28, cardW + 30);
 
       ctx.fillStyle = c.isReversed ? "#fca5a5" : "#7dd3fc";
-      ctx.font = "600 17px 'Prompt', sans-serif";
-      ctx.fillText(c.isReversed ? "[ ไพ่กลับหัว ]" : "[ ไพ่ตั้งตรง ]", x + cardW / 2, imgBoxY + cardH + 54);
+      ctx.font = "600 16.5px 'Prompt', sans-serif";
+      ctx.fillText(c.isReversed ? "[ ไพ่กลับหัว ]" : "[ ไพ่ตั้งตรง ]", x + cardW / 2, imgBoxY + cardH + 51);
     }
 
-    // การ์ดความหมายไพ่ 3 ใบ
-    let itemY = 876;
+    // การ์ดคำทำนายอย่างย่อไพ่ทั้ง 3 ใบ (แสดงข้อความคำทำนายครบถ้วน ไม่มีตัดย่อ ...)
+    let itemY = 842;
     const stepColors = ["#38bdf8", "#c084fc", "#f3cf7a"];
-    const cardBoxH = 132;
+    const cardBoxH = 136;
+
+    const cleanTarotBriefText = (rawText) => {
+      const s = String(rawText || "").replace(/\s+/g, " ").trim();
+      if (!s) return "";
+      return s
+        .replace(/ในตำแหน่ง\s*"[^"]*"\s*ไพ่[\s\S]*$/u, "")
+        .replace(/\s*โดยแนวทางสำคัญ[\s\S]*$/u, "")
+        .trim() || s;
+    };
 
     for (let i = 0; i < cards.length; i++) {
       const c = cards[i];
       const shortPos = (c.positionTitle || `ตำแหน่งที่ ${i + 1}`).split("—")[0].trim();
-      const rawCardName = String(c.name_th || c.name_en || "");
-      const displayCardName = rawCardName.startsWith("ไพ่") ? rawCardName : `ไพ่${rawCardName}`;
+      const rawCardName = String(c.name_th || c.name_en || "").trim();
+      const displayCardName = rawCardName.startsWith("ไพ่")
+        ? rawCardName
+        : (/^[A-Za-z]/.test(rawCardName) ? `ไพ่ ${rawCardName}` : `ไพ่${rawCardName}`);
 
       this._drawGlassCard(ctx, 70, itemY, W - 140, cardBoxH, 16, "rgba(243, 207, 122, 0.42)", "rgba(8, 15, 42, 0.88)");
 
@@ -626,76 +636,136 @@ class ShareAndPdfEngine {
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(116, itemY + 37, 20, 0, Math.PI * 2);
+      ctx.arc(114, itemY + 34, 19, 0, Math.PI * 2);
       ctx.fillStyle = stepColors[i % stepColors.length];
       ctx.fill();
       ctx.textAlign = "center";
       ctx.fillStyle = "#040717";
-      ctx.font = "700 20px 'Prompt', sans-serif";
-      ctx.fillText(String(i + 1), 116, itemY + 44);
+      ctx.font = "700 19px 'Prompt', sans-serif";
+      ctx.fillText(String(i + 1), 114, itemY + 41);
 
       ctx.textAlign = "left";
       ctx.fillStyle = "#fff1be";
-      ctx.font = "700 22px 'Prompt', sans-serif";
-      ctx.fillText(`${shortPos}  •  ${displayCardName} ${c.isReversed ? "(กลับหัว)" : "(ตั้งตรง)"}`, 152, itemY + 43, W - 260);
+      ctx.font = "700 21px 'Prompt', sans-serif";
+      ctx.fillText(`${shortPos}  •  ${displayCardName} ${c.isReversed ? "(กลับหัว)" : "(ตั้งตรง)"}`, 148, itemY + 40, W - 240);
 
-      ctx.fillStyle = "#f1f5f9";
-      ctx.font = "400 19.5px 'Prompt', sans-serif";
-      const meanSrc = c.domainMeaning || c.shortMeaning || c.meaning || c.advice || "";
-      const lines = this.wrapTextLines(ctx, meanSrc, W - 246);
-      const shownLines = lines.slice(0, 2);
-      if (lines.length > 2 && shownLines[1]) {
-        shownLines[1] = shownLines[1].slice(0, Math.max(8, shownLines[1].length - 1)) + "…";
+      const meanSrc = cleanTarotBriefText(c.shortMeaning || c.domainMeaning || c.advice || "");
+      let fontSize = 18.5;
+      ctx.font = `400 ${fontSize}px 'Prompt', sans-serif`;
+      let lines = this.wrapTextLines(ctx, meanSrc, W - 230);
+      if (lines.length > 3) {
+        fontSize = 16.5;
+        ctx.font = `400 ${fontSize}px 'Prompt', sans-serif`;
+        lines = this.wrapTextLines(ctx, meanSrc, W - 230);
       }
-      shownLines.forEach((line, lIdx) => {
-        ctx.fillText(line, 152, itemY + 78 + lIdx * 28);
+      ctx.fillStyle = "#f1f5f9";
+      const lineStep = lines.length >= 3 ? 23.5 : 27;
+      lines.slice(0, 3).forEach((line, lIdx) => {
+        ctx.fillText(line, 148, itemY + 71 + lIdx * lineStep);
       });
 
-      itemY += cardBoxH + 12;
+      itemY += cardBoxH + 10;
     }
 
-    // กล่องบทสรุปฟันธง & แนวทางปฏิบัติ
-    const verdictY = 1312;
-    const verdictH = 336;
+    // กล่องบทสรุป & คำแนะนำสำคัญ + QR Code สแกนดูคำทำนายฉบับเต็ม
+    const verdictY = 1284;
+    const verdictH = 368;
     const vGrad = ctx.createLinearGradient(70, verdictY, W - 70, verdictY + verdictH);
-    vGrad.addColorStop(0, "rgba(18, 28, 72, 0.93)");
-    vGrad.addColorStop(1, "rgba(38, 18, 76, 0.93)");
+    vGrad.addColorStop(0, "rgba(18, 28, 72, 0.94)");
+    vGrad.addColorStop(1, "rgba(38, 18, 76, 0.94)");
     this._drawGlassCard(ctx, 70, verdictY, W - 140, verdictH, 20, "#f3cf7a", vGrad);
 
+    const leftX = 96;
+    const leftW = 810;
+
+    // กรอบ QR Code ทางขวาสำหรับสแกนอ่านคำทำนายเต็มบนเว็บ
+    const shareUrl = this.buildShareableReadingUrl(readingData);
+    const qrPanelX = W - 70 - 224;
+    const qrPanelW = 200;
+    const qrBoxSize = 180;
+    const qrBoxX = qrPanelX + Math.floor((qrPanelW - qrBoxSize) / 2);
+    const qrBoxY = verdictY + 34;
+
+    this._drawGlassCard(ctx, qrPanelX - 4, verdictY + 20, qrPanelW + 8, verdictH - 40, 16, "rgba(243, 207, 122, 0.52)", "rgba(8, 12, 34, 0.72)");
+    if (typeof window !== "undefined" && window.MiniQR && typeof window.MiniQR.drawToCanvas === "function") {
+      window.MiniQR.drawToCanvas(ctx, shareUrl, qrBoxX, qrBoxY, qrBoxSize, {
+        quiet: 3,
+        background: "#ffffff",
+        foreground: "#091028",
+        radius: 12
+      });
+    }
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fde68a";
+    ctx.font = "700 17px 'Prompt', sans-serif";
+    ctx.fillText("📱 สแกนดูคำทำนายเต็ม", qrBoxX + qrBoxSize / 2, qrBoxY + qrBoxSize + 30, qrPanelW - 10);
+    ctx.fillStyle = "#bae6fd";
+    ctx.font = "400 14px 'Prompt', sans-serif";
+    ctx.fillText("อ่านเจาะลึกครบ 3 ใบ & ถาม Gemini", qrBoxX + qrBoxSize / 2, qrBoxY + qrBoxSize + 54, qrPanelW - 10);
+    ctx.fillText("สแกนเปิดได้ตลอด 24 ชม.", qrBoxX + qrBoxSize / 2, qrBoxY + qrBoxSize + 75, qrPanelW - 10);
+
+    // เนื้อหาด้านซ้าย: สรุปใจความ + คำแนะนำ + ข้อควรระวัง (จัดระยะให้อ่านครบทุกคำ ไม่มี ...)
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff1be";
-    ctx.font = "700 25px 'Prompt', sans-serif";
-    ctx.fillText(`👑 บทสรุปฟันธง: ${readingData.verdictBadge || ""}`, 100, verdictY + 44, W - 200);
+    ctx.font = "700 24px 'Prompt', sans-serif";
+    ctx.fillText(`👑 สรุปดวงชะตา: ${readingData.verdictBadge || ""}`, leftX, verdictY + 42, leftW);
 
+    const rawVerdictStr = String(readingData.verdictBrief || readingData.verdictPlain || "").replace(/\s+/g, " ").trim();
+    const rawBriefVerdict = rawVerdictStr
+      .replace(/^จากหน้าไพ่[\s\S]*?\)\)\s*/u, "")
+      .replace(/^จากหน้าไพ่[^()]*\([^)]*\)\s*/u, "")
+      .trim();
+    const coreSummarySrc = rawBriefVerdict || rawVerdictStr;
+
+    let curVerdictY = verdictY + 75;
     ctx.fillStyle = "#f8fafc";
-    ctx.font = "400 20px 'Prompt', sans-serif";
-    const vAll = this.wrapTextLines(ctx, readingData.verdictPlain || "", W - 210);
-    const vLines = vAll.slice(0, 3);
-    if (vAll.length > 3 && vLines[2]) {
-      vLines[2] = vLines[2].slice(0, Math.max(10, vLines[2].length - 1)) + "…";
+    ctx.font = "400 18.5px 'Prompt', sans-serif";
+    let sumLines = this.wrapTextLines(ctx, coreSummarySrc, leftW);
+    if (sumLines.length > 3) {
+      ctx.font = "400 17px 'Prompt', sans-serif";
+      sumLines = this.wrapTextLines(ctx, coreSummarySrc, leftW);
     }
-    vLines.forEach((line, idx) => {
-      ctx.fillText(line, 100, verdictY + 80 + idx * 29);
-    });
+    const maxSumLines = Math.min(4, sumLines.length);
+    for (let li = 0; li < maxSumLines; li++) {
+      ctx.fillText(sumLines[li], leftX, curVerdictY);
+      curVerdictY += 24;
+    }
 
-    const guideY = verdictY + 178;
+    curVerdictY += 10;
+    const rawDoSrc = String(readingData.doBrief || readingData.doAction || "")
+      .replace(/\s*โดยแนวทางสำคัญในการก้าวต่อไปคือ[\s\S]*$/u, "")
+      .replace(/\s+/g, " ")
+      .trim();
     ctx.fillStyle = "#86efac";
-    ctx.font = "600 19px 'Prompt', sans-serif";
-    const doAll = this.wrapTextLines(ctx, `✅ ควรทำ: ${readingData.doAction || ""}`, W - 210);
-    ctx.fillText(doAll[0] || "", 100, guideY);
-    if (doAll[1]) ctx.fillText(doAll[1], 132, guideY + 26);
+    ctx.font = "600 18px 'Prompt', sans-serif";
+    let doLines = this.wrapTextLines(ctx, `✅ คำแนะนำ: ${rawDoSrc}`, leftW);
+    if (doLines.length > 3) {
+      ctx.font = "600 16.5px 'Prompt', sans-serif";
+      doLines = this.wrapTextLines(ctx, `✅ คำแนะนำ: ${rawDoSrc}`, leftW);
+    }
+    const maxDoLines = Math.min(3, doLines.length);
+    for (let li = 0; li < maxDoLines; li++) {
+      ctx.fillText(doLines[li], li === 0 ? leftX : leftX + 26, curVerdictY);
+      curVerdictY += 23.5;
+    }
 
-    ctx.fillStyle = "#fca5a5";
-    ctx.font = "600 19px 'Prompt', sans-serif";
-    const dontY = guideY + (doAll[1] ? 60 : 38);
-    const dontAll = this.wrapTextLines(ctx, `⚠️ ควรระวัง: ${readingData.dontAction || ""}`, W - 210);
-    ctx.fillText(dontAll[0] || "", 100, dontY);
-
-    if (readingData.luckyBoost) {
-      ctx.fillStyle = "#7dd3fc";
-      ctx.font = "600 18.5px 'Prompt', sans-serif";
-      const luckyLine = this.wrapTextLines(ctx, `✨ เสริมดวงมงคล: ${readingData.luckyBoost}`, W - 210)[0] || "";
-      ctx.fillText(luckyLine, 100, verdictY + verdictH - 22);
+    curVerdictY += 8;
+    const rawDontSrc = String(readingData.dontAction || "").replace(/\s+/g, " ").trim();
+    if (rawDontSrc) {
+      ctx.fillStyle = "#fca5a5";
+      ctx.font = "600 18px 'Prompt', sans-serif";
+      let dontLines = this.wrapTextLines(ctx, `⚠️ ควรระวัง: ${rawDontSrc}`, leftW);
+      if (dontLines.length > 2) {
+        ctx.font = "600 16.5px 'Prompt', sans-serif";
+        dontLines = this.wrapTextLines(ctx, `⚠️ ควรระวัง: ${rawDontSrc}`, leftW);
+      }
+      const maxDontLines = Math.min(3, dontLines.length);
+      for (let li = 0; li < maxDontLines; li++) {
+        if (curVerdictY <= verdictY + verdictH - 18) {
+          ctx.fillText(dontLines[li], li === 0 ? leftX : leftX + 26, curVerdictY);
+          curVerdictY += 23.5;
+        }
+      }
     }
 
     this._drawSacredFooter(ctx, W, H, readingData, "SIAMSI TAROT • ใบพยากรณ์ไพ่ทาโรต์ฉบับสมบูรณ์");

@@ -1800,14 +1800,46 @@ class TarotApp {
     }, 1100);
   }
 
+  clearCardRevealTimers() {
+    if (Array.isArray(this._cardRevealTimers)) {
+      this._cardRevealTimers.forEach(t => clearTimeout(t));
+    }
+    this._cardRevealTimers = [];
+  }
+
+  playCardRevealSequence() {
+    this.clearCardRevealTimers();
+    const count = Array.isArray(this.drawnCards) ? this.drawnCards.length : 0;
+    for (let index = 0; index < count; index++) {
+      const t = setTimeout(() => {
+        const flipper = document.getElementById(`flipper-${index}`);
+        const auraRing = document.getElementById(`aura-ring-${index}`);
+        if (flipper) {
+          flipper.classList.add("flipped");
+          window.mysticAudio.playCardFlip();
+          if (auraRing) auraRing.classList.add("pulse-burst");
+          if (window.mysticParticles) {
+            const rect = flipper.getBoundingClientRect();
+            window.mysticParticles.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 24);
+          }
+        }
+      }, index * 500 + 180);
+      this._cardRevealTimers.push(t);
+    }
+  }
+
   triggerGrandRevealCeremony() {
     window.mysticAudio.playSuccessOracle();
+    this.clearCardRevealTimers();
     if (this.climaxOverlay) {
       this.climaxOverlay.classList.add("active");
     }
 
+    const waitMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
     setTimeout(async () => {
-      this.renderResults();
+      // เรนเดอร์หน้าผลลัพธ์โดยคว่ำหน้าไพ่ไว้ก่อน (รอเปิดม่านให้เสร็จก่อนค่อยเล่นเอฟเฟกต์พลิกไพ่)
+      this.renderResults({ deferCardReveal: true });
       this.switchScreen("results");
 
       // บันทึกผลไพ่ 3 ใบผูกกับรหัสโค้ดทันที (จำกัด 1 ครั้ง)
@@ -1819,12 +1851,16 @@ class TarotApp {
         }
       }
 
-      setTimeout(() => {
-        if (this.climaxOverlay) {
-          this.climaxOverlay.classList.remove("active");
-        }
-      }, 350);
-    }, 1350);
+      await waitMs(220);
+
+      if (this.climaxOverlay) {
+        this.climaxOverlay.classList.remove("active");
+        // รอให้ม่านปิดฉาก (0.35s CSS fade-out) จางหายไปทั้งหมดก่อนเริ่มเปิดไพ่
+        await waitMs(400);
+      }
+
+      this.playCardRevealSequence();
+    }, 1250);
   }
 
   autoDrawCards() {
@@ -1958,7 +1994,9 @@ class TarotApp {
     };
   }
 
-  renderResults() {
+  renderResults(options = {}) {
+    const deferCardReveal = Boolean(options && options.deferCardReveal);
+    this.clearCardRevealTimers();
     if (this._lockedTarotCategory && ["love", "career", "finance", "health"].includes(this._lockedTarotCategory)) {
       this.category = this._lockedTarotCategory;
     }
@@ -2045,22 +2083,11 @@ class TarotApp {
       });
 
       this.revealedCardsContainer.appendChild(unit);
-
-      // Staggered dramatic 3D Flip + Sound + Particle Shockwave
-      setTimeout(() => {
-        const flipper = document.getElementById(`flipper-${index}`);
-        const auraRing = document.getElementById(`aura-ring-${index}`);
-        if (flipper) {
-          flipper.classList.add("flipped");
-          window.mysticAudio.playCardFlip();
-          if (auraRing) auraRing.classList.add("pulse-burst");
-          if (window.mysticParticles) {
-            const rect = flipper.getBoundingClientRect();
-            window.mysticParticles.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 24);
-          }
-        }
-      }, index * 480 + 280);
     });
+
+    if (!deferCardReveal) {
+      this.playCardRevealSequence();
+    }
 
     // 2. Render Modern, Non-Redundant 3-Card Domain Predictions
     const domainIcons = { love: "💖", career: "💼", finance: "💰", health: "🌿" };
@@ -2158,7 +2185,9 @@ class TarotApp {
       cards: payloadCards,
       verdictBadge: verdictResult.badgeText,
       verdictPlain: verdictResult.plainText,
+      verdictBrief: verdictResult.briefText || "",
       doAction: verdictResult.doAction,
+      doBrief: verdictResult.doBrief || "",
       dontAction: verdictResult.dontAction,
       luckyBoost: verdictResult.luckyBoost,
       textbookId: verdictResult.textbookId || "",
@@ -2289,7 +2318,9 @@ class TarotApp {
       verdictType,
       badgeText,
       plainText: `${verdictData.plainText} ${verdictData.deepNarrative}`,
+      briefText: verdictData.plainText || "",
       doAction: combinedDoAction,
+      doBrief: verdictData.doAction || "",
       dontAction: verdictData.dontAction,
       luckyBoost: verdictData.luckyBoost,
       textbookId: (activeBook && activeBook.id) || "",
